@@ -8,6 +8,7 @@ import { PerformanceTable } from "@/components/mold/performance-table"
 import { ActionHub } from "@/components/mold/action-hub"
 import { GameRunner } from "@/components/mold/game-runner"
 import { AchievementGallery } from "@/components/mold/achievement-gallery"
+import { EncyclopediaOverlay } from "@/components/mold/encyclopedia-overlay"
 import { SubjectImporter } from "@/components/mold/subject-importer"
 import { useAchievements } from "@/lib/achievement-engine"
 import { toSubjectData } from "@/lib/subject-persistence"
@@ -61,8 +62,9 @@ export function HomeScreen({
 }: HomeScreenProps) {
   const [view, setView]               = useState<AppView>("home")
   const [activeConfig, setActiveConfig] = useState<GameConfig | null>(null)
-  const [showGallery, setShowGallery] = useState(false)
-  const [showImporter, setShowImporter] = useState(false)
+  const [showGallery, setShowGallery]       = useState(false)
+  const [showEncyclopedia, setShowEncyclopedia] = useState(false)
+  const [showImporter, setShowImporter]     = useState(false)
   const [runs, setRuns] = useState<RunRecord[]>([])
 
   const { achievements } = useAchievements()
@@ -175,7 +177,7 @@ export function HomeScreen({
           <ActionHub
             selectedMode={selectedMode}
             onInitialize={handleInitialize}
-            onEncyclopedia={() => setShowGallery(true)}
+            onEncyclopedia={() => setShowEncyclopedia(true)}
           />
 
           <div className="flex items-center gap-4">
@@ -194,6 +196,13 @@ export function HomeScreen({
       </div>
 
       {showGallery && <AchievementGallery onClose={() => setShowGallery(false)} />}
+
+      {showEncyclopedia && (
+        <EncyclopediaOverlay
+          subject={activeSubject}
+          onClose={() => setShowEncyclopedia(false)}
+        />
+      )}
 
       {showImporter && (
         <SubjectImporter

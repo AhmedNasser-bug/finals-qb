@@ -6,56 +6,102 @@ import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/
 import type { FullSubjectData } from "@/lib/mold-types"
 
 // ─── AI prompt the user can copy to generate a valid JSON ─────────────────────
-const AI_PROMPT = `Generate a subject dataset in the following JSON structure for the topic: [YOUR TOPIC HERE]
+const AI_PROMPT = `You are a curriculum designer. Generate a complete MOLD V2 subject dataset for the topic: [YOUR TOPIC HERE]
+
+Return ONLY a single raw JSON object. No markdown, no code fences, no explanation — just the JSON.
+
+The JSON must exactly match this TypeScript schema:
 
 {
-  "id": "unique-kebab-case-id",
-  "name": "Human Readable Subject Name",
+  "id": string,                  // kebab-case, unique e.g. "organic-chemistry"
+  "name": string,                // human-readable e.g. "Organic Chemistry"
   "config": {
-    "title": "Subject Title",
-    "description": "One sentence description of the subject.",
+    "title": string,
+    "description": string,       // one sentence summary of the subject
     "version": "1.0"
   },
-  "questions": [
-    {
-      "id": "q1",
-      "type": "MCQ",
-      "difficulty": "Easy",
-      "category": "category-slug",
-      "question": "Question text here?",
-      "options": [
-        { "label": "A", "text": "Option A" },
-        { "label": "B", "text": "Option B" },
-        { "label": "C", "text": "Option C" },
-        { "label": "D", "text": "Option D" }
-      ],
-      "answer": "A",
-      "explanation": "Why A is correct.",
-      "hint": "A short nudge."
-    }
-  ],
-  "flashcards": [
-    {
-      "id": "f1",
-      "term": "Key Term",
-      "definition": "The definition of the term.",
-      "category": "category-slug"
-    }
-  ],
-  "terminology": {
-    "category-slug": [
-      { "term": "Term", "definition": "Definition." }
-    ]
+  "questions": Question[],       // MINIMUM 100 questions — see rules below
+  "flashcards": Flashcard[],     // MINIMUM 40 flashcards — see rules below
+  "terminology": {               // one entry per category slug
+    "[category-slug]": [{ "term": string, "definition": string }]
   },
-  "achievements": []
+  "achievements": Achievement[]  // MINIMUM 10 achievements — see rules below
 }
 
-Rules:
-- Include at least 20 questions spread across 3-6 categories.
-- Use kebab-case for all id and category values.
-- For TrueFalse questions, options must be exactly [{label:"A",text:"True"},{label:"B",text:"False"}].
-- Include at least 5 flashcards.
-- Return ONLY the raw JSON — no markdown, no code fences, no explanation.`
+━━━ QUESTION RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Each question object:
+{
+  "id": "q1",                    // unique string, sequential e.g. q1, q2 ... q100
+  "type": "MCQ" | "TrueFalse",
+  "difficulty": "Easy" | "Medium" | "Hard",
+  "category": "category-slug",  // kebab-case, must match a terminology key
+  "question": string,
+  "options": [                   // MCQ: exactly 4 options labelled A-D
+    { "label": "A", "text": string },
+    { "label": "B", "text": string },
+    { "label": "C", "text": string },
+    { "label": "D", "text": string }
+  ],
+  // TrueFalse: exactly 2 options:
+  // [{ "label": "A", "text": "True" }, { "label": "B", "text": "False" }]
+  "answer": string,              // correct option label e.g. "B"
+  "explanation": string,         // why the answer is correct — required
+  "hint": string                 // a short nudge without giving away the answer — required
+}
+
+Distribution requirements for the 100+ questions:
+- Spread across 4 to 6 distinct categories
+- At least 30 Easy, 40 Medium, 30 Hard questions
+- At least 15 TrueFalse questions, the rest MCQ
+- No duplicate question text
+
+━━━ FLASHCARD RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Each flashcard object:
+{
+  "id": "f1",                    // unique string, sequential e.g. f1, f2 ... f40
+  "term": string,                // the key term or concept
+  "definition": string,          // a concise, accurate definition (1-2 sentences)
+  "category": "category-slug"   // must match a question category
+}
+
+- Minimum 40 flashcards
+- At least 6 flashcards per category
+- Terms must be distinct from each other
+
+━━━ ACHIEVEMENT RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Each achievement object:
+{
+  "id": "achievement-slug",      // kebab-case, unique
+  "title": string,               // short display name e.g. "First Blood"
+  "description": string,         // one sentence explaining how to unlock
+  "icon": string,                // a single lucide-react icon name e.g. "Zap", "Star", "Shield", "Trophy", "Flame", "Timer", "Award", "BookOpen", "EyeOff", "Crosshair", "Calendar", "Grid"
+  "condition": {
+    "type": one of:
+      "runs_gte"        — { "type": "runs_gte", "value": number }
+      "accuracy_gte"    — { "type": "accuracy_gte", "value": number }     (0-100)
+      "streak_gte"      — { "type": "streak_gte", "value": number }
+      "mode_complete"   — { "type": "mode_complete", "mode": GameModeId }
+      "speedrun_under"  — { "type": "speedrun_under", "mode": "speedrun", "seconds": number }
+      "no_hints"        — { "type": "no_hints", "mode": "hardcore" }
+      "all_categories"  — { "type": "all_categories" }
+      "all_unlocked"    — { "type": "all_unlocked" }
+  }
+}
+
+GameModeId values: "speedrun" | "blitz" | "hardcore" | "survival" | "practice" | "flashcards" | "full-revision"
+
+Generate at least 10 achievements that cover a variety of condition types.
+The last achievement must have condition type "all_unlocked" (the grand master unlock).
+
+━━━ FINAL CHECKLIST ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Before outputting, verify:
+[ ] questions array has at least 100 entries
+[ ] flashcards array has at least 40 entries
+[ ] achievements array has at least 10 entries with the last being all_unlocked
+[ ] every question has a non-empty explanation and hint
+[ ] every category slug used in questions appears as a key in terminology
+[ ] all ids are unique within their respective arrays
+[ ] output is raw JSON only — no markdown, no prose, no code fences`
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
