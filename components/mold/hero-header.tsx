@@ -6,10 +6,11 @@ import { cn } from "@/lib/utils"
 interface HeroHeaderProps {
   subject: SubjectData
   achievements: Achievement[]
+  onTrophyClick?: () => void
   className?: string
 }
 
-export function HeroHeader({ subject, achievements, className }: HeroHeaderProps) {
+export function HeroHeader({ subject, achievements, onTrophyClick, className }: HeroHeaderProps) {
   const unlocked = achievements.filter((a) => a.unlockedAt !== null).length
   const total = achievements.length
 
@@ -57,13 +58,18 @@ export function HeroHeader({ subject, achievements, className }: HeroHeaderProps
             </p>
           </div>
           <div
+            role={onTrophyClick ? "button" : undefined}
+            tabIndex={onTrophyClick ? 0 : undefined}
+            onClick={onTrophyClick}
+            onKeyDown={(e) => e.key === "Enter" && onTrophyClick?.()}
             className={cn(
               "w-12 h-12 rounded border flex items-center justify-center text-xl",
               unlocked === total
                 ? "border-primary/40 bg-primary/10 text-primary"
-                : "border-border bg-secondary text-muted-foreground"
+                : "border-border bg-secondary text-muted-foreground",
+              onTrophyClick && "cursor-pointer hover:border-primary/60 transition-colors"
             )}
-            title={`${unlocked} of ${total} achievements unlocked`}
+            title={`${unlocked} of ${total} achievements unlocked — click to view`}
           >
             <TrophyIcon className="w-6 h-6" />
           </div>

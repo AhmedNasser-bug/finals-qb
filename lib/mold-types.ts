@@ -1,3 +1,111 @@
+// ─── Subject / Question Data Contracts ───────────────────────────────────────
+
+export type QuestionDifficulty = "Easy" | "Medium" | "Hard"
+export type QuestionType = "MCQ" | "TrueFalse"
+
+export interface MCQOption {
+  label: string   // "A" | "B" | "C" | "D"
+  text: string
+}
+
+export interface Question {
+  id: string
+  type: QuestionType
+  difficulty: QuestionDifficulty
+  category: string      // matches CategoryData.id
+  question: string
+  options: MCQOption[]  // for TrueFalse: [{label:"A",text:"True"},{label:"B",text:"False"}]
+  answer: string        // correct option label e.g. "B"
+  explanation?: string
+  hint?: string
+}
+
+export interface Flashcard {
+  id: string
+  term: string
+  definition: string
+  category: string
+}
+
+export interface TerminologyEntry {
+  term: string
+  definition: string
+}
+
+export interface Terminology {
+  [category: string]: TerminologyEntry[]
+}
+
+// Full subject payload — matches the provided SubjectData contract
+export interface FullSubjectData {
+  id: string
+  name: string
+  config: {
+    title: string
+    description: string
+    themeColor?: string
+    version?: string
+    storageKey?: string
+  }
+  questions: Question[]
+  flashcards: Flashcard[]
+  terminology: Terminology
+  achievements: RawAchievementDef[]
+  [key: string]: unknown
+}
+
+export interface RawAchievementDef {
+  id: string
+  title: string
+  description: string
+  icon: string
+  condition: AchievementCondition
+}
+
+export interface AchievementCondition {
+  type: "accuracy_gte" | "streak_gte" | "mode_complete" | "speedrun_under" | "no_hints" | "all_categories" | "runs_gte" | "all_unlocked"
+  value?: number          // numeric threshold
+  mode?: GameModeId       // required for mode_complete / speedrun_under / no_hints
+  seconds?: number        // for speedrun_under
+}
+
+// ─── Game Engine State ────────────────────────────────────────────────────────
+
+export type GamePhase =
+  | "idle"        // not started
+  | "playing"     // active session
+  | "reviewing"   // showing answer reveal
+  | "complete"    // session ended, results available
+
+export interface GameState {
+  phase: GamePhase
+  mode: GameModeId
+  questions: Question[]          // shuffled/filtered pool for this run
+  currentIndex: number
+  selectedOption: string | null  // option label the user picked
+  isRevealed: boolean            // whether the answer is shown
+  score: number                  // correct answers so far
+  streak: number                 // current streak
+  bestStreak: number
+  livesRemaining: number         // Survival mode only (0 = unlimited)
+  startTime: number              // Date.now() when session started
+  elapsedSeconds: number         // updated by the timer
+  perQuestionTimeLimit: number   // 0 = no per-question limit; Survival decreases this
+  globalTimeLimit: number        // 0 = no global limit; Speedrun uses this
+  globalTimeRemaining: number    // counts down from globalTimeLimit
+  hintsUsedTotal: number
+  config: GameConfig
+}
+
+export interface GameConfig {
+  mode: GameModeId
+  timeLimitEnabled: boolean
+  hintsEnabled: boolean
+  questionCount: number           // 0 = all
+  selectedCategory: string | null // practice mode only
+  subjectId: string
+}
+
 // ─── Core Types for MOLD V2 ─────────────────────────────────────────────────
 
 export type GameModeId =
