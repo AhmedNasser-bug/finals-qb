@@ -2,7 +2,7 @@
 
 import { useGameEngine } from "@/lib/game-engine"
 import type { Question } from "@/lib/mold-types"
-import { formatTime, gradeBgColor, calculateGrade, modeLabel } from "@/lib/mold-types"
+import { formatTime, gradeBgColor, calculateGrade, modeLabel, formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
 // ─── Game Header Bar ──────────────────────────────────────────────────────────
@@ -107,7 +107,7 @@ export function QuestionCard({
     <div className="flex flex-col gap-6 animate-slide-up">
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-border text-muted-foreground uppercase tracking-wider">
-          {question.category.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ")}
+          {formatLabel(question.category)}
         </span>
         <span className={cn(
           "text-[10px] font-mono px-2 py-0.5 rounded border uppercase tracking-wider",

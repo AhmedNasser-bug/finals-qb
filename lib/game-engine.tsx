@@ -41,6 +41,7 @@ function buildInitialState(config: GameConfig, questions: Question[]): GameState
     globalTimeLimit,
     globalTimeRemaining: globalTimeLimit,
     hintsUsedTotal: 0,
+    wrongAnswers: 0,
     config,
   }
 }
@@ -142,6 +143,7 @@ function reducer(state: GameState, action: Action): GameState {
       const newScore = isCorrect ? state.score + 1 : state.score
       const newStreak = isCorrect ? state.streak + 1 : 0
       const newBestStreak = Math.max(state.bestStreak, newStreak)
+      const newWrongAnswers = isCorrect ? state.wrongAnswers : state.wrongAnswers + 1
 
       // Survival: lose a life on wrong answer
       const livesRemaining =
@@ -156,6 +158,7 @@ function reducer(state: GameState, action: Action): GameState {
         score: newScore,
         streak: newStreak,
         bestStreak: newBestStreak,
+        wrongAnswers: newWrongAnswers,
         livesRemaining,
       }
     }
@@ -251,8 +254,13 @@ interface GameEngineProviderProps {
 }
 
 export function GameEngineProvider({ config, questions, children }: GameEngineProviderProps) {
+  // Fix 4-A: Stabilize config/questions on first mount so parent re-renders
+  // can never trigger a silent game state reset via the lazy initializer.
+  const configRef   = useRef(config)
+  const questionsRef = useRef(questions)
+
   const [state, dispatch] = useReducer(reducer, undefined, () =>
-    buildInitialState(config, questions)
+    buildInitialState(configRef.current, questionsRef.current)
   )
 
   // Global tick (every second) — only while playing
@@ -274,9 +282,9 @@ export function GameEngineProvider({ config, questions, children }: GameEnginePr
 
   const currentQuestion = state.questions[state.currentIndex] ?? null
 
-  const answered = state.currentIndex + (state.phase === "complete" ? 0 : 0)
-  const total = state.questions.length
-  const accuracyPct = total > 0 ? Math.round((state.score / Math.max(state.currentIndex, 1)) * 100) : 0
+  // Fix 2-A: accuracy denominator is answered questions (correct + wrong), not currentIndex.
+  const answeredCount = state.score + state.wrongAnswers
+  const accuracyPct = answeredCount > 0 ? Math.round((state.score / answeredCount) * 100) : 0
 
   return (
     <GameEngineContext.Provider value={{

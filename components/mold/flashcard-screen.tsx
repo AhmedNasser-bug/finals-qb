@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import type { Flashcard } from "@/lib/mold-types"
+import { formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
 interface FlashcardScreenProps {
@@ -95,7 +96,7 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
       {/* Card */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6">
         <p className="text-xs font-mono text-muted-foreground tracking-wider uppercase">
-          {card.category.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ")}
+          {formatLabel(card.category)}
         </p>
 
         <button

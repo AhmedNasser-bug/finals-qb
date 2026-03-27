@@ -87,6 +87,7 @@ export interface GameState {
   score: number                  // correct answers so far
   streak: number                 // current streak
   bestStreak: number
+  wrongAnswers: number           // incorrect answers so far (used for accurate accuracy %)
   livesRemaining: number         // Survival mode only (0 = unlimited)
   startTime: number              // Date.now() when session started
   elapsedSeconds: number         // updated by the timer
@@ -345,4 +346,13 @@ export function formatDate(iso: string): string {
 
 export function modeLabel(id: GameModeId): string {
   return GAME_MODES.find((m) => m.id === id)?.label ?? id
+}
+
+/**
+ * Converts a kebab-case slug into a Title Case label.
+ * e.g. "finite-automata" → "Finite Automata"
+ * Single source of truth — use this instead of inline .split("-").map(...).join(" ").
+ */
+export function formatLabel(slug: string): string {
+  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
 }
