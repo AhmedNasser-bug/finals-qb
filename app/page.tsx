@@ -1,5 +1,5 @@
-import GameDashboard from "../game-dashboard"
+import { HomeScreen } from "@/components/mold/home-screen"
 
 export default function Home() {
-  return <GameDashboard />
+  return <HomeScreen />
 }
