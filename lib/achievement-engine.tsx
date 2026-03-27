@@ -148,9 +148,14 @@ export function checkNewUnlocks(
 }
 
 // ─── Condition registry (maps achievement id → condition) ─────────────────────
-// In production, this comes from the achievements[] array in FullSubjectData.
-
-const ACHIEVEMENT_CONDITIONS: Record<string, AchievementCondition> = {
+/**
+ * DEMO FALLBACK — used when a FullSubjectData's achievements[] array is absent
+ * or does not supply condition definitions.
+ *
+ * Production usage: call loadConditionsFromSubject(subject) to build this
+ * registry from the live data instead.
+ */
+const DEMO_ACHIEVEMENT_CONDITIONS: Record<string, AchievementCondition> = {
   "first-blood":   { type: "runs_gte",       value: 1 },
   "perfect-run":   { type: "accuracy_gte",   value: 97 },
   "survivor":      { type: "mode_complete",  mode: "survival" },
@@ -164,6 +169,28 @@ const ACHIEVEMENT_CONDITIONS: Record<string, AchievementCondition> = {
   "daily-3":       { type: "runs_gte",       value: 3 },
   "grand-master":  { type: "all_unlocked" },
 }
+
+/**
+ * Build a condition registry from a FullSubjectData's achievements array.
+ * Use this in production to replace the DEMO_ACHIEVEMENT_CONDITIONS fallback.
+ *
+ * @example
+ *   const conditionMap = loadConditionsFromSubject(mySubject)
+ *   // pass conditionMap into checkNewUnlocks (future overload)
+ */
+export function loadConditionsFromSubject(
+  subject: import("@/lib/mold-types").FullSubjectData
+): Record<string, AchievementCondition> {
+  return Object.fromEntries(
+    subject.achievements
+      .filter((a) => a.condition != null)
+      .map((a) => [a.id, a.condition as AchievementCondition])
+  )
+}
+
+/** Active condition registry — swap to loadConditionsFromSubject() for prod. */
+const ACHIEVEMENT_CONDITIONS: Record<string, AchievementCondition> =
+  DEMO_ACHIEVEMENT_CONDITIONS
 
 // ─── Context ──────────────────────────────────────────────────────────────────
 

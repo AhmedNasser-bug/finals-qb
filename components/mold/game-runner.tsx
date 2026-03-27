@@ -4,51 +4,75 @@ import { useState, useEffect, useRef } from "react"
 import { GameEngineProvider, useGameEngine } from "@/lib/game-engine"
 import { useAchievements } from "@/lib/achievement-engine"
 import { useAchievementToast, AchievementToastContainer } from "@/components/mold/achievement-toast"
-import type { Achievement, GameConfig } from "@/lib/mold-types"
-import { DEMO_RUNS } from "@/lib/mold-types"
+import { GameErrorBoundary } from "@/components/mold/game-error-boundary"
+import type { Achievement, GameConfig, RunRecord } from "@/lib/mold-types"
 import { DEMO_FULL_SUBJECT } from "@/lib/subject-store"
 import { GameHeader, QuestionCard, GameFooter, ResultsScreen } from "@/components/mold/game-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard-screen"
 
+// ─── Public interface ─────────────────────────────────────────────────────────
+
 interface GameRunnerProps {
   config: GameConfig
+  /** Real persisted run history — used for achievement evaluation (Fix 1-A). */
+  runs: RunRecord[]
   onReturnHome: () => void
   onRunComplete?: () => void
 }
 
+// ─── Fix 2-A: ToastLayer — keeps hook above all conditional renders ───────────
 /**
- * GameRunner wraps the GameEngineProvider and decides which screen to render
- * based on the current game phase and mode.
- * Flashcard mode is handled separately (no MCQ engine needed).
+ * Wraps children with toast state and renders the container at the bottom.
+ * Extracted so the hook call is never below a conditional return.
  */
-export function GameRunner({ config, onReturnHome, onRunComplete }: GameRunnerProps) {
+function ToastLayer({
+  children,
+}: {
+  children: (showUnlocks: (unlocked: Achievement[]) => void) => React.ReactNode
+}) {
   const { toasts, showUnlocks, dismiss } = useAchievementToast()
-
-  if (config.mode === "flashcards") {
-    return (
-      <div className="min-h-screen bg-background flex flex-col animate-fade-in">
-        <FlashcardScreen
-          flashcards={DEMO_FULL_SUBJECT.flashcards}
-          onComplete={onReturnHome}
-          onReturnHome={onReturnHome}
-        />
-        <AchievementToastContainer toasts={toasts} onDismiss={dismiss} />
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen bg-background flex flex-col animate-fade-in">
-      <GameEngineProvider config={config} questions={DEMO_FULL_SUBJECT.questions}>
-        <GameRunnerInner
-          onReturnHome={onReturnHome}
-          onRunComplete={onRunComplete}
-          config={config}
-          showUnlocks={showUnlocks}
-        />
-      </GameEngineProvider>
+    <>
+      {children(showUnlocks)}
       <AchievementToastContainer toasts={toasts} onDismiss={dismiss} />
-    </div>
+    </>
+  )
+}
+
+// ─── GameRunner ───────────────────────────────────────────────────────────────
+
+export function GameRunner({ config, runs, onReturnHome, onRunComplete }: GameRunnerProps) {
+  return (
+    <ToastLayer>
+      {(showUnlocks) => (
+        <div className="min-h-screen bg-background flex flex-col animate-fade-in">
+          {/* Fix 4-A: Error boundary wraps the engine so crashes are recoverable */}
+          <GameErrorBoundary onReturnHome={onReturnHome}>
+            {config.mode === "flashcards" ? (
+              <FlashcardScreen
+                flashcards={DEMO_FULL_SUBJECT.flashcards}
+                onComplete={onReturnHome}
+                onReturnHome={onReturnHome}
+              />
+            ) : (
+              <GameEngineProvider
+                config={config}
+                questions={DEMO_FULL_SUBJECT.questions}
+              >
+                {/* Fix 1-A: real runs passed down for accurate achievement evaluation */}
+                <GameRunnerInner
+                  onReturnHome={onReturnHome}
+                  onRunComplete={onRunComplete}
+                  config={config}
+                  runs={runs}
+                  showUnlocks={showUnlocks}
+                />
+              </GameEngineProvider>
+            )}
+          </GameErrorBoundary>
+        </div>
+      )}
+    </ToastLayer>
   )
 }
 
@@ -58,32 +82,35 @@ interface InnerProps {
   onReturnHome: () => void
   onRunComplete?: () => void
   config: GameConfig
+  /** Fix 1-A: real persisted run history for achievement evaluation */
+  runs: RunRecord[]
   showUnlocks: (unlocked: Achievement[]) => void
 }
 
-function GameRunnerInner({ onReturnHome, onRunComplete, config, showUnlocks }: InnerProps) {
+function GameRunnerInner({ onReturnHome, onRunComplete, config, runs, showUnlocks }: InnerProps) {
   const { state, forfeit, currentQuestion } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const [showHint, setShowHint] = useState(false)
   const achievementsFiredRef = useRef(false)
 
-  // Reset hint visibility when question changes
+  // Reset hint visibility when question advances
   const [lastIndex, setLastIndex] = useState(state.currentIndex)
   if (state.currentIndex !== lastIndex) {
     setLastIndex(state.currentIndex)
     setShowHint(false)
   }
 
-  // Fire achievement evaluation once when the game transitions to complete
+  // Fire achievement evaluation exactly once when the game transitions to complete.
+  // Uses real `runs` prop (Fix 1-A) instead of static DEMO_RUNS.
   useEffect(() => {
     if (state.phase === "complete" && !achievementsFiredRef.current) {
       achievementsFiredRef.current = true
-      onGameComplete(state, DEMO_RUNS).then((unlocked) => {
+      onGameComplete(state, runs).then((unlocked) => {
         if (unlocked.length > 0) showUnlocks(unlocked)
         onRunComplete?.()
       })
     }
-  }, [state.phase, state, onGameComplete, showUnlocks, onRunComplete])
+  }, [state.phase, state, runs, onGameComplete, showUnlocks, onRunComplete])
 
   if (state.phase === "complete") {
     return (

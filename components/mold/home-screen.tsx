@@ -97,6 +97,7 @@ export function HomeScreen() {
     return (
       <GameRunner
         config={activeConfig}
+        runs={runs}
         onReturnHome={handleReturnHome}
       />
     )
