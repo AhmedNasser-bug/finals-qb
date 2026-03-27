@@ -197,15 +197,15 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
 const ONBOARDING_STEPS = [
   {
     title: "Copy the AI Prompt",
-    body: 'Inside the importer, copy the ready-made prompt. Replace "[YOUR TOPIC HERE]" with your subject — e.g. "Human Anatomy", "JavaScript fundamentals", "World War II".',
+    body: 'Inside the importer, copy the ready-made prompt. Replace "[YOUR TOPIC HERE]" with your subject — e.g. "Human Anatomy", "JavaScript Fundamentals", "World War II".',
   },
   {
     title: "Generate JSON with any AI",
-    body: "Paste the prompt into ChatGPT, Claude, Gemini, or any LLM. It will return a fully structured JSON dataset matching the required schema.",
+    body: "Paste the prompt into ChatGPT, Claude, Gemini, or any capable LLM. It will return a fully structured JSON dataset with 100+ questions, 40+ flashcards, and 10+ achievements matching the required schema.",
   },
   {
     title: "Paste and verify",
-    body: "Copy the AI response and paste it into the importer. MOLD validates every field in real time and shows a preview before you confirm.",
+    body: "Copy the AI response and paste it into the importer. MOLD validates every field in real time — question count, difficulty spread, achievement conditions — and shows a preview before you confirm.",
   },
 ]
 
