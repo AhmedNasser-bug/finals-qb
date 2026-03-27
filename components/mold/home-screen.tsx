@@ -16,7 +16,6 @@ import {
   type SetupConfig,
   type GameConfig,
   type RunRecord,
-  DEMO_RUNS,
   computeAggregateStats,
 } from "@/lib/mold-types"
 import type { FullSubjectData } from "@/lib/mold-types"
@@ -26,10 +25,10 @@ const RUNS_STORAGE_KEY = "mold_v2_runs"
 function loadRuns(): RunRecord[] {
   try {
     const raw = localStorage.getItem(RUNS_STORAGE_KEY)
-    if (!raw) return DEMO_RUNS
+    if (!raw) return []
     return JSON.parse(raw) as RunRecord[]
   } catch {
-    return DEMO_RUNS
+    return []
   }
 }
 
@@ -64,7 +63,7 @@ export function HomeScreen({
   const [activeConfig, setActiveConfig] = useState<GameConfig | null>(null)
   const [showGallery, setShowGallery] = useState(false)
   const [showImporter, setShowImporter] = useState(false)
-  const [runs, setRuns]               = useState<RunRecord[]>(DEMO_RUNS)
+  const [runs, setRuns] = useState<RunRecord[]>([])
 
   const { achievements } = useAchievements()
   const subjectData = toSubjectData(activeSubject)
@@ -120,6 +119,7 @@ export function HomeScreen({
     return (
       <GameRunner
         config={activeConfig}
+        subject={activeSubject}
         runs={runs}
         onReturnHome={handleReturnHome}
       />

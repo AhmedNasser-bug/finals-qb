@@ -15,7 +15,6 @@ import type {
   RunRecord,
 } from "@/lib/mold-types"
 import { calculateGrade } from "@/lib/mold-types"
-import { DEMO_ACHIEVEMENTS } from "@/lib/mold-types"
 
 // ─── Storage key ──────────────────────────────────────────────────────────────
 
@@ -28,10 +27,10 @@ const STORAGE_KEY = "mold_v2_achievements"
 async function loadAchievements(): Promise<Achievement[]> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return structuredClone(DEMO_ACHIEVEMENTS)
+    if (!raw) return []
     return JSON.parse(raw) as Achievement[]
   } catch {
-    return structuredClone(DEMO_ACHIEVEMENTS)
+    return []
   }
 }
 

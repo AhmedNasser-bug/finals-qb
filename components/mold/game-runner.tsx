@@ -5,8 +5,7 @@ import { GameEngineProvider, useGameEngine } from "@/lib/game-engine"
 import { useAchievements } from "@/lib/achievement-engine"
 import { useAchievementToast, AchievementToastContainer } from "@/components/mold/achievement-toast"
 import { GameErrorBoundary } from "@/components/mold/game-error-boundary"
-import type { Achievement, GameConfig, RunRecord } from "@/lib/mold-types"
-import { DEMO_FULL_SUBJECT } from "@/lib/subject-store"
+import type { Achievement, GameConfig, RunRecord, FullSubjectData } from "@/lib/mold-types"
 import { GameHeader, QuestionCard, GameFooter, ResultsScreen } from "@/components/mold/game-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard-screen"
 
@@ -14,6 +13,8 @@ import { FlashcardScreen } from "@/components/mold/flashcard-screen"
 
 interface GameRunnerProps {
   config: GameConfig
+  /** The active subject — provides questions and flashcards for this run. */
+  subject: FullSubjectData
   /** Real persisted run history — used for achievement evaluation (Fix 1-A). */
   runs: RunRecord[]
   onReturnHome: () => void
@@ -41,7 +42,7 @@ function ToastLayer({
 
 // ─── GameRunner ───────────────────────────────────────────────────────────────
 
-export function GameRunner({ config, runs, onReturnHome, onRunComplete }: GameRunnerProps) {
+export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete }: GameRunnerProps) {
   return (
     <ToastLayer>
       {(showUnlocks) => (
@@ -50,14 +51,14 @@ export function GameRunner({ config, runs, onReturnHome, onRunComplete }: GameRu
           <GameErrorBoundary onReturnHome={onReturnHome}>
             {config.mode === "flashcards" ? (
               <FlashcardScreen
-                flashcards={DEMO_FULL_SUBJECT.flashcards}
+                flashcards={subject.flashcards}
                 onComplete={onReturnHome}
                 onReturnHome={onReturnHome}
               />
             ) : (
               <GameEngineProvider
                 config={config}
-                questions={DEMO_FULL_SUBJECT.questions}
+                questions={subject.questions}
               >
                 {/* Fix 1-A: real runs passed down for accurate achievement evaluation */}
                 <GameRunnerInner

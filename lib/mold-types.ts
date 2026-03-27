@@ -272,51 +272,6 @@ export const GAME_MODES: GameMode[] = [
   },
 ]
 
-// ─── Demo / Seed Data ─────────────────────────────────────────────────────────
-
-export const DEMO_SUBJECT: SubjectData = {
-  id: "theory-of-computation",
-  name: "Theory of Computation",
-  description: "Automata, formal languages, Turing machines, and computational complexity.",
-  totalQuestions: 84,
-  categories: [
-    { id: "finite-automata",    name: "Finite Automata",    questionCount: 18 },
-    { id: "context-free",       name: "Context-Free Grammars", questionCount: 14 },
-    { id: "turing-machines",    name: "Turing Machines",    questionCount: 16 },
-    { id: "complexity",         name: "Complexity Theory",  questionCount: 20 },
-    { id: "decidability",       name: "Decidability",       questionCount: 10 },
-    { id: "regular-languages",  name: "Regular Languages",  questionCount: 6  },
-  ],
-}
-
-export const DEMO_ACHIEVEMENTS: Achievement[] = [
-  { id: "first-blood",     title: "First Blood",       description: "Complete your first run.",             icon: "Zap",        unlockedAt: "2025-03-10T10:00:00Z" },
-  { id: "perfect-run",     title: "Perfect Protocol",  description: "Score S+ on any mode.",                icon: "Star",       unlockedAt: "2025-03-12T14:22:00Z" },
-  { id: "survivor",        title: "Survivor",          description: "Complete Survival mode.",              icon: "Shield",     unlockedAt: "2025-03-14T09:11:00Z" },
-  { id: "speedster",       title: "Speedster",         description: "Finish a Speedrun under 3 minutes.",  icon: "Timer",      unlockedAt: "2025-03-15T16:05:00Z" },
-  { id: "streak-15",       title: "Hot Streak",        description: "Maintain a 15-question streak.",      icon: "Flame",      unlockedAt: null },
-  { id: "hardcore-ace",    title: "Hardcore Ace",      description: "Score A+ on Hardcore mode.",          icon: "Award",      unlockedAt: null },
-  { id: "blitz-master",    title: "Blitz Master",      description: "Complete 10 Blitz sessions.",         icon: "Crosshair",  unlockedAt: null },
-  { id: "full-revision",   title: "Examiner",          description: "Pass a Full Revision with >90%.",     icon: "BookOpen",   unlockedAt: null },
-  { id: "all-categories",  title: "Omniscient",        description: "Practice every category.",            icon: "Grid",       unlockedAt: null },
-  { id: "no-hints",        title: "No Lifelines",      description: "Complete Hardcore without hints.",    icon: "EyeOff",     unlockedAt: null },
-  { id: "daily-3",         title: "Consistent",        description: "Play 3 days in a row.",               icon: "Calendar",   unlockedAt: null },
-  { id: "grand-master",    title: "Grand Master",      description: "Unlock all other achievements.",      icon: "Trophy",     unlockedAt: null },
-]
-
-export const DEMO_RUNS: RunRecord[] = [
-  { id: "r1", date: "2025-03-15T16:05:00Z", mode: "speedrun",      score: 94, correctAnswers: 79,  totalQuestions: 84, timeTaken: 178, streak: 12, grade: "S"  },
-  { id: "r2", date: "2025-03-14T09:11:00Z", mode: "survival",      score: 88, correctAnswers: 22,  totalQuestions: 25, timeTaken: 210, streak: 8,  grade: "A"  },
-  { id: "r3", date: "2025-03-13T20:44:00Z", mode: "blitz",         score: 75, correctAnswers: 15,  totalQuestions: 20, timeTaken: 95,  streak: 5,  grade: "C+" },
-  { id: "r4", date: "2025-03-12T14:22:00Z", mode: "hardcore",      score: 97, correctAnswers: 16,  totalQuestions: 16, timeTaken: 312, streak: 16, grade: "S+" },
-  { id: "r5", date: "2025-03-11T11:00:00Z", mode: "practice",      score: 82, correctAnswers: 14,  totalQuestions: 17, timeTaken: 0,   streak: 6,  grade: "B+" },
-  { id: "r6", date: "2025-03-10T10:00:00Z", mode: "full-revision", score: 61, correctAnswers: 51,  totalQuestions: 84, timeTaken: 540, streak: 3,  grade: "D+" },
-  { id: "r7", date: "2025-03-09T18:30:00Z", mode: "blitz",         score: 90, correctAnswers: 18,  totalQuestions: 20, timeTaken: 88,  streak: 10, grade: "A+" },
-  { id: "r8", date: "2025-03-08T08:15:00Z", mode: "speedrun",      score: 71, correctAnswers: 60,  totalQuestions: 84, timeTaken: 234, streak: 4,  grade: "C+" },
-  { id: "r9", date: "2025-03-07T21:00:00Z", mode: "flashcards",    score: 85, correctAnswers: 34,  totalQuestions: 40, timeTaken: 0,   streak: 9,  grade: "B+" },
-  { id: "r10",date: "2025-03-06T15:45:00Z", mode: "hardcore",      score: 56, correctAnswers: 9,   totalQuestions: 16, timeTaken: 289, streak: 2,  grade: "F"  },
-]
-
 export function computeAggregateStats(runs: RunRecord[]): AggregateStats {
   if (runs.length === 0) {
     return { totalRuns: 0, bestScore: 0, bestStreak: 0, averageScore: 0 }
