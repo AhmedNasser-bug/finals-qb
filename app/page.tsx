@@ -4,38 +4,46 @@ import { useState, useEffect } from "react"
 import { OnboardingScreen } from "@/components/mold/onboarding-screen"
 import { SubjectSelector } from "@/components/mold/subject-selector"
 import { HomeScreen } from "@/components/mold/home-screen"
+import { ShareReceiver } from "@/components/mold/share-receiver"
 import {
   loadSubjects,
   saveSubjects,
   addSubject,
   removeSubject,
 } from "@/lib/subject-persistence"
+import { detectShareHash } from "@/lib/subject-sharing"
 import type { FullSubjectData } from "@/lib/mold-types"
 
 /**
  * Root view-state machine:
  *
  *  "loading"   — hydrating subjects from localStorage (prevents flash)
+ *  "receiving" — URL hash contains a #share= payload; show ShareReceiver
  *  "onboarding"— no subjects exist yet; show welcome + mode guide
  *  "selecting" — subjects exist but no active one chosen
  *  "studying"  — a subject is active; show the full HomeScreen
  */
-type RootView = "loading" | "onboarding" | "selecting" | "studying"
+type RootView = "loading" | "receiving" | "onboarding" | "selecting" | "studying"
 
 export default function Home() {
-  const [rootView, setRootView]       = useState<RootView>("loading")
-  const [subjects, setSubjects]       = useState<FullSubjectData[]>([])
+  const [rootView, setRootView]           = useState<RootView>("loading")
+  const [subjects, setSubjects]           = useState<FullSubjectData[]>([])
   const [activeSubject, setActiveSubject] = useState<FullSubjectData | null>(null)
+  const [sharePayload, setSharePayload]   = useState<string | null>(null)
 
-  // ── Hydrate from localStorage on mount ─────────────────────────────────
+  // ── Hydrate from localStorage; detect share hash ────────────────────────
   useEffect(() => {
     const stored = loadSubjects()
     setSubjects(stored)
-    if (stored.length === 0) {
-      setRootView("onboarding")
-    } else {
-      setRootView("selecting")
+
+    const payload = detectShareHash()
+    if (payload) {
+      setSharePayload(payload)
+      setRootView("receiving")
+      return
     }
+
+    setRootView(stored.length === 0 ? "onboarding" : "selecting")
   }, [])
 
   // ── Handlers ────────────────────────────────────────────────────────────
@@ -44,7 +52,6 @@ export default function Home() {
     const updated = addSubject(subjects, incoming)
     saveSubjects(updated)
     setSubjects(updated)
-    // Auto-select the just-imported subject
     setActiveSubject(incoming)
     setRootView("studying")
   }
@@ -58,19 +65,26 @@ export default function Home() {
     const updated = removeSubject(subjects, id)
     saveSubjects(updated)
     setSubjects(updated)
-    if (updated.length === 0) {
-      setRootView("onboarding")
-    }
-    // If the removed subject was active, return to selector
     if (activeSubject?.id === id) {
       setActiveSubject(null)
-      setRootView(updated.length === 0 ? "onboarding" : "selecting")
     }
+    setRootView(updated.length === 0 ? "onboarding" : "selecting")
   }
 
   function handleChangeSubject() {
     setActiveSubject(null)
     setRootView(subjects.length > 0 ? "selecting" : "onboarding")
+  }
+
+  function handleShareAccepted(incoming: FullSubjectData) {
+    setSharePayload(null)
+    handleSubjectAdded(incoming)
+  }
+
+  function handleShareDeclined() {
+    setSharePayload(null)
+    const stored = loadSubjects()
+    setRootView(stored.length === 0 ? "onboarding" : "selecting")
   }
 
   // ── Render ───────────────────────────────────────────────────────────────
@@ -82,6 +96,16 @@ export default function Home() {
           INITIALISING...
         </span>
       </div>
+    )
+  }
+
+  if (rootView === "receiving" && sharePayload) {
+    return (
+      <ShareReceiver
+        payload={sharePayload}
+        onAccept={handleShareAccepted}
+        onDecline={handleShareDeclined}
+      />
     )
   }
 
@@ -100,7 +124,6 @@ export default function Home() {
     )
   }
 
-  // rootView === "studying"
   if (!activeSubject) return null
 
   return (

@@ -211,7 +211,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
 
   return (
     <div className="fixed inset-0 z-50 bg-background/90 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-      <div className="w-full max-w-2xl flex flex-col gap-0 border border-border bg-panel rounded overflow-hidden">
+      <div className="w-full max-w-2xl h-[95vh] flex flex-col gap-0 border border-border bg-panel rounded overflow-hidden">
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-background">
@@ -232,7 +232,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
           </button>
         </div>
 
-        <div className="flex flex-col gap-4 p-5 overflow-y-auto max-h-[80vh]">
+        <div className="flex flex-col gap-4 p-5 overflow-y-auto flex-1 min-h-0">
 
           {/* AI Prompt section */}
           <div className="flex flex-col gap-2">
@@ -287,7 +287,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                 onChange={(e) => handleChange(e.target.value)}
                 placeholder={`{\n  "id": "my-subject",\n  "name": "My Subject",\n  ...\n}`}
                 spellCheck={false}
-                rows={10}
+                rows={40}
                 className={cn(
                   "w-full resize-none bg-transparent font-mono text-xs p-3 text-foreground placeholder:text-muted-foreground/40",
                   "focus:outline-none focus:ring-0 rounded"

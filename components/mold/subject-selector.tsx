@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { SubjectImporter } from "@/components/mold/subject-importer"
+import { ShareModal } from "@/components/mold/share-modal"
 import { toSubjectData } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
 
@@ -21,6 +22,7 @@ export function SubjectSelector({
 }: SubjectSelectorProps) {
   const [showImporter, setShowImporter] = useState(false)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [sharingSubject, setSharingSubject] = useState<FullSubjectData | null>(null)
 
   function handleImport(subject: FullSubjectData) {
     setShowImporter(false)
@@ -131,13 +133,22 @@ export function SubjectSelector({
                         </button>
                       </div>
                     ) : (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(full.id) }}
-                        className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
-                        aria-label={`Remove ${full.name}`}
-                      >
-                        Remove
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setSharingSubject(full) }}
+                          className="text-[10px] font-mono text-muted-foreground/50 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
+                          aria-label={`Share ${full.name}`}
+                        >
+                          Share
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(full.id) }}
+                          className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
+                          aria-label={`Remove ${full.name}`}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -166,6 +177,13 @@ export function SubjectSelector({
           onImport={handleImport}
           onCancel={() => setShowImporter(false)}
           existingIds={existingIds}
+        />
+      )}
+
+      {sharingSubject && (
+        <ShareModal
+          subject={sharingSubject}
+          onClose={() => setSharingSubject(null)}
         />
       )}
     </>
