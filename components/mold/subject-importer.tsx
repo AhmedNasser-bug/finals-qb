@@ -6,32 +6,92 @@ import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/
 import type { FullSubjectData } from "@/lib/mold-types"
 
 // ─── AI prompt the user can copy to generate a valid JSON ─────────────────────
-const AI_PROMPT = `Generate a MOLD V2 subject dataset for: [YOUR TOPIC HERE]
+const AI_PROMPT = `You are a curriculum designer. Generate a complete MOLD V2 subject dataset for: [YOUR TOPIC HERE]
 
-Return ONLY raw JSON. No markdown, no explanation.
+Return ONLY a single raw JSON object. No markdown, no code fences, no explanation — just the JSON.
 
-Schema:
+The JSON structure:
 {
   "id": "kebab-case-id",
   "name": "Human Readable Name",
-  "config": { "title": "...", "description": "one sentence", "version": "1.0" },
-  "questions": [ { "id": "q1", "type": "MCQ|TrueFalse", "difficulty": "Easy|Medium|Hard", "category": "slug", "question": "...", "options": [{ "label": "A", "text": "..." }], "answer": "A", "explanation": "...", "hint": "..." } ],
-  "flashcards": [ { "id": "f1", "term": "...", "definition": "...", "category": "slug" } ],
-  "terminology": { "slug": [{ "term": "...", "definition": "..." }] },
-  "achievements": [ { "id": "slug", "title": "...", "description": "...", "icon": "Zap|Star|Shield|Trophy|...", "condition": { "type": "runs_gte|accuracy_gte|streak_gte|mode_complete|speedrun_under|no_hints|all_categories|all_unlocked", "value": 10 } } ]
+  "config": {
+    "title": "Subject Title",
+    "description": "One sentence summary.",
+    "version": "1.0"
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "MCQ" or "TrueFalse",
+      "difficulty": "Easy" or "Medium" or "Hard",
+      "category": "category-slug",
+      "question": "The question text?",
+      "options": [
+        { "label": "A", "text": "Option A" },
+        { "label": "B", "text": "Option B" },
+        { "label": "C", "text": "Option C" },
+        { "label": "D", "text": "Option D" }
+      ],
+      "answer": "A",
+      "explanation": "Why A is correct.",
+      "hint": "A brief nudge without the answer."
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "f1",
+      "term": "Key Concept",
+      "definition": "Clear, concise definition (1-2 sentences).",
+      "category": "category-slug"
+    }
+  ],
+  "terminology": {
+    "category-slug": [
+      { "term": "Term", "definition": "Definition of the term." }
+    ]
+  },
+  "achievements": [
+    {
+      "id": "achievement-id",
+      "title": "Achievement Title",
+      "description": "How to unlock this achievement.",
+      "icon": "Zap",
+      "condition": { "type": "runs_gte", "value": 5 }
+    }
+  ]
 }
 
-Rules:
+REQUIREMENTS:
 - MINIMUM 100 questions (Easy: 30+, Medium: 40+, Hard: 30+)
-- MCQ: 4 options (A-D), TrueFalse: 2 options (A=True, B=False)
-- MINIMUM 40 flashcards (6+ per category)
-- MINIMUM 10 achievements (last one: all_unlocked)
-- All ids: unique, kebab-case
-- No duplicate questions
-- Every category used in questions must exist in terminology
-- All questions must have explanation + hint
+- MCQ questions: exactly 4 options (A, B, C, D)
+- TrueFalse questions: exactly 2 options (A=True, B=False)
+- Include at least 15 TrueFalse questions
+- MINIMUM 40 flashcards (at least 6 per category)
+- MINIMUM 10 achievements (last one must have "all_unlocked" condition)
+- Spread questions across 4-6 distinct categories
+- All ids must be unique and kebab-case
+- No duplicate question text
+- Every category slug used in questions must exist in terminology
+- All questions MUST have both explanation and hint fields populated
 
-Output ONLY the JSON object — no code fences, no prose.`
+ACHIEVEMENT CONDITION TYPES:
+- "runs_gte": { "type": "runs_gte", "value": N } — Complete N runs
+- "accuracy_gte": { "type": "accuracy_gte", "value": 85 } — Score 85%+ accuracy
+- "streak_gte": { "type": "streak_gte", "value": 15 } — 15-question streak
+- "mode_complete": { "type": "mode_complete", "mode": "speedrun" } — Complete this mode
+- "speedrun_under": { "type": "speedrun_under", "mode": "speedrun", "seconds": 300 } — Under time limit
+- "no_hints": { "type": "no_hints", "mode": "hardcore" } — Mode without hints
+- "all_categories": { "type": "all_categories" } — Practice every category
+- "all_unlocked": { "type": "all_unlocked" } — Unlock all other achievements
+
+CRITICAL — OUTPUT COMPACTNESS:
+The JSON output will be encoded into shareable URLs. To maximize shareability, generate the JSON with:
+- NO extra whitespace or indentation — output single-line, no spaces between tokens
+- NO unnecessary fields or null values
+- Short but descriptive strings (concise terminology definitions, brief hints)
+- This will significantly reduce URL length for offline sharing
+
+Output the complete JSON object on a single line (no formatting).`
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
