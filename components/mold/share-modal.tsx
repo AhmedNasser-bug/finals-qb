@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { cn } from "@/lib/utils"
+import { shortenUrl } from "@/lib/url-shortener"
 import {
   encodeSubject,
   buildShareUrl,
@@ -17,14 +18,18 @@ interface ShareModalProps {
 
 type Tab = "link" | "file"
 type CopyState = "idle" | "copied" | "error"
+type ShortenState = "idle" | "loading" | "done"
 
 export function ShareModal({ subject, onClose }: ShareModalProps) {
   const [tab, setTab]             = useState<Tab>("link")
   const [shareUrl, setShareUrl]   = useState<string>("")
+  const [shortUrl, setShortUrl]   = useState<string>("")
   const [sizeBytes, setSizeBytes] = useState<number>(0)
   const [encoding, setEncoding]   = useState<boolean>(true)
   const [encodeError, setEncodeError] = useState<string | null>(null)
   const [copyState, setCopyState] = useState<CopyState>("idle")
+  const [shortenState, setShortenState] = useState<ShortenState>("idle")
+  const [shortenError, setShortenError] = useState<string | null>(null)
 
   // ── Encode on mount ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -66,6 +71,23 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
       setTimeout(() => setCopyState("idle"), 2500)
     }
   }, [shareUrl])
+
+  // ── Shorten URL ─────────────────────────────────────────────────────────
+  const handleShorten = useCallback(async () => {
+    if (!shareUrl || shortenState !== "idle") return
+    setShortenState("loading")
+    setShortenError(null)
+
+    const result = await shortenUrl(shareUrl)
+    if ("error" in result) {
+      setShortenError(result.error)
+      setShortenState("idle")
+    } else {
+      setShortUrl(result.shortUrl)
+      setShortenState("done")
+      setTimeout(() => setShortenState("idle"), 2500)
+    }
+  }, [shareUrl, shortenState])
 
   const sizeKb       = (sizeBytes / 1024).toFixed(1)
   const isSizeLarge  = sizeBytes > SHARE_SIZE_WARN_BYTES
@@ -163,6 +185,58 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                     >
                       {copyState === "copied" ? "Copied!" : copyState === "error" ? "Failed" : "Copy"}
                     </button>
+                  </div>
+
+                  {/* Shorten button + short URL */}
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={handleShorten}
+                      disabled={shortenState === "loading"}
+                      className={cn(
+                        "w-full py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                        shortenState === "loading"
+                          ? "border-primary/40 bg-primary/10 text-primary opacity-60 cursor-wait"
+                          : shortenState === "done"
+                          ? "border-green-500/40 bg-green-500/10 text-green-400"
+                          : "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20"
+                      )}
+                    >
+                      {shortenState === "loading"
+                        ? "Shortening..."
+                        : shortenState === "done"
+                        ? "Shortened!"
+                        : "Shorten Link"}
+                    </button>
+                    {shortUrl && (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          readOnly
+                          value={shortUrl}
+                          aria-label="Short URL"
+                          className="flex-1 min-w-0 bg-background border border-green-500/30 rounded px-3 py-2 text-xs font-mono text-green-400 focus:outline-none focus:ring-1 focus:ring-ring truncate"
+                          onFocus={(e) => e.target.select()}
+                        />
+                        <button
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(shortUrl)
+                              setCopyState("copied")
+                              setTimeout(() => setCopyState("idle"), 2500)
+                            } catch {
+                              setCopyState("error")
+                              setTimeout(() => setCopyState("idle"), 2500)
+                            }
+                          }}
+                          className="shrink-0 px-3 py-2 rounded border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-mono font-semibold tracking-wider hover:bg-green-500/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    )}
+                    {shortenError && (
+                      <p className="text-xs font-mono text-destructive/80">{shortenError}</p>
+                    )}
                   </div>
 
                   {/* Size indicator */}
