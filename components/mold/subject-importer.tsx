@@ -6,106 +6,96 @@ import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/
 import type { FullSubjectData } from "@/lib/mold-types"
 
 // ─── AI prompt the user can copy to generate a valid JSON ─────────────────────
-const AI_PROMPT = `You are a curriculum designer. Generate a complete MOLD V2 subject dataset for the topic: [YOUR TOPIC HERE]
+const AI_PROMPT = `You are a curriculum designer. Generate a complete MOLD V2 subject dataset for: [YOUR TOPIC HERE]
 
 Return ONLY a single raw JSON object. No markdown, no code fences, no explanation — just the JSON.
 
-The JSON must exactly match this TypeScript schema:
-
+The JSON structure:
 {
-  "id": string,                  // kebab-case, unique e.g. "organic-chemistry"
-  "name": string,                // human-readable e.g. "Organic Chemistry"
+  "id": "kebab-case-id",
+  "name": "Human Readable Name",
   "config": {
-    "title": string,
-    "description": string,       // one sentence summary of the subject
+    "title": "Subject Title",
+    "description": "One sentence summary.",
     "version": "1.0"
   },
-  "questions": Question[],       // MINIMUM 100 questions — see rules below
-  "flashcards": Flashcard[],     // MINIMUM 40 flashcards — see rules below
-  "terminology": {               // one entry per category slug
-    "[category-slug]": [{ "term": string, "definition": string }]
-  },
-  "achievements": Achievement[]  // MINIMUM 10 achievements — see rules below
-}
-
-━━━ QUESTION RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Each question object:
-{
-  "id": "q1",                    // unique string, sequential e.g. q1, q2 ... q100
-  "type": "MCQ" | "TrueFalse",
-  "difficulty": "Easy" | "Medium" | "Hard",
-  "category": "category-slug",  // kebab-case, must match a terminology key
-  "question": string,
-  "options": [                   // MCQ: exactly 4 options labelled A-D
-    { "label": "A", "text": string },
-    { "label": "B", "text": string },
-    { "label": "C", "text": string },
-    { "label": "D", "text": string }
+  "questions": [
+    {
+      "id": "q1",
+      "type": "MCQ" or "TrueFalse",
+      "difficulty": "Easy" or "Medium" or "Hard",
+      "category": "category-slug",
+      "question": "The question text?",
+      "options": [
+        { "label": "A", "text": "Option A" },
+        { "label": "B", "text": "Option B" },
+        { "label": "C", "text": "Option C" },
+        { "label": "D", "text": "Option D" }
+      ],
+      "answer": "A",
+      "explanation": "Why A is correct.",
+      "hint": "A brief nudge without the answer."
+    }
   ],
-  // TrueFalse: exactly 2 options:
-  // [{ "label": "A", "text": "True" }, { "label": "B", "text": "False" }]
-  "answer": string,              // correct option label e.g. "B"
-  "explanation": string,         // why the answer is correct — required
-  "hint": string                 // a short nudge without giving away the answer — required
+  "flashcards": [
+    {
+      "id": "f1",
+      "term": "Key Concept",
+      "definition": "Clear, concise definition (1-2 sentences).",
+      "category": "category-slug"
+    }
+  ],
+  "terminology": {
+    "category-slug": [
+      { "term": "Term", "definition": "Definition of the term." }
+    ]
+  },
+  "achievements": [
+    {
+      "id": "achievement-id",
+      "title": "Achievement Title",
+      "description": "How to unlock this achievement.",
+      "icon": "Zap",
+      "condition": { "type": "runs_gte", "value": 5 }
+    }
+  ]
 }
 
-Distribution requirements for the 100+ questions:
-- Spread across 4 to 6 distinct categories
-- At least 30 Easy, 40 Medium, 30 Hard questions
-- At least 15 TrueFalse questions, the rest MCQ
+REQUIREMENTS:
+- MINIMUM 100 questions (Easy: 30+, Medium: 40+, Hard: 30+)
+- MCQ questions: exactly 4 options (A, B, C, D)
+- TrueFalse questions: exactly 2 options (A=True, B=False)
+- Include at least 15 TrueFalse questions
+- MINIMUM 40 flashcards (at least 6 per category)
+- MINIMUM 10 achievements (last one must have "all_unlocked" condition)
+- Spread questions across 4-6 distinct categories
+- All ids must be unique and kebab-case
 - No duplicate question text
+- Every category slug used in questions must exist in terminology
+- All questions MUST have both explanation and hint fields populated
 
-━━━ FLASHCARD RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Each flashcard object:
-{
-  "id": "f1",                    // unique string, sequential e.g. f1, f2 ... f40
-  "term": string,                // the key term or concept
-  "definition": string,          // a concise, accurate definition (1-2 sentences)
-  "category": "category-slug"   // must match a question category
-}
+ACHIEVEMENT CONDITION TYPES:
+- "runs_gte": { "type": "runs_gte", "value": N } — Complete N runs
+- "accuracy_gte": { "type": "accuracy_gte", "value": 85 } — Score 85%+ accuracy
+- "streak_gte": { "type": "streak_gte", "value": 15 } — 15-question streak
+- "mode_complete": { "type": "mode_complete", "mode": "speedrun" } — Complete this mode
+- "speedrun_under": { "type": "speedrun_under", "mode": "speedrun", "seconds": 300 } — Under time limit
+- "no_hints": { "type": "no_hints", "mode": "hardcore" } — Mode without hints
+- "all_categories": { "type": "all_categories" } — Practice every category
+- "all_unlocked": { "type": "all_unlocked" } — Unlock all other achievements
 
-- Minimum 40 flashcards
-- At least 6 flashcards per category
-- Terms must be distinct from each other
+CRITICAL — OUTPUT COMPACTNESS:
+The JSON output will be encoded into shareable URLs. To maximize shareability, generate the JSON with:
+- NO extra whitespace or indentation — output single-line, no spaces between tokens
+- NO unnecessary fields or null values
+- Short but descriptive strings (concise terminology definitions, brief hints)
+- This will significantly reduce URL length for offline sharing
 
-━━━ ACHIEVEMENT RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Each achievement object:
-{
-  "id": "achievement-slug",      // kebab-case, unique
-  "title": string,               // short display name e.g. "First Blood"
-  "description": string,         // one sentence explaining how to unlock
-  "icon": string,                // a single lucide-react icon name e.g. "Zap", "Star", "Shield", "Trophy", "Flame", "Timer", "Award", "BookOpen", "EyeOff", "Crosshair", "Calendar", "Grid"
-  "condition": {
-    "type": one of:
-      "runs_gte"        — { "type": "runs_gte", "value": number }
-      "accuracy_gte"    — { "type": "accuracy_gte", "value": number }     (0-100)
-      "streak_gte"      — { "type": "streak_gte", "value": number }
-      "mode_complete"   — { "type": "mode_complete", "mode": GameModeId }
-      "speedrun_under"  — { "type": "speedrun_under", "mode": "speedrun", "seconds": number }
-      "no_hints"        — { "type": "no_hints", "mode": "hardcore" }
-      "all_categories"  — { "type": "all_categories" }
-      "all_unlocked"    — { "type": "all_unlocked" }
-  }
-}
-
-GameModeId values: "speedrun" | "blitz" | "hardcore" | "survival" | "practice" | "flashcards" | "full-revision"
-
-Generate at least 10 achievements that cover a variety of condition types.
-The last achievement must have condition type "all_unlocked" (the grand master unlock).
-
-━━━ FINAL CHECKLIST ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Before outputting, verify:
-[ ] questions array has at least 100 entries
-[ ] flashcards array has at least 40 entries
-[ ] achievements array has at least 10 entries with the last being all_unlocked
-[ ] every question has a non-empty explanation and hint
-[ ] every category slug used in questions appears as a key in terminology
-[ ] all ids are unique within their respective arrays
-[ ] output is raw JSON only — no markdown, no prose, no code fences`
+Output the complete JSON object on a single line (no formatting).`
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type ImporterState = "idle" | "validating" | "valid" | "error"
+type ImporterState = "idle" | "validating" | "valid" | "error" | "pasting"
 
 interface SubjectImporterProps {
   onImport: (subject: FullSubjectData) => void
@@ -121,7 +111,19 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [promptCopied, setPromptCopied] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // ── Paste from clipboard ───────────────────────────────────────────────
+  async function handlePaste() {
+    setState("pasting")
+    try {
+      const text = await navigator.clipboard.readText()
+      setJson(text)
+      validate(text)
+    } catch {
+      setResult({ valid: false, errors: ["Failed to read clipboard. Try pasting manually."], warnings: [] })
+      setState("error")
+    }
+  }
 
   // ── Validation ──────────────────────────────────────────────────────────
   const validate = useCallback((raw: string) => {
@@ -261,38 +263,56 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
             </div>
           </div>
 
-          {/* Drop zone + textarea */}
+          {/* Drop zone */}
           <div className="flex flex-col gap-2">
-            <p className="text-xs font-mono text-muted-foreground tracking-wider uppercase">
-              Step 2 — Paste or drop JSON
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-mono text-muted-foreground tracking-wider uppercase">
+                Step 2 — Paste JSON
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePaste}
+                  disabled={state === "pasting"}
+                  className={cn(
+                    "text-xs font-mono px-3 py-1.5 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                    state === "pasting"
+                      ? "border-primary/50 bg-primary/10 text-primary opacity-60 cursor-wait"
+                      : "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
+                  )}
+                >
+                  {state === "pasting" ? "..." : "Paste"}
+                </button>
+              </div>
+            </div>
             <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               className={cn(
-                "relative rounded border transition-colors",
+                "relative rounded border p-4 min-h-[120px] transition-colors flex flex-col items-center justify-center",
                 isDragging
                   ? "border-primary/60 bg-primary/5"
                   : state === "valid"
-                  ? "border-emerald-400/40"
+                  ? "border-emerald-400/40 bg-emerald-400/5"
                   : state === "error"
-                  ? "border-destructive/40"
-                  : "border-border"
+                  ? "border-destructive/40 bg-destructive/5"
+                  : "border-border bg-background"
               )}
             >
-              <textarea
-                ref={textareaRef}
-                value={json}
-                onChange={(e) => handleChange(e.target.value)}
-                placeholder={`{\n  "id": "my-subject",\n  "name": "My Subject",\n  ...\n}`}
-                spellCheck={false}
-                rows={40}
-                className={cn(
-                  "w-full resize-none bg-transparent font-mono text-xs p-3 text-foreground placeholder:text-muted-foreground/40",
-                  "focus:outline-none focus:ring-0 rounded"
-                )}
-              />
+              {json ? (
+                <textarea
+                  value={json}
+                  onChange={(e) => { setJson(e.target.value); validate(e.target.value) }}
+                  placeholder="JSON pasted here..."
+                  spellCheck={false}
+                  className="w-full bg-transparent font-mono text-xs p-0 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 resize-none h-48"
+                />
+              ) : (
+                <div className="text-center pointer-events-none">
+                  <p className="text-sm text-muted-foreground mb-2">Drop a .json file here or use the Paste button</p>
+                  <p className="text-xs text-muted-foreground/60">Then confirm below</p>
+                </div>
+              )}
               {isDragging && (
                 <div className="absolute inset-0 flex items-center justify-center rounded border-2 border-dashed border-primary/60 bg-primary/5 pointer-events-none">
                   <span className="text-sm font-mono text-primary">Drop .json file</span>
