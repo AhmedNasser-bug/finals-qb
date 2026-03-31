@@ -13,23 +13,23 @@ interface PerformanceTableProps {
 export function PerformanceTable({ runs, stats, className }: PerformanceTableProps) {
   return (
     <section className={cn("flex flex-col gap-4", className)}>
-      <h2 className="text-xs font-mono tracking-widest text-muted-foreground uppercase">
+      <h2 className="text-xs font-mono tracking-widest text-cyan-400/80 uppercase">
         Operation Logs
       </h2>
 
-      {/* Aggregate stats strip */}
+      {/* Aggregate stats strip — matches screenshot layout */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded overflow-hidden border border-border">
-        <StatCell label="Total Runs"    value={String(stats.totalRuns)} />
-        <StatCell label="Best Score"    value={`${stats.bestScore}%`}   accent />
-        <StatCell label="Best Streak"   value={`×${stats.bestStreak}`}  />
-        <StatCell label="Avg. Score"    value={`${stats.averageScore}%`} />
+        <StatCell label="Total Runs"  value={String(stats.totalRuns)}         />
+        <StatCell label="Best Score"  value={`${stats.bestScore}%`}   accent  />
+        <StatCell label="Best Streak" value={`×${stats.bestStreak}`}  accent  />
+        <StatCell label="Avg. Score"  value={`${stats.averageScore}%`}        />
       </div>
 
-      {/* Runs table */}
+      {/* Runs table or empty state */}
       {runs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-2 py-12 rounded border border-dashed border-border text-muted-foreground">
-          <p className="text-sm font-mono">NO RUNS RECORDED</p>
-          <p className="text-xs">Complete your first session to begin tracking.</p>
+        <div className="flex flex-col items-center justify-center gap-2 py-12 rounded border border-dashed border-border/60 text-muted-foreground">
+          <p className="text-sm font-mono tracking-widest">NO RUNS RECORDED</p>
+          <p className="text-xs text-muted-foreground/60">Complete your first session to begin tracking.</p>
         </div>
       ) : (
         <div className="rounded border border-border overflow-hidden">
