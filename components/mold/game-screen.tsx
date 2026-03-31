@@ -435,128 +435,253 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const { score, questions, bestStreak, elapsedSeconds, mode, config, hintsUsedTotal } = state
 
   const total       = questions.length
-  const accuracyPct = total > 0 ? Math.round((score / total) * 100) : 0
+  const answered    = state.answers?.filter((a) => a !== undefined).length ?? 0
+  const accuracyPct = answered > 0 ? Math.round((score / answered) * 100) : 0
   const grade       = calculateGrade(accuracyPct)
 
-  const timedOut    = state.globalTimeLimit > 0 && state.globalTimeRemaining <= 0
-  const eliminated  = mode === "survival" && state.livesRemaining <= 0
-  const statusMsg   = timedOut ? "TIME_EXPIRED" : eliminated ? "ELIMINATED" : "PROTOCOL_COMPLETE"
+  const answers     = state.answers ?? []
+  const wrongCount  = answers.filter((a) => a === false).length
+  const skipCount   = answers.filter((a) => a === undefined).length
 
-  // Grade color mapping
+  // Grade color
   const gradeColor =
     grade === "S+" || grade === "S" ? "#fecc17" :
     grade === "A+" || grade === "A" ? "#4ae176" :
     grade === "B"                   ? "#67d7f0" :
     grade === "C"                   ? "#fb8c00" : "#ffb4ab"
 
-  // Per-question result strip
-  const answers = state.answers ?? []
+  // Accuracy bar: 10 segments
+  const filledSegments = Math.round((accuracyPct / 100) * 10)
+
+  // XP yield — simple formula based on accuracy + streak
+  const xpYield = Math.round(accuracyPct * 18 + bestStreak * 12)
+
+  // Module performance: group questions by category
+  const categoryMap: Record<string, { correct: number; total: number }> = {}
+  questions.forEach((q, i) => {
+    const cat = q.category ?? "GENERAL"
+    if (!categoryMap[cat]) categoryMap[cat] = { correct: 0, total: 0 }
+    categoryMap[cat].total++
+    if (answers[i] === true) categoryMap[cat].correct++
+  })
+  const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => ({
+    id:         `MOD_${String(idx + 1).padStart(2, "0")}`,
+    name:       cat.replace(/_/g, " "),
+    pct:        s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
+    grade:      calculateGrade(s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
+  }))
+
+  function moduleGradeColor(g: string) {
+    return g === "S+" || g === "S" ? "#fecc17" :
+           g === "A+" || g === "A" ? "#4ae176" :
+           g === "B"               ? "#67d7f0" :
+           g === "C"               ? "#fb8c00" : "#ffb4ab"
+  }
 
   return (
     <div className="flex flex-col flex-1 bg-[#131313] animate-fade-in overflow-y-auto">
-      {/* Top status bar */}
-      <div className="flex items-center justify-between px-6 py-3 bg-[#1c1b1b]">
-        <span className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase">
-          SESSION_RESULT
-        </span>
-        <span className="font-mono text-[10px] tracking-widest uppercase" style={{ color: gradeColor }}>
-          {statusMsg}
-        </span>
-      </div>
+      <div className="max-w-5xl mx-auto w-full px-6 md:px-10 py-10 flex flex-col gap-10">
 
-      <div className="flex flex-col lg:flex-row flex-1">
-        {/* Left panel — grade + stats */}
-        <div className="flex flex-col items-center justify-center gap-6 px-8 py-10 lg:w-80 bg-[#1c1b1b]">
-          {/* Grade display */}
-          <div className="flex flex-col items-center gap-2">
-            <p className="font-mono text-[10px] text-zinc-500 tracking-[0.3em] uppercase">FINAL_GRADE</p>
+        {/* ── Result header ── */}
+        <section className="flex flex-col items-center gap-6">
+          <span className="font-mono text-[10px] tracking-[0.4em] text-[#fecc17] uppercase">
+            SESSION_COMPLETE // EVALUATION_RESULT
+          </span>
+
+          {/* Grade box */}
+          <div className="relative">
             <div
-              className="w-32 h-32 flex items-center justify-center scanlines relative"
-              style={{ border: `3px solid ${gradeColor}`, boxShadow: `0 0 30px ${gradeColor}30` }}
+              className="absolute inset-0 blur-3xl opacity-40 pointer-events-none"
+              style={{ backgroundColor: `${gradeColor}` }}
+            />
+            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden"
+              style={{ boxShadow: `0 0 40px ${gradeColor}20` }}
             >
+              <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
               <span
-                className="font-mono text-6xl font-black leading-none z-10"
-                style={{ color: gradeColor }}
+                className="font-sans font-black leading-none tracking-tighter z-10 select-none"
+                style={{ fontSize: "clamp(72px, 10vw, 128px)", color: "#ffedc2" }}
               >
                 {grade}
               </span>
             </div>
-            <p className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase">
-              {modeLabel(mode).toUpperCase()}
-            </p>
           </div>
 
-          {/* Stats grid */}
-          <div className="w-full grid grid-cols-2 gap-[2px] bg-[#0e0e0e]">
-            <StatCell label="SCORE"       value={`${score}/${total}`}       />
-            <StatCell label="ACCURACY"    value={`${accuracyPct}%`}  accent />
-            <StatCell label="BEST_STREAK" value={`×${bestStreak}`}          />
-            <StatCell label="TIME"        value={formatTime(elapsedSeconds)} />
-            {config.hintsEnabled && (
-              <StatCell label="HINTS_USED" value={String(hintsUsedTotal)} className="col-span-2" />
-            )}
+          {/* Accuracy coefficient + segmented bar */}
+          <div className="w-full max-w-2xl space-y-2">
+            <div className="flex justify-between items-end">
+              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
+                ACCURACY_COEFFICIENT
+              </span>
+              <span className="font-mono text-2xl font-black" style={{ color: gradeColor }}>
+                {accuracyPct}%
+              </span>
+            </div>
+            <div className="flex w-full gap-1 h-4">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-1 h-full"
+                  style={{
+                    backgroundColor: i < filledSegments ? "#4ae176" : "#353534",
+                    boxShadow: i < filledSegments ? "0 0 8px rgba(74,225,118,0.3)" : "none",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 12-col grid: stat block + sequence map ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Stats 2×2 */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-[1px] bg-[#4e4632]/10">
+            <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
+              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">TIME_ELAPSED</span>
+              <span className="font-mono text-xl text-[#e5e2e1]">{formatTime(elapsedSeconds)}</span>
+            </div>
+            <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
+              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">AVG_LATENCY</span>
+              <span className="font-mono text-xl text-[#e5e2e1]">
+                {answered > 0 ? `${Math.round((elapsedSeconds * 1000) / answered)}MS` : "—"}
+              </span>
+            </div>
+            <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
+              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">STREAK_MAX</span>
+              <span className="font-mono text-xl text-[#fecc17]">{bestStreak}</span>
+            </div>
+            <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
+              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">XP_YIELD</span>
+              <span className="font-mono text-xl text-[#4ae176]">+{xpYield.toLocaleString()}</span>
+            </div>
+          </div>
+
+          {/* SESSION_SEQUENCE_MAP */}
+          <div className="lg:col-span-8 bg-[#1c1b1b] p-6 md:p-8 relative overflow-hidden">
+            <div className="scanlines absolute inset-0 pointer-events-none opacity-5" />
+            <div className="relative z-10 flex flex-col gap-5">
+              <div className="flex justify-between items-center">
+                <h3 className="font-sans font-bold text-lg tracking-tight uppercase text-[#e5e2e1]">
+                  SESSION_SEQUENCE_MAP
+                </h3>
+                <span className="font-mono text-[10px] tracking-widest text-zinc-500">
+                  Q_INDEX: {String(1).padStart(3, "0")} - {String(total).padStart(3, "0")}
+                </span>
+              </div>
+
+              {/* Pixel grid — 10 cols, aspect-square cells */}
+              <div className="grid grid-cols-10 gap-[6px]">
+                {Array.from({ length: total }).map((_, i) => {
+                  const ans = answers[i]
+                  return (
+                    <div
+                      key={i}
+                      title={`Q${i + 1}: ${ans === true ? "Correct" : ans === false ? "Wrong" : "Skipped"}`}
+                      className="aspect-square"
+                      style={{
+                        backgroundColor:
+                          ans === true  ? "rgba(74,225,118,0.8)" :
+                          ans === false ? "#93000a" :
+                                          "#353534",
+                      }}
+                    />
+                  )
+                })}
+              </div>
+
+              {/* Legend */}
+              <div className="flex gap-6 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#4ae176]" />
+                  <span className="font-mono text-[10px] tracking-widest text-zinc-400">
+                    SUCCESS [{score}]
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#93000a]" />
+                  <span className="font-mono text-[10px] tracking-widest text-zinc-400">
+                    CRITICAL_ERR [{wrongCount}]
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#353534]" />
+                  <span className="font-mono text-[10px] tracking-widest text-zinc-400">
+                    VOID/SKIP [{skipCount}]
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Right panel — result strip + accuracy bar */}
-        <div className="flex-1 flex flex-col gap-6 p-6 md:p-10">
-          {/* Per-question result grid */}
-          <div className="space-y-3">
-            <p className="font-mono text-[10px] text-zinc-500 tracking-[0.2em] uppercase">
-              QUERY_LOG [{total} ENTRIES]
-            </p>
-            <div
-              className="grid gap-[3px]"
-              style={{ gridTemplateColumns: `repeat(${Math.min(total, 20)}, 1fr)` }}
-            >
-              {Array.from({ length: total }).map((_, i) => {
-                const ans = answers[i]
-                return (
-                  <div
-                    key={i}
-                    title={`Q${i + 1}: ${ans === true ? "Correct" : ans === false ? "Wrong" : "Skipped"}`}
-                    className={cn(
-                      "h-6",
-                      ans === true  ? "bg-[#4ae176]" :
-                      ans === false ? "bg-[#930013]" :
-                                      "bg-[#2a2a2a]"
-                    )}
-                  />
-                )
-              })}
+        {/* ── Module performance ── */}
+        {modules.length > 0 && (
+          <section className="flex flex-col gap-4">
+            <h2 className="font-sans font-bold text-xl tracking-tight uppercase text-[#e5e2e1]">
+              MODULE_PERFORMANCE
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {modules.map((mod) => (
+                <div key={mod.id} className="bg-[#201f1f] p-6 relative flex flex-col gap-4">
+                  <span className="absolute top-2 right-2 font-mono text-[10px] text-zinc-600">
+                    {mod.id}
+                  </span>
+                  <h4 className="font-sans font-semibold text-sm text-zinc-300 uppercase tracking-wide">
+                    {mod.name}
+                  </h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-end">
+                      <span className="font-mono text-[10px] text-zinc-500 uppercase">EFFICIENCY</span>
+                      <span
+                        className="font-mono text-base font-black"
+                        style={{ color: moduleGradeColor(mod.grade) }}
+                      >
+                        {mod.grade}
+                      </span>
+                    </div>
+                    <div className="h-[2px] w-full bg-[#353534]">
+                      <div
+                        className="h-full transition-all duration-700 ease-out"
+                        style={{
+                          width: `${mod.pct}%`,
+                          backgroundColor: moduleGradeColor(mod.grade),
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          </section>
+        )}
 
-          {/* Accuracy bar */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-end">
-              <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">ACCURACY_RATING</span>
-              <span className="font-mono text-sm font-black" style={{ color: gradeColor }}>{accuracyPct}%</span>
-            </div>
-            <div className="w-full h-4 bg-[#0e0e0e]">
-              <div
-                className="h-full transition-all duration-700 ease-out"
-                style={{ width: `${accuracyPct}%`, backgroundColor: gradeColor }}
-              />
-            </div>
+        {/* ── Bottom action HUD ── */}
+        <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-[#4e4632]/10">
+          <div className="flex flex-col">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
+              SYSTEM_ACTION_READY
+            </span>
+            <span className="font-sans text-sm font-medium text-[#e5e2e1]">
+              TERMINATE_OR_REITERATE?
+            </span>
           </div>
-
-          {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-[2px] mt-auto pt-4">
+          <div className="flex gap-3 w-full md:w-auto">
             <button
               onClick={onReturnHome}
-              className="flex-1 py-4 px-6 bg-[#2a2a2a] hover:bg-[#353534] text-[#e5e2e1] font-mono text-xs font-black tracking-widest uppercase transition-colors btn-depress"
+              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors"
             >
-              RETURN_HOME
+              DUMP_LOGS
             </button>
             <button
               onClick={onPlayAgain}
-              className="flex-1 py-4 px-6 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress"
+              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress"
+              style={{ boxShadow: "0 0 25px rgba(254,204,23,0.15)" }}
             >
-              REINITIALIZE_SESSION
+              CONTINUE_CYCLE
             </button>
           </div>
-        </div>
+        </footer>
+
       </div>
     </div>
   )
