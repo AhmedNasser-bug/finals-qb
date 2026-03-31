@@ -14,78 +14,128 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
     globalTimeRemaining, globalTimeLimit, elapsedSeconds, livesRemaining,
   } = state
 
-  const total = questions.length
-  const progress = total > 0 ? (currentIndex / total) * 100 : 0
-  const isTimedGlobal = globalTimeLimit > 0
-  const isSurvival = mode === "survival"
+  const total          = questions.length
+  const isTimedGlobal  = globalTimeLimit > 0
+  const isSurvival     = mode === "survival"
+  const isCritical     = isTimedGlobal && globalTimeRemaining <= 30
+  const isUrgent       = isTimedGlobal && globalTimeRemaining <= 10
+
+  // Per-question result history for segmented bar
+  const answers = state.answers ?? []
 
   return (
-    <header className="border-b border-border bg-panel px-4 py-3 flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
-            {modeLabel(mode)}
+    <header className="bg-[#131313] flex flex-col">
+      {/* ── Segmented progress bar ── */}
+      <div className="px-6 pt-4 pb-0 space-y-1">
+        <div className="flex justify-between items-end">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
+            SYSTEM_PROGRESS [{currentIndex}/{total}]
           </span>
-          <span className="text-border select-none">|</span>
-          <span className="text-xs font-mono text-foreground">
-            <span className="text-primary">{score}</span>
-            <span className="text-muted-foreground">/{Math.max(currentIndex, 1)}</span>
+          <span className="font-mono text-[10px] tracking-[0.2em] text-[#4ae176] uppercase">
+            {modeLabel(mode).toUpperCase()}
           </span>
-          {streak > 1 && (
-            <span className="text-xs font-mono px-1.5 py-0.5 rounded border border-amber-400/30 bg-amber-400/10 text-amber-400">
-              x{streak}
-            </span>
-          )}
         </div>
-        <div className="flex items-center gap-3">
-          {isTimedGlobal ? (
-            <span className={cn(
-              "text-sm font-mono font-bold tabular-nums",
-              globalTimeRemaining <= 30 ? "text-red-400 animate-pulse" : "text-foreground"
+        <div className="flex w-full gap-[2px]">
+          {Array.from({ length: total }).map((_, i) => {
+            const ans = answers[i]
+            let bg = "bg-[#2a2a2a]"
+            if (ans === true)  bg = "bg-[#4ae176]"
+            if (ans === false) bg = "bg-[#930013]"
+            if (i === currentIndex && !answers[i]) bg = "bg-[#fecc17]/60"
+            return <div key={i} className={cn("h-2 flex-1", bg)} />
+          })}
+        </div>
+      </div>
+
+      {/* ── 3-column HUD ── */}
+      <div className="grid grid-cols-3 gap-4 px-6 py-4 items-center">
+        {/* Left — streak + accuracy + lives */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              "bg-[#201f1f] px-3 py-2 flex items-center gap-2 border-l-2",
+              streak >= 10 ? "border-[#930013]" : streak >= 5 ? "border-orange-500" : "border-[#fecc17]"
             )}>
-              {formatTime(globalTimeRemaining)}
-            </span>
-          ) : (
-            <span className="text-xs font-mono text-muted-foreground tabular-nums">
-              {formatTime(elapsedSeconds)}
-            </span>
-          )}
+              <BoltIcon className={cn(
+                "w-4 h-4",
+                streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
+              )} />
+              <div>
+                <p className="font-mono text-[9px] text-zinc-500 leading-none mb-0.5 tracking-widest">STREAK_MAGNITUDE</p>
+                <p className={cn(
+                  "font-mono text-lg font-black leading-none",
+                  streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
+                )}>{streak}</p>
+              </div>
+            </div>
+            <div className="hidden md:flex flex-col">
+              <p className="font-mono text-[9px] text-zinc-500 tracking-widest uppercase mb-0.5">ACCURACY</p>
+              <p className="font-mono text-sm text-[#4ae176]">{accuracyPct}%</p>
+            </div>
+          </div>
           {isSurvival && (
-            <div className="flex items-center gap-1" aria-label={`${livesRemaining} lives remaining`}>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[9px] text-zinc-500 uppercase mr-1">VITAL_SIGNS:</span>
               {Array.from({ length: 3 }).map((_, i) => (
-                <span
+                <HeartIcon
                   key={i}
-                  className={cn("w-2 h-2 rounded-full", i < livesRemaining ? "bg-red-400" : "bg-border")}
+                  filled={i < livesRemaining}
+                  className={cn("w-4 h-4", i < livesRemaining ? "text-[#930013]" : "text-zinc-800")}
                 />
               ))}
             </div>
           )}
-          <span className="text-xs font-mono text-muted-foreground hidden sm:inline">
-            {accuracyPct}% ACC
-          </span>
+        </div>
+
+        {/* Center — timer */}
+        <div className="flex flex-col items-center justify-center">
+          {isTimedGlobal ? (
+            <div className="relative">
+              {isCritical && (
+                <div className="absolute inset-0 bg-[#930013]/20 blur-xl animate-pulse" />
+              )}
+              <div className={cn(
+                "relative px-8 py-4 text-center border-x-4",
+                isCritical ? "border-[#930013] bg-[#0e0e0e]" : "border-[#fecc17]/30 bg-[#0e0e0e]"
+              )}>
+                <p className={cn(
+                  "font-mono text-[10px] tracking-[0.4em] uppercase mb-1",
+                  isCritical ? "text-[#930013]" : "text-zinc-500"
+                )}>TIME_REMAINING</p>
+                <p className={cn(
+                  "font-mono text-5xl font-black tabular-nums leading-none",
+                  isCritical ? "text-[#ffb4ab]" : "text-[#fecc17]",
+                  isUrgent && "motion-safe:animate-pulse"
+                )}>
+                  {formatTime(globalTimeRemaining)}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-[#0e0e0e] px-8 py-4 text-center">
+              <p className="font-mono text-[10px] text-zinc-500 tracking-[0.4em] uppercase mb-1">ELAPSED</p>
+              <p className="font-mono text-4xl font-black tabular-nums text-[#fecc17] leading-none">
+                {formatTime(elapsedSeconds)}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Right — session metadata */}
+        <div className="hidden md:flex flex-col items-end gap-1">
+          <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+            Q {Math.min(currentIndex + 1, total)} / {total}
+          </p>
+          <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+            SCORE: {score}
+          </p>
           <button
             onClick={onForfeit}
-            className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-transparent hover:border-border"
+            className="mt-3 font-mono text-[9px] text-zinc-600 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors"
           >
-            QUIT
+            QUIT SESSION
           </button>
         </div>
-      </div>
-
-      <div className="h-1 bg-secondary rounded-full overflow-hidden">
-        <div
-          className="h-full bg-primary transition-all duration-300 rounded-full"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-mono text-muted-foreground">
-          Q {Math.min(currentIndex + 1, total)} / {total}
-        </span>
-        <span className="text-xs font-mono text-muted-foreground">
-          STREAK {streak}
-        </span>
       </div>
     </header>
   )
@@ -104,50 +154,81 @@ export function QuestionCard({
   const { selectedOption, isRevealed } = state
 
   return (
-    <div className="flex flex-col gap-6 animate-slide-up">
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-border text-muted-foreground uppercase tracking-wider">
-          {formatLabel(question.category)}
-        </span>
-        <span className={cn(
-          "text-[10px] font-mono px-2 py-0.5 rounded border uppercase tracking-wider",
-          question.difficulty === "Hard"   ? "border-red-400/30 text-red-400" :
-          question.difficulty === "Medium" ? "border-amber-400/30 text-amber-400" :
-                                             "border-emerald-400/30 text-emerald-400"
-        )}>
-          {question.difficulty}
-        </span>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-border text-muted-foreground uppercase">
-          {question.type === "TrueFalse" ? "True / False" : "MCQ"}
+    <div className="flex flex-col gap-0 animate-slide-up h-full">
+      {/* Module badge bar */}
+      <div className="flex justify-between items-center px-6 pt-4 pb-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="bg-[#2a2a2a] px-3 py-1 font-mono text-[10px] text-[#fecc17] tracking-widest uppercase">
+            {formatLabel(question.category)}
+          </span>
+          <span className={cn(
+            "px-3 py-1 font-mono text-[10px] tracking-widest uppercase",
+            question.difficulty === "Hard"   ? "bg-[#930013]/20 text-[#ffb4ab]" :
+            question.difficulty === "Medium" ? "bg-[#fecc17]/10 text-[#fecc17]" :
+                                               "bg-[#4ae176]/10 text-[#4ae176]"
+          )}>
+            {question.difficulty.toUpperCase()}
+          </span>
+          <span className="px-3 py-1 font-mono text-[10px] text-zinc-500 tracking-widest uppercase bg-[#201f1f]">
+            {question.type === "TrueFalse" ? "TRUE/FALSE" : "MCQ"}
+          </span>
+        </div>
+        <span className="text-zinc-600 font-mono text-[10px]">
+          {question.type}
         </span>
       </div>
 
-      <p className="text-lg font-medium text-foreground leading-relaxed text-pretty">
-        {question.question}
-      </p>
+      {/* Amber accent strip */}
+      <div className="mx-6 mt-3 h-[3px] w-12 bg-[#fecc17]" />
 
+      {/* Question headline */}
+      <div className="px-6 pt-4 pb-2 flex-1">
+        <h2 className="font-sans text-2xl md:text-4xl font-black text-[#e5e2e1] leading-tight text-pretty uppercase tracking-tight">
+          {question.question}
+        </h2>
+      </div>
+
+      {/* Hint */}
       {showHint && question.hint && (
-        <div className="px-3 py-2 rounded border border-amber-400/20 bg-amber-400/5 text-sm text-amber-300 animate-fade-in">
-          <span className="font-mono text-xs text-amber-400 mr-2">HINT</span>
-          {question.hint}
+        <div className="mx-6 mb-2 px-4 py-3 border-l-2 border-[#fecc17]/40 bg-[#201f1f] animate-fade-in">
+          <span className="font-mono text-[10px] text-[#fecc17] tracking-widest mr-2">HINT</span>
+          <span className="font-mono text-xs text-zinc-300">{question.hint}</span>
         </div>
       )}
 
-      <div className="flex flex-col gap-2" role="radiogroup" aria-label="Answer options">
+      {/* Explanation after reveal */}
+      {isRevealed && question.explanation && (
+        <div className="mx-6 mb-2 px-4 py-3 border-l-2 border-[#4ae176]/40 bg-[#201f1f] animate-fade-in">
+          <span className="font-mono text-[10px] text-[#4ae176] tracking-widest mr-2">EXPLANATION</span>
+          <span className="font-mono text-xs text-zinc-300">{question.explanation}</span>
+        </div>
+      )}
+
+      {/* Options */}
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 gap-[2px] mx-0 mt-2 bg-[#0e0e0e]"
+        role="radiogroup"
+        aria-label="Answer options"
+      >
         {question.options.map((opt) => {
           const isSelected = selectedOption === opt.label
           const isCorrect  = opt.label === question.answer
           const isWrong    = isRevealed && isSelected && !isCorrect
 
-          let optClass = "border-border bg-panel text-foreground/80 hover:border-border/80 hover:text-foreground hover:bg-secondary/50"
+          let bg = "bg-[#2a2a2a] hover:bg-[#fecc17] hover:text-black"
+          let textColor = "text-[#e5e2e1]"
           if (!isRevealed && isSelected) {
-            optClass = "border-primary bg-primary/10 text-foreground"
+            bg = "bg-[#fecc17] text-black"
+            textColor = "text-black"
           } else if (isRevealed && isCorrect) {
-            optClass = "border-emerald-400/60 bg-emerald-400/10 text-foreground"
+            bg = "bg-[#4ae176]/20 border-l-4 border-[#4ae176]"
+            textColor = "text-[#4ae176]"
           } else if (isWrong) {
-            optClass = "border-red-400/60 bg-red-400/10 text-foreground opacity-70"
+            bg = "bg-[#930013]/20 border-l-4 border-[#930013]"
+            textColor = "text-[#ffb4ab]"
           } else if (isRevealed) {
-            optClass = "border-border bg-panel text-foreground/50"
+            bg = "bg-[#201f1f]"
+            textColor = "text-zinc-600"
           }
 
           return (
@@ -158,34 +239,25 @@ export function QuestionCard({
               disabled={isRevealed}
               onClick={() => selectOption(opt.label)}
               className={cn(
-                "flex items-center gap-3 p-3 rounded border text-left transition-all duration-150",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                optClass
+                "flex items-center justify-between px-6 py-5 text-left transition-all duration-100 group btn-depress",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
+                bg
               )}
             >
-              <span className={cn(
-                "shrink-0 w-6 h-6 rounded border flex items-center justify-center text-xs font-mono font-bold",
-                !isRevealed && isSelected ? "border-primary bg-primary/20 text-primary" :
-                isRevealed && isCorrect   ? "border-emerald-400 bg-emerald-400/20 text-emerald-400" :
-                isWrong                   ? "border-red-400 bg-red-400/20 text-red-400" :
-                                            "border-border text-muted-foreground"
-              )}>
-                {opt.label}
+              <span className={cn("font-mono text-xs tracking-widest uppercase", textColor)}>
+                {opt.label}: {opt.text}
               </span>
-              <span className="text-sm leading-snug">{opt.text}</span>
-              {isRevealed && isCorrect && <CheckIcon className="w-4 h-4 text-emerald-400 ml-auto shrink-0" />}
-              {isWrong && <XIcon className="w-4 h-4 text-red-400 ml-auto shrink-0" />}
+              <div className="flex items-center gap-2">
+                {isRevealed && isCorrect && <CheckIcon className="w-4 h-4 text-[#4ae176]" />}
+                {isWrong && <XIcon className="w-4 h-4 text-[#ffb4ab]" />}
+                {!isRevealed && (
+                  <ChevronRightIcon className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-black" />
+                )}
+              </div>
             </button>
           )
         })}
       </div>
-
-      {isRevealed && question.explanation && (
-        <div className="px-3 py-3 rounded border border-border bg-secondary/40 text-sm text-muted-foreground leading-relaxed animate-fade-in">
-          <span className="font-mono text-xs text-foreground/60 mr-2">EXPLANATION</span>
-          {question.explanation}
-        </div>
-      )}
     </div>
   )
 }
@@ -194,7 +266,7 @@ export function QuestionCard({
 
 export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
   const { state, revealAnswer, nextQuestion, useHint } = useGameEngine()
-  const { isRevealed, selectedOption, hintsUsedTotal, config, currentIndex, questions } = state
+  const { isRevealed, selectedOption, config, currentIndex, questions } = state
 
   const isLast    = currentIndex >= questions.length - 1
   const canSubmit = selectedOption !== null && !isRevealed
@@ -206,16 +278,16 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
   }
 
   return (
-    <div className="border-t border-border bg-panel px-4 py-3 flex items-center gap-3">
+    <div className="bg-[#131313] px-4 py-3 flex items-center gap-3">
       {config.hintsEnabled && (
         <button
           onClick={handleHint}
           disabled={!canHint}
           className={cn(
-            "flex items-center gap-2 px-3 py-2 rounded border text-xs font-mono transition-colors",
+            "flex items-center gap-2 px-4 py-3 font-mono text-xs tracking-widest uppercase transition-colors border",
             canHint
-              ? "border-amber-400/30 text-amber-400 hover:bg-amber-400/10"
-              : "border-border text-muted-foreground opacity-40 cursor-not-allowed"
+              ? "border-[#fecc17]/40 text-[#fecc17] hover:bg-[#fecc17]/10 btn-depress"
+              : "border-[#2a2a2a] text-zinc-700 cursor-not-allowed"
           )}
         >
           <LightbulbIcon className="w-3.5 h-3.5" />
@@ -228,20 +300,20 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
             onClick={revealAnswer}
             disabled={!canSubmit}
             className={cn(
-              "px-6 py-2.5 rounded border text-sm font-mono font-bold tracking-wide transition-colors",
+              "px-8 py-3 font-mono text-xs font-black tracking-widest uppercase transition-all btn-depress",
               canSubmit
-                ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
-                : "border-border bg-secondary text-muted-foreground opacity-50 cursor-not-allowed"
+                ? "cta-gradient"
+                : "bg-[#2a2a2a] text-zinc-600 cursor-not-allowed"
             )}
           >
-            SUBMIT
+            SUBMIT_ANSWER
           </button>
         ) : (
           <button
             onClick={nextQuestion}
-            className="px-6 py-2.5 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold tracking-wide hover:bg-primary/90 transition-colors"
+            className="px-8 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress animate-slide-up"
           >
-            {isLast ? "FINISH" : "NEXT"}
+            {isLast ? "VIEW_RESULTS" : "NEXT_QUERY"}
           </button>
         )}
       </div>
@@ -260,52 +332,129 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const { state } = useGameEngine()
   const { score, questions, bestStreak, elapsedSeconds, mode, config, hintsUsedTotal } = state
 
-  const total = questions.length
+  const total       = questions.length
   const accuracyPct = total > 0 ? Math.round((score / total) * 100) : 0
-  const grade = calculateGrade(accuracyPct)
-  const gradeCls = gradeBgColor(grade)
+  const grade       = calculateGrade(accuracyPct)
 
-  const timedOut = state.globalTimeLimit > 0 && state.globalTimeRemaining <= 0
-  const eliminated = mode === "survival" && state.livesRemaining <= 0
+  const timedOut    = state.globalTimeLimit > 0 && state.globalTimeRemaining <= 0
+  const eliminated  = mode === "survival" && state.livesRemaining <= 0
+  const statusMsg   = timedOut ? "TIME_EXPIRED" : eliminated ? "ELIMINATED" : "PROTOCOL_COMPLETE"
 
-  const statusMsg = timedOut ? "TIME EXPIRED" : eliminated ? "ELIMINATED" : "PROTOCOL COMPLETE"
+  // Grade color mapping
+  const gradeColor =
+    grade === "S+" || grade === "S" ? "#fecc17" :
+    grade === "A+" || grade === "A" ? "#4ae176" :
+    grade === "B"                   ? "#67d7f0" :
+    grade === "C"                   ? "#fb8c00" : "#ffb4ab"
+
+  // Per-question result strip
+  const answers = state.answers ?? []
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 gap-8 px-4 py-8 animate-fade-in">
-      <div className="flex flex-col items-center gap-3">
-        <p className="text-xs font-mono tracking-widest text-muted-foreground">{statusMsg}</p>
-        <div className={cn(
-          "w-24 h-24 rounded border-2 flex items-center justify-center text-4xl font-mono font-bold",
-          gradeCls
-        )}>
-          {grade}
+    <div className="flex flex-col flex-1 bg-[#131313] animate-fade-in overflow-y-auto">
+      {/* Top status bar */}
+      <div className="flex items-center justify-between px-6 py-3 bg-[#1c1b1b]">
+        <span className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase">
+          SESSION_RESULT
+        </span>
+        <span className="font-mono text-[10px] tracking-widest uppercase" style={{ color: gradeColor }}>
+          {statusMsg}
+        </span>
+      </div>
+
+      <div className="flex flex-col lg:flex-row flex-1">
+        {/* Left panel — grade + stats */}
+        <div className="flex flex-col items-center justify-center gap-6 px-8 py-10 lg:w-80 bg-[#1c1b1b]">
+          {/* Grade display */}
+          <div className="flex flex-col items-center gap-2">
+            <p className="font-mono text-[10px] text-zinc-500 tracking-[0.3em] uppercase">FINAL_GRADE</p>
+            <div
+              className="w-32 h-32 flex items-center justify-center scanlines relative"
+              style={{ border: `3px solid ${gradeColor}`, boxShadow: `0 0 30px ${gradeColor}30` }}
+            >
+              <span
+                className="font-mono text-6xl font-black leading-none z-10"
+                style={{ color: gradeColor }}
+              >
+                {grade}
+              </span>
+            </div>
+            <p className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase">
+              {modeLabel(mode).toUpperCase()}
+            </p>
+          </div>
+
+          {/* Stats grid */}
+          <div className="w-full grid grid-cols-2 gap-[2px] bg-[#0e0e0e]">
+            <StatCell label="SCORE"       value={`${score}/${total}`}       />
+            <StatCell label="ACCURACY"    value={`${accuracyPct}%`}  accent />
+            <StatCell label="BEST_STREAK" value={`×${bestStreak}`}          />
+            <StatCell label="TIME"        value={formatTime(elapsedSeconds)} />
+            {config.hintsEnabled && (
+              <StatCell label="HINTS_USED" value={String(hintsUsedTotal)} className="col-span-2" />
+            )}
+          </div>
         </div>
-        <p className="text-sm font-mono text-muted-foreground">{modeLabel(mode)}</p>
-      </div>
 
-      <div className="w-full max-w-sm grid grid-cols-2 gap-3">
-        <StatCell label="SCORE" value={`${score} / ${total}`} />
-        <StatCell label="ACCURACY" value={`${accuracyPct}%`} accent={accuracyPct >= 80} />
-        <StatCell label="BEST STREAK" value={String(bestStreak)} />
-        <StatCell label="TIME" value={formatTime(elapsedSeconds)} />
-        {config.hintsEnabled && (
-          <StatCell label="HINTS USED" value={String(hintsUsedTotal)} />
-        )}
-      </div>
+        {/* Right panel — result strip + accuracy bar */}
+        <div className="flex-1 flex flex-col gap-6 p-6 md:p-10">
+          {/* Per-question result grid */}
+          <div className="space-y-3">
+            <p className="font-mono text-[10px] text-zinc-500 tracking-[0.2em] uppercase">
+              QUERY_LOG [{total} ENTRIES]
+            </p>
+            <div
+              className="grid gap-[3px]"
+              style={{ gridTemplateColumns: `repeat(${Math.min(total, 20)}, 1fr)` }}
+            >
+              {Array.from({ length: total }).map((_, i) => {
+                const ans = answers[i]
+                return (
+                  <div
+                    key={i}
+                    title={`Q${i + 1}: ${ans === true ? "Correct" : ans === false ? "Wrong" : "Skipped"}`}
+                    className={cn(
+                      "h-6",
+                      ans === true  ? "bg-[#4ae176]" :
+                      ans === false ? "bg-[#930013]" :
+                                      "bg-[#2a2a2a]"
+                    )}
+                  />
+                )
+              })}
+            </div>
+          </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
-        <button
-          onClick={onReturnHome}
-          className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground hover:border-border/80 transition-colors"
-        >
-          HOME
-        </button>
-        <button
-          onClick={onPlayAgain}
-          className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors"
-        >
-          PLAY AGAIN
-        </button>
+          {/* Accuracy bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-end">
+              <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">ACCURACY_RATING</span>
+              <span className="font-mono text-sm font-black" style={{ color: gradeColor }}>{accuracyPct}%</span>
+            </div>
+            <div className="w-full h-4 bg-[#0e0e0e]">
+              <div
+                className="h-full transition-all duration-700 ease-out"
+                style={{ width: `${accuracyPct}%`, backgroundColor: gradeColor }}
+              />
+            </div>
+          </div>
+
+          {/* CTA buttons */}
+          <div className="flex flex-col sm:flex-row gap-[2px] mt-auto pt-4">
+            <button
+              onClick={onReturnHome}
+              className="flex-1 py-4 px-6 bg-[#2a2a2a] hover:bg-[#353534] text-[#e5e2e1] font-mono text-xs font-black tracking-widest uppercase transition-colors btn-depress"
+            >
+              RETURN_HOME
+            </button>
+            <button
+              onClick={onPlayAgain}
+              className="flex-1 py-4 px-6 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress"
+            >
+              REINITIALIZE_SESSION
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -313,11 +462,18 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
 
 // ─── Shared stat cell ─────────────────────────────────────────────────────────
 
-function StatCell({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function StatCell({
+  label, value, accent, className,
+}: {
+  label: string; value: string; accent?: boolean; className?: string
+}) {
   return (
-    <div className="flex flex-col gap-1 p-3 rounded border border-border bg-panel">
-      <span className="text-[10px] font-mono text-muted-foreground tracking-wider">{label}</span>
-      <span className={cn("text-xl font-mono font-bold", accent ? "text-primary" : "text-foreground")}>
+    <div className={cn("flex flex-col gap-1 p-3 bg-[#201f1f]", className)}>
+      <span className="font-mono text-[9px] text-zinc-500 tracking-widest uppercase">{label}</span>
+      <span className={cn(
+        "font-mono text-xl font-black",
+        accent ? "text-[#fecc17]" : "text-[#e5e2e1]"
+      )}>
         {value}
       </span>
     </div>
@@ -325,6 +481,22 @@ function StatCell({ label, value, accent }: { label: string; value: string; acce
 }
 
 // ─── SVG icons ────────────────────────────────────────────────────────────────
+
+function BoltIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M13 2L4.09 12.97H11L10 22L19.91 11.03H13L13 2Z" />
+    </svg>
+  )
+}
+
+function HeartIcon({ className, filled }: { className?: string; filled?: boolean }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  )
+}
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -347,6 +519,14 @@ function LightbulbIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
       <path d="M9 18h6" /><path d="M10 22h4" />
+    </svg>
+  )
+}
+
+function ChevronRightIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
     </svg>
   )
 }
