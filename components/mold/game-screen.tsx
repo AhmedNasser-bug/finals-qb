@@ -179,114 +179,141 @@ export function QuestionCard({
   question: Question
   showHint: boolean
 }) {
-  const { state, selectOption } = useGameEngine()
-  const { selectedOption, isRevealed } = state
+  const { state, selectOption, accuracyPct } = useGameEngine()
+  const { selectedOption, isRevealed, currentIndex, questions } = state
+
+  const grade = calculateGrade(accuracyPct)
+  const gradeColor =
+    grade === "S+" || grade === "S" ? "#fecc17" :
+    grade === "A+" || grade === "A" ? "#4ae176" :
+    grade === "B"                   ? "#67d7f0" :
+    grade === "C"                   ? "#fb8c00" : "#ffb4ab"
 
   return (
-    <div className="flex flex-col gap-0 animate-slide-up h-full">
-      {/* Module badge bar */}
-      <div className="flex justify-between items-center px-6 pt-4 pb-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="bg-[#2a2a2a] px-3 py-1 font-mono text-[10px] text-[#fecc17] tracking-widest uppercase">
-            {formatLabel(question.category)}
-          </span>
-          <span className={cn(
-            "px-3 py-1 font-mono text-[10px] tracking-widest uppercase",
-            question.difficulty === "Hard"   ? "bg-[#930013]/20 text-[#ffb4ab]" :
-            question.difficulty === "Medium" ? "bg-[#fecc17]/10 text-[#fecc17]" :
-                                               "bg-[#4ae176]/10 text-[#4ae176]"
-          )}>
-            {question.difficulty.toUpperCase()}
-          </span>
-          <span className="px-3 py-1 font-mono text-[10px] text-zinc-500 tracking-widest uppercase bg-[#201f1f]">
-            {question.type === "TrueFalse" ? "TRUE/FALSE" : "MCQ"}
-          </span>
-        </div>
-        <span className="text-zinc-600 font-mono text-[10px]">
-          {question.type}
-        </span>
-      </div>
+    <div className="flex flex-col flex-1 min-h-0 animate-slide-up">
+      {/* ── Main card — surface-container-low with scanlines ── */}
+      <div className="relative flex-1 bg-[#1c1b1b] flex flex-col min-h-0">
+        {/* Scanline texture */}
+        <div className="scanlines absolute inset-0 opacity-20 pointer-events-none z-0" />
 
-      {/* Amber accent strip */}
-      <div className="mx-6 mt-3 h-[3px] w-12 bg-[#fecc17]" />
-
-      {/* Question headline */}
-      <div className="px-6 pt-4 pb-2 flex-1">
-        <h2 className="font-sans text-2xl md:text-4xl font-black text-[#e5e2e1] leading-tight text-pretty uppercase tracking-tight">
-          {question.question}
-        </h2>
-      </div>
-
-      {/* Hint */}
-      {showHint && question.hint && (
-        <div className="mx-6 mb-2 px-4 py-3 border-l-2 border-[#fecc17]/40 bg-[#201f1f] animate-fade-in">
-          <span className="font-mono text-[10px] text-[#fecc17] tracking-widest mr-2">HINT</span>
-          <span className="font-mono text-xs text-zinc-300">{question.hint}</span>
-        </div>
-      )}
-
-      {/* Explanation after reveal */}
-      {isRevealed && question.explanation && (
-        <div className="mx-6 mb-2 px-4 py-3 border-l-2 border-[#4ae176]/40 bg-[#201f1f] animate-fade-in">
-          <span className="font-mono text-[10px] text-[#4ae176] tracking-widest mr-2">EXPLANATION</span>
-          <span className="font-mono text-xs text-zinc-300">{question.explanation}</span>
-        </div>
-      )}
-
-      {/* Options */}
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 gap-[2px] mx-0 mt-2 bg-[#0e0e0e]"
-        role="radiogroup"
-        aria-label="Answer options"
-      >
-        {question.options.map((opt) => {
-          const isSelected = selectedOption === opt.label
-          const isCorrect  = opt.label === question.answer
-          const isWrong    = isRevealed && isSelected && !isCorrect
-
-          let bg = "bg-[#2a2a2a] hover:bg-[#fecc17] hover:text-black"
-          let textColor = "text-[#e5e2e1]"
-          if (!isRevealed && isSelected) {
-            bg = "bg-[#fecc17] text-black"
-            textColor = "text-black"
-          } else if (isRevealed && isCorrect) {
-            bg = "bg-[#4ae176]/20 border-l-4 border-[#4ae176]"
-            textColor = "text-[#4ae176]"
-          } else if (isWrong) {
-            bg = "bg-[#930013]/20 border-l-4 border-[#930013]"
-            textColor = "text-[#ffb4ab]"
-          } else if (isRevealed) {
-            bg = "bg-[#201f1f]"
-            textColor = "text-zinc-600"
-          }
-
-          return (
-            <button
-              key={opt.label}
-              role="radio"
-              aria-checked={isSelected}
-              disabled={isRevealed}
-              onClick={() => selectOption(opt.label)}
-              className={cn(
-                "flex items-center justify-between px-6 py-5 text-left transition-all duration-100 group btn-depress",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
-                bg
-              )}
-            >
-              <span className={cn("font-mono text-xs tracking-widest uppercase", textColor)}>
-                {opt.label}: {opt.text}
+        <div className="relative z-10 flex flex-col flex-1 min-h-0 p-6 md:p-8 gap-6">
+          {/* Top metadata row */}
+          <div className="flex justify-between items-start">
+            <span className="font-mono text-[10px] tracking-[0.3em] text-zinc-500 uppercase">
+              CHALLENGE_ID: {formatLabel(question.category)}_{String(currentIndex + 1).padStart(2, "0")}
+            </span>
+            <div className="text-right">
+              <span
+                className="font-mono text-4xl font-black tracking-tighter leading-none block"
+                style={{ color: gradeColor }}
+              >
+                {grade}
               </span>
-              <div className="flex items-center gap-2">
-                {isRevealed && isCorrect && <CheckIcon className="w-4 h-4 text-[#4ae176]" />}
-                {isWrong && <XIcon className="w-4 h-4 text-[#ffb4ab]" />}
-                {!isRevealed && (
-                  <ChevronRightIcon className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-black" />
-                )}
-              </div>
-            </button>
-          )
-        })}
+              <span className="font-mono text-[9px] tracking-widest uppercase text-[#4ae176]">
+                CURRENT_PERFORMANCE
+              </span>
+            </div>
+          </div>
+
+          {/* Question headline + subtext */}
+          <div className="space-y-3">
+            <h2 className="font-sans text-2xl md:text-3xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty uppercase">
+              {question.question}
+            </h2>
+            {/* Difficulty / type subtext */}
+            <p className="font-sans text-sm text-zinc-400">
+              {question.difficulty} &mdash; {question.type === "TrueFalse" ? "True / False" : "Multiple Choice"}
+            </p>
+          </div>
+
+          {/* Options grid */}
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+            role="radiogroup"
+            aria-label="Answer options"
+          >
+            {question.options.map((opt, idx) => {
+              const isSelected = selectedOption === opt.label
+              const isCorrect  = opt.label === question.answer
+              const isWrong    = isRevealed && isSelected && !isCorrect
+              const isDimmed   = isRevealed && !isCorrect && !isSelected
+
+              return (
+                <button
+                  key={opt.label}
+                  role="radio"
+                  aria-checked={isSelected}
+                  disabled={isRevealed}
+                  onClick={() => selectOption(opt.label)}
+                  className={cn(
+                    "relative flex items-start justify-between p-5 text-left transition-all duration-100 btn-depress group",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
+                    // Base + selected
+                    !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
+                    !isRevealed && isSelected  && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
+                    // Revealed states
+                    isRevealed && isCorrect    && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
+                    isRevealed && isWrong      && "bg-[#930013]/10 border-l-4 border-[#930013]",
+                    isDimmed                   && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
+                  )}
+                >
+                  <div className="flex flex-col gap-2 flex-1 min-w-0">
+                    <span className={cn(
+                      "font-mono text-[10px] tracking-widest uppercase",
+                      !isRevealed && isSelected  ? "text-[#fecc17]" :
+                      isRevealed  && isCorrect   ? "text-[#4ae176]" :
+                      isRevealed  && isWrong     ? "text-[#ffb4ab]" :
+                                                   "text-zinc-500"
+                    )}>
+                      OPTION_{String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className={cn(
+                      "font-mono text-base font-bold leading-snug",
+                      !isRevealed && isSelected  ? "text-[#fecc17]" :
+                      isRevealed  && isCorrect   ? "text-[#4ae176]" :
+                      isRevealed  && isWrong     ? "text-[#ffb4ab]" :
+                      isDimmed                   ? "text-zinc-600"  :
+                                                   "text-[#e5e2e1]"
+                    )}>
+                      {opt.text}
+                    </span>
+                  </div>
+                  {/* State icon */}
+                  <div className="ml-3 mt-0.5 shrink-0">
+                    {isRevealed && isCorrect && (
+                      <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />
+                    )}
+                    {isRevealed && isWrong && (
+                      <XIcon className="w-5 h-5 text-[#ffb4ab]" />
+                    )}
+                    {!isRevealed && isSelected && (
+                      <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />
+                    )}
+                    {!isRevealed && !isSelected && (
+                      <RadioIcon className="w-5 h-5 text-zinc-700" />
+                    )}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
       </div>
+
+      {/* ── Hint / explanation panel — surface-container-lowest ── */}
+      {(showHint && question.hint) || (isRevealed && question.explanation) ? (
+        <div className="bg-[#0e0e0e] px-6 py-4 flex items-start gap-4 animate-fade-in border-t border-[#2a2a2a]">
+          <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
+          <div className="space-y-1">
+            <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
+              {isRevealed ? "SYSTEM_EXPLANATION" : "SYSTEM_HINT"}
+            </span>
+            <p className="font-sans text-xs text-zinc-400 leading-relaxed italic">
+              &quot;{isRevealed ? question.explanation : question.hint}&quot;
+            </p>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -307,46 +334,73 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
   }
 
   return (
-    <div className="bg-[#131313] px-4 py-3 flex items-center gap-3">
+    <footer className="bg-[#1a1d21] border-t border-[#fecc17]/10 px-4 h-24 flex items-center gap-4">
+      {/* HINT — stacked icon + label */}
       {config.hintsEnabled && (
         <button
           onClick={handleHint}
           disabled={!canHint}
           className={cn(
-            "flex items-center gap-2 px-4 py-3 font-mono text-xs tracking-widest uppercase transition-colors border",
+            "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all",
             canHint
-              ? "border-[#fecc17]/40 text-[#fecc17] hover:bg-[#fecc17]/10 btn-depress"
-              : "border-[#2a2a2a] text-zinc-700 cursor-not-allowed"
+              ? "text-[#fecc17] hover:text-[#ffedc2]"
+              : "text-zinc-700 cursor-not-allowed"
           )}
         >
-          <LightbulbIcon className="w-3.5 h-3.5" />
-          HINT
+          <div className={cn(
+            "w-8 h-8 flex items-center justify-center border font-mono text-sm font-black",
+            canHint ? "border-[#fecc17]/40 bg-[#fecc17]/10 text-[#fecc17]" : "border-[#2a2a2a] bg-[#1c1b1b] text-zinc-700"
+          )}>?</div>
+          <span className="font-mono text-[9px] tracking-widest uppercase font-bold">HINT</span>
         </button>
       )}
-      <div className="flex-1 flex justify-end">
+
+      {/* Primary CTA — full amber width */}
+      <div className="flex-1">
         {!isRevealed ? (
           <button
             onClick={revealAnswer}
             disabled={!canSubmit}
             className={cn(
-              "px-8 py-3 font-mono text-xs font-black tracking-widest uppercase transition-all btn-depress",
+              "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress",
               canSubmit
                 ? "cta-gradient"
                 : "bg-[#2a2a2a] text-zinc-600 cursor-not-allowed"
             )}
           >
-            SUBMIT_ANSWER
+            SUBMIT_SEQUENCE
           </button>
         ) : (
           <button
             onClick={nextQuestion}
-            className="px-8 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress animate-slide-up"
+            className="w-full h-12 cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up"
           >
-            {isLast ? "VIEW_RESULTS" : "NEXT_QUERY"}
+            {isLast ? "VIEW_RESULTS" : "CONTINUE_SESSION"}
           </button>
         )}
       </div>
-    </div>
+
+      {/* STATUS + SKIP */}
+      <div className="flex items-center gap-4 shrink-0">
+        {!isRevealed && (
+          <div className="hidden md:flex flex-col items-end">
+            <span className="font-mono text-[9px] text-zinc-500 tracking-widest uppercase">STATUS</span>
+            <span className="font-mono text-xs text-zinc-500 font-bold uppercase">
+              {canSubmit ? "READY_TO_SUBMIT" : "WAITING_FOR_INPUT"}
+            </span>
+          </div>
+        )}
+        {isRevealed && (
+          <button
+            onClick={nextQuestion}
+            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all"
+          >
+            <SkipIcon className="w-4 h-4" />
+            SKIP
+          </button>
+        )}
+      </div>
+    </footer>
   )
 }
 
@@ -548,6 +602,30 @@ function LightbulbIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
       <path d="M9 18h6" /><path d="M10 22h4" />
+    </svg>
+  )
+}
+
+function CheckCircleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.58L18 8.5l-8 8z"/>
+    </svg>
+  )
+}
+
+function RadioIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="10" />
+    </svg>
+  )
+}
+
+function SkipIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/>
     </svg>
   )
 }
