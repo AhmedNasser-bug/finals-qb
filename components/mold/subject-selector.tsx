@@ -96,9 +96,20 @@ export function SubjectSelector({
                       <p className="text-sm font-semibold text-foreground leading-snug text-pretty">
                         {full.name}
                       </p>
-                      <span className="shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded-sm border border-border text-muted-foreground">
-                        v{full.config.version ?? "1.0"}
-                      </span>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {/* Share — promoted to a visible icon button in the card header */}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setSharingSubject(full) }}
+                          className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                          aria-label={`Share ${full.name}`}
+                          title="Share subject"
+                        >
+                          <ShareIcon />
+                        </button>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 border border-border text-muted-foreground">
+                          v{full.config.version ?? "1.0"}
+                        </span>
+                      </div>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                       {full.config.description}
@@ -134,13 +145,6 @@ export function SubjectSelector({
                       </div>
                     ) : (
                       <div className="flex items-center gap-3">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setSharingSubject(full) }}
-                          className="text-[10px] font-mono text-muted-foreground/50 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
-                          aria-label={`Share ${full.name}`}
-                        >
-                          Share
-                        </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(full.id) }}
                           className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
@@ -214,6 +218,15 @@ function PlusIcon() {
   return (
     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 5v14M5 12h14" />
+    </svg>
+  )
+}
+
+function ShareIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
     </svg>
   )
 }
