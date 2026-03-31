@@ -434,29 +434,41 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const { state } = useGameEngine()
   const { score, questions, bestStreak, elapsedSeconds, mode, config, hintsUsedTotal } = state
 
-  const total       = questions.length
-  const answered    = state.answers?.filter((a) => a !== undefined).length ?? 0
+  const total    = questions.length
+  const answers  = state.answers ?? []
+
+  // Only count questions that were actually answered (true = correct, false = wrong).
+  // Undefined entries are unanswered/skipped and must not inflate or deflate accuracy.
+  const answered    = answers.filter((a) => a === true || a === false).length
   const accuracyPct = answered > 0 ? Math.round((score / answered) * 100) : 0
   const grade       = calculateGrade(accuracyPct)
 
-  const answers     = state.answers ?? []
-  const wrongCount  = answers.filter((a) => a === false).length
-  const skipCount   = answers.filter((a) => a === undefined).length
+  const wrongCount = answers.filter((a) => a === false).length
+  const skipCount  = answers.filter((a) => a === undefined).length
 
-  // Grade color
-  const gradeColor =
-    grade === "S+" || grade === "S" ? "#fecc17" :
-    grade === "A+" || grade === "A" ? "#4ae176" :
-    grade === "B"                   ? "#67d7f0" :
-    grade === "C"                   ? "#fb8c00" : "#ffb4ab"
+  // Grade color — must match the LetterGrade values returned by calculateGrade()
+  // ("S+", "S", "A+", "A", "B+", "C+", "D+", "F") not bare "B" / "C".
+  function resolveGradeColor(g: string): string {
+    if (g === "S+" || g === "S")   return "#fecc17"
+    if (g === "A+" || g === "A")   return "#4ae176"
+    if (g === "B+")                return "#67d7f0"
+    if (g === "C+")                return "#fb8c00"
+    return "#ffb4ab" // D+, F
+  }
 
-  // Accuracy bar: 10 segments
+  const gradeHex = resolveGradeColor(grade)
+
+  // Accuracy bar: 10 segments, each represents 10% — filled count proportional to accuracy
   const filledSegments = Math.round((accuracyPct / 100) * 10)
 
-  // XP yield — simple formula based on accuracy + streak
+  // XP yield — score-weighted formula
   const xpYield = Math.round(accuracyPct * 18 + bestStreak * 12)
 
-  // Module performance: group questions by category
+  // Avg time per question in seconds (more useful than synthetic "latency" in ms)
+  const avgTimeSec = answered > 0 ? (elapsedSeconds / answered).toFixed(1) : null
+
+  // Module performance: group questions by category.
+  // Using question index to align with answers[] array correctly.
   const categoryMap: Record<string, { correct: number; total: number }> = {}
   questions.forEach((q, i) => {
     const cat = q.category ?? "GENERAL"
@@ -465,18 +477,29 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     if (answers[i] === true) categoryMap[cat].correct++
   })
   const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => ({
-    id:         `MOD_${String(idx + 1).padStart(2, "0")}`,
-    name:       cat.replace(/_/g, " "),
-    pct:        s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
-    grade:      calculateGrade(s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
+    id:    `MOD_${String(idx + 1).padStart(2, "0")}`,
+    name:  cat.replace(/_/g, " "),
+    pct:   s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
+    grade: calculateGrade(s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
   }))
 
-  function moduleGradeColor(g: string) {
-    return g === "S+" || g === "S" ? "#fecc17" :
-           g === "A+" || g === "A" ? "#4ae176" :
-           g === "B"               ? "#67d7f0" :
-           g === "C"               ? "#fb8c00" : "#ffb4ab"
-  }
+  // Pixel grid: cap render at 100 cells max to prevent layout explosion;
+  // group into buckets when questions exceed 100.
+  const MAX_PIXELS = 100
+  const pixelCount = Math.min(total, MAX_PIXELS)
+  const pixelBucket = total / pixelCount
+  const pixels = Array.from({ length: pixelCount }, (_, p) => {
+    const start  = Math.round(p * pixelBucket)
+    const end    = Math.round((p + 1) * pixelBucket)
+    const slice  = answers.slice(start, end)
+    const anyWrong   = slice.some((a) => a === false)
+    const anyCorrect = slice.some((a) => a === true)
+    const allSkipped = slice.every((a) => a === undefined)
+    if (allSkipped) return "skip"
+    if (anyWrong)   return "wrong"
+    if (anyCorrect) return "correct"
+    return "skip"
+  })
 
   return (
     <div className="flex flex-col flex-1 bg-[#131313] animate-fade-in overflow-y-auto">
@@ -492,10 +515,10 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           <div className="relative">
             <div
               className="absolute inset-0 blur-3xl opacity-40 pointer-events-none"
-              style={{ backgroundColor: `${gradeColor}` }}
+              style={{ backgroundColor: gradeHex }}
             />
             <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden"
-              style={{ boxShadow: `0 0 40px ${gradeColor}20` }}
+              style={{ boxShadow: `0 0 40px ${gradeHex}20` }}
             >
               <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
               <span
@@ -513,7 +536,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
                 ACCURACY_COEFFICIENT
               </span>
-              <span className="font-mono text-2xl font-black" style={{ color: gradeColor }}>
+              <span className="font-mono text-2xl font-black" style={{ color: gradeHex }}>
                 {accuracyPct}%
               </span>
             </div>
@@ -538,12 +561,14 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           <div className="lg:col-span-4 grid grid-cols-2 gap-[1px] bg-[#4e4632]/10">
             <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
               <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">TIME_ELAPSED</span>
-              <span className="font-mono text-xl text-[#e5e2e1]">{formatTime(elapsedSeconds)}</span>
+              <span className="font-mono text-xl text-[#e5e2e1]">
+                {elapsedSeconds > 0 ? formatTime(elapsedSeconds) : "0:00"}
+              </span>
             </div>
             <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
-              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">AVG_LATENCY</span>
+              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">AVG_TIME/Q</span>
               <span className="font-mono text-xl text-[#e5e2e1]">
-                {answered > 0 ? `${Math.round((elapsedSeconds * 1000) / answered)}MS` : "—"}
+                {avgTimeSec !== null ? `${avgTimeSec}S` : "—"}
               </span>
             </div>
             <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
@@ -569,24 +594,24 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                 </span>
               </div>
 
-              {/* Pixel grid — 10 cols, aspect-square cells */}
-              <div className="grid grid-cols-10 gap-[6px]">
-                {Array.from({ length: total }).map((_, i) => {
-                  const ans = answers[i]
-                  return (
-                    <div
-                      key={i}
-                      title={`Q${i + 1}: ${ans === true ? "Correct" : ans === false ? "Wrong" : "Skipped"}`}
-                      className="aspect-square"
-                      style={{
-                        backgroundColor:
-                          ans === true  ? "rgba(74,225,118,0.8)" :
-                          ans === false ? "#93000a" :
-                                          "#353534",
-                      }}
-                    />
-                  )
-                })}
+              {/* Pixel grid — up to 100 cells, auto-cols to fit container */}
+              <div
+                className="grid gap-[4px]"
+                style={{ gridTemplateColumns: `repeat(${Math.min(pixelCount, 20)}, 1fr)` }}
+              >
+                {pixels.map((state, i) => (
+                  <div
+                    key={i}
+                    title={`Q${i + 1}: ${state === "correct" ? "Correct" : state === "wrong" ? "Wrong" : "Skipped"}`}
+                    className="aspect-square"
+                    style={{
+                      backgroundColor:
+                        state === "correct" ? "rgba(74,225,118,0.8)" :
+                        state === "wrong"   ? "#93000a" :
+                                              "#353534",
+                    }}
+                  />
+                ))}
               </div>
 
               {/* Legend */}
@@ -634,7 +659,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                       <span className="font-mono text-[10px] text-zinc-500 uppercase">EFFICIENCY</span>
                       <span
                         className="font-mono text-base font-black"
-                        style={{ color: moduleGradeColor(mod.grade) }}
+                        style={{ color: resolveGradeColor(mod.grade) }}
                       >
                         {mod.grade}
                       </span>
@@ -644,7 +669,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                         className="h-full transition-all duration-700 ease-out"
                         style={{
                           width: `${mod.pct}%`,
-                          backgroundColor: moduleGradeColor(mod.grade),
+                          backgroundColor: resolveGradeColor(mod.grade),
                         }}
                       />
                     </div>
