@@ -195,6 +195,8 @@ const ACHIEVEMENT_CONDITIONS: Record<string, AchievementCondition> =
 
 interface AchievementContextValue {
   achievements: Achievement[]
+  /** Call when a subject is loaded to seed/merge its achievement definitions. */
+  syncSubjectAchievements: (subject: import("@/lib/mold-types").FullSubjectData) => Promise<void>
   /** Call after a game completes to evaluate + persist any new unlocks */
   onGameComplete: (state: GameState, allRuns: RunRecord[]) => Promise<Achievement[]>
   /** Reset all achievements to locked (dev/debug use only) */
@@ -209,7 +211,7 @@ export function useAchievements(): AchievementContextValue {
   return ctx
 }
 
-// ─── Provider ─────────────────────────────────────────────────────────────────
+// ─── Provider ──────────────────────────��──────────────────────────────────────
 
 export function AchievementProvider({ children }: { children: ReactNode }) {
   const [achievements, setAchievements] = useState<Achievement[]>([])
@@ -217,6 +219,34 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     loadAchievements().then(setAchievements)
   }, [])
+
+  /**
+   * Merge the active subject's achievement definitions into the stored list.
+   * - New entries (not in storage yet) are added as locked (unlockedAt: null).
+   * - Existing entries keep their current unlockedAt value.
+   * - Entries from old subjects that no longer exist are removed.
+   * This is the root cause fix for 0/0: without this, localStorage is always
+   * empty on first load and achievements never appear in the gallery.
+   */
+  const syncSubjectAchievements = useCallback(
+    async (subject: import("@/lib/mold-types").FullSubjectData): Promise<void> => {
+      const stored = await loadAchievements()
+      const storedMap = Object.fromEntries(stored.map((a) => [a.id, a]))
+
+      const merged: Achievement[] = subject.achievements.map((raw) => ({
+        id:          raw.id,
+        title:       raw.title,
+        description: raw.description,
+        icon:        raw.icon,
+        // Preserve unlock state if this achievement was already stored
+        unlockedAt:  storedMap[raw.id]?.unlockedAt ?? null,
+      }))
+
+      await saveAchievements(merged)
+      setAchievements(merged)
+    },
+    []
+  )
 
   const onGameComplete = useCallback(
     async (state: GameState, allRuns: RunRecord[]): Promise<Achievement[]> => {
@@ -246,7 +276,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AchievementContext.Provider value={{ achievements, onGameComplete, reset }}>
+    <AchievementContext.Provider value={{ achievements, syncSubjectAchievements, onGameComplete, reset }}>
       {children}
     </AchievementContext.Provider>
   )
