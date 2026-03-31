@@ -19,6 +19,20 @@ const config: Config = {
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+  			/* ── Surface hierarchy ── */
+  			surface: {
+  				DEFAULT:  'hsl(var(--surface))',
+  				container: 'hsl(var(--surface-container))',
+  				low:      'hsl(var(--surface-container-low))',
+  				high:     'hsl(var(--surface-container-high))',
+  				highest:  'hsl(var(--surface-container-highest))',
+  				lowest:   'hsl(var(--surface-container-lowest))',
+  				bright:   'hsl(var(--surface-bright))',
+  				variant:  'hsl(var(--surface-variant))',
+  			},
+  			outline: {
+  				variant: 'hsl(var(--outline-variant))',
+  			},
   			panel: {
   				DEFAULT: 'hsl(var(--panel))',
   				foreground: 'hsl(var(--panel-foreground))',

@@ -67,7 +67,14 @@ export function HomeScreen({
   const [showImporter, setShowImporter]     = useState(false)
   const [runs, setRuns] = useState<RunRecord[]>([])
 
-  const { achievements } = useAchievements()
+  const { achievements, syncSubjectAchievements } = useAchievements()
+
+  // Seed achievement definitions from the active subject on mount.
+  // This is the root cause fix: without it localStorage is empty on first
+  // load and the gallery always shows 0/0.
+  useEffect(() => {
+    syncSubjectAchievements(activeSubject)
+  }, [activeSubject.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const subjectData = toSubjectData(activeSubject)
 
   // Hydrate runs from localStorage on mount

@@ -35,6 +35,7 @@ function buildInitialState(config: GameConfig, questions: Question[]): GameState
     streak: 0,
     bestStreak: 0,
     livesRemaining: config.mode === "survival" ? 3 : 0,
+    answers: Array(pool.length).fill(undefined),
     startTime: Date.now(),
     elapsedSeconds: 0,
     perQuestionTimeLimit,
@@ -151,6 +152,10 @@ function reducer(state: GameState, action: Action): GameState {
           ? state.livesRemaining - 1
           : state.livesRemaining
 
+      // Record per-question result in answers array
+      const newAnswers = [...state.answers]
+      newAnswers[state.currentIndex] = isCorrect
+
       return {
         ...state,
         isRevealed: true,
@@ -160,6 +165,7 @@ function reducer(state: GameState, action: Action): GameState {
         bestStreak: newBestStreak,
         wrongAnswers: newWrongAnswers,
         livesRemaining,
+        answers: newAnswers,
       }
     }
 

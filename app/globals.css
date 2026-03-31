@@ -13,71 +13,99 @@
 
 @layer base {
   :root {
-    /* MOLD V2 - Dark-first Neo-Brutalist design system */
-    --background: 220 13% 6%;
-    --foreground: 210 20% 92%;
+    /* ── High-Fidelity Terminal — MOLD V2 Design System ────────────────────
+     *
+     * Surface hierarchy (no-line rule: section boundaries via bg shifts only)
+     *   surface              #131313  → base layer
+     *   surface-container    #201f1f  → main interaction areas
+     *   surface-container-low  #1c1b1b  → sections, lifted containers
+     *   surface-container-high #2a2a2a  → forward-pulled functional areas
+     *   surface-container-highest #353534 → cards, data specimens
+     *   surface-container-lowest  #0e0e0e → recessed input wells
+     *   surface-bright       #3d3c3b  → extreme highlight, active input bg
+     *   surface-variant      #353534  → glass elements (at 60% opacity)
+     *   outline-variant      #4e4632  → ghost borders (at 15% opacity only)
+     * ─────────────────────────────────────────────────────────────────── */
 
-    --card: 220 12% 9%;
-    --card-foreground: 210 20% 92%;
+    /* shadcn semantic tokens — mapped to design system values */
+    --background:          0 0% 7.5%;    /* #131313 surface */
+    --foreground:          0 0% 92%;
 
-    --popover: 220 12% 9%;
-    --popover-foreground: 210 20% 92%;
+    --card:                0 0% 10%;     /* surface-container-low */
+    --card-foreground:     0 0% 92%;
 
-    /* Amber/yellow as primary accent - high contrast on dark */
-    --primary: 43 96% 52%;
-    --primary-foreground: 220 13% 6%;
+    --popover:             0 0% 10%;
+    --popover-foreground:  0 0% 92%;
 
-    --secondary: 220 10% 14%;
-    --secondary-foreground: 210 20% 92%;
+    /* Amber — primary phosphor accent */
+    --primary:             43 96% 56%;   /* #fecc17 primary_container */
+    --primary-foreground:  0 0% 5%;
 
-    --muted: 220 10% 14%;
-    --muted-foreground: 215 12% 45%;
+    --secondary:           0 0% 16%;     /* surface-container-high */
+    --secondary-foreground:0 0% 92%;
 
-    --accent: 43 96% 52%;
-    --accent-foreground: 220 13% 6%;
+    --muted:               0 0% 12%;
+    --muted-foreground:    0 0% 42%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 20% 92%;
+    --accent:              43 96% 56%;
+    --accent-foreground:   0 0% 5%;
 
-    --border: 220 10% 18%;
-    --input: 220 10% 14%;
-    --ring: 43 96% 52%;
+    --destructive:         0 72% 51%;
+    --destructive-foreground: 0 0% 92%;
 
-    --radius: 0.25rem;
+    --border:              0 0% 18%;
+    --input:               0 0% 9%;      /* surface-container-lowest */
+    --ring:                43 96% 56%;
 
-    /* MOLD-specific tokens */
-    --panel: 220 12% 11%;
-    --panel-foreground: 210 20% 92%;
-    --panel-border: 220 10% 20%;
+    /* Zero radius — design system forbids border-radius */
+    --radius: 0rem;
 
-    --grade-s-plus: 43 96% 52%;
-    --grade-s: 43 85% 62%;
-    --grade-a-plus: 142 71% 45%;
-    --grade-a: 142 60% 52%;
-    --grade-b: 200 80% 52%;
-    --grade-c: 25 95% 53%;
-    --grade-d: 0 72% 51%;
-    --grade-f: 0 50% 40%;
+    /* ── Surface hierarchy tokens ─────────────────────────────────────── */
+    --surface:                     0 0%  7.5%;  /* #131313 */
+    --surface-container:           0 0% 12.5%;  /* #201f1f */
+    --surface-container-low:       0 0% 11%;    /* #1c1b1b */
+    --surface-container-high:      0 0% 16.5%;  /* #2a2a2a */
+    --surface-container-highest:   0 0% 20.5%;  /* #353534 */
+    --surface-container-lowest:    0 0%  5.5%;  /* #0e0e0e */
+    --surface-bright:              0 0% 23.5%;  /* #3d3c3b */
+    --surface-variant:             0 0% 20.5%;  /* #353534 */
+    --outline-variant:             38 45% 24%;  /* #4e4632 */
+
+    /* ── MOLD-specific legacy tokens (kept for compatibility) ────────── */
+    --panel:               0 0% 11%;
+    --panel-foreground:    0 0% 92%;
+    --panel-border:        0 0% 18%;
+
+    /* ── Grade palette (phosphor spectrum) ───────────────────────────── */
+    --grade-s-plus: 43 96% 56%;   /* amber  — primary */
+    --grade-s:      43 85% 62%;
+    --grade-a-plus: 142 71% 45%;  /* green  */
+    --grade-a:      142 60% 52%;
+    --grade-b:      200 80% 52%;  /* cyan   */
+    --grade-c:      25 95% 53%;   /* orange */
+    --grade-d:      0 72% 51%;    /* red    */
+    --grade-f:      0 50% 40%;
 
     --mode-challenge: 0 72% 51%;
-    --mode-learning: 142 71% 45%;
+    --mode-learning:  142 71% 45%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    border-radius: 0 !important; /* Design system: 0px radius everywhere */
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-color: #131313;
   }
-  /* Monospace for all numeric/data display */
   .font-data {
     font-family: var(--font-mono);
   }
 }
 
-/* Scanline overlay for CRT effect on headers */
+/* ── Scanline overlay — CRT texture for large surfaces ─────────────────── */
 @layer utilities {
   .scanlines {
     background-image: repeating-linear-gradient(
@@ -88,13 +116,74 @@
       rgba(0, 0, 0, 0.08) 4px
     );
   }
+
+  /* ── Ambient glows — tonal light emission, never box-shadow mud ──────── */
   .border-glow {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), inset 0 0 20px hsl(var(--primary) / 0.03);
+    box-shadow: 0 0 25px hsl(var(--primary) / 0.15);
   }
   .border-glow-danger {
-    box-shadow: 0 0 0 1px hsl(var(--destructive) / 0.4), inset 0 0 20px hsl(var(--destructive) / 0.04);
+    box-shadow: 0 0 20px hsl(var(--destructive) / 0.20);
   }
   .border-glow-success {
-    box-shadow: 0 0 0 1px hsl(var(--grade-a-plus) / 0.4), inset 0 0 20px hsl(142 71% 45% / 0.04);
+    box-shadow: 0 0 20px hsl(142 71% 45% / 0.20);
+  }
+
+  /* ── Ghost border — accessibility only, felt not seen ───────────────── */
+  .ghost-border {
+    box-shadow: inset 0 0 0 1px hsl(var(--outline-variant) / 0.15);
+  }
+
+  /* ── CTA gradient — "heated metal" primary button fill ──────────────── */
+  .cta-gradient {
+    background: linear-gradient(135deg, #ffedc2 0%, #fecc17 100%);
+    color: #0e0e0e;
+  }
+  .cta-gradient:hover {
+    background: linear-gradient(135deg, #fecc17 0%, #e6b800 100%);
+  }
+
+  /* ── Tactile depress — 3D mechanical switch effect on click ──────────── */
+  .btn-depress:active {
+    transform: translate(2px, 2px);
+  }
+
+  /* ── Glass / phosphor HUD surface ───────────────────────────────────── */
+  .glass {
+    background-color: hsl(var(--surface-variant) / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* ── Segmented progress bar — 10 discrete blocks ────────────────────── */
+  .progress-segmented {
+    display: grid;
+    gap: 2px;
+  }
+  .progress-segmented-block {
+    height: 100%;
+  }
+
+  /* ── Input bottom-glow focus (HUD input style) ───────────────────────── */
+  .input-hud:focus {
+    background-color: hsl(var(--surface-bright));
+    box-shadow: 0 1px 0 0 hsl(var(--primary));
+    outline: none;
+  }
+
+  /* ── Entrance animations ─────────────────────────────────────────────── */
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out both;
+  }
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out both;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 }

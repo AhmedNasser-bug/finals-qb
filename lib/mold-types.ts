@@ -88,6 +88,8 @@ export interface GameState {
   streak: number                 // current streak
   bestStreak: number
   wrongAnswers: number           // incorrect answers so far (used for accurate accuracy %)
+  /** Per-question result history: true = correct, false = wrong, undefined = not yet answered */
+  answers: (boolean | undefined)[]
   livesRemaining: number         // Survival mode only (0 = unlimited)
   startTime: number              // Date.now() when session started
   elapsedSeconds: number         // updated by the timer
