@@ -106,6 +106,12 @@ export function HomeScreen({
     setView("game")
   }
 
+  function handleRunSaved(run: RunRecord) {
+    const updated = [...runs, run].slice(-50)
+    saveRuns(updated)
+    setRuns(updated)
+  }
+
   function handleReturnHome() {
     setView("home")
     setActiveConfig(null)
@@ -124,6 +130,7 @@ export function HomeScreen({
         subject={activeSubject}
         runs={runs}
         onReturnHome={handleReturnHome}
+        onRunSaved={handleRunSaved}
       />
     )
   }

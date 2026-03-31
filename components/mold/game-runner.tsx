@@ -6,6 +6,7 @@ import { useAchievements } from "@/lib/achievement-engine"
 import { useAchievementToast, AchievementToastContainer } from "@/components/mold/achievement-toast"
 import { GameErrorBoundary } from "@/components/mold/game-error-boundary"
 import type { Achievement, GameConfig, RunRecord, FullSubjectData } from "@/lib/mold-types"
+import { calculateGrade } from "@/lib/mold-types"
 import { GameHeader, QuestionCard, GameFooter, ResultsScreen } from "@/components/mold/game-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard-screen"
 
@@ -19,6 +20,8 @@ interface GameRunnerProps {
   runs: RunRecord[]
   onReturnHome: () => void
   onRunComplete?: () => void
+  /** Called with the completed RunRecord so the parent can persist it. */
+  onRunSaved?: (run: RunRecord) => void
 }
 
 // ─── Fix 2-A: ToastLayer — keeps hook above all conditional renders ───────────
@@ -42,7 +45,7 @@ function ToastLayer({
 
 // ─── GameRunner ───────────────────────────────────────────────────────────────
 
-export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete }: GameRunnerProps) {
+export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete, onRunSaved }: GameRunnerProps) {
   return (
     <ToastLayer>
       {(showUnlocks) => (
@@ -64,6 +67,7 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete 
                 <GameRunnerInner
                   onReturnHome={onReturnHome}
                   onRunComplete={onRunComplete}
+                  onRunSaved={onRunSaved}
                   config={config}
                   runs={runs}
                   showUnlocks={showUnlocks}
@@ -82,17 +86,19 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete 
 interface InnerProps {
   onReturnHome: () => void
   onRunComplete?: () => void
+  onRunSaved?: (run: RunRecord) => void
   config: GameConfig
   /** Fix 1-A: real persisted run history for achievement evaluation */
   runs: RunRecord[]
   showUnlocks: (unlocked: Achievement[]) => void
 }
 
-function GameRunnerInner({ onReturnHome, onRunComplete, config, runs, showUnlocks }: InnerProps) {
+function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs, showUnlocks }: InnerProps) {
   const { state, forfeit, currentQuestion } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const [showHint, setShowHint] = useState(false)
   const achievementsFiredRef = useRef(false)
+  const runSavedRef = useRef(false)
 
   // Reset hint visibility when question advances
   const [lastIndex, setLastIndex] = useState(state.currentIndex)
@@ -101,8 +107,29 @@ function GameRunnerInner({ onReturnHome, onRunComplete, config, runs, showUnlock
     setShowHint(false)
   }
 
+  // Build and emit RunRecord exactly once when the game transitions to complete.
+  useEffect(() => {
+    if (state.phase === "complete" && !runSavedRef.current) {
+      runSavedRef.current = true
+
+      const total       = state.questions.length
+      const accuracyPct = total > 0 ? Math.round((state.score / total) * 100) : 0
+      const run: RunRecord = {
+        id:              `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        date:            new Date().toISOString(),
+        mode:            state.mode,
+        score:           accuracyPct,
+        correctAnswers:  state.score,
+        totalQuestions:  total,
+        timeTaken:       state.elapsedSeconds,
+        streak:          state.bestStreak,
+        grade:           calculateGrade(accuracyPct),
+      }
+      onRunSaved?.(run)
+    }
+  }, [state.phase, state, onRunSaved])
+
   // Fire achievement evaluation exactly once when the game transitions to complete.
-  // Uses real `runs` prop (Fix 1-A) instead of static DEMO_RUNS.
   useEffect(() => {
     if (state.phase === "complete" && !achievementsFiredRef.current) {
       achievementsFiredRef.current = true
