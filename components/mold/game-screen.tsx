@@ -20,8 +20,32 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
   const isCritical     = isTimedGlobal && globalTimeRemaining <= 30
   const isUrgent       = isTimedGlobal && globalTimeRemaining <= 10
 
-  // Per-question result history for segmented bar
+  // Segmented progress bar — each segment maps to one question.
+  // When there are more than 60 questions the bar would produce hairline-thin
+  // blocks, so we bucket them: up to 60 segments, each covering ⌈total/60⌉
+  // questions. A bucket is green if all answered correctly, red if any wrong,
+  // amber if it contains the current unanswered question, dark if untouched.
+  const MAX_SEGMENTS = 60
   const answers = state.answers ?? []
+  const segmentCount = Math.min(total, MAX_SEGMENTS)
+  const bucketSize   = total / segmentCount  // may be fractional
+
+  const segments = Array.from({ length: segmentCount }, (_, s) => {
+    const startIdx = Math.round(s * bucketSize)
+    const endIdx   = Math.round((s + 1) * bucketSize)
+    const slice    = answers.slice(startIdx, endIdx)
+    const hasCurrent = currentIndex >= startIdx && currentIndex < endIdx
+
+    const allAnswered  = slice.length > 0 && slice.every((a) => a !== undefined)
+    const anyWrong     = slice.some((a) => a === false)
+    const allCorrect   = slice.every((a) => a === true)
+
+    if (allAnswered && allCorrect)  return "correct"
+    if (allAnswered && anyWrong)    return "wrong"
+    if (hasCurrent)                 return "current"
+    if (slice.some((a) => a !== undefined)) return "partial"
+    return "unseen"
+  })
 
   return (
     <header className="bg-[#131313] flex flex-col">
@@ -29,21 +53,26 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
       <div className="px-6 pt-4 pb-0 space-y-1">
         <div className="flex justify-between items-end">
           <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
-            SYSTEM_PROGRESS [{currentIndex}/{total}]
+            SYSTEM_PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
           </span>
           <span className="font-mono text-[10px] tracking-[0.2em] text-[#4ae176] uppercase">
             {modeLabel(mode).toUpperCase()}
           </span>
         </div>
         <div className="flex w-full gap-[2px]">
-          {Array.from({ length: total }).map((_, i) => {
-            const ans = answers[i]
-            let bg = "bg-[#2a2a2a]"
-            if (ans === true)  bg = "bg-[#4ae176]"
-            if (ans === false) bg = "bg-[#930013]"
-            if (i === currentIndex && !answers[i]) bg = "bg-[#fecc17]/60"
-            return <div key={i} className={cn("h-2 flex-1", bg)} />
-          })}
+          {segments.map((seg, i) => (
+            <div
+              key={i}
+              className={cn(
+                "h-2 flex-1",
+                seg === "correct"  && "bg-[#4ae176]",
+                seg === "wrong"    && "bg-[#930013]",
+                seg === "current"  && "bg-[#fecc17]/70",
+                seg === "partial"  && "bg-[#fecc17]/30",
+                seg === "unseen"   && "bg-[#2a2a2a]",
+              )}
+            />
+          ))}
         </div>
       </div>
 
