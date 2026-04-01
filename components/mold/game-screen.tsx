@@ -168,7 +168,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             SESSION_ID: {mode.toUpperCase()}-MOLD
           </p>
           <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
-            DIFFICULTY: {state.config?.difficulty?.toUpperCase() ?? "STANDARD"}
+            DIFFICULTY: {state.config?.mode?.toUpperCase() ?? "STANDARD"}
           </p>
           {/* Live indicator dots */}
           <div className="mt-4 flex gap-2">
@@ -205,8 +205,8 @@ export function QuestionCard({
   const gradeColor =
     grade === "S+" || grade === "S" ? "#fecc17" :
     grade === "A+" || grade === "A" ? "#4ae176" :
-    grade === "B"                   ? "#67d7f0" :
-    grade === "C"                   ? "#fb8c00" : "#ffb4ab"
+    grade === "B+"                   ? "#67d7f0" :
+    grade === "C+"                   ? "#fb8c00" : "#ffb4ab"
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-slide-up">
