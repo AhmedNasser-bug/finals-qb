@@ -66,7 +66,8 @@ function buildQuestionPool(config: GameConfig, allQuestions: Question[]): Questi
       }
       break
 
-    case "full-revision":
+    case "survival":
+    case "survival":
       // Strict sequential — no shuffle
       return pool
 
@@ -80,7 +81,7 @@ function buildQuestionPool(config: GameConfig, allQuestions: Question[]): Questi
       break
   }
 
-  if (config.mode !== "full-revision") {
+  if (config.mode !== "practice") {
     pool = shuffle(pool)
     if (config.questionCount > 0) {
       pool = pool.slice(0, config.questionCount)
@@ -103,6 +104,7 @@ function getGlobalTimeLimit(config: GameConfig): number {
 function getPerQuestionTimeLimit(config: GameConfig): number {
   if (!config.timeLimitEnabled) return 0
   switch (config.mode) {
+    case "survival":
     case "survival": return 15         // starts at 15s, decreases
     case "blitz":    return 0          // global limit instead
     default:         return 0

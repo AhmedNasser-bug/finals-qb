@@ -193,7 +193,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
       setTimeout(() => setPromptCopied(false), 2500)
     } catch {
       // fallback: select the text
-      textareaRef.current?.focus()
+      // textareaRef.current?.focus()
     }
   }
 

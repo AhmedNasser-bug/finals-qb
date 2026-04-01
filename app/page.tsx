@@ -43,7 +43,7 @@ export default function Home() {
       return
     }
 
-    setRootView(stored.length === 0 ? "onboarding" : "selecting")
+    setRootView("selecting")
   }, [])
 
   // ── Handlers ────────────────────────────────────────────────────────────
@@ -68,12 +68,12 @@ export default function Home() {
     if (activeSubject?.id === id) {
       setActiveSubject(null)
     }
-    setRootView(updated.length === 0 ? "onboarding" : "selecting")
+    setRootView("selecting")
   }
 
   function handleChangeSubject() {
     setActiveSubject(null)
-    setRootView(subjects.length > 0 ? "selecting" : "onboarding")
+    setRootView("selecting")
   }
 
   function handleShareAccepted(incoming: FullSubjectData) {
@@ -84,7 +84,7 @@ export default function Home() {
   function handleShareDeclined() {
     setSharePayload(null)
     const stored = loadSubjects()
-    setRootView(stored.length === 0 ? "onboarding" : "selecting")
+    setRootView("selecting")
   }
 
   // ── Render ───────────────────────────────────────────────────────────────
