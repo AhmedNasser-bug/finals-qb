@@ -1,0 +1,311 @@
+{
+  "id": "data-structures",
+  "name": "Data Structures",
+  "config": {
+    "title": "Data Structures",
+    "description": "Arrays, linked lists, stacks, queues, trees, graphs, and their time complexities.",
+    "version": "1.0",
+    "difficulty": "Medium"
+  },
+  "questions": [
+    {
+      "id": "ds-001",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Arrays & Lists",
+      "question": "What is the time complexity of accessing an element by index in an array?",
+      "options": [
+        { "label": "A", "text": "O(n)" },
+        { "label": "B", "text": "O(log n)" },
+        { "label": "C", "text": "O(1)" },
+        { "label": "D", "text": "O(n²)" }
+      ],
+      "answer": "C",
+      "hint": "Arrays store elements in contiguous memory — any index is directly reachable.",
+      "explanation": "Arrays provide constant-time random access because elements are stored contiguously. The CPU computes base_address + (index × element_size) in one operation."
+    },
+    {
+      "id": "ds-002",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Arrays & Lists",
+      "question": "In a singly linked list, each node contains:",
+      "options": [
+        { "label": "A", "text": "Data and a pointer to the previous node" },
+        { "label": "B", "text": "Data and a pointer to the next node" },
+        { "label": "C", "text": "Data, a pointer to the next node, and a pointer to the previous node" },
+        { "label": "D", "text": "Only data" }
+      ],
+      "answer": "B",
+      "hint": "Singly = one direction.",
+      "explanation": "Each node in a singly linked list holds its data value and one pointer to the next node. A doubly linked list adds a pointer to the previous node."
+    },
+    {
+      "id": "ds-003",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "Arrays & Lists",
+      "question": "Inserting an element at the beginning of an array is O(1).",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "B",
+      "hint": "What happens to every other element when you insert at index 0?",
+      "explanation": "Inserting at the beginning of an array is O(n) because every existing element must shift one position to the right to make room."
+    },
+    {
+      "id": "ds-004",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Stacks & Queues",
+      "question": "A stack follows which ordering principle?",
+      "options": [
+        { "label": "A", "text": "FIFO — First In, First Out" },
+        { "label": "B", "text": "LIFO — Last In, First Out" },
+        { "label": "C", "text": "Random access" },
+        { "label": "D", "text": "Priority-based" }
+      ],
+      "answer": "B",
+      "hint": "Think of a stack of plates.",
+      "explanation": "A stack is LIFO — the last element pushed is the first to be popped. Common analogy: a stack of plates where you can only add or remove from the top."
+    },
+    {
+      "id": "ds-005",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Stacks & Queues",
+      "question": "Which data structure is used to implement breadth-first search (BFS)?",
+      "options": [
+        { "label": "A", "text": "Stack" },
+        { "label": "B", "text": "Queue" },
+        { "label": "C", "text": "Heap" },
+        { "label": "D", "text": "Hash table" }
+      ],
+      "answer": "B",
+      "hint": "BFS explores level by level — what does 'first come, first explored' suggest?",
+      "explanation": "BFS uses a queue (FIFO) to process nodes level by level. Each discovered neighbor is enqueued; the oldest node is always dequeued and processed next."
+    },
+    {
+      "id": "ds-006",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "Stacks & Queues",
+      "question": "A queue supports O(1) enqueue and O(1) dequeue when implemented with a doubly linked list.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "A",
+      "hint": "Enqueue adds to one end, dequeue removes from the other — both O(1) with a list.",
+      "explanation": "With a doubly linked list, enqueue appends to the tail and dequeue removes from the head, both in O(1) time. An array-based queue requires shifting or using a circular buffer."
+    },
+    {
+      "id": "ds-007",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Trees",
+      "question": "In a binary search tree (BST), for any node N:",
+      "options": [
+        { "label": "A", "text": "All nodes in the left subtree are greater than N" },
+        { "label": "B", "text": "All nodes in the left subtree are less than N" },
+        { "label": "C", "text": "Left and right subtrees have equal depth" },
+        { "label": "D", "text": "N is always the smallest element" }
+      ],
+      "answer": "B",
+      "hint": "Values increase as you go right.",
+      "explanation": "BST invariant: left child < parent < right child. For every node N, all values in its left subtree are smaller, and all values in its right subtree are larger."
+    },
+    {
+      "id": "ds-008",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Trees",
+      "question": "What is the height of a balanced binary tree with n nodes?",
+      "options": [
+        { "label": "A", "text": "O(n)" },
+        { "label": "B", "text": "O(n²)" },
+        { "label": "C", "text": "O(log n)" },
+        { "label": "D", "text": "O(1)" }
+      ],
+      "answer": "C",
+      "hint": "Each level roughly doubles the number of nodes.",
+      "explanation": "A balanced binary tree with n nodes has height O(log n). Each level doubles the node count, so we need about log₂(n) levels to fit n nodes."
+    },
+    {
+      "id": "ds-009",
+      "type": "TrueFalse",
+      "difficulty": "Hard",
+      "category": "Trees",
+      "question": "An in-order traversal of a valid BST always yields elements in sorted ascending order.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "A",
+      "hint": "In-order = Left → Node → Right. Combine with BST property.",
+      "explanation": "In-order traversal visits left subtree → root → right subtree recursively. Given the BST invariant (left < root < right), this always produces values in sorted ascending order."
+    },
+    {
+      "id": "ds-010",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Graphs",
+      "question": "Which graph representation has O(1) edge lookup but O(V²) space complexity?",
+      "options": [
+        { "label": "A", "text": "Adjacency list" },
+        { "label": "B", "text": "Adjacency matrix" },
+        { "label": "C", "text": "Incidence matrix" },
+        { "label": "D", "text": "Edge list" }
+      ],
+      "answer": "B",
+      "hint": "It's a 2D grid of V × V.",
+      "explanation": "An adjacency matrix stores a V×V boolean grid. Checking if edge (u,v) exists is O(1), but the space cost is O(V²), making it wasteful for sparse graphs."
+    },
+    {
+      "id": "ds-011",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Graphs",
+      "question": "Depth-first search (DFS) is typically implemented using:",
+      "options": [
+        { "label": "A", "text": "A queue" },
+        { "label": "B", "text": "A stack (or recursion)" },
+        { "label": "C", "text": "A heap" },
+        { "label": "D", "text": "A hash map" }
+      ],
+      "answer": "B",
+      "hint": "DFS goes deep before wide — what tracks where to backtrack?",
+      "explanation": "DFS uses a stack — explicitly or via the call stack in recursive implementations. It pushes unvisited neighbors and backtracks by popping, exploring one branch fully before another."
+    },
+    {
+      "id": "ds-012",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "Graphs",
+      "question": "A tree is a special case of a graph.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "A",
+      "hint": "What defines a graph? Vertices and edges — does a tree have those?",
+      "explanation": "A tree is an acyclic, connected undirected graph with exactly V-1 edges for V nodes. Every tree is a graph, but not every graph is a tree."
+    },
+    {
+      "id": "ds-013",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "Trees",
+      "question": "What is the time complexity of search in an unbalanced BST in the worst case?",
+      "options": [
+        { "label": "A", "text": "O(log n)" },
+        { "label": "B", "text": "O(n)" },
+        { "label": "C", "text": "O(n log n)" },
+        { "label": "D", "text": "O(1)" }
+      ],
+      "answer": "B",
+      "hint": "Imagine inserting values 1, 2, 3, 4, 5 in order into a BST.",
+      "explanation": "Inserting already-sorted data into a BST degenerates it into a linked list. Search then requires traversing all n nodes in the worst case, giving O(n)."
+    },
+    {
+      "id": "ds-014",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "Arrays & Lists",
+      "question": "What is the amortized time complexity of appending to a dynamic array (e.g. Python list)?",
+      "options": [
+        { "label": "A", "text": "O(n)" },
+        { "label": "B", "text": "O(log n)" },
+        { "label": "C", "text": "O(n²)" },
+        { "label": "D", "text": "O(1)" }
+      ],
+      "answer": "D",
+      "hint": "The array doubles in size occasionally, but how often does that happen?",
+      "explanation": "Dynamic arrays double capacity when full. Although individual resizes cost O(n), they happen infrequently enough that the cost is amortized across all appends, giving O(1) amortized time."
+    },
+    {
+      "id": "ds-015",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "Graphs",
+      "question": "Dijkstra's algorithm fails on graphs with:",
+      "options": [
+        { "label": "A", "text": "Cycles" },
+        { "label": "B", "text": "Negative edge weights" },
+        { "label": "C", "text": "Disconnected components" },
+        { "label": "D", "text": "More than 1000 nodes" }
+      ],
+      "answer": "B",
+      "hint": "The greedy shortest-path assumption breaks down when a path can decrease.",
+      "explanation": "Dijkstra's greedy approach assumes that once a node is finalized, no shorter path exists. Negative edges can create shorter paths discovered later, violating this assumption. Use Bellman-Ford instead."
+    },
+    {
+      "id": "ds-016",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Stacks & Queues",
+      "question": "A priority queue retrieves elements in which order?",
+      "options": [
+        { "label": "A", "text": "Insertion order" },
+        { "label": "B", "text": "Reverse insertion order" },
+        { "label": "C", "text": "Highest priority first" },
+        { "label": "D", "text": "Alphabetical order" }
+      ],
+      "answer": "C",
+      "hint": "It's like a queue, but with VIP access.",
+      "explanation": "A priority queue always dequeues the element with the highest (or lowest, depending on implementation) priority, regardless of insertion order. Typically implemented with a heap for O(log n) operations."
+    },
+    {
+      "id": "ds-017",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "Trees",
+      "question": "A min-heap guarantees that the smallest element is always at the root.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "A",
+      "hint": "Think of the heap property: parent ≤ children.",
+      "explanation": "In a min-heap, the heap property requires every parent to be less than or equal to its children. This means the minimum element is always at the root, accessible in O(1)."
+    },
+    {
+      "id": "ds-018",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "Arrays & Lists",
+      "question": "Which operation is O(n) in a singly linked list but O(1) in a doubly linked list (given a pointer to the node)?",
+      "options": [
+        { "label": "A", "text": "Searching for a value" },
+        { "label": "B", "text": "Deleting a node given its pointer" },
+        { "label": "C", "text": "Traversing to index i" },
+        { "label": "D", "text": "Finding the length" }
+      ],
+      "answer": "B",
+      "hint": "To delete in a singly linked list, you need the previous node — how do you find it?",
+      "explanation": "Deleting a node in a singly linked list requires finding the predecessor to update its next pointer, which costs O(n). In a doubly linked list, the previous pointer is directly accessible, enabling O(1) deletion."
+    }
+  ],
+  "flashcards": [
+    { "id": "ds-fc-001", "front": "What is a stack?", "back": "A LIFO data structure where the last element inserted is the first removed.", "category": "Stacks & Queues" },
+    { "id": "ds-fc-002", "front": "BST invariant", "back": "For every node N: all values in the left subtree < N < all values in the right subtree.", "category": "Trees" },
+    { "id": "ds-fc-003", "front": "Adjacency matrix vs adjacency list", "back": "Matrix: O(1) edge lookup, O(V²) space. List: O(degree) edge lookup, O(V+E) space.", "category": "Graphs" },
+    { "id": "ds-fc-004", "front": "Amortized O(1) append", "back": "Dynamic arrays double capacity on overflow. Rare O(n) resizes are spread across n appends, giving O(1) amortized cost.", "category": "Arrays & Lists" },
+    { "id": "ds-fc-005", "front": "Min-heap property", "back": "Every parent node is less than or equal to its children. The minimum is always at the root.", "category": "Trees" }
+  ],
+  "terminology": {
+    "LIFO": "Last In, First Out — the ordering principle of a stack.",
+    "FIFO": "First In, First Out — the ordering principle of a queue.",
+    "BST": "Binary Search Tree — a binary tree where left < node < right.",
+    "Heap": "A complete binary tree satisfying the heap property (min or max at root).",
+    "Adjacency Matrix": "A V×V matrix representing graph edges; O(1) lookup, O(V²) space.",
+    "DFS": "Depth-First Search — explores as far as possible before backtracking.",
+    "BFS": "Breadth-First Search — explores all neighbors before going deeper."
+  },
+  "achievements": [
+    { "id": "first-correct", "title": "First Contact", "description": "Answer your first question correctly." },
+    { "id": "perfect-run", "title": "Clean Sweep", "description": "Complete a session with 100% accuracy." },
+    { "id": "streak-5", "title": "On A Roll", "description": "Achieve a streak of 5 correct answers." }
+  ]
+}

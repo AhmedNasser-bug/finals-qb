@@ -1,0 +1,26 @@
+[
+  {
+    "id": "intro-to-cs",
+    "name": "Intro to Computer Science",
+    "description": "Fundamental CS concepts: data types, algorithms, memory, and computation theory.",
+    "questionCount": 15,
+    "categoryCount": 3,
+    "tags": ["Computer Science", "Beginner"]
+  },
+  {
+    "id": "data-structures",
+    "name": "Data Structures",
+    "description": "Arrays, linked lists, stacks, queues, trees, graphs, and their time complexities.",
+    "questionCount": 18,
+    "categoryCount": 4,
+    "tags": ["Computer Science", "Intermediate"]
+  },
+  {
+    "id": "networking-basics",
+    "name": "Networking Basics",
+    "description": "TCP/IP model, DNS, HTTP, subnetting, routing protocols, and network security fundamentals.",
+    "questionCount": 16,
+    "categoryCount": 3,
+    "tags": ["Networking", "Beginner"]
+  }
+]
