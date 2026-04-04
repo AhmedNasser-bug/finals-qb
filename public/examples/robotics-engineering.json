@@ -1,0 +1,3106 @@
+{
+  "id": "robotics-engineering",
+  "name": "Robotics Engineering",
+  "config": {
+    "title": "Robotics: From Foundations to Advanced Kinematics",
+    "description": "A deep dive into robotic subsystems, spatial representation, forward and inverse kinematics, and differential motion control.",
+    "version": "1.0"
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "An industrial robot is primarily distinguished from fixed automation by its ability to be reprogrammed via software.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "A",
+      "explanation": "Industrial robots are defined by their flexibility; software changes allow them to perform different tasks without hardware rebuilding.",
+      "hint": "Think about whether a machine needs a physical overhaul to change its job."
+    },
+    {
+      "id": "q2",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "The 'Manipulator' subsystem of a robot acts as the muscles in the professional athlete analogy.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "In the athlete analogy, the Manipulator is the skeleton (structure), while the Actuators are the muscles.",
+      "hint": "Which part provides the physical structure vs. the power?"
+    },
+    {
+      "id": "q3",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "Proprioceptive sensors are used to monitor the robot's own internal state, such as joint angles.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "A",
+      "explanation": "Proprioceptive sensors like encoders measure internal variables like position and velocity of the robot's own joints.",
+      "hint": "Does 'proprio-' refer to internal or external sensing?"
+    },
+    {
+      "id": "q4",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "A SCARA robot typically has three revolute joints and no prismatic joints.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "SCARA robots generally have two parallel revolute joints for horizontal motion and one prismatic joint for vertical motion.",
+      "hint": "Recall the joint configuration used for fast vertical assembly."
+    },
+    {
+      "id": "q5",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "spatial-representation",
+      "question": "A position vector in 3D space is standardly represented as a 1x3 row matrix in robotic calculations.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Position vectors are standardly represented as 3x1 column vectors containing X, Y, and Z coordinates.",
+      "hint": "Is it a row or a column for standard matrix multiplication?"
+    },
+    {
+      "id": "q6",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "spatial-representation",
+      "question": "Matrix multiplication for rotations is commutative, meaning the order of rotations does not matter.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Rotations are non-commutative; changing the order of multiplication results in a different final orientation.",
+      "hint": "Try to imagine rotating a book 90 degrees around X then Y, vs Y then X."
+    },
+    {
+      "id": "q7",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "kinematics-forward",
+      "question": "Forward Kinematics involves finding joint angles when the end-effector's position is known.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "That is Inverse Kinematics. Forward Kinematics calculates the pose based on known joint variables.",
+      "hint": "Which one goes from 'angles' to 'position'?"
+    },
+    {
+      "id": "q8",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "kinematics-forward",
+      "question": "In Denavit-Hartenberg (DH) parameters, 'theta' is the joint variable for a prismatic joint.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Theta is the variable for revolute joints; 'd' (offset) is the variable for prismatic joints.",
+      "hint": "Does theta represent an angle or a distance?"
+    },
+    {
+      "id": "q9",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "Analytical (closed-form) solutions for Inverse Kinematics are generally slower than numerical iterative methods.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Analytical solutions provide direct equations and are much faster and more precise than iterative numerical methods.",
+      "hint": "Think about whether solving a direct formula is faster than guessing and checking."
+    },
+    {
+      "id": "q10",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "A 2-link robot can have at most one solution for reaching a specific point within its workspace.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "A 2-link robot often has two solutions: elbow-up and elbow-down configurations.",
+      "hint": "Can you reach the same point on a table with your elbow high or low?"
+    },
+    {
+      "id": "q11",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "The Jacobian matrix relates joint velocities to end-effector Cartesian velocities.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "A",
+      "explanation": "The Jacobian provides the linear mapping that converts joint space speeds into task space speeds.",
+      "hint": "This matrix is the 'velocity map' of the robot."
+    },
+    {
+      "id": "q12",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "At a singularity, a robot gains an extra degree of freedom to move in any direction.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "At a singularity, a robot loses one or more degrees of freedom and cannot move in certain directions.",
+      "hint": "Is a singularity a position of power or a position of limitation?"
+    },
+    {
+      "id": "q13",
+      "type": "TrueFalse",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "If the determinant of the Jacobian matrix is zero, the robot is in a singular configuration.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "A",
+      "explanation": "Mathematically, a singularity occurs when the Jacobian matrix loses full rank, which is indicated by a zero determinant.",
+      "hint": "Recall the mathematical condition for a matrix to be non-invertible."
+    },
+    {
+      "id": "q14",
+      "type": "TrueFalse",
+      "difficulty": "Hard",
+      "category": "kinematics-inverse",
+      "question": "Kinematic Decoupling is primarily used to separate the base control from the sensor control.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Kinematic Decoupling (Pieper's Method) separates the position problem (first 3 joints) from the orientation problem (wrist).",
+      "hint": "Does decoupling refer to hardware components or mathematical problems?"
+    },
+    {
+      "id": "q15",
+      "type": "TrueFalse",
+      "difficulty": "Hard",
+      "category": "spatial-representation",
+      "question": "The 'Mapping' role of a transformation matrix involves physically moving a point to a new location in the same frame.",
+      "options": [
+        {
+          "label": "A",
+          "text": "True"
+        },
+        {
+          "label": "B",
+          "text": "False"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Mapping converts coordinates from one reference frame to another without moving the physical point.",
+      "hint": "Is it a translation of the point or a translation of the description?"
+    },
+    {
+      "id": "q16",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "How many Degrees of Freedom (DoF) are generally required to define both position and orientation in 3D space?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Three"
+        },
+        {
+          "label": "B",
+          "text": "Four"
+        },
+        {
+          "label": "C",
+          "text": "Six"
+        },
+        {
+          "label": "D",
+          "text": "Eight"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Six DoF are required: 3 for spatial location (X, Y, Z) and 3 for orientation (rotation axes).",
+      "hint": "Count the axes of movement and the axes of rotation needed for full freedom."
+    },
+    {
+      "id": "q17",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "Which subsystem is described as the 'brain' of the robot?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The Manipulator"
+        },
+        {
+          "label": "B",
+          "text": "The Actuators"
+        },
+        {
+          "label": "C",
+          "text": "The Controller"
+        },
+        {
+          "label": "D",
+          "text": "The End-Effector"
+        }
+      ],
+      "answer": "C",
+      "explanation": "The controller processes data and issues commands, effectively acting as the robot's brain.",
+      "hint": "Which part handles the 'thinking' and 'deciding'?"
+    },
+    {
+      "id": "q18",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "What does 'TCP' stand for in robotics?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Total Command Protocol"
+        },
+        {
+          "label": "B",
+          "text": "Tool Center Point"
+        },
+        {
+          "label": "C",
+          "text": "Torque Control Path"
+        },
+        {
+          "label": "D",
+          "text": "Trajectory Calculation Point"
+        }
+      ],
+      "answer": "B",
+      "explanation": "TCP stands for Tool Center Point, the specific point on the end-effector that follows the path.",
+      "hint": "It's the very tip of the robot's tool."
+    },
+    {
+      "id": "q19",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "Which joint type provides linear or sliding movement?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Revolute"
+        },
+        {
+          "label": "B",
+          "text": "Spherical"
+        },
+        {
+          "label": "C",
+          "text": "Prismatic"
+        },
+        {
+          "label": "D",
+          "text": "Universal"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Prismatic joints allow translational (sliding) movement along a single axis.",
+      "hint": "Think of opening a drawer."
+    },
+    {
+      "id": "q20",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "Why did industrial robots see a rise in adoption since the 1960s?",
+      "options": [
+        {
+          "label": "A",
+          "text": "To increase machine noise"
+        },
+        {
+          "label": "B",
+          "text": "Economic efficiency and worker safety"
+        },
+        {
+          "label": "C",
+          "text": "To increase software complexity"
+        },
+        {
+          "label": "D",
+          "text": "To use more manual labor"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Robotics grew due to the need for cost reduction (economics) and removing humans from dangerous environments (safety).",
+      "hint": "Consider the benefits of replacing human labor in hazards."
+    },
+    {
+      "id": "q21",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "spatial-representation",
+      "question": "What is the standard size of a Homogeneous Transformation Matrix?",
+      "options": [
+        {
+          "label": "A",
+          "text": "2x2"
+        },
+        {
+          "label": "B",
+          "text": "3x3"
+        },
+        {
+          "label": "C",
+          "text": "4x4"
+        },
+        {
+          "label": "D",
+          "text": "6x6"
+        }
+      ],
+      "answer": "C",
+      "explanation": "A homogeneous matrix is 4x4, combining a 3x3 rotation matrix and a 3x1 translation vector.",
+      "hint": "It needs extra room for the translation components."
+    },
+    {
+      "id": "q22",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "In the athlete analogy, what do the sensors represent?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The Brain"
+        },
+        {
+          "label": "B",
+          "text": "The Muscles"
+        },
+        {
+          "label": "C",
+          "text": "The Nerves and Eyes"
+        },
+        {
+          "label": "D",
+          "text": "The Skeleton"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Sensors provide feedback like biological nerves and eyes, allowing the robot to 'feel' or 'see' its state.",
+      "hint": "What parts of your body give you feedback about your environment?"
+    },
+    {
+      "id": "q23",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "Which of these is a revolute joint?",
+      "options": [
+        {
+          "label": "A",
+          "text": "A sliding rail"
+        },
+        {
+          "label": "B",
+          "text": "A hydraulic piston"
+        },
+        {
+          "label": "C",
+          "text": "A rotating hinge"
+        },
+        {
+          "label": "D",
+          "text": "A telescoping arm"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Revolute joints provide rotational motion, like a hinge or a human elbow.",
+      "hint": "Look for the option that involves turning or spinning."
+    },
+    {
+      "id": "q24",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "spatial-representation",
+      "question": "Which coordinate frame is fixed and serves as the reference for all other frames?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The Tool Frame"
+        },
+        {
+          "label": "B",
+          "text": "The Joint Frame"
+        },
+        {
+          "label": "C",
+          "text": "The Base Frame"
+        },
+        {
+          "label": "D",
+          "text": "The Wrist Frame"
+        }
+      ],
+      "answer": "C",
+      "explanation": "The Base Frame (Frame 0) is attached to the non-moving part of the robot and is the root of the kinematic chain.",
+      "hint": "It's the frame at the bottom of the robot."
+    },
+    {
+      "id": "q25",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "What is the primary goal of kinematic modeling?",
+      "options": [
+        {
+          "label": "A",
+          "text": "To calculate motor voltage"
+        },
+        {
+          "label": "B",
+          "text": "To describe motion without regarding forces"
+        },
+        {
+          "label": "C",
+          "text": "To determine the weight of the robot"
+        },
+        {
+          "label": "D",
+          "text": "To minimize software updates"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Kinematics is the study of motion (position, velocity, acceleration) without considering the forces that cause it.",
+      "hint": "Does it care about 'how' it moves or the 'forces' moving it?"
+    },
+    {
+      "id": "q26",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "kinematics-forward",
+      "question": "What is the 'DNA of the robot' in modeling?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The CAD file"
+        },
+        {
+          "label": "B",
+          "text": "The DH Parameter Table"
+        },
+        {
+          "label": "C",
+          "text": "The User Manual"
+        },
+        {
+          "label": "D",
+          "text": "The Power Supply"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The DH table contains all the geometric constants and joint variables needed to describe the robot's structure.",
+      "hint": "It's the standard table used in forward kinematics."
+    },
+    {
+      "id": "q27",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "kinematics-forward",
+      "question": "Which tool is typically recommended for 6-DoF matrix calculations to avoid manual errors?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Abacus"
+        },
+        {
+          "label": "B",
+          "text": "Handheld Calculator"
+        },
+        {
+          "label": "C",
+          "text": "MATLAB or Python"
+        },
+        {
+          "label": "D",
+          "text": "Protractor"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Computational software like MATLAB is essential for handling the heavy 4x4 matrix math of high-DoF robots.",
+      "hint": "Think of advanced engineering software."
+    },
+    {
+      "id": "q28",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "What happens if a robot link is not treated as a rigid body?",
+      "options": [
+        {
+          "label": "A",
+          "text": "It speeds up"
+        },
+        {
+          "label": "B",
+          "text": "Calculations become much more complex"
+        },
+        {
+          "label": "C",
+          "text": "It becomes a robot"
+        },
+        {
+          "label": "D",
+          "text": "The weight decreases"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Standard kinematics assumes rigid bodies (no bending) to simplify geometry; otherwise, deformation math is required.",
+      "hint": "Does bending make math easier or harder?"
+    },
+    {
+      "id": "q29",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "Which of the following is NOT a main component of a robot manipulator?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Actuators"
+        },
+        {
+          "label": "B",
+          "text": "Atmospheric Sensor"
+        },
+        {
+          "label": "C",
+          "text": "Controller"
+        },
+        {
+          "label": "D",
+          "text": "End-Effector"
+        }
+      ],
+      "answer": "B",
+      "explanation": "While specialized, an atmospheric sensor is not a core functional component like actuators or controllers.",
+      "hint": "Which one isn't strictly necessary for the robot to move and function?"
+    },
+    {
+      "id": "q30",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "How many joints are typically required for an industrial manipulator to have 6 DoF?",
+      "options": [
+        {
+          "label": "A",
+          "text": "3"
+        },
+        {
+          "label": "B",
+          "text": "4"
+        },
+        {
+          "label": "C",
+          "text": "6"
+        },
+        {
+          "label": "D",
+          "text": "12"
+        }
+      ],
+      "answer": "C",
+      "explanation": "In open kinematic chains, each joint usually provides one degree of freedom; thus 6 joints provide 6 DoF.",
+      "hint": "One joint per degree of freedom is the standard rule."
+    },
+    {
+      "id": "q31",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "What is a key property of an orthogonal rotation matrix?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Determinant is zero"
+        },
+        {
+          "label": "B",
+          "text": "Inverse equals the transpose"
+        },
+        {
+          "label": "C",
+          "text": "All elements are 1"
+        },
+        {
+          "label": "D",
+          "text": "It is always a 4x4 matrix"
+        }
+      ],
+      "answer": "B",
+      "explanation": "For rotation matrices, R^-1 = R^T, which makes calculating the inverse extremely efficient.",
+      "hint": "Swapping rows and columns gives you the inverse."
+    },
+    {
+      "id": "q32",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "Which representation uses only 3 parameters to specify orientation for better human visualization?",
+      "options": [
+        {
+          "label": "A",
+          "text": "4x4 Matrix"
+        },
+        {
+          "label": "B",
+          "text": "Euler Angles"
+        },
+        {
+          "label": "C",
+          "text": "DH Parameters"
+        },
+        {
+          "label": "D",
+          "text": "Jacobian"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Euler angles (Roll, Pitch, Yaw) use three angles to represent orientation instead of a complex 3x3 matrix.",
+      "hint": "It's often called Roll, Pitch, and Yaw."
+    },
+    {
+      "id": "q33",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "In a Homogeneous Transformation Matrix, which part represents the 3D position?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The top-left 3x3 sub-matrix"
+        },
+        {
+          "label": "B",
+          "text": "The bottom row [0 0 0 1]"
+        },
+        {
+          "label": "C",
+          "text": "The top-right 3x1 column"
+        },
+        {
+          "label": "D",
+          "text": "The determinant"
+        }
+      ],
+      "answer": "C",
+      "explanation": "The top-right 3x1 column of a 4x4 homogeneous matrix contains the translation (X, Y, Z) coordinates.",
+      "hint": "Orientation is in the 3x3, but position is in the side column."
+    },
+    {
+      "id": "q34",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "If you rotate about the X-axis by 90 degrees and then the Y-axis by 90 degrees, is the result same as Y then X?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Yes, always"
+        },
+        {
+          "label": "B",
+          "text": "No, because rotations do not commute"
+        },
+        {
+          "label": "C",
+          "text": "Yes, but only for 90-degree angles"
+        },
+        {
+          "label": "D",
+          "text": "Only if the robot is SCARA"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Rotations are non-commutative; the order of matrix multiplication changes the final orientation.",
+      "hint": "Recall the matrix property AB != BA."
+    },
+    {
+      "id": "q35",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "What does a rotation matrix determinant of +1 indicate?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The matrix is singular"
+        },
+        {
+          "label": "B",
+          "text": "A proper orthonormal rotation (right-handed system)"
+        },
+        {
+          "label": "C",
+          "text": "The robot is at its max reach"
+        },
+        {
+          "label": "D",
+          "text": "Zero translation"
+        }
+      ],
+      "answer": "B",
+      "explanation": "A determinant of +1 is a requirement for a proper rotation matrix in a right-handed coordinate system.",
+      "hint": "This is a fundamental property of orthonormal matrices."
+    },
+    {
+      "id": "q36",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "Which DH parameter represents the distance between joint axes measured along the common normal?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Theta (θ)"
+        },
+        {
+          "label": "B",
+          "text": "Alpha (α)"
+        },
+        {
+          "label": "C",
+          "text": "Link length (a)"
+        },
+        {
+          "label": "D",
+          "text": "Link offset (d)"
+        }
+      ],
+      "answer": "C",
+      "explanation": "'a' represents the link length, the physical distance between two adjacent joint axes.",
+      "hint": "It's the constant length of the metal link itself."
+    },
+    {
+      "id": "q37",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "Which DH parameter represents the 'twist' between two Z-axes?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Alpha (α)"
+        },
+        {
+          "label": "B",
+          "text": "Theta (θ)"
+        },
+        {
+          "label": "C",
+          "text": "Distance (d)"
+        },
+        {
+          "label": "D",
+          "text": "Width (w)"
+        }
+      ],
+      "answer": "A",
+      "explanation": "Alpha (α) is the link twist, defining the angle between the Z-axes of two consecutive joints.",
+      "hint": "It's the angular version of link length."
+    },
+    {
+      "id": "q38",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "In a serial robot, how do you find the total transformation from base to end-effector?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Add all individual matrices"
+        },
+        {
+          "label": "B",
+          "text": "Multiply all individual A-matrices in order"
+        },
+        {
+          "label": "C",
+          "text": "Calculate the determinant of the base"
+        },
+        {
+          "label": "D",
+          "text": "Subtract the tool frame from the base"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The total transformation is the product of the individual transformation matrices: T = A1 * A2 * ... * An.",
+      "hint": "It's a chain of multiplications."
+    },
+    {
+      "id": "q39",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "What is the result of a Forward Kinematics calculation?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Joint speeds"
+        },
+        {
+          "label": "B",
+          "text": "A set of joint angles"
+        },
+        {
+          "label": "C",
+          "text": "A 4x4 Homogeneous matrix (Pose)"
+        },
+        {
+          "label": "D",
+          "text": "A list of motor voltages"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Forward kinematics results in the end-effector pose (position and orientation) relative to the base.",
+      "hint": "Where is the hand located?"
+    },
+    {
+      "id": "q40",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "Why is Inverse Kinematics (IK) considered more difficult than Forward Kinematics?",
+      "options": [
+        {
+          "label": "A",
+          "text": "It uses only linear math"
+        },
+        {
+          "label": "B",
+          "text": "It involves non-linear equations and multiple solutions"
+        },
+        {
+          "label": "C",
+          "text": "It only works for 3-DoF robots"
+        },
+        {
+          "label": "D",
+          "text": "It is not used in industry"
+        }
+      ],
+      "answer": "B",
+      "explanation": "IK is hard because it requires solving non-linear trigonometric equations which can result in multiple valid configurations.",
+      "hint": "Think about whether there's more than one way to reach a point."
+    },
+    {
+      "id": "q41",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "For a two-link robot with lengths L1 and L2, what is the maximum reach?",
+      "options": [
+        {
+          "label": "A",
+          "text": "L1 + L2"
+        },
+        {
+          "label": "B",
+          "text": "L1 - L2"
+        },
+        {
+          "label": "C",
+          "text": "L1 * L2"
+        },
+        {
+          "label": "D",
+          "text": "Square root of (L1^2 + L2^2)"
+        }
+      ],
+      "answer": "A",
+      "explanation": "The maximum outer boundary is the sum of the two link lengths when the arm is fully stretched.",
+      "hint": "The arm is fully extended in a straight line."
+    },
+    {
+      "id": "q42",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "What is 'Elbow-Up' and 'Elbow-Down' an example of?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Forward Kinematics"
+        },
+        {
+          "label": "B",
+          "text": "Multiple IK Solutions"
+        },
+        {
+          "label": "C",
+          "text": "Singularities"
+        },
+        {
+          "label": "D",
+          "text": "Matrix non-commutativity"
+        }
+      ],
+      "answer": "B",
+      "explanation": "These are the two common configurations (solutions) for a single target point in simple arm kinematics.",
+      "hint": "Two ways to reach the same goal."
+    },
+    {
+      "id": "q43",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "What happens if you try to solve IK for a point outside the workspace?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The robot moves faster"
+        },
+        {
+          "label": "B",
+          "text": "The math yields complex/imaginary numbers (errors)"
+        },
+        {
+          "label": "C",
+          "text": "The robot automatically expands"
+        },
+        {
+          "label": "D",
+          "text": "The controller shuts down"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Targets outside the workspace are physically unreachable, causing mathematical equations to fail (e.g., cos(theta) > 1).",
+      "hint": "Can you calculate the angle to a point you can't touch?"
+    },
+    {
+      "id": "q44",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "Which matrix is used to identify if a robot is at a singularity?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The Rotation Matrix"
+        },
+        {
+          "label": "B",
+          "text": "The Jacobian Matrix"
+        },
+        {
+          "label": "C",
+          "text": "The DH Table"
+        },
+        {
+          "label": "D",
+          "text": "The 4x4 Identity Matrix"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The Jacobian matrix is analyzed; if its determinant is zero, the robot is in a singularity.",
+      "hint": "This matrix maps velocities."
+    },
+    {
+      "id": "q45",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "What is a physical symptom of a robot approaching a singularity?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The links get shorter"
+        },
+        {
+          "label": "B",
+          "text": "Joint velocities spike to near-infinite levels"
+        },
+        {
+          "label": "C",
+          "text": "The robot turns off"
+        },
+        {
+          "label": "D",
+          "text": "The end-effector changes color"
+        }
+      ],
+      "answer": "B",
+      "explanation": "As the robot loses mobility in a direction, the math requires infinite joint speed to move even slightly in that direction.",
+      "hint": "The motors will suddenly spin extremely fast."
+    },
+    {
+      "id": "q46",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "foundations",
+      "question": "A SCARA robot is specifically optimized for what kind of tasks?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Spherical welding"
+        },
+        {
+          "label": "B",
+          "text": "High-speed vertical assembly"
+        },
+        {
+          "label": "C",
+          "text": "Underwater mining"
+        },
+        {
+          "label": "D",
+          "text": "Painting massive ships"
+        }
+      ],
+      "answer": "B",
+      "explanation": "SCARA (Selective Compliance Assembly Robot Arm) is built for fast horizontal moves and vertical insertion/assembly.",
+      "hint": "Think of picking and placing parts on a conveyor belt."
+    },
+    {
+      "id": "q47",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "foundations",
+      "question": "What distinguishes an 'open-loop' kinematic chain (like Niryo Ned 2)?",
+      "options": [
+        {
+          "label": "A",
+          "text": "It has no sensors"
+        },
+        {
+          "label": "B",
+          "text": "It has no returning loops or parallel links"
+        },
+        {
+          "label": "C",
+          "text": "It cannot be programmed"
+        },
+        {
+          "label": "D",
+          "text": "It only moves in circles"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Open-loop (serial) chains move in one direction from base to tip with no physical cycles or loops.",
+      "hint": "It's like a single line of links from the ground to the tool."
+    },
+    {
+      "id": "q48",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "How many DH parameters are defined per joint?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Two"
+        },
+        {
+          "label": "B",
+          "text": "Four"
+        },
+        {
+          "label": "C",
+          "text": "Six"
+        },
+        {
+          "label": "D",
+          "text": "Eight"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The DH convention reduces robot geometry to four parameters per link/joint pair (theta, d, a, alpha).",
+      "hint": "Count θ, d, a, α."
+    },
+    {
+      "id": "q49",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "In DH parameters, 'd' represents what?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Joint angle"
+        },
+        {
+          "label": "B",
+          "text": "Link length"
+        },
+        {
+          "label": "C",
+          "text": "Joint offset (distance along Z-axis)"
+        },
+        {
+          "label": "D",
+          "text": "Link twist"
+        }
+      ],
+      "answer": "C",
+      "explanation": "'d' is the joint offset, measured as the distance between X-axes along the Z-axis.",
+      "hint": "It's the distance along the joint's axis of motion."
+    },
+    {
+      "id": "q50",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "What kind of singularity occurs when the robot is at its minimum inner reach limit?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Fully stretched"
+        },
+        {
+          "label": "B",
+          "text": "Fully folded"
+        },
+        {
+          "label": "C",
+          "text": "Wrist alignment"
+        },
+        {
+          "label": "D",
+          "text": "Prismatic jam"
+        }
+      ],
+      "answer": "B",
+      "explanation": "A fully folded singularity occurs when the arm moves as close to its base as possible, losing motion capability.",
+      "hint": "Think of the robot arm collapsing in on itself."
+    },
+    {
+      "id": "q51",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "What is the result of multiplying the Jacobian transpose by a force vector at the end-effector?",
+      "options": [
+        {
+          "label": "A",
+          "text": "End-effector velocity"
+        },
+        {
+          "label": "B",
+          "text": "Required joint torques (Static mapping)"
+        },
+        {
+          "label": "C",
+          "text": "The determinant"
+        },
+        {
+          "label": "D",
+          "text": "Joint acceleration"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The Jacobian transpose relates Cartesian forces at the tip to the torques required at the joints (τ = J^T * F).",
+      "hint": "It's the 'Static' version of the velocity mapping."
+    },
+    {
+      "id": "q52",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "Which singularity type is commonly found in 6-DoF manipulators with three intersecting wrist axes?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Elbow singularity"
+        },
+        {
+          "label": "B",
+          "text": "Wrist singularity"
+        },
+        {
+          "label": "C",
+          "text": "Base singularity"
+        },
+        {
+          "label": "D",
+          "text": "Prismatic singularity"
+        }
+      ],
+      "answer": "B",
+      "explanation": "A wrist singularity occurs when two of the wrist axes align, causing the robot to lose a degree of freedom in orientation.",
+      "hint": "It happens specifically in the 'hand' area of the robot."
+    },
+    {
+      "id": "q53",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "spatial-representation",
+      "question": "Which Euler angle convention involves rotations about moving axes rather than fixed ones?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Fixed Angles"
+        },
+        {
+          "label": "B",
+          "text": "Euler Angles (Intrinsic)"
+        },
+        {
+          "label": "C",
+          "text": "Homogeneous"
+        },
+        {
+          "label": "D",
+          "text": "Quaternions"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Intrinsic Euler angles rotate about the current (moving) coordinate system axes, not the original fixed frame.",
+      "hint": "The axes move along with the object as it rotates."
+    },
+    {
+      "id": "q54",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-forward",
+      "question": "In the DH convention, the Z-axis for frame {i} is always aligned with what?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The link length"
+        },
+        {
+          "label": "B",
+          "text": "The axis of motion for joint {i+1}"
+        },
+        {
+          "label": "C",
+          "text": "The gravity vector"
+        },
+        {
+          "label": "D",
+          "text": "The common normal"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The standard DH convention places the Z-axis of a frame along the axis of motion (rotation or translation) of the next joint.",
+      "hint": "It's the line the motor spins around."
+    },
+    {
+      "id": "q55",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-inverse",
+      "question": "How does Kinematic Decoupling simplify a 6-DoF robot's IK?",
+      "options": [
+        {
+          "label": "A",
+          "text": "By ignoring the last 3 joints"
+        },
+        {
+          "label": "B",
+          "text": "By solving a 3-DoF position problem and a 3-DoF orientation problem separately"
+        },
+        {
+          "label": "C",
+          "text": "By using 2x2 matrices only"
+        },
+        {
+          "label": "D",
+          "text": "By assuming all links are the same length"
+        }
+      ],
+      "answer": "B",
+      "explanation": "It splits the 6-DoF problem into two smaller 3-DoF problems: the 'arm' for position and the 'wrist' for orientation.",
+      "hint": "Divide and conquer the position and orientation."
+    },
+    {
+      "id": "q56",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "What is the mathematical definition of a singularity in terms of matrix rank?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Full rank"
+        },
+        {
+          "label": "B",
+          "text": "Rank deficiency"
+        },
+        {
+          "label": "C",
+          "text": "Rank equals DoF"
+        },
+        {
+          "label": "D",
+          "text": "Negative rank"
+        }
+      ],
+      "answer": "B",
+      "explanation": "A singularity is a point where the Jacobian matrix loses rank (rank deficiency), meaning some directions of motion are no longer possible.",
+      "hint": "Think about when a matrix doesn't have enough 'info' to be inverted."
+    },
+    {
+      "id": "q57",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-forward",
+      "question": "When building a DH table, what is the role of the 'common normal'?",
+      "options": [
+        {
+          "label": "A",
+          "text": "It defines the Z-axis"
+        },
+        {
+          "label": "B",
+          "text": "It is the shortest distance between two skew lines (Z-axes)"
+        },
+        {
+          "label": "C",
+          "text": "It represents joint torque"
+        },
+        {
+          "label": "D",
+          "text": "It is used for gravity compensation"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The common normal is the line perpendicular to two consecutive Z-axes; its length is the DH parameter 'a'.",
+      "hint": "The shortest path between two non-intersecting lines."
+    },
+    {
+      "id": "q58",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "spatial-representation",
+      "question": "What is the inverse of a 4x4 Homogeneous Transformation Matrix T?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The transpose of T"
+        },
+        {
+          "label": "B",
+          "text": "A special structure using R^T and -R^T*P"
+        },
+        {
+          "label": "C",
+          "text": "T divided by the determinant"
+        },
+        {
+          "label": "D",
+          "text": "A matrix of zeros and ones"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Because it's a block matrix, the inverse requires transposing the rotation part and calculating a new translation vector based on that transpose.",
+      "hint": "You can't just transpose the whole 4x4; you transpose only the 3x3 part."
+    },
+    {
+      "id": "q59",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "foundations",
+      "question": "If a robot skeleton (manipulator) is too heavy for its muscles (actuators), what is the physical result?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The robot will shake"
+        },
+        {
+          "label": "B",
+          "text": "The robot will be slow and sluggish"
+        },
+        {
+          "label": "C",
+          "text": "The controller will crash"
+        },
+        {
+          "label": "D",
+          "text": "The sensors will fail"
+        }
+      ],
+      "answer": "B",
+      "explanation": "According to the athlete analogy, a heavy skeleton paired with weak muscles leads to a slow, underpowered system.",
+      "hint": "Think of a heavy person with small muscles trying to run."
+    },
+    {
+      "id": "q60",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "What happens to the manipulability measure (Yoshikawa) at a singularity?",
+      "options": [
+        {
+          "label": "A",
+          "text": "It goes to infinity"
+        },
+        {
+          "label": "B",
+          "text": "It becomes zero"
+        },
+        {
+          "label": "C",
+          "text": "It stays at 1"
+        },
+        {
+          "label": "D",
+          "text": "It changes sign"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Manipulability measures how easily the robot can move in all directions; it drops to zero at a singularity where one or more directions are lost.",
+      "hint": "Think about 'ability' going away completely."
+    },
+    {
+      "id": "q61",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "Which method is used to help a robot 'choose' between multiple valid IK solutions?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Random choice"
+        },
+        {
+          "label": "B",
+          "text": "Decision logic (Proximity or Obstacle Avoidance)"
+        },
+        {
+          "label": "C",
+          "text": "Always choosing the first one"
+        },
+        {
+          "label": "D",
+          "text": "Shutting down if more than one exists"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Engineers program logic to select the best solution based on which is closer to the current pose or which avoids hitting obstacles.",
+      "hint": "It needs a rule to decide which path is safer or shorter."
+    },
+    {
+      "id": "q62",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "foundations",
+      "question": "Industrial robots adoption is estimated to save employers what percentage of labor costs by 2025?",
+      "options": [
+        {
+          "label": "A",
+          "text": "5%"
+        },
+        {
+          "label": "B",
+          "text": "16%"
+        },
+        {
+          "label": "C",
+          "text": "50%"
+        },
+        {
+          "label": "D",
+          "text": "90%"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Estimates suggest a 16% saving on labor costs through robotic automation by 2025.",
+      "hint": "It's a significant double-digit number under 20."
+    },
+    {
+      "id": "q63",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "What is the purpose of the 'bottom row [0 0 0 1]' in a Homogeneous Matrix?",
+      "options": [
+        {
+          "label": "A",
+          "text": "To store the joint angle"
+        },
+        {
+          "label": "B",
+          "text": "To enable matrix multiplication of 4x4 with 4x1 vectors"
+        },
+        {
+          "label": "C",
+          "text": "To represent scaling"
+        },
+        {
+          "label": "D",
+          "text": "It has no purpose"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The extra row makes the matrix square, allowing for the compounding of rotation and translation through standard multiplication.",
+      "hint": "It turns the 3D math into a 4D linear operation for convenience."
+    },
+    {
+      "id": "q64",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "In the Niryo Ned 2, how many rotating joints are there?",
+      "options": [
+        {
+          "label": "A",
+          "text": "3"
+        },
+        {
+          "label": "B",
+          "text": "4"
+        },
+        {
+          "label": "C",
+          "text": "6"
+        },
+        {
+          "label": "D",
+          "text": "7"
+        }
+      ],
+      "answer": "C",
+      "explanation": "The Niryo Ned 2 is a 6-axis (6-DoF) collaborative robot arm.",
+      "hint": "It's a standard educational 6-axis arm."
+    },
+    {
+      "id": "q65",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "What happens if you multiply A1 * A2 in a different order (A2 * A1)?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The same final pose"
+        },
+        {
+          "label": "B",
+          "text": "A completely different physical configuration"
+        },
+        {
+          "label": "C",
+          "text": "The robot moves backwards"
+        },
+        {
+          "label": "D",
+          "text": "No change in position"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Since matrix multiplication is non-commutative, the chain of frames would be built differently, resulting in a different pose.",
+      "hint": "Order matters in transformation chains."
+    },
+    {
+      "id": "q66",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "Which IK solution type is found by guessing and iterating toward an answer?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Closed-Form"
+        },
+        {
+          "label": "B",
+          "text": "Numerical Solution"
+        },
+        {
+          "label": "C",
+          "text": "Analytical"
+        },
+        {
+          "label": "D",
+          "text": "Geometric"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Numerical methods use iterative algorithms (like Newton-Raphson) to find an approximate solution when a direct equation isn't possible.",
+      "hint": "It repeats the calculation over and over."
+    },
+    {
+      "id": "q67",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "What is the Jacobian for a 1-DoF system with length L and angle theta moving in 2D?",
+      "options": [
+        {
+          "label": "A",
+          "text": "[-L sinθ; L cosθ]"
+        },
+        {
+          "label": "B",
+          "text": "[L cosθ; L sinθ]"
+        },
+        {
+          "label": "C",
+          "text": "[0; 0]"
+        },
+        {
+          "label": "D",
+          "text": "[1; 1]"
+        }
+      ],
+      "answer": "A",
+      "explanation": "By differentiating x = L cosθ and y = L sinθ with respect to θ, you get dx = -L sinθ dθ and dy = L cosθ dθ.",
+      "hint": "Use calculus to differentiate the position coordinates."
+    },
+    {
+      "id": "q68",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "foundations",
+      "question": "A 'fixed automation' system differs from a robot because it is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "Slower"
+        },
+        {
+          "label": "B",
+          "text": "Limited to one specific task/hardware"
+        },
+        {
+          "label": "C",
+          "text": "Made of wood"
+        },
+        {
+          "label": "D",
+          "text": "Non-electric"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Fixed automation is designed for one task; changing that task requires physical rebuilding, unlike a programmable robot.",
+      "hint": "Think of a machine that only does one thing forever."
+    },
+    {
+      "id": "q69",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "foundations",
+      "question": "What type of actuators are most popular in industrial robotics?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Steam Engines"
+        },
+        {
+          "label": "B",
+          "text": "Electric Motors (DC Torque motors)"
+        },
+        {
+          "label": "C",
+          "text": "Rubber Bands"
+        },
+        {
+          "label": "D",
+          "text": "Nuclear Actuators"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Electric motors are the standard due to ease of control, cleanliness, and precise feedback.",
+      "hint": "It's the most common clean energy source for small motion."
+    },
+    {
+      "id": "q70",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "How is the 'orientation' of frame B relative to A represented in a rotation matrix?",
+      "options": [
+        {
+          "label": "A",
+          "text": "By the sum of vectors"
+        },
+        {
+          "label": "B",
+          "text": "By unit vectors of B's axes expressed in A's coordinates as columns"
+        },
+        {
+          "label": "C",
+          "text": "By the length of the links"
+        },
+        {
+          "label": "D",
+          "text": "By a single scalar value"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The columns of the 3x3 rotation matrix are the unit vectors X, Y, and Z of the target frame expressed in the reference frame.",
+      "hint": "Stack the directions of the axes."
+    },
+    {
+      "id": "q71",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-forward",
+      "question": "In the formula A_i = Rot_z(θ) * Trans_z(d) * Trans_x(a) * Rot_x(α), which part represents the rotation between Z-axes?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Rot_z(θ)"
+        },
+        {
+          "label": "B",
+          "text": "Trans_z(d)"
+        },
+        {
+          "label": "C",
+          "text": "Rot_x(α)"
+        },
+        {
+          "label": "D",
+          "text": "Trans_x(a)"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Rot_x(α) represents the link twist, which is the angle between the Z-axes measured about the X-axis.",
+      "hint": "Alpha is the twist angle."
+    },
+    {
+      "id": "q72",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-inverse",
+      "question": "What algebraic error signifies you have asked a robot to reach beyond its max reach?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Division by zero"
+        },
+        {
+          "label": "B",
+          "text": "Square root of a negative number or cos(θ) > 1"
+        },
+        {
+          "label": "C",
+          "text": "Logarithm of one"
+        },
+        {
+          "label": "D",
+          "text": "Matrix determinant equals 1"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Mathematically, the law of cosines will result in a value outside the [-1, 1] range for cos(θ), making the angle calculation impossible.",
+      "hint": "Trigonometry only works within certain bounds."
+    },
+    {
+      "id": "q73",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "How do you handle a singularity in robot control to avoid infinite velocity commands?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Turn off the motors"
+        },
+        {
+          "label": "B",
+          "text": "Damped Least Squares (DLS) or virtual boundaries"
+        },
+        {
+          "label": "C",
+          "text": "Increase the voltage"
+        },
+        {
+          "label": "D",
+          "text": "Move faster through it"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Damped Least Squares limits the joint speeds near singularities at the cost of some tracking accuracy, while virtual boundaries prevent entry.",
+      "hint": "You need a mathematical 'brake' or a physical 'fence'."
+    },
+    {
+      "id": "q74",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "foundations",
+      "question": "According to the sources, why would a robot shake?",
+      "options": [
+        {
+          "label": "A",
+          "text": "If it's cold"
+        },
+        {
+          "label": "B",
+          "text": "If the muscles are too strong for the skeleton"
+        },
+        {
+          "label": "C",
+          "text": "If the sensors are off"
+        },
+        {
+          "label": "D",
+          "text": "If it has too many joints"
+        }
+      ],
+      "answer": "B",
+      "explanation": "In the athlete analogy, if actuators are too powerful for the rigidity of the manipulator, it leads to vibration and shaking.",
+      "hint": "Think of a super-powered motor on a thin, flimsy stick."
+    },
+    {
+      "id": "q75",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-forward",
+      "question": "Which coordinate frame in the Niryo-NED2 represents the actual task point for pick-and-place?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Frame {0}"
+        },
+        {
+          "label": "B",
+          "text": "Frame {EE} (End-Effector Frame)"
+        },
+        {
+          "label": "C",
+          "text": "World Frame"
+        },
+        {
+          "label": "D",
+          "text": "Frame {3}"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The End-Effector Frame {EE} is attached to the gripper and is the frame actually used to interact with objects.",
+      "hint": "It's the 'hand' frame."
+    },
+    {
+      "id": "q76",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "What is the primary function of an actuator?",
+      "options": [
+        {
+          "label": "A",
+          "text": "To think"
+        },
+        {
+          "label": "B",
+          "text": "To convert energy into motion"
+        },
+        {
+          "label": "C",
+          "text": "To sense the environment"
+        },
+        {
+          "label": "D",
+          "text": "To store data"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Actuators (like motors) take electrical, hydraulic, or pneumatic energy and produce torque or force.",
+      "hint": "It's the part that actually 'acts' or moves."
+    },
+    {
+      "id": "q77",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "A position sensor like an optical encoder is typically found where?",
+      "options": [
+        {
+          "label": "A",
+          "text": "On the end-effector tip"
+        },
+        {
+          "label": "B",
+          "text": "On the actuator shaft"
+        },
+        {
+          "label": "C",
+          "text": "In the robot's eyes"
+        },
+        {
+          "label": "D",
+          "text": "Inside the power cord"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Encoders are usually attached to the motor shafts to measure the exact rotation angle of each joint.",
+      "hint": "It needs to measure the motor's spin."
+    },
+    {
+      "id": "q78",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "foundations",
+      "question": "Which robot type is based on three linear (prismatic) axes?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Articulated"
+        },
+        {
+          "label": "B",
+          "text": "Cartesian (Gantry)"
+        },
+        {
+          "label": "C",
+          "text": "SCARA"
+        },
+        {
+          "label": "D",
+          "text": "Spherical"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Cartesian robots move in X, Y, and Z directions using linear joints, creating a rectangular workspace.",
+      "hint": "It uses the Cartesian coordinate system directly."
+    },
+    {
+      "id": "q79",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "spatial-representation",
+      "question": "How many vectors locate the origin and describe orientation in a robotic 'Frame'?",
+      "options": [
+        {
+          "label": "A",
+          "text": "One"
+        },
+        {
+          "label": "B",
+          "text": "Two"
+        },
+        {
+          "label": "C",
+          "text": "Four"
+        },
+        {
+          "label": "D",
+          "text": "Six"
+        }
+      ],
+      "answer": "C",
+      "explanation": "A frame is a set of four vectors: one position vector for the origin and three unit vectors for orientation.",
+      "hint": "1 for where it is + 3 for where it's pointing."
+    },
+    {
+      "id": "q80",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "kinematics-forward",
+      "question": "Which field studies motion without regard to the forces that cause it?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Dynamics"
+        },
+        {
+          "label": "B",
+          "text": "Statics"
+        },
+        {
+          "label": "C",
+          "text": "Kinematics"
+        },
+        {
+          "label": "D",
+          "text": "Electronics"
+        }
+      ],
+      "answer": "C",
+      "explanation": "Kinematics is purely the geometric study of motion over time.",
+      "hint": "It comes from the Greek word for 'motion'."
+    },
+    {
+      "id": "q81",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-inverse",
+      "question": "What is the typical strategy for solving the IK of a 6-DoF arm with a spherical wrist?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Solve all 6 angles at once"
+        },
+        {
+          "label": "B",
+          "text": "Solve position of the wrist center first, then solve orientation"
+        },
+        {
+          "label": "C",
+          "text": "Guess the first 3 and calculate the rest"
+        },
+        {
+          "label": "D",
+          "text": "Use only 2D geometry"
+        }
+      ],
+      "answer": "B",
+      "explanation": "By solving for the wrist center (first 3 joints), you simplify the problem to an orientation problem (last 3 joints).",
+      "hint": "Find the center of the hand before deciding how to turn it."
+    },
+    {
+      "id": "q82",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "What does a zero determinant in a 3x3 Jacobian for position imply?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The robot is at the base"
+        },
+        {
+          "label": "B",
+          "text": "The robot cannot move in at least one Cartesian direction"
+        },
+        {
+          "label": "C",
+          "text": "The robot has reached its maximum speed"
+        },
+        {
+          "label": "D",
+          "text": "The math is perfect"
+        }
+      ],
+      "answer": "B",
+      "explanation": "A zero determinant means the Jacobian is non-invertible, signifying a loss of mobility in certain directions.",
+      "hint": "It's a mathematical wall."
+    },
+    {
+      "id": "q83",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "spatial-representation",
+      "question": "Why is the Z-Y-X Euler angle representation called 'intrinsic'?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Because it's inside the robot"
+        },
+        {
+          "label": "B",
+          "text": "Because rotations occur about axes of the moving system"
+        },
+        {
+          "label": "C",
+          "text": "Because it uses only integer values"
+        },
+        {
+          "label": "D",
+          "text": "Because it's the only way to represent 3D"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Intrinsic rotations are defined relative to the current, moving frame which changes with each rotation.",
+      "hint": "The coordinate system 'follows' the object's movement."
+    },
+    {
+      "id": "q84",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-forward",
+      "question": "What is a major limitation of using a DH table for modeling?",
+      "options": [
+        {
+          "label": "A",
+          "text": "It only works for SCARA"
+        },
+        {
+          "label": "B",
+          "text": "It cannot handle parallel robots or closed loops easily"
+        },
+        {
+          "label": "C",
+          "text": "It requires manual assembly"
+        },
+        {
+          "label": "D",
+          "text": "It is not used by engineers"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Standard DH parameters are designed for serial 'open' chains and become very complex for 'closed' parallel chains.",
+      "hint": "Serial vs Parallel."
+    },
+    {
+      "id": "q85",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "How does the Analytical Jacobian differ from the Geometric Jacobian?",
+      "options": [
+        {
+          "label": "A",
+          "text": "One uses degrees and the other uses radians"
+        },
+        {
+          "label": "B",
+          "text": "Analytical depends on the orientation parameterization used (e.g. Euler angles)"
+        },
+        {
+          "label": "C",
+          "text": "One is only for 2D"
+        },
+        {
+          "label": "D",
+          "text": "There is no difference"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The Geometric Jacobian is based on twist/cross products, while the Analytical Jacobian is the partial derivative of the pose with respect to joints.",
+      "hint": "One is derived from physics, the other from calculus of angles."
+    },
+    {
+      "id": "q86",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "In the 2R Planar Robot example, what represents the orientation of the second link?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Theta 1"
+        },
+        {
+          "label": "B",
+          "text": "Theta 1 + Theta 2"
+        },
+        {
+          "label": "C",
+          "text": "Theta 2 only"
+        },
+        {
+          "label": "D",
+          "text": "The length L2"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The orientation of the second link is the cumulative sum of all joint angles leading up to it.",
+      "hint": "The angles add up along the arm."
+    },
+    {
+      "id": "q87",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "Why do we use frame assignments in Niryo-NED2 modeling?",
+      "options": [
+        {
+          "label": "A",
+          "text": "To make it look professional"
+        },
+        {
+          "label": "B",
+          "text": "To provide a common language between hardware and math"
+        },
+        {
+          "label": "C",
+          "text": "To reduce the weight of the robot"
+        },
+        {
+          "label": "D",
+          "text": "To save battery"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Frames allow us to map physical joint rotations into mathematical transformation matrices consistently.",
+      "hint": "It's the bridge between the physical and digital world."
+    },
+    {
+      "id": "q88",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "What is the 'inner circle' limit for a 2-link robot?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Zero"
+        },
+        {
+          "label": "B",
+          "text": "|L1 - L2|"
+        },
+        {
+          "label": "C",
+          "text": "L1 + L2"
+        },
+        {
+          "label": "D",
+          "text": "L1 / L2"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The inner limit of the workspace is the absolute difference between the link lengths where the arm is fully folded.",
+      "hint": "Think of the closest point the robot can reach to its own base."
+    },
+    {
+      "id": "q89",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "If you have 6 joints and 6 Cartesian variables, the Jacobian is a:",
+      "options": [
+        {
+          "label": "A",
+          "text": "1x6 vector"
+        },
+        {
+          "label": "B",
+          "text": "3x3 matrix"
+        },
+        {
+          "label": "C",
+          "text": "6x6 square matrix"
+        },
+        {
+          "label": "D",
+          "text": "Scalar value"
+        }
+      ],
+      "answer": "C",
+      "explanation": "A 6-DoF robot moving in 6D task space has a 6x6 Jacobian matrix mapping joint speeds to spatial velocities.",
+      "hint": "It relates 6 joint speeds to 6 task speeds."
+    },
+    {
+      "id": "q90",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "foundations",
+      "question": "The Niryo NED 2 is an example of what kind of robot?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Gantry"
+        },
+        {
+          "label": "B",
+          "text": "SCARA"
+        },
+        {
+          "label": "C",
+          "text": "Articulated (Jointed-arm)"
+        },
+        {
+          "label": "D",
+          "text": "Cylindrical"
+        }
+      ],
+      "answer": "C",
+      "explanation": "It has 6 revolute joints resembling a human arm, making it an articulated manipulator.",
+      "hint": "It looks and moves like a human arm."
+    },
+    {
+      "id": "q91",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-forward",
+      "question": "In the DH transformation matrix, which column represents the Z-axis of the current frame relative to the previous?",
+      "options": [
+        {
+          "label": "A",
+          "text": "First column"
+        },
+        {
+          "label": "B",
+          "text": "Second column"
+        },
+        {
+          "label": "C",
+          "text": "Third column"
+        },
+        {
+          "label": "D",
+          "text": "Fourth column"
+        }
+      ],
+      "answer": "C",
+      "explanation": "The first three columns of a rotation matrix represent the X, Y, and Z unit vectors respectively.",
+      "hint": "X is 1, Y is 2, Z is 3."
+    },
+    {
+      "id": "q92",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "kinematics-inverse",
+      "question": "Why are 'elbow-up' and 'elbow-down' configurations a problem for automated path planning?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The robot can't move"
+        },
+        {
+          "label": "B",
+          "text": "Sudden flips between configurations can cause damage"
+        },
+        {
+          "label": "C",
+          "text": "They use different amounts of electricity"
+        },
+        {
+          "label": "D",
+          "text": "They change the link lengths"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Switching from up to down requires the arm to pass through a singularity or move significantly, which can be dangerous.",
+      "hint": "Sudden big movements are bad for high-speed industrial robots."
+    },
+    {
+      "id": "q93",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "differential-kinematics",
+      "question": "What is the relationship between joint torques (τ) and end-effector force (F) using the Jacobian (J)?",
+      "options": [
+        {
+          "label": "A",
+          "text": "τ = J * F"
+        },
+        {
+          "label": "B",
+          "text": "τ = J^T * F"
+        },
+        {
+          "label": "C",
+          "text": "F = J * τ"
+        },
+        {
+          "label": "D",
+          "text": "τ = F / det(J)"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Based on the principle of virtual work, joint torques are equal to the Jacobian transpose multiplied by the force vector.",
+      "hint": "It involves the transpose of the velocity map."
+    },
+    {
+      "id": "q94",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "spatial-representation",
+      "question": "A transformation matrix $^A_BT$ converts coordinates from frame B to A. What is $^B_AT$?",
+      "options": [
+        {
+          "label": "A",
+          "text": "The transpose of $^A_BT$"
+        },
+        {
+          "label": "B",
+          "text": "The inverse of $^A_BT$"
+        },
+        {
+          "label": "C",
+          "text": "Negative $^A_BT$"
+        },
+        {
+          "label": "D",
+          "text": "The same matrix"
+        }
+      ],
+      "answer": "B",
+      "explanation": "To reverse the coordinate conversion, you must use the inverse transformation matrix.",
+      "hint": "Reverse mapping requires inverting the math."
+    },
+    {
+      "id": "q95",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "foundations",
+      "question": "Which field focuses on the forces and torques required to cause motion?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Kinematics"
+        },
+        {
+          "label": "B",
+          "text": "Dynamics"
+        },
+        {
+          "label": "C",
+          "text": "Statics"
+        },
+        {
+          "label": "D",
+          "text": "Optics"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Dynamics involves the study of the physical forces and torques that result in the robot's motion.",
+      "hint": "It's the 'force' side of the physics of motion."
+    },
+    {
+      "id": "q96",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-forward",
+      "question": "In the standard DH formula, which rotation happens LAST?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Rot_z(θ)"
+        },
+        {
+          "label": "B",
+          "text": "Rot_x(α)"
+        },
+        {
+          "label": "C",
+          "text": "Trans_x(a)"
+        },
+        {
+          "label": "D",
+          "text": "Trans_z(d)"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The standard sequence is: rotate θ about Z, translate d along Z, translate a along X, and finally rotate α about X.",
+      "hint": "Alpha is the final 'twist' parameter."
+    },
+    {
+      "id": "q97",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "foundations",
+      "question": "What is the primary role of a robot's 'End-Effector'?",
+      "options": [
+        {
+          "label": "A",
+          "text": "To support the base"
+        },
+        {
+          "label": "B",
+          "text": "To interact directly with objects"
+        },
+        {
+          "label": "C",
+          "text": "To cool the motors"
+        },
+        {
+          "label": "D",
+          "text": "To store code"
+        }
+      ],
+      "answer": "B",
+      "explanation": "The end-effector is the 'hand' of the robot (gripper, welder, tool) that actually performs the work.",
+      "hint": "It's the very end of the kinematic chain."
+    },
+    {
+      "id": "q98",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "spatial-representation",
+      "question": "Euler angles are used to represent orientation with 3 parameters. What is a common disadvantage?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Too many variables"
+        },
+        {
+          "label": "B",
+          "text": "Gimbal Lock (Singularity)"
+        },
+        {
+          "label": "C",
+          "text": "They only work in 2D"
+        },
+        {
+          "label": "D",
+          "text": "They require matrix addition"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Euler angles suffer from gimbal lock, where two of the three rotation axes align and a degree of freedom is lost.",
+      "hint": "Think of a physical set of gimbals getting stuck."
+    },
+    {
+      "id": "q99",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "kinematics-inverse",
+      "question": "Which joint configuration is used to reach into confined spaces?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Cartesian"
+        },
+        {
+          "label": "B",
+          "text": "Articulated (Jointed)"
+        },
+        {
+          "label": "C",
+          "text": "Gantry"
+        },
+        {
+          "label": "D",
+          "text": "Prismatic only"
+        }
+      ],
+      "answer": "B",
+      "explanation": "Articulated robots have human-like flexibility, allowing them to bend and reach into tight areas where bulky gantries cannot go.",
+      "hint": "Think of how your own arm can reach behind things."
+    },
+    {
+      "id": "q100",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "differential-kinematics",
+      "question": "A Jacobian matrix that is not square (e.g., 6x3) implies the robot is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "Perfect"
+        },
+        {
+          "label": "B",
+          "text": "Redundant or Under-actuated"
+        },
+        {
+          "label": "C",
+          "text": "Broken"
+        },
+        {
+          "label": "D",
+          "text": "Stationary"
+        }
+      ],
+      "answer": "B",
+      "explanation": "If the number of joints does not match the number of task variables, the Jacobian is non-square.",
+      "hint": "It means the robot doesn't have 6 joints for 6 tasks."
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "f1",
+      "term": "Degrees of Freedom (DoF)",
+      "definition": "The number of independent variables required to specify the position and orientation of all parts of a mechanism.",
+      "category": "foundations"
+    },
+    {
+      "id": "f2",
+      "term": "Industrial Robot",
+      "definition": "A reprogrammable, multifunctional manipulator designed to move material or tools through variable programmed motions.",
+      "category": "foundations"
+    },
+    {
+      "id": "f3",
+      "term": "Actuator",
+      "definition": "The 'muscles' of the robot that convert electrical, hydraulic, or pneumatic energy into physical motion.",
+      "category": "foundations"
+    },
+    {
+      "id": "f4",
+      "term": "Controller",
+      "definition": "The 'brain' of the robotic system that processes sensor data and executes control algorithms to command actuators.",
+      "category": "foundations"
+    },
+    {
+      "id": "f5",
+      "term": "End-Effector",
+      "definition": "The device at the end of a robotic arm (like a gripper or welding torch) designed to interact with the environment.",
+      "category": "foundations"
+    },
+    {
+      "id": "f6",
+      "term": "Revolute Joint",
+      "definition": "A joint that allows rotational motion between two links around a single fixed axis.",
+      "category": "foundations"
+    },
+    {
+      "id": "f7",
+      "term": "Prismatic Joint",
+      "definition": "A joint that allows linear or translational sliding motion between two links.",
+      "category": "foundations"
+    },
+    {
+      "id": "f8",
+      "term": "Rigid Body",
+      "definition": "An idealization of a solid body in which deformation is neglected, keeping link lengths constant during motion.",
+      "category": "foundations"
+    },
+    {
+      "id": "f9",
+      "term": "Rotation Matrix",
+      "definition": "A 3x3 orthonormal matrix used to represent the orientation of one coordinate frame relative to another.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f10",
+      "term": "Homogeneous Transformation Matrix",
+      "definition": "A 4x4 matrix combining a 3x3 rotation matrix and a 3x1 translation vector for complete spatial description.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f11",
+      "term": "Orthonormal Matrix",
+      "definition": "A matrix where columns are unit vectors perpendicular to each other; its inverse is equal to its transpose.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f12",
+      "term": "Euler Angles",
+      "definition": "A set of three angles (e.g., Roll, Pitch, Yaw) used to describe orientation in 3D space.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f13",
+      "term": "Non-Commutativity",
+      "definition": "The mathematical property where the order of operations matters (e.g., A*B != B*A), critical in sequential rotations.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f14",
+      "term": "Base Frame",
+      "definition": "The fixed coordinate system at the root of the robot, usually denoted as Frame {0}.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f15",
+      "term": "Tool Center Point (TCP)",
+      "definition": "The specific point on the end-effector used as the reference for trajectory and positioning tasks.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f16",
+      "term": "Coordinate Mapping",
+      "definition": "The use of a transformation matrix to express the coordinates of a point in a different reference frame.",
+      "category": "spatial-representation"
+    },
+    {
+      "id": "f17",
+      "term": "Forward Kinematics",
+      "definition": "The process of calculating the position and orientation of the end-effector from known joint variables.",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f18",
+      "term": "Denavit-Hartenberg (DH) Convention",
+      "definition": "A standardized method for attaching coordinate frames to links and modeling robot kinematics using four parameters.",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f19",
+      "term": "Link Length (a)",
+      "definition": "The DH parameter representing the distance between joint axes measured along the common normal.",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f20",
+      "term": "Link Twist (alpha)",
+      "definition": "The DH parameter representing the angle between the Z-axes of two consecutive joints.",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f21",
+      "term": "Joint Angle (theta)",
+      "definition": "The DH parameter representing the rotation of a revolute joint; it is the variable in revolute kinematics.",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f22",
+      "term": "Joint Offset (d)",
+      "definition": "The DH parameter representing the distance between X-axes along the joint Z-axis; the variable for prismatic joints.",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f23",
+      "term": "Kinematic Chain",
+      "definition": "A series of links connected by joints; can be open (serial) or closed (parallel).",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f24",
+      "term": "A-Matrix",
+      "definition": "The individual 4x4 transformation matrix derived from DH parameters for a single link.",
+      "category": "kinematics-forward"
+    },
+    {
+      "id": "f25",
+      "term": "Inverse Kinematics",
+      "definition": "The process of calculating the joint variables required to reach a specific desired end-effector pose.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f26",
+      "term": "Closed-Form Solution",
+      "definition": "An analytical mathematical equation that provides exact results directly without iteration.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f27",
+      "term": "Multiple Solutions",
+      "definition": "The occurrence of multiple valid joint configurations (e.g., elbow-up/down) that reach the same target pose.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f28",
+      "term": "Workspace",
+      "definition": "The total volume of space a robot can physically reach with its end-effector.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f29",
+      "term": "Unreachable Target",
+      "definition": "A target pose outside the robot's workspace, resulting in mathematical errors in IK solvers.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f30",
+      "term": "Kinematic Decoupling",
+      "definition": "A technique to simplify 6-DoF IK by separating the position problem from the orientation problem.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f31",
+      "term": "Elbow-Up/Down",
+      "definition": "The two common geometric configurations for a 2-link manipulator reaching a specific point.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f32",
+      "term": "Spherical Wrist",
+      "definition": "A wrist design where all three axes intersect at a single point, greatly simplifying IK calculations.",
+      "category": "kinematics-inverse"
+    },
+    {
+      "id": "f33",
+      "term": "Jacobian Matrix",
+      "definition": "A matrix mapping joint velocities to end-effector Cartesian velocities.",
+      "category": "differential-kinematics"
+    },
+    {
+      "id": "f34",
+      "term": "Singularity",
+      "definition": "A configuration where the robot loses a degree of freedom and the Jacobian becomes non-invertible.",
+      "category": "differential-kinematics"
+    },
+    {
+      "id": "f35",
+      "term": "Velocity Spike",
+      "definition": "The near-infinite joint velocity required to move the end-effector near a singular point.",
+      "category": "differential-kinematics"
+    },
+    {
+      "id": "f36",
+      "term": "Workspace Boundary Singularity",
+      "definition": "A singularity occurring when the robot is at its maximum outer reach (fully stretched).",
+      "category": "differential-kinematics"
+    },
+    {
+      "id": "f37",
+      "term": "Internal Singularity",
+      "definition": "A singularity occurring when two or more joint axes align within the workspace.",
+      "category": "differential-kinematics"
+    },
+    {
+      "id": "f38",
+      "term": "Static Force Mapping",
+      "definition": "The relationship between joint torques and end-effector forces using the Jacobian transpose.",
+      "category": "differential-kinematics"
+    },
+    {
+      "id": "f39",
+      "term": "Determinant of Jacobian",
+      "definition": "A mathematical indicator used to detect singularities; when it equals zero, the robot is singular.",
+      "category": "differential-kinematics"
+    },
+    {
+      "id": "f40",
+      "term": "Twist",
+      "definition": "A 6x1 vector representing the combined linear and angular velocity of a rigid body.",
+      "category": "differential-kinematics"
+    }
+  ],
+  "terminology": {
+    "foundations": [
+      {
+        "term": "DOF",
+        "definition": "Degrees of Freedom"
+      },
+      {
+        "term": "Manipulator",
+        "definition": "The physical arm structure"
+      },
+      {
+        "term": "Fixed Automation",
+        "definition": "Non-programmable machinery"
+      }
+    ],
+    "spatial-representation": [
+      {
+        "term": "Rotation Matrix",
+        "definition": "3x3 Orthonormal matrix"
+      },
+      {
+        "term": "Homogeneous Matrix",
+        "definition": "4x4 Spatial transformation"
+      },
+      {
+        "term": "Orthonormal",
+        "definition": "Perpendicular unit vectors"
+      }
+    ],
+    "kinematics-forward": [
+      {
+        "term": "DH Parameters",
+        "definition": "Denavit-Hartenberg modeling"
+      },
+      {
+        "term": "FK",
+        "definition": "Forward Kinematics"
+      },
+      {
+        "term": "Common Normal",
+        "definition": "Shortest distance between two axes"
+      }
+    ],
+    "kinematics-inverse": [
+      {
+        "term": "IK",
+        "definition": "Inverse Kinematics"
+      },
+      {
+        "term": "Closed-Form",
+        "definition": "Analytical exact solution"
+      },
+      {
+        "term": "Decoupling",
+        "definition": "Separating pose into position and orientation"
+      }
+    ],
+    "differential-kinematics": [
+      {
+        "term": "Jacobian",
+        "definition": "Velocity mapping matrix"
+      },
+      {
+        "term": "Singularity",
+        "definition": "Loss of motion capability"
+      },
+      {
+        "term": "Manipulability",
+        "definition": "Measure of motion freedom"
+      }
+    ]
+  },
+  "achievements": [
+    {
+      "id": "rookie-mechanic",
+      "title": "Rookie Mechanic",
+      "description": "Complete your first revision session in practice mode.",
+      "icon": "Zap",
+      "condition": {
+        "type": "runs_gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "spatial-wizard",
+      "title": "Spatial Wizard",
+      "description": "Achieve 100% accuracy in the spatial representation category.",
+      "icon": "Shield",
+      "condition": {
+        "type": "accuracy_gte",
+        "value": 100
+      }
+    },
+    {
+      "id": "dh-specialist",
+      "title": "DH Specialist",
+      "description": "Answer 20 Forward Kinematics questions correctly in a row.",
+      "icon": "Award",
+      "condition": {
+        "type": "streak_gte",
+        "value": 20
+      }
+    },
+    {
+      "id": "speed-demon",
+      "title": "Speed Demon",
+      "description": "Complete a speedrun session in under 120 seconds.",
+      "icon": "Timer",
+      "condition": {
+        "type": "speedrun_under",
+        "mode": "speedrun",
+        "seconds": 120
+      }
+    },
+    {
+      "id": "math-pro",
+      "title": "Jacobian Master",
+      "description": "Correctly identify all singularity types without using hints.",
+      "icon": "Crosshair",
+      "condition": {
+        "type": "no_hints",
+        "mode": "hardcore"
+      }
+    },
+    {
+      "id": "hardcore-survivalist",
+      "title": "Hardcore Survivalist",
+      "description": "Complete the Survival mode with at least 50 correct answers.",
+      "icon": "Flame",
+      "condition": {
+        "type": "mode_complete",
+        "mode": "survival"
+      }
+    },
+    {
+      "id": "full-stack-engineer",
+      "title": "Full Stack Engineer",
+      "description": "Correctly answer at least one question from every category.",
+      "icon": "Grid",
+      "condition": {
+        "type": "all_categories"
+      }
+    },
+    {
+      "id": "precision-expert",
+      "title": "Precision Expert",
+      "description": "Finish Blitz mode with an accuracy over 90%.",
+      "icon": "Star",
+      "condition": {
+        "type": "accuracy_gte",
+        "value": 90
+      }
+    },
+    {
+      "id": "flashcard-guru",
+      "title": "Flashcard Guru",
+      "description": "Review all flashcards in the deck.",
+      "icon": "BookOpen",
+      "condition": {
+        "type": "mode_complete",
+        "mode": "flashcards"
+      }
+    },
+    {
+      "id": "robot-overlord",
+      "title": "Robot Overlord",
+      "description": "Unlock all other achievements to master the field of robotics.",
+      "icon": "Trophy",
+      "condition": {
+        "type": "all_unlocked"
+      }
+    }
+  ]
+}
