@@ -1,0 +1,264 @@
+{
+  "id": "intro-to-cs",
+  "name": "Intro to Computer Science",
+  "config": {
+    "title": "Intro to Computer Science",
+    "description": "Fundamental CS concepts: data types, algorithms, memory, and computation theory.",
+    "version": "1.0",
+    "difficulty": "Easy"
+  },
+  "questions": [
+    {
+      "id": "ics-001",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Data Types",
+      "question": "Which data type is used to store a single character in most programming languages?",
+      "options": [
+        { "label": "A", "text": "int" },
+        { "label": "B", "text": "char" },
+        { "label": "C", "text": "bool" },
+        { "label": "D", "text": "float" }
+      ],
+      "answer": "B",
+      "hint": "Think of the word 'character'.",
+      "explanation": "char (short for character) is the data type designed to hold a single character value such as 'a' or '3'."
+    },
+    {
+      "id": "ics-002",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "Data Types",
+      "question": "A boolean data type can hold more than two distinct values.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "B",
+      "hint": "Consider the two states of a light switch.",
+      "explanation": "A boolean holds exactly two values: true or false (1 or 0). It cannot represent any other state."
+    },
+    {
+      "id": "ics-003",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Data Types",
+      "question": "What is the typical size of an int in a 32-bit system?",
+      "options": [
+        { "label": "A", "text": "1 byte" },
+        { "label": "B", "text": "2 bytes" },
+        { "label": "C", "text": "4 bytes" },
+        { "label": "D", "text": "8 bytes" }
+      ],
+      "answer": "C",
+      "hint": "32 bits equals how many bytes?",
+      "explanation": "On a 32-bit system, an int is typically 4 bytes (32 bits), allowing values from roughly -2.1 billion to 2.1 billion."
+    },
+    {
+      "id": "ics-004",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Algorithms",
+      "question": "What is the time complexity of a linear search on an array of n elements?",
+      "options": [
+        { "label": "A", "text": "O(1)" },
+        { "label": "B", "text": "O(log n)" },
+        { "label": "C", "text": "O(n)" },
+        { "label": "D", "text": "O(n²)" }
+      ],
+      "answer": "C",
+      "hint": "In the worst case, you check every element once.",
+      "explanation": "Linear search checks each element sequentially. In the worst case (element not found), it examines all n elements, giving O(n) time complexity."
+    },
+    {
+      "id": "ics-005",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Algorithms",
+      "question": "Binary search requires the input array to be:",
+      "options": [
+        { "label": "A", "text": "Randomly ordered" },
+        { "label": "B", "text": "Sorted" },
+        { "label": "C", "text": "Reversed" },
+        { "label": "D", "text": "Unique elements only" }
+      ],
+      "answer": "B",
+      "hint": "The algorithm works by repeatedly halving the search space.",
+      "explanation": "Binary search relies on eliminating half the remaining elements each step. This only works if the array is sorted, so comparisons are meaningful."
+    },
+    {
+      "id": "ics-006",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "Algorithms",
+      "question": "An algorithm with O(log n) complexity is faster than O(n) for large inputs.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "A",
+      "hint": "Think about how log n grows compared to n as n increases.",
+      "explanation": "log n grows much slower than n. For example, log₂(1,000,000) ≈ 20, while n = 1,000,000. O(log n) algorithms scale far better for large inputs."
+    },
+    {
+      "id": "ics-007",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Memory",
+      "question": "Which memory type loses its contents when power is turned off?",
+      "options": [
+        { "label": "A", "text": "ROM" },
+        { "label": "B", "text": "RAM" },
+        { "label": "C", "text": "SSD" },
+        { "label": "D", "text": "HDD" }
+      ],
+      "answer": "B",
+      "hint": "R-A-M: Random Access ___",
+      "explanation": "RAM (Random Access Memory) is volatile — it only retains data while powered. ROM, SSDs, and HDDs are non-volatile and persist data without power."
+    },
+    {
+      "id": "ics-008",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Memory",
+      "question": "What does a pointer store?",
+      "options": [
+        { "label": "A", "text": "A copy of a variable's value" },
+        { "label": "B", "text": "The memory address of another variable" },
+        { "label": "C", "text": "A function definition" },
+        { "label": "D", "text": "A string of characters" }
+      ],
+      "answer": "B",
+      "hint": "It 'points' somewhere in memory.",
+      "explanation": "A pointer is a variable whose value is a memory address. It points to the location where another variable's data is stored, enabling indirect access."
+    },
+    {
+      "id": "ics-009",
+      "type": "TrueFalse",
+      "difficulty": "Medium",
+      "category": "Memory",
+      "question": "Stack memory is managed automatically by the program, while heap memory requires manual management in languages like C.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "A",
+      "hint": "Local variables live on the stack; malloc() uses the heap.",
+      "explanation": "The call stack automatically allocates and deallocates frames as functions execute. The heap requires explicit allocation (malloc/new) and deallocation (free/delete)."
+    },
+    {
+      "id": "ics-010",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "Computation Theory",
+      "question": "What is a compiler?",
+      "options": [
+        { "label": "A", "text": "A program that runs source code line by line" },
+        { "label": "B", "text": "A program that translates source code into machine code" },
+        { "label": "C", "text": "A hardware component that executes instructions" },
+        { "label": "D", "text": "A tool that debugs programs" }
+      ],
+      "answer": "B",
+      "hint": "It translates the entire program before execution.",
+      "explanation": "A compiler reads the entire source code and translates it into machine code (or bytecode) before execution. An interpreter, by contrast, translates and executes line by line."
+    },
+    {
+      "id": "ics-011",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Computation Theory",
+      "question": "Which of the following is NOT a component of the Von Neumann architecture?",
+      "options": [
+        { "label": "A", "text": "CPU" },
+        { "label": "B", "text": "Memory unit" },
+        { "label": "C", "text": "Blockchain" },
+        { "label": "D", "text": "Input/Output devices" }
+      ],
+      "answer": "C",
+      "hint": "Von Neumann designed this in the 1940s — long before distributed ledgers.",
+      "explanation": "Von Neumann architecture consists of a CPU, memory unit, and I/O devices connected by a data bus. Blockchain is a modern distributed ledger concept unrelated to computer architecture basics."
+    },
+    {
+      "id": "ics-012",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "Computation Theory",
+      "question": "All problems can be solved by an algorithm.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "B",
+      "hint": "Think of the Halting Problem.",
+      "explanation": "Turing's Halting Problem proves that some problems are undecidable — no algorithm can solve them in the general case. Computability theory defines the limits of what is algorithmically solvable."
+    },
+    {
+      "id": "ics-013",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "Algorithms",
+      "question": "What is the worst-case time complexity of QuickSort?",
+      "options": [
+        { "label": "A", "text": "O(n log n)" },
+        { "label": "B", "text": "O(n)" },
+        { "label": "C", "text": "O(n²)" },
+        { "label": "D", "text": "O(log n)" }
+      ],
+      "answer": "C",
+      "hint": "This happens when the pivot is always the smallest or largest element.",
+      "explanation": "QuickSort's worst case (O(n²)) occurs when the pivot consistently creates maximally unbalanced partitions, such as on already-sorted input with a naive pivot strategy. Average case is O(n log n)."
+    },
+    {
+      "id": "ics-014",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "Data Types",
+      "question": "In most languages, what is the result of integer division 7 / 2?",
+      "options": [
+        { "label": "A", "text": "3.5" },
+        { "label": "B", "text": "3" },
+        { "label": "C", "text": "4" },
+        { "label": "D", "text": "Error" }
+      ],
+      "answer": "B",
+      "hint": "Integer division truncates toward zero.",
+      "explanation": "When both operands are integers, most languages perform integer (truncating) division. 7 / 2 = 3.5, truncated to 3. Use floating-point types to get 3.5."
+    },
+    {
+      "id": "ics-015",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "Memory",
+      "question": "What is a memory leak?",
+      "options": [
+        { "label": "A", "text": "When a program reads from an invalid memory address" },
+        { "label": "B", "text": "When allocated memory is never freed and accumulates over time" },
+        { "label": "C", "text": "When two threads access the same memory simultaneously" },
+        { "label": "D", "text": "When the stack overflows due to deep recursion" }
+      ],
+      "answer": "B",
+      "hint": "Memory is allocated but the reference to it is lost.",
+      "explanation": "A memory leak occurs when a program allocates heap memory but loses all references to it without freeing it. Over time this exhausts available memory, degrading or crashing the program."
+    }
+  ],
+  "flashcards": [
+    { "id": "ics-fc-001", "front": "What is an algorithm?", "back": "A finite, ordered set of instructions that solves a problem or performs a computation.", "category": "Algorithms" },
+    { "id": "ics-fc-002", "front": "What is RAM?", "back": "Random Access Memory — volatile, fast memory used by the CPU to store data currently in use.", "category": "Memory" },
+    { "id": "ics-fc-003", "front": "What is a compiler?", "back": "A program that translates entire source code into machine code before execution.", "category": "Computation Theory" },
+    { "id": "ics-fc-004", "front": "What is O(n) complexity?", "back": "Linear time — the algorithm's run time grows proportionally with the size of the input.", "category": "Algorithms" },
+    { "id": "ics-fc-005", "front": "What is a pointer?", "back": "A variable that stores the memory address of another variable.", "category": "Memory" }
+  ],
+  "terminology": {
+    "Algorithm": "A step-by-step procedure for solving a problem in a finite number of steps.",
+    "Compiler": "Translates source code into machine code before execution.",
+    "RAM": "Volatile memory used by the CPU to store actively used data.",
+    "Pointer": "A variable holding the memory address of another variable.",
+    "Boolean": "A data type with exactly two values: true and false.",
+    "Big O Notation": "A mathematical notation describing the limiting behavior of an algorithm's complexity."
+  },
+  "achievements": [
+    { "id": "first-correct", "title": "First Contact", "description": "Answer your first question correctly." },
+    { "id": "perfect-run", "title": "Clean Sweep", "description": "Complete a session with 100% accuracy." },
+    { "id": "streak-5", "title": "On A Roll", "description": "Achieve a streak of 5 correct answers." }
+  ]
+}

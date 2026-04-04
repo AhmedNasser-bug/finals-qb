@@ -76,13 +76,18 @@ export async function decodeSubject(
 
 // ─── URL helpers ──────────────────────────────────────────────────────────────
 
-/** Build the full shareable URL for a given encoded payload. */
+/**
+ * Build the full shareable URL for a given encoded payload.
+ * Always targets /subjects so recipients land on the selection page, which
+ * handles the #share= hash and shows the ShareReceiver overlay.
+ * Existing links pointing to "/" also work — root redirects to /subjects.
+ */
 export function buildShareUrl(encoded: string): string {
-  const origin =
+  const base =
     typeof window !== "undefined"
-      ? `${window.location.protocol}//${window.location.host}${window.location.pathname}`
-      : ""
-  return `${origin}${SHARE_HASH_PREFIX}${encoded}`
+      ? `${window.location.protocol}//${window.location.host}/subjects`
+      : "/subjects"
+  return `${base}${SHARE_HASH_PREFIX}${encoded}`
 }
 
 /**
