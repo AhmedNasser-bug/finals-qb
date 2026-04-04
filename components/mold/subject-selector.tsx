@@ -9,14 +9,7 @@ import type { FullSubjectData } from "@/lib/mold-types"
 
 // ─── Example subject manifest (only metadata, no questions yet) ───────────────
 
-interface ExampleManifestEntry {
-  id: string
-  name: string
-  description: string
-  questionCount: number
-  categoryCount: number
-  tags: string[]
-}
+import { getExamplesManifest, type ExampleManifestEntry } from "@/app/actions"
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -47,9 +40,8 @@ export function SubjectSelector({
   const [exampleError, setExampleError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch("/examples/index.json")
-      .then((r) => r.json())
-      .then((data: ExampleManifestEntry[]) => setExamples(data))
+    getExamplesManifest()
+      .then((data) => setExamples(data))
       .catch(() => setExamples([]))
       .finally(() => setExamplesLoading(false))
   }, [])
