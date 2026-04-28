@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import type { Flashcard } from "@/lib/mold-types"
 import { formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
@@ -85,22 +85,45 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
   }
 
   // ── Derived stats ─────────────────────────────────────────────────────────
-  const allScores = Object.values(scores)
-  const confident  = allScores.filter((s) => s > 0).length
-  const neutral    = allScores.filter((s) => s === 0).length
-  const learning   = allScores.filter((s) => s < 0).length
+  const { confident, neutral, learning, hardestCards, worstScore, hardest } = useMemo(() => {
+    let conf = 0
+    let neut = 0
+    let learn = 0
+    let worst = Infinity
+    let hardestCard: Flashcard | undefined = undefined
+    const learningList: Flashcard[] = []
 
-  // Top 5 hardest cards (most negative score) for round-end preview
-  const hardestCards = [...flashcards]
-    .filter((c) => (scores[c.id] ?? 0) < 0)
-    .sort((a, b) => (scores[a.id] ?? 0) - (scores[b.id] ?? 0))
-    .slice(0, 5)
+    for (const card of flashcards) {
+      const s = scores[card.id] ?? 0
+      if (s > 0) conf++
+      else if (s === 0) neut++
+      else {
+        learn++
+        learningList.push(card)
+      }
+
+      if (s < worst) {
+        worst = s
+        hardestCard = card
+      }
+    }
+
+    const hardestSorted = learningList
+      .sort((a, b) => (scores[a.id] ?? 0) - (scores[b.id] ?? 0))
+      .slice(0, 5)
+
+    return {
+      confident: conf,
+      neutral: neut,
+      learning: learn,
+      hardestCards: hardestSorted,
+      worstScore: worst === Infinity ? 0 : worst,
+      hardest: hardestCard,
+    }
+  }, [flashcards, scores])
 
   // ── Session-end screen ────────────────────────────────────────────────────
   if (phase === "session-end") {
-    const worstScore = Math.min(...allScores)
-    const hardest = flashcards.find((c) => scores[c.id] === worstScore)
-
     return (
       <div className="flex flex-col flex-1">
         <Header onQuit={onReturnHome} progress={100} position={`${flashcards.length} / ${flashcards.length}`} round={round} />
