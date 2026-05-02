@@ -9,6 +9,7 @@ import type { Achievement, GameConfig, RunRecord, FullSubjectData } from "@/lib/
 import { calculateGrade } from "@/lib/mold-types"
 import { GameHeader, QuestionCard, GameFooter, ResultsScreen } from "@/components/mold/game-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard-screen"
+import { calculateAccuracy } from "@/lib/mold-types"
 
 // ─── Public interface ─────────────────────────────────────────────────────────
 
@@ -112,15 +113,15 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     if (state.phase === "complete" && !runSavedRef.current) {
       runSavedRef.current = true
 
-      const total       = state.questions.length
-      const accuracyPct = total > 0 ? Math.round((state.score / total) * 100) : 0
+      const accuracyPct   = calculateAccuracy(state.score, state.wrongAnswers)
+      const totalQuestions = state.questions.length
       const run: RunRecord = {
         id:              `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         date:            new Date().toISOString(),
         mode:            state.mode,
         score:           accuracyPct,
         correctAnswers:  state.score,
-        totalQuestions:  total,
+        totalQuestions,
         timeTaken:       state.elapsedSeconds,
         streak:          state.bestStreak,
         grade:           calculateGrade(accuracyPct),

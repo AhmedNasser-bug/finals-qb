@@ -9,6 +9,7 @@ import {
   useRef,
   type ReactNode,
 } from "react"
+import { calculateAccuracy } from "@/lib/mold-types"
 import type {
   GameState,
   GameConfig,
@@ -289,8 +290,7 @@ export function GameEngineProvider({ config, questions, children }: GameEnginePr
   const currentQuestion = state.questions[state.currentIndex] ?? null
 
   // Fix 2-A: accuracy denominator is answered questions (correct + wrong), not currentIndex.
-  const answeredCount = state.score + state.wrongAnswers
-  const accuracyPct = answeredCount > 0 ? Math.round((state.score / answeredCount) * 100) : 0
+  const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
 
   return (
     <GameEngineContext.Provider value={{

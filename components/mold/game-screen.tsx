@@ -2,7 +2,7 @@
 
 import { useGameEngine } from "@/lib/game-engine"
 import type { Question } from "@/lib/mold-types"
-import { formatTime, gradeBgColor, calculateGrade, modeLabel, formatLabel } from "@/lib/mold-types"
+import { formatTime, gradeBgColor, calculateGrade, modeLabel, formatLabel, calculateAccuracy } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
 // ─── Game Header Bar ──────────────────────────────────────────────────────────
@@ -439,11 +439,10 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
 
   // Only count questions that were actually answered (true = correct, false = wrong).
   // Undefined entries are unanswered/skipped and must not inflate or deflate accuracy.
-  const answered    = answers.filter((a) => a === true || a === false).length
-  const accuracyPct = answered > 0 ? Math.round((score / answered) * 100) : 0
+  const wrongCountVal = answers.filter((a) => a === false).length
+  const accuracyPct = calculateAccuracy(score, wrongCountVal)
   const grade       = calculateGrade(accuracyPct)
 
-  const wrongCount = answers.filter((a) => a === false).length
   const skipCount  = answers.filter((a) => a === undefined).length
 
   // Grade color — must match the LetterGrade values returned by calculateGrade()
@@ -625,7 +624,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-[#93000a]" />
                   <span className="font-mono text-[10px] tracking-widest text-zinc-400">
-                    CRITICAL_ERR [{wrongCount}]
+                    CRITICAL_ERR [{wrongCountVal}]
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

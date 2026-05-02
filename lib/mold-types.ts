@@ -313,3 +313,12 @@ export function modeLabel(id: GameModeId): string {
 export function formatLabel(slug: string): string {
   return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
 }
+
+/**
+ * Calculates the accuracy percentage based on correct and wrong answers.
+ * Accuracy denominator is answered questions (correct + wrong), not currentIndex.
+ */
+export function calculateAccuracy(score: number, wrongAnswers: number): number {
+  const answeredCount = score + wrongAnswers
+  return answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0
+}
