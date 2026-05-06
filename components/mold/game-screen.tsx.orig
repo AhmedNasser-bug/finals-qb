@@ -475,15 +475,12 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     categoryMap[cat].total++
     if (answers[i] === true) categoryMap[cat].correct++
   })
-  const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => {
-    const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
-    return {
-      id:    `MOD_${String(idx + 1).padStart(2, "0")}`,
-      name:  cat.replace(/_/g, " "),
-      pct,
-      grade: calculateGrade(pct),
-    }
-  })
+  const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => ({
+    id:    `MOD_${String(idx + 1).padStart(2, "0")}`,
+    name:  cat.replace(/_/g, " "),
+    pct:   s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
+    grade: calculateGrade(s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
+  }))
 
   // Pixel grid: cap render at 100 cells max to prevent layout explosion;
   // group into buckets when questions exceed 100.
