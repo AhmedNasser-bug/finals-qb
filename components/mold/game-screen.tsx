@@ -2,7 +2,7 @@
 
 import { useGameEngine } from "@/lib/game-engine"
 import type { Question } from "@/lib/mold-types"
-import { formatTime, gradeBgColor, calculateGrade, modeLabel, formatLabel, calculateAccuracy } from "@/lib/mold-types"
+import { formatTime, calculateGrade, modeLabel, formatLabel, calculateAccuracy } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
 // ─── Game Header Bar ──────────────────────────────────────────────────────────
