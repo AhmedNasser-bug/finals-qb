@@ -2,6 +2,7 @@
 
 import type { SubjectData, Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
+import { GoogleSignUpButton } from "@/components/mold/google-sign-up-button"
 
 interface HeroHeaderProps {
   subject: SubjectData
@@ -31,6 +32,8 @@ export function HeroHeader({ subject, achievements, onTrophyClick, className }: 
           <span className="text-xs font-mono text-muted-foreground">
             {subject.categories.length} SECTORS
           </span>
+          <span className="text-border select-none">|</span>
+          <GoogleSignUpButton />
         </div>
       </div>
 
