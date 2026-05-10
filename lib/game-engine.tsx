@@ -289,7 +289,6 @@ export function GameEngineProvider({ config, questions, children }: GameEnginePr
 
   const currentQuestion = state.questions[state.currentIndex] ?? null
 
-  // Fix 2-A: accuracy denominator is answered questions (correct + wrong), not currentIndex.
   const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
 
   return (

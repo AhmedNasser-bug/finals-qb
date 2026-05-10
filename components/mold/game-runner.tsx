@@ -25,7 +25,7 @@ interface GameRunnerProps {
   onRunSaved?: (run: RunRecord) => void
 }
 
-// ─── Fix 2-A: ToastLayer — keeps hook above all conditional renders ───────────
+// ─── ToastLayer — keeps hook above all conditional renders ───────────
 /**
  * Wraps children with toast state and renders the container at the bottom.
  * Extracted so the hook call is never below a conditional return.
