@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useCallback, type DragEvent } from "react"
+import { useState, useCallback, type DragEvent } from "react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
@@ -192,8 +192,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
       setPromptCopied(true)
       setTimeout(() => setPromptCopied(false), 2500)
     } catch {
-      // fallback: select the text
-      textareaRef.current?.focus()
+      // fallback: ignore
     }
   }
 

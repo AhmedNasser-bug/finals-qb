@@ -32,11 +32,13 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
   }, [])
 
   const entries = terminology?.[activeCategory] ?? []
-  const filtered = search.trim()
+  const hasSearch = search.trim()
+  const loweredSearch = hasSearch.toLowerCase()
+  const filtered = hasSearch
     ? entries.filter(
         (e) =>
-          e.term.toLowerCase().includes(search.toLowerCase()) ||
-          e.definition.toLowerCase().includes(search.toLowerCase())
+          e.term.toLowerCase().includes(loweredSearch) ||
+          e.definition.toLowerCase().includes(loweredSearch)
       )
     : entries
 

@@ -10,6 +10,7 @@ import { GameRunner } from "@/components/mold/game-runner"
 import { AchievementGallery } from "@/components/mold/achievement-gallery"
 import { EncyclopediaOverlay } from "@/components/mold/encyclopedia-overlay"
 import { SubjectImporter } from "@/components/mold/subject-importer"
+import { Footer } from "@/components/mold/footer"
 import { useAchievements } from "@/lib/achievement-engine"
 import { toSubjectData } from "@/lib/subject-persistence"
 import {
@@ -74,7 +75,7 @@ export function HomeScreen({
   // load and the gallery always shows 0/0.
   useEffect(() => {
     syncSubjectAchievements(activeSubject)
-  }, [activeSubject.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeSubject.id, syncSubjectAchievements]) // eslint-disable-line react-hooks/exhaustive-deps
   const subjectData = toSubjectData(activeSubject)
 
   // Hydrate runs from localStorage on mount
@@ -203,10 +204,7 @@ export function HomeScreen({
           <PerformanceTable runs={runs} stats={stats} />
         </main>
 
-        <footer className="border-t border-border px-6 py-3 flex items-center justify-between bg-panel">
-          <span className="text-xs font-mono text-muted-foreground">MOLD V2 — MASTERY PROTOCOL</span>
-          <span className="text-xs font-mono text-muted-foreground">BUILD 2026.03</span>
-        </footer>
+        <Footer rightText="BUILD 2026.03" />
       </div>
 
       {showGallery && <AchievementGallery onClose={() => setShowGallery(false)} />}

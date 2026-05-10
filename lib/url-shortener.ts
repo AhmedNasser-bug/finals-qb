@@ -36,12 +36,11 @@ export async function shortenUrl(longUrl: string): Promise<{ shortUrl: string } 
 
     const data = (await response.json()) as ShortenResult
 
-    if (!data.ok || !data.result?.short_url) {
+    if (!data.ok || !data.result?.full_short_link) {
       return { error: data.error || "Failed to shorten URL" }
     }
 
-    // shrtco.de returns "shrtco.de/xxx", we want the full link
-    return { shortUrl: `https://${data.result.short_url}` }
+    return { shortUrl: data.result.full_short_link }
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Failed to shorten URL" }
   }
