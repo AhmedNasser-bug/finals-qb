@@ -393,9 +393,7 @@ Reads `state` and dispatches `revealAnswer`, `nextQuestion`, `useHint`. SUBMIT b
 
 ### ResultsScreen
 
-Reads `state` from `useGameEngine()`. Derives `accuracyPct` from `score / questions.length` (total questions, not answered count — this is intentional for the results screen summary). Displays grade badge, stat grid, HOME and PLAY AGAIN buttons.
-
-> **Note:** ResultsScreen uses `score / questions.length` (total), while the in-game header uses `score / answeredCount`. Both are correct for their context.
+Reads `state` from `useGameEngine()`. Displays grade badge, stat grid, HOME and PLAY AGAIN buttons. Accuracy is derived from answered questions (correct + wrong) to maintain consistency with the game engine's `accuracyPct`.
 
 ### FlashcardScreen
 

@@ -4,3 +4,4 @@
 
 sh: 1: next: not found
  ELIFECYCLE  Command failed.
+-bash: ./node_modules/.bin/next: No such file or directory
