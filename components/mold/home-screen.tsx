@@ -74,7 +74,7 @@ export function HomeScreen({
   // load and the gallery always shows 0/0.
   useEffect(() => {
     syncSubjectAchievements(activeSubject)
-  }, [activeSubject.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeSubject.id, syncSubjectAchievements]) // eslint-disable-line react-hooks/exhaustive-deps
   const subjectData = toSubjectData(activeSubject)
 
   // Hydrate runs from localStorage on mount

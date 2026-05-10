@@ -10,11 +10,13 @@ import {
 } from "react"
 import type {
   Achievement,
+  AchievementCondition,
   GameState,
   RunRecord,
 } from "@/lib/mold-types"
 import {
   checkNewUnlocks,
+  loadConditionsFromSubject,
 } from "@/lib/achievement-logic"
 
 // Re-export logic for backward compatibility
@@ -75,6 +77,7 @@ export function useAchievements(): AchievementContextValue {
 
 export function AchievementProvider({ children }: { children: ReactNode }) {
   const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [conditions, setConditions]   = useState<Record<string, AchievementCondition>>({})
 
   useEffect(() => {
     loadAchievements().then(setAchievements)
@@ -84,26 +87,39 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
    * Merge the active subject's achievement definitions into the stored list.
    * - New entries (not in storage yet) are added as locked (unlockedAt: null).
    * - Existing entries keep their current unlockedAt value.
-   * - Entries from old subjects that no longer exist are removed.
+   * - Entries from the same subject that no longer exist are removed.
    * This is the root cause fix for 0/0: without this, localStorage is always
    * empty on first load and achievements never appear in the gallery.
    */
   const syncSubjectAchievements = useCallback(
     async (subject: import("@/lib/mold-types").FullSubjectData): Promise<void> => {
-      const stored = await loadAchievements()
-      const storedMap = Object.fromEntries(stored.map((a) => [a.id, a]))
+      // 1. Extract and store conditions for this subject
+      const subjectConditions = loadConditionsFromSubject(subject)
+      setConditions(subjectConditions)
 
-      const merged: Achievement[] = subject.achievements.map((raw) => ({
+      // 2. Load all stored achievements (across all subjects)
+      const stored = await loadAchievements()
+      const storedMap = new Map(stored.map((a) => [a.id, a]))
+
+      // 3. Prepare achievements for this subject
+      const subjectAchievements: Achievement[] = subject.achievements.map((raw) => ({
         id:          raw.id,
         title:       raw.title,
         description: raw.description,
         icon:        raw.icon,
         // Preserve unlock state if this achievement was already stored
-        unlockedAt:  storedMap[raw.id]?.unlockedAt ?? null,
+        unlockedAt:  storedMap.get(raw.id)?.unlockedAt ?? null,
       }))
 
-      await saveAchievements(merged)
-      setAchievements(merged)
+      // 4. Merge into global storage: keep others, update/add current subject's
+      const subjectIds = new Set(subjectAchievements.map(a => a.id))
+      const others = stored.filter(a => !subjectIds.has(a.id))
+      const fullMerged = [...others, ...subjectAchievements]
+
+      await saveAchievements(fullMerged)
+
+      // 5. Update local React state with ONLY this subject's achievements
+      setAchievements(subjectAchievements)
     },
     []
   )
@@ -111,7 +127,8 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
   const onGameComplete = useCallback(
     async (state: GameState, allRuns: RunRecord[]): Promise<Achievement[]> => {
       const current = await loadAchievements()
-      const newIds = checkNewUnlocks(current, state, allRuns)
+      // Use subject-specific conditions for evaluation
+      const newIds = checkNewUnlocks(current, state, allRuns, conditions)
 
       if (newIds.length === 0) return []
 
@@ -121,12 +138,19 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       )
 
       await saveAchievements(updated)
-      setAchievements(updated)
+
+      // Sync local state: update unlockedAt for the achievements we are currently displaying
+      setAchievements((prev) =>
+        prev.map((a) => {
+          const match = updated.find((u) => u.id === a.id)
+          return match ? { ...a, unlockedAt: match.unlockedAt } : a
+        })
+      )
 
       // Return the newly unlocked Achievement objects for the toast
       return updated.filter((a) => newIds.includes(a.id))
     },
-    []
+    [conditions]
   )
 
   const reset = useCallback(async () => {
