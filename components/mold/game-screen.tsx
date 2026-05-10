@@ -439,11 +439,17 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
 
   // Only count questions that were actually answered (true = correct, false = wrong).
   // Undefined entries are unanswered/skipped and must not inflate or deflate accuracy.
-  const wrongCountVal = answers.filter((a) => a === false).length
+  let wrongCountVal = 0
+  let skipCount = 0
+  for (let i = 0; i < answers.length; i++) {
+    const a = answers[i]
+    if (a === false) wrongCountVal++
+    else if (a === undefined) skipCount++
+  }
+
   const accuracyPct = calculateAccuracy(score, wrongCountVal)
   const grade       = calculateGrade(accuracyPct)
-
-  const skipCount  = answers.filter((a) => a === undefined).length
+  const answered    = score + wrongCountVal
 
   // Grade color — must match the LetterGrade values returned by calculateGrade()
   // ("S+", "S", "A+", "A", "B+", "C+", "D+", "F") not bare "B" / "C".
