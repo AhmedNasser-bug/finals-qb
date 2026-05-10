@@ -15,6 +15,7 @@ import type {
   Question,
   GameModeId,
 } from "@/lib/mold-types"
+import { shuffle } from "@/lib/crypto-utils"
 
 // ─── Initial state factory ────────────────────────────────────────────────────
 
@@ -107,15 +108,6 @@ function getPerQuestionTimeLimit(config: GameConfig): number {
     case "blitz":    return 0          // global limit instead
     default:         return 0
   }
-}
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
 }
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
