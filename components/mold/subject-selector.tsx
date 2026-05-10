@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { SubjectImporter } from "@/components/mold/subject-importer"
 import { ShareModal } from "@/components/mold/share-modal"
+import { Footer } from "@/components/mold/footer"
 import { toSubjectData } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
 
@@ -319,10 +320,7 @@ export function SubjectSelector({
 
         </main>
 
-        <footer className="border-t border-border px-6 py-3 flex items-center justify-between bg-panel">
-          <span className="text-xs font-mono text-muted-foreground">MOLD V2 — MASTERY PROTOCOL</span>
-          <span className="text-xs font-mono text-muted-foreground">OFFLINE FIRST</span>
-        </footer>
+        <Footer />
       </div>
 
       {showImporter && (

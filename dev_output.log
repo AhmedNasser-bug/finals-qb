@@ -1,1 +1,7 @@
+
+> my-v0-project@0.1.0 dev /app
+> next dev
+
+sh: 1: next: not found
+ ELIFECYCLE  Command failed.
 -bash: ./node_modules/.bin/next: No such file or directory
