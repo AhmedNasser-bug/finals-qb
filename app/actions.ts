@@ -19,14 +19,12 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
     const files = await fs.readdir(examplesDir)
     const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
-    const manifest: ExampleManifestEntry[] = []
-
-    for (const file of jsonFiles) {
+    const manifestPromises = jsonFiles.map(async (file) => {
       const filePath = path.join(examplesDir, file)
-      const content = await fs.readFile(filePath, "utf-8")
       try {
+        const content = await fs.readFile(filePath, "utf-8")
         const data = JSON.parse(content)
-        
+
         // Calculate categories
         const categories = new Set<string>()
         if (data.questions && Array.isArray(data.questions)) {
@@ -40,20 +38,22 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
           tags.push(data.config.difficulty)
         }
 
-        manifest.push({
+        return {
           id: data.id || file.replace(".json", ""),
           name: data.name || file.replace(".json", ""),
           description: data.config?.description || "",
           questionCount: data.questions?.length || 0,
           categoryCount: categories.size,
           tags: data.tags || tags
-        })
+        }
       } catch (err) {
         console.error(`Failed to parse Example Example: ${file}`, err)
+        return null
       }
-    }
+    })
 
-    return manifest
+    const manifestResults = await Promise.all(manifestPromises)
+    return manifestResults.filter((entry): entry is ExampleManifestEntry => entry !== null)
   } catch (err) {
     console.error("Failed to read examples directory", err)
     return []
