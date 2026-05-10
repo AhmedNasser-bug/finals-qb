@@ -237,7 +237,7 @@ export function QuestionCard({
           {/* Question headline + subtext */}
           <div className="space-y-3">
             <h2 className="font-sans text-2xl md:text-3xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty uppercase">
-              {question.question}
+              <span dangerouslySetInnerHTML={{ __html: question.question }} />
             </h2>
             {/* Difficulty / type subtext */}
             <p className="font-sans text-sm text-zinc-400">

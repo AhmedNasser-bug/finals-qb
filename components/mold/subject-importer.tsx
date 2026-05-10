@@ -71,6 +71,7 @@ REQUIREMENTS:
 - Spread questions across 4-6 distinct categories
 - All ids must be unique and kebab-case
 - No duplicate question text
+- HTML is supported and ENCOURAGED in the question text. You can use inline styles (color, font-weight), <br>, <i>, <b>, <code>, <pre>, and other HTML tags to format the question or add diagrams/tables.
 - Every category slug used in questions must exist in terminology
 - All questions MUST have both explanation and hint fields populated
 
