@@ -179,7 +179,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           {/* Quit — recessed, hard to miss-tap */}
           <button
             onClick={onForfeit}
-            className="mt-3 font-mono text-[9px] text-zinc-700 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors"
+            className="mt-3 font-mono text-[9px] text-zinc-700 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-500 rounded px-1"
           >
             QUIT SESSION
           </button>
@@ -357,7 +357,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
           onClick={handleHint}
           disabled={!canHint}
           className={cn(
-            "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all",
+            "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded",
             canHint
               ? "text-[#fecc17] hover:text-[#ffedc2]"
               : "text-zinc-700 cursor-not-allowed"
@@ -378,7 +378,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
             onClick={revealAnswer}
             disabled={!canSubmit}
             className={cn(
-              "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress",
+              "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded",
               canSubmit
                 ? "cta-gradient"
                 : "bg-[#2a2a2a] text-zinc-600 cursor-not-allowed"
@@ -389,7 +389,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         ) : (
           <button
             onClick={nextQuestion}
-            className="w-full h-12 cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up"
+            className="w-full h-12 cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded"
           >
             {isLast ? "VIEW_RESULTS" : "CONTINUE_SESSION"}
           </button>
@@ -409,7 +409,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         {isRevealed && (
           <button
             onClick={nextQuestion}
-            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all"
+            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded"
           >
             <SkipIcon className="w-4 h-4" />
             SKIP
@@ -687,13 +687,13 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           <div className="flex gap-3 w-full md:w-auto">
             <button
               onClick={onReturnHome}
-              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors"
+              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded"
             >
               DUMP_LOGS
             </button>
             <button
               onClick={onPlayAgain}
-              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress"
+              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded"
               style={{ boxShadow: "0 0 25px rgba(254,204,23,0.15)" }}
             >
               CONTINUE_CYCLE
