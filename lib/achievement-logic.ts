@@ -74,15 +74,17 @@ export function evaluateCondition(
 export function checkNewUnlocks(
   achievements: Achievement[],
   state: GameState,
-  allRuns: RunRecord[]
+  allRuns: RunRecord[],
+  conditionMap?: Record<string, AchievementCondition>
 ): string[] {
   const newlyUnlocked: string[] = []
+  const activeConditions = conditionMap ?? ACHIEVEMENT_CONDITIONS
 
   for (const ach of achievements) {
     if (ach.unlockedAt !== null) continue   // already unlocked — skip
 
-    // Find raw definition to get the condition (demo achievements use a map)
-    const condition = ACHIEVEMENT_CONDITIONS[ach.id]
+    // Find raw definition to get the condition
+    const condition = activeConditions[ach.id]
     if (!condition) continue
 
     if (evaluateCondition(condition, state, allRuns)) {
