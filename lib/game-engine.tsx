@@ -262,7 +262,7 @@ interface GameEngineProviderProps {
 
 export function GameEngineProvider({ config, questions, children }: GameEngineProviderProps) {
   // Fix 4-A: Stabilize config/questions on first mount so parent re-renders
-  // cannot reset the game state. This is intentional.
+  // can never trigger a silent game state reset via the lazy initializer.
   const stableConfig = useRef(config).current
   const stableQuestions = useRef(questions).current
 
