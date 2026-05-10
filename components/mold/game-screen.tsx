@@ -2,7 +2,7 @@
 
 import { useGameEngine } from "@/lib/game-engine"
 import type { Question } from "@/lib/mold-types"
-import { formatTime, gradeBgColor, calculateGrade, modeLabel, formatLabel } from "@/lib/mold-types"
+import { formatTime, gradeBgColor, gradeColor, gradeBgClass, gradeToken, calculateGrade, modeLabel, formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
 // ─── Game Header Bar ──────────────────────────────────────────────────────────
@@ -202,11 +202,6 @@ export function QuestionCard({
   const { selectedOption, isRevealed, currentIndex, questions } = state
 
   const grade = calculateGrade(accuracyPct)
-  const gradeColor =
-    grade === "S+" || grade === "S" ? "#fecc17" :
-    grade === "A+" || grade === "A" ? "#4ae176" :
-    grade === "B"                   ? "#67d7f0" :
-    grade === "C"                   ? "#fb8c00" : "#ffb4ab"
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-slide-up">
@@ -223,8 +218,10 @@ export function QuestionCard({
             </span>
             <div className="text-right">
               <span
-                className="font-mono text-4xl font-black tracking-tighter leading-none block"
-                style={{ color: gradeColor }}
+                className={cn(
+                  "font-mono text-4xl font-black tracking-tighter leading-none block",
+                  gradeColor(grade)
+                )}
               >
                 {grade}
               </span>
@@ -446,18 +443,6 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const wrongCount = answers.filter((a) => a === false).length
   const skipCount  = answers.filter((a) => a === undefined).length
 
-  // Grade color — must match the LetterGrade values returned by calculateGrade()
-  // ("S+", "S", "A+", "A", "B+", "C+", "D+", "F") not bare "B" / "C".
-  function resolveGradeColor(g: string): string {
-    if (g === "S+" || g === "S")   return "#fecc17"
-    if (g === "A+" || g === "A")   return "#4ae176"
-    if (g === "B+")                return "#67d7f0"
-    if (g === "C+")                return "#fb8c00"
-    return "#ffb4ab" // D+, F
-  }
-
-  const gradeHex = resolveGradeColor(grade)
-
   // Accuracy bar: 10 segments, each represents 10% — filled count proportional to accuracy
   const filledSegments = Math.round((accuracyPct / 100) * 10)
 
@@ -514,16 +499,20 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           {/* Grade box */}
           <div className="relative">
             <div
-              className="absolute inset-0 blur-3xl opacity-40 pointer-events-none"
-              style={{ backgroundColor: gradeHex }}
+              className={cn(
+                "absolute inset-0 blur-3xl opacity-40 pointer-events-none",
+                gradeBgClass(grade)
+              )}
             />
-            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden"
-              style={{ boxShadow: `0 0 40px ${gradeHex}20` }}
+            <div className={cn(
+                "relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden",
+                `shadow-[0_0_40px_theme(colors.grade.${gradeToken(grade)})/.2]`
+              )}
             >
               <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
               <span
-                className="font-sans font-black leading-none tracking-tighter z-10 select-none"
-                style={{ fontSize: "clamp(72px, 10vw, 128px)", color: "#ffedc2" }}
+                className="font-sans font-black leading-none tracking-tighter z-10 select-none text-[#ffedc2]"
+                style={{ fontSize: "clamp(72px, 10vw, 128px)" }}
               >
                 {grade}
               </span>
@@ -536,7 +525,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
                 ACCURACY_COEFFICIENT
               </span>
-              <span className="font-mono text-2xl font-black" style={{ color: gradeHex }}>
+              <span className={cn("font-mono text-2xl font-black", gradeColor(grade))}>
                 {accuracyPct}%
               </span>
             </div>
@@ -544,11 +533,10 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               {Array.from({ length: 10 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex-1 h-full"
-                  style={{
-                    backgroundColor: i < filledSegments ? "#4ae176" : "#353534",
-                    boxShadow: i < filledSegments ? "0 0 8px rgba(74,225,118,0.3)" : "none",
-                  }}
+                  className={cn(
+                    "flex-1 h-full",
+                    i < filledSegments ? "bg-grade-a-plus shadow-[0_0_8px_rgba(74,225,118,0.3)]" : "bg-[#353534]"
+                  )}
                 />
               ))}
             </div>
@@ -658,18 +646,16 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                     <div className="flex justify-between items-end">
                       <span className="font-mono text-[10px] text-zinc-500 uppercase">EFFICIENCY</span>
                       <span
-                        className="font-mono text-base font-black"
-                        style={{ color: resolveGradeColor(mod.grade) }}
+                        className={cn("font-mono text-base font-black", gradeColor(mod.grade))}
                       >
                         {mod.grade}
                       </span>
                     </div>
                     <div className="h-[2px] w-full bg-[#353534]">
                       <div
-                        className="h-full transition-all duration-700 ease-out"
+                        className={cn("h-full transition-all duration-700 ease-out", gradeBgClass(mod.grade))}
                         style={{
                           width: `${mod.pct}%`,
-                          backgroundColor: resolveGradeColor(mod.grade),
                         }}
                       />
                     </div>

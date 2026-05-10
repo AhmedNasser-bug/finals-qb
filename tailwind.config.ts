@@ -85,6 +85,16 @@ const config: Config = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
+			},
+			grade: {
+				's-plus': 'hsl(var(--grade-s-plus))',
+				s: 'hsl(var(--grade-s))',
+				'a-plus': 'hsl(var(--grade-a-plus))',
+				a: 'hsl(var(--grade-a))',
+				'b-plus': 'hsl(var(--grade-b))',
+				'c-plus': 'hsl(var(--grade-c))',
+				'd-plus': 'hsl(var(--grade-d))',
+				f: 'hsl(var(--grade-f))'
   			}
   		},
   		borderRadius: {
