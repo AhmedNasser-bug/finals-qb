@@ -3,7 +3,7 @@
 import { RichText } from "./rich-text"
 import { useGameEngine } from "@/lib/game-engine"
 import type { Question } from "@/lib/mold-types"
-import { formatTime, gradeBgColor, gradeColor, gradeBgClass, gradeToken, calculateGrade, modeLabel, formatLabel } from "@/lib/mold-types"
+import { formatTime, gradeBgColor, gradeColor, gradeBgClass, gradeToken, calculateGrade, modeLabel, formatLabel, calculateAccuracy } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
 // ─── Game Header Bar ──────────────────────────────────────────────────────────
