@@ -182,19 +182,23 @@ export function HomeScreen({
         <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-8">
           <div className="flex flex-col lg:grid lg:grid-cols-[1fr_320px] gap-6">
             <ModeSelector selected={selectedMode} onSelect={handleModeSelect} />
-            <SetupPanel
-              config={config}
-              onChange={handleConfigChange}
-              selectedMode={selectedMode}
-              categories={subjectData.categories}
-            />
+            <div className="flex flex-col gap-6">
+              <SetupPanel
+                config={config}
+                onChange={handleConfigChange}
+                selectedMode={selectedMode}
+                categories={subjectData.categories}
+              />
+              <StreakAscent
+                currentStreak={stats.currentStreak}
+                isAtRisk={false}
+                bestStreak={stats.bestStreak}
+                className="h-[300px]" // Make it smaller as requested
+              />
+            </div>
           </div>
 
-          <StreakAscent
-            currentStreak={stats.currentStreak}
-            isAtRisk={false} // Would be set by checking actual deadlines in a real implementation
-            bestStreak={stats.bestStreak}
-          />
+
           <ActionHub
             selectedMode={selectedMode}
             onInitialize={handleInitialize}

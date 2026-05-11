@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 // Flame + Vertical Ascent hybrid streak visual
@@ -55,12 +54,12 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
   const visibleMilestones = STREAK_TIERS.filter(t => t.min > 0 && t.min <= Math.max(nextMilestone || 100, 30))
 
   return (
-    <div className={cn("relative flex flex-col items-center py-10 overflow-hidden rounded border border-border bg-panel scanlines", className)}>
+    <div className={cn("relative flex flex-col items-center py-6 overflow-hidden scale-90 sm:scale-100 origin-top rounded border border-border bg-panel scanlines", className)}>
 
       {/* Background ambient glow based on tier */}
       <div
         className={cn(
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full blur-[80px] opacity-20 pointer-events-none transition-colors duration-1000",
+          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] rounded-full blur-[60px] opacity-20 pointer-events-none transition-colors duration-1000",
           currentTier.baseBgClass
         )}
       />
@@ -70,9 +69,9 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
 
       {/* Upcoming Milestone (Aspirational) */}
       {nextMilestone && (
-        <div className="relative z-10 flex flex-col items-center mb-16 opacity-40">
+        <div className="relative z-10 flex flex-col items-center mb-8 opacity-40">
            <div className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">UPCOMING MILESTONE</div>
-           <div className={cn("w-12 h-12 flex items-center justify-center rounded-full border border-border bg-background glass")}>
+           <div className={cn("w-10 h-10 flex items-center justify-center rounded-full border border-border bg-background glass")}>
               <span className="font-mono text-sm">{nextMilestone}</span>
            </div>
            <div className="mt-2 text-xs font-mono">{STREAK_TIERS.find(t => t.min === nextMilestone)?.label}</div>
@@ -95,20 +94,20 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
         </div>
 
         <div className={cn(
-          "relative w-32 h-32 flex flex-col items-center justify-center rounded-full border-2 transition-all duration-500",
+          "relative w-24 h-24 flex flex-col items-center justify-center rounded-full border-2 transition-all duration-500",
           currentStreak > 0 ? currentTier.glowClass : "border-border/50 bg-background/50",
           currentStreak > 0 && isAtRisk ? "border-dashed animate-flame-intense opacity-80" : "border-solid",
           currentStreak > 0 && !isAtRisk ? "animate-flame" : "",
           currentTier.bgClass
         )}>
-           <span className="text-4xl font-mono font-bold leading-none mb-1 shadow-black drop-shadow-md">
+           <span className="text-3xl font-mono font-bold leading-none mb-1 shadow-black drop-shadow-md">
              {currentStreak}
            </span>
            <span className="text-[10px] font-mono tracking-widest text-foreground/80 leading-none">DAY STREAK</span>
         </div>
 
-        <div className="mt-6 text-center">
-           <div className={cn("text-xl font-bold tracking-widest mb-1 shadow-black drop-shadow-md", currentTier.colorClass)}>
+        <div className="mt-4 text-center">
+           <div className={cn("text-lg font-bold tracking-widest mb-1 shadow-black drop-shadow-md", currentTier.colorClass)}>
               {currentTier.label} RANK
            </div>
            {isAtRisk && (
@@ -121,7 +120,7 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
       </div>
 
       {/* Conquered Milestones Below */}
-      <div className="relative z-10 flex flex-col items-center mt-12 gap-8 opacity-60">
+      <div className="relative z-10 flex flex-col items-center mt-8 gap-6 opacity-60">
         {visibleMilestones.reverse().filter(t => t.min <= currentStreak).map(tier => (
           <div key={tier.min} className="flex flex-col items-center">
             <div className={cn("w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background", tier.colorClass)}>

@@ -284,7 +284,7 @@ export function computeAggregateStats(runs: RunRecord[]): AggregateStats {
     totalRuns: runs.length,
     bestScore: Math.max(...runs.map((r) => r.score)),
     bestStreak: Math.max(...runs.map((r) => r.streak)),
-    currentStreak: runs.length > 0 ? runs[runs.length - 1].streak : 0,
+    currentStreak: runs[runs.length - 1].streak,
     averageScore: Math.round(runs.reduce((sum, r) => sum + r.score, 0) / runs.length),
   }
 }
