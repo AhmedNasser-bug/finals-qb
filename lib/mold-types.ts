@@ -183,6 +183,20 @@ export interface SetupConfig {
 
 // ─── Grade Calculator ────────────────────────────────────────────────────────
 
+/** Returns the theme color slug for a grade (e.g. "s-plus", "a") */
+export function gradeToken(grade: LetterGrade): string {
+  switch (grade) {
+    case "S+": return "s-plus"
+    case "S":  return "s"
+    case "A+": return "a-plus"
+    case "A":  return "a"
+    case "B+": return "b-plus"
+    case "C+": return "c-plus"
+    case "D+": return "d-plus"
+    case "F":  return "f"
+  }
+}
+
 export function calculateGrade(score: number): LetterGrade {
   if (score >= 97) return "S+"
   if (score >= 93) return "S"
@@ -195,29 +209,16 @@ export function calculateGrade(score: number): LetterGrade {
 }
 
 export function gradeColor(grade: LetterGrade): string {
-  switch (grade) {
-    case "S+": return "text-amber-400"
-    case "S":  return "text-amber-300"
-    case "A+": return "text-emerald-400"
-    case "A":  return "text-emerald-300"
-    case "B+": return "text-sky-400"
-    case "C+": return "text-orange-400"
-    case "D+": return "text-red-400"
-    case "F":  return "text-red-600"
-  }
+  return `text-grade-${gradeToken(grade)}`
+}
+
+export function gradeBgClass(grade: LetterGrade): string {
+  return `bg-grade-${gradeToken(grade)}`
 }
 
 export function gradeBgColor(grade: LetterGrade): string {
-  switch (grade) {
-    case "S+": return "bg-amber-400/10 border-amber-400/30 text-amber-400"
-    case "S":  return "bg-amber-300/10 border-amber-300/30 text-amber-300"
-    case "A+": return "bg-emerald-400/10 border-emerald-400/30 text-emerald-400"
-    case "A":  return "bg-emerald-300/10 border-emerald-300/30 text-emerald-300"
-    case "B+": return "bg-sky-400/10 border-sky-400/30 text-sky-400"
-    case "C+": return "bg-orange-400/10 border-orange-400/30 text-orange-400"
-    case "D+": return "bg-red-400/10 border-red-400/30 text-red-400"
-    case "F":  return "bg-red-600/10 border-red-600/30 text-red-500"
-  }
+  const token = gradeToken(grade)
+  return `bg-grade-${token}/10 border-grade-${token}/30 text-grade-${token}`
 }
 
 // ─── Mode Registry ────────────────────────────────────────────────────────────
@@ -312,4 +313,13 @@ export function modeLabel(id: GameModeId): string {
  */
 export function formatLabel(slug: string): string {
   return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+}
+
+/**
+ * Calculates the accuracy percentage based on correct and wrong answers.
+ * Accuracy denominator is answered questions (correct + wrong), not currentIndex.
+ */
+export function calculateAccuracy(score: number, wrongAnswers: number): number {
+  const answeredCount = score + wrongAnswers
+  return answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0
 }

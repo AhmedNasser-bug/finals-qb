@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useCallback, type DragEvent } from "react"
+import { useState, useCallback, type DragEvent } from "react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
@@ -71,6 +71,7 @@ REQUIREMENTS:
 - Spread questions across 4-6 distinct categories
 - All ids must be unique and kebab-case
 - No duplicate question text
+- HTML and MermaidJS are supported and ENCOURAGED in the question text. You can use inline styles (color, font-weight), <br>, <i>, <b>, <code>, <pre>, and other HTML tags to format the question or add HTML tables. For diagrams, flowchart, sequence diagrams, state diagrams, etc, you MUST use MermaidJS syntax inside a <pre><code class="language-mermaid">...</code></pre> block or \`\`\`mermaid ... \`\`\` block.
 - Every category slug used in questions must exist in terminology
 - All questions MUST have both explanation and hint fields populated
 
@@ -192,8 +193,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
       setPromptCopied(true)
       setTimeout(() => setPromptCopied(false), 2500)
     } catch {
-      // fallback: select the text
-      textareaRef.current?.focus()
+      // fallback: ignore
     }
   }
 

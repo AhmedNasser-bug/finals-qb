@@ -4,6 +4,7 @@ import { useState } from "react"
 import { GAME_MODES } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { SubjectImporter } from "@/components/mold/subject-importer"
+import { Footer } from "@/components/mold/footer"
 import type { FullSubjectData } from "@/lib/mold-types"
 
 interface OnboardingScreenProps {
@@ -174,11 +175,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
           )}
         </main>
 
-        {/* Footer */}
-        <footer className="border-t border-border px-6 py-3 flex items-center justify-between bg-panel">
-          <span className="text-xs font-mono text-muted-foreground">MOLD V2 — MASTERY PROTOCOL</span>
-          <span className="text-xs font-mono text-muted-foreground">OFFLINE FIRST</span>
-        </footer>
+        <Footer />
       </div>
 
       {showImporter && (

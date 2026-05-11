@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import type { Flashcard } from "@/lib/mold-types"
 import { formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
+import { shuffle } from "@/lib/crypto-utils"
 
 interface FlashcardScreenProps {
   flashcards: Flashcard[]
@@ -20,11 +21,26 @@ interface CardScore {
 
 /** Sort deck by score ascending — most negative first. Random tiebreak within same score. */
 function sortByPriority(flashcards: Flashcard[], scores: Record<string, number>): Flashcard[] {
-  return [...flashcards].sort((a, b) => {
-    const diff = (scores[a.id] ?? 0) - (scores[b.id] ?? 0)
-    if (diff !== 0) return diff
-    return Math.random() - 0.5
+  // Group flashcards by score
+  const groups: Record<number, Flashcard[]> = {}
+  flashcards.forEach((f) => {
+    const score = scores[f.id] ?? 0
+    if (!groups[score]) groups[score] = []
+    groups[score].push(f)
   })
+
+  // Get unique scores and sort them ascending
+  const sortedScores = Object.keys(groups)
+    .map(Number)
+    .sort((a, b) => a - b)
+
+  // For each score group, shuffle the cards and add to result
+  const result: Flashcard[] = []
+  sortedScores.forEach((score) => {
+    result.push(...shuffle(groups[score]))
+  })
+
+  return result
 }
 
 export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: FlashcardScreenProps) {
@@ -85,22 +101,45 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
   }
 
   // ── Derived stats ─────────────────────────────────────────────────────────
-  const allScores = Object.values(scores)
-  const confident  = allScores.filter((s) => s > 0).length
-  const neutral    = allScores.filter((s) => s === 0).length
-  const learning   = allScores.filter((s) => s < 0).length
+  const { confident, neutral, learning, hardestCards, worstScore, hardest } = useMemo(() => {
+    let conf = 0
+    let neut = 0
+    let learn = 0
+    let worst = Infinity
+    let hardestCard: Flashcard | undefined = undefined
+    const learningList: Flashcard[] = []
 
-  // Top 5 hardest cards (most negative score) for round-end preview
-  const hardestCards = [...flashcards]
-    .filter((c) => (scores[c.id] ?? 0) < 0)
-    .sort((a, b) => (scores[a.id] ?? 0) - (scores[b.id] ?? 0))
-    .slice(0, 5)
+    for (const card of flashcards) {
+      const s = scores[card.id] ?? 0
+      if (s > 0) conf++
+      else if (s === 0) neut++
+      else {
+        learn++
+        learningList.push(card)
+      }
+
+      if (s < worst) {
+        worst = s
+        hardestCard = card
+      }
+    }
+
+    const hardestSorted = learningList
+      .sort((a, b) => (scores[a.id] ?? 0) - (scores[b.id] ?? 0))
+      .slice(0, 5)
+
+    return {
+      confident: conf,
+      neutral: neut,
+      learning: learn,
+      hardestCards: hardestSorted,
+      worstScore: worst === Infinity ? 0 : worst,
+      hardest: hardestCard,
+    }
+  }, [flashcards, scores])
 
   // ── Session-end screen ────────────────────────────────────────────────────
   if (phase === "session-end") {
-    const worstScore = Math.min(...allScores)
-    const hardest = flashcards.find((c) => scores[c.id] === worstScore)
-
     return (
       <div className="flex flex-col flex-1">
         <Header onQuit={onReturnHome} progress={100} position={`${flashcards.length} / ${flashcards.length}`} round={round} />
@@ -138,13 +177,13 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           <div className="flex gap-3 w-full max-w-sm">
             <button
               onClick={onReturnHome}
-              className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground hover:border-border/60 transition-colors"
+              className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground hover:border-border/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               HOME
             </button>
             <button
               onClick={onComplete}
-              className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors"
+              className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               NEW SESSION
             </button>
@@ -205,13 +244,13 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           <div className="flex gap-3 w-full max-w-sm">
             <button
               onClick={() => setPhase("session-end")}
-              className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground transition-colors"
+              className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               END SESSION
             </button>
             <button
               onClick={handleContinue}
-              className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors"
+              className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               CONTINUE — ROUND {round + 1}
             </button>
@@ -257,7 +296,7 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           aria-label={flipped ? "Show term" : "Show definition"}
           className={cn(
             "w-full max-w-lg min-h-[200px] p-6 rounded border text-left flex flex-col justify-between",
-            "transition-all duration-200 hover:border-primary/40",
+            "transition-all duration-200 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
             flipped ? "border-primary/40 bg-primary/5" : "border-border bg-panel"
           )}
         >
@@ -277,13 +316,13 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           <div className="flex gap-3 w-full max-w-lg animate-fade-in">
             <button
               onClick={() => handleRespond(false)}
-              className="flex-1 py-2.5 px-4 rounded border border-red-400/30 bg-red-400/5 text-red-400 text-sm font-mono hover:bg-red-400/10 transition-colors"
+              className="flex-1 py-2.5 px-4 rounded border border-red-400/30 bg-red-400/5 text-red-400 text-sm font-mono hover:bg-red-400/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
             >
               STILL LEARNING  &nbsp;-1
             </button>
             <button
               onClick={() => handleRespond(true)}
-              className="flex-1 py-2.5 px-4 rounded border border-emerald-400/30 bg-emerald-400/5 text-emerald-400 text-sm font-mono font-bold hover:bg-emerald-400/10 transition-colors"
+              className="flex-1 py-2.5 px-4 rounded border border-emerald-400/30 bg-emerald-400/5 text-emerald-400 text-sm font-mono font-bold hover:bg-emerald-400/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400"
             >
               GOT IT  &nbsp;+1
             </button>
@@ -318,7 +357,7 @@ function Header({
         </div>
         <button
           onClick={onQuit}
-          className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-transparent hover:border-border"
+          className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-transparent hover:border-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           QUIT
         </button>
