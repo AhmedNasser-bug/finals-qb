@@ -6,6 +6,7 @@ import { ModeSelector } from "@/components/mold/mode-selector"
 import { SetupPanel } from "@/components/mold/setup-panel"
 import { PerformanceTable } from "@/components/mold/performance-table"
 import { ActionHub } from "@/components/mold/action-hub"
+import { StreakAscent } from "@/components/mold/streak-ascent"
 import { GameRunner } from "@/components/mold/game-runner"
 import { AchievementGallery } from "@/components/mold/achievement-gallery"
 import { EncyclopediaOverlay } from "@/components/mold/encyclopedia-overlay"
@@ -189,6 +190,11 @@ export function HomeScreen({
             />
           </div>
 
+          <StreakAscent
+            currentStreak={stats.currentStreak}
+            isAtRisk={false} // Would be set by checking actual deadlines in a real implementation
+            bestStreak={stats.bestStreak}
+          />
           <ActionHub
             selectedMode={selectedMode}
             onInitialize={handleInitialize}
