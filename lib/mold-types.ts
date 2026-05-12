@@ -149,6 +149,7 @@ export interface AggregateStats {
   totalRuns: number
   bestScore: number      // accuracy %
   bestStreak: number
+  currentStreak: number
   averageScore: number
 }
 
@@ -277,12 +278,13 @@ export const GAME_MODES: GameMode[] = [
 
 export function computeAggregateStats(runs: RunRecord[]): AggregateStats {
   if (runs.length === 0) {
-    return { totalRuns: 0, bestScore: 0, bestStreak: 0, averageScore: 0 }
+    return { totalRuns: 0, bestScore: 0, bestStreak: 0, currentStreak: 0, averageScore: 0 }
   }
   return {
     totalRuns: runs.length,
     bestScore: Math.max(...runs.map((r) => r.score)),
     bestStreak: Math.max(...runs.map((r) => r.streak)),
+    currentStreak: runs[runs.length - 1].streak,
     averageScore: Math.round(runs.reduce((sum, r) => sum + r.score, 0) / runs.length),
   }
 }
