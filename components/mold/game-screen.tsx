@@ -169,7 +169,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             SESSION_ID: {mode.toUpperCase()}-MOLD
           </p>
           <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
-            DIFFICULTY: {state.config?.difficulty?.toUpperCase() ?? "STANDARD"}
+            DIFFICULTY: {state.mode.toUpperCase() === "HARDCORE" ? "HARD" : "STANDARD"}
           </p>
           {/* Live indicator dots */}
           <div className="mt-4 flex gap-2">

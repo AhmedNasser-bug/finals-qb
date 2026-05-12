@@ -323,3 +323,49 @@ export function calculateAccuracy(score: number, wrongAnswers: number): number {
   const answeredCount = score + wrongAnswers
   return answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0
 }
+
+// ─── Streak / Focus Chain ────────────────────────────────────────────────────────
+
+export type StreakTierName = "DORMANT" | "FOCUSED" | "LOCKED IN" | "PRECISION" | "OVERCLOCK" | "MASTERY"
+
+export interface StreakTier {
+  name: StreakTierName
+  min: number
+  colorClass: string
+  glowClass: string
+}
+
+export const STREAK_TIERS: StreakTier[] = [
+  { name: "MASTERY", min: 12, colorClass: "text-[#4ae176]", glowClass: "shadow-[0px_0px_25px_rgba(74,225,118,0.4)] border-[#4ae176]" },
+  { name: "OVERCLOCK", min: 8, colorClass: "text-[#930013]", glowClass: "shadow-[0px_0px_20px_rgba(147,0,10,0.4)] border-[#930013]" },
+  { name: "PRECISION", min: 5, colorClass: "text-orange-500", glowClass: "shadow-[0px_0px_15px_rgba(249,115,22,0.3)] border-orange-500" },
+  { name: "LOCKED IN", min: 3, colorClass: "text-[#fecc17]", glowClass: "shadow-[0px_0px_10px_rgba(254,204,23,0.2)] border-[#fecc17]" },
+  { name: "FOCUSED", min: 1, colorClass: "text-[#e5e2e1]", glowClass: "border-[#4e4632]" },
+  { name: "DORMANT", min: 0, colorClass: "text-zinc-500", glowClass: "border-[#353534]" },
+]
+
+export function getStreakTier(streak: number): StreakTier {
+  return STREAK_TIERS.find((t) => streak >= t.min) || STREAK_TIERS[STREAK_TIERS.length - 1]
+}
+
+export function getNextStreakThreshold(streak: number): number | null {
+  for (let i = STREAK_TIERS.length - 1; i >= 0; i--) {
+    if (STREAK_TIERS[i].min > streak) {
+      return STREAK_TIERS[i].min
+    }
+  }
+  return null
+}
+
+export function getStreakTierProgress(streak: number): { current: number, total: number } {
+  const currentTier = getStreakTier(streak)
+  const nextThreshold = getNextStreakThreshold(streak)
+  if (nextThreshold === null) {
+    return { current: 1, total: 1 } // Maxed out
+  }
+  const min = currentTier.min
+  return {
+    current: streak - min,
+    total: nextThreshold - min
+  }
+}
