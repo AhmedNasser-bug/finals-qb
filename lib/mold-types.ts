@@ -325,3 +325,49 @@ export function calculateAccuracy(score: number, wrongAnswers: number): number {
   const answeredCount = score + wrongAnswers
   return answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0
 }
+
+// ─── Streak / Focus Chain ────────────────────────────────────────────────────────
+
+export type StreakTierName = "DORMANT" | "FOCUSED" | "LOCKED IN" | "PRECISION" | "OVERCLOCK" | "MASTERY"
+
+export interface StreakTier {
+  name: StreakTierName
+  min: number
+  colorClass: string
+  glowClass: string
+}
+
+export const STREAK_TIERS: StreakTier[] = [
+  { name: "MASTERY", min: 12, colorClass: "text-grade-a", glowClass: "shadow-[0_0_25px_theme(colors.grade.a)/.4] border-grade-a" },
+  { name: "OVERCLOCK", min: 8, colorClass: "text-destructive", glowClass: "shadow-[0_0_20px_theme(colors.destructive.DEFAULT)/.4] border-destructive" },
+  { name: "PRECISION", min: 5, colorClass: "text-grade-c", glowClass: "shadow-[0_0_15px_theme(colors.grade.c)/.3] border-grade-c" },
+  { name: "LOCKED IN", min: 3, colorClass: "text-primary", glowClass: "shadow-[0_0_10px_theme(colors.primary.DEFAULT)/.2] border-primary" },
+  { name: "FOCUSED", min: 1, colorClass: "text-foreground", glowClass: "border-outline-variant" },
+  { name: "DORMANT", min: 0, colorClass: "text-muted-foreground", glowClass: "border-surface-variant" },
+]
+
+export function getStreakTier(streak: number): StreakTier {
+  return STREAK_TIERS.find((t) => streak >= t.min) || STREAK_TIERS[STREAK_TIERS.length - 1]
+}
+
+export function getNextStreakThreshold(streak: number): number | null {
+  for (let i = STREAK_TIERS.length - 1; i >= 0; i--) {
+    if (STREAK_TIERS[i].min > streak) {
+      return STREAK_TIERS[i].min
+    }
+  }
+  return null
+}
+
+export function getStreakTierProgress(streak: number): { current: number, total: number } {
+  const currentTier = getStreakTier(streak)
+  const nextThreshold = getNextStreakThreshold(streak)
+  if (nextThreshold === null) {
+    return { current: 1, total: 1 } // Maxed out
+  }
+  const min = currentTier.min
+  return {
+    current: streak - min,
+    total: nextThreshold - min
+  }
+}

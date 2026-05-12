@@ -1,3 +1,3 @@
-## 2024-05-10 - Add Focus Visible to Interactive Buttons
-**Learning:** Found that custom buttons within `game-screen.tsx` were lacking `focus-visible` states, a common a11y issue in custom Next.js components. Keyboard users had no visual indicator of their focused element.
-**Action:** When creating custom interactive elements (buttons, toggles, etc.), always add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color]` tailwind classes to ensure WCAG compliant focus indicators.
+## 2024-05-12 - Missing ARIA Labels and Focus Rings in Modals/Setup
+**Learning:** Icon-only buttons (like Encyclopedia in action-hub) and semantic inputs (search in encyclopedia, textarea in importer) frequently miss ARIA labels across the UI. Modals and secondary setup panels often forget to include standard tailwind `focus-visible` utilities, negatively impacting keyboard navigation. Additionally, loading buttons can benefit from `aria-busy` to communicate state clearly to screen readers.
+**Action:** When creating new components, default to adding `aria-label` for icon buttons, ensure `focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring` is applied to all interactive elements, and add `aria-busy` for loading states to provide a complete accessibility experience.

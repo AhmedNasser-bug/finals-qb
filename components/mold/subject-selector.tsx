@@ -186,17 +186,17 @@ export function SubjectSelector({
                             <span className="text-[10px] font-mono text-destructive/80">Delete?</span>
                             <button
                               onClick={() => handleDeleteConfirm(full.id)}
-                              className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors"
+                              className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
                             >Yes</button>
                             <button
                               onClick={() => setConfirmDeleteId(null)}
-                              className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors"
+                              className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                             >No</button>
                           </div>
                         ) : (
                           <button
                             onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(full.id) }}
-                            className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors px-1"
+                            className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
                             aria-label={`Remove ${full.name}`}
                           >Remove</button>
                         )}
