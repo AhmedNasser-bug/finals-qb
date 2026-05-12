@@ -273,6 +273,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                 <button
                   onClick={handlePaste}
                   disabled={state === "pasting"}
+                  aria-busy={state === "pasting"}
                   className={cn(
                     "text-xs font-mono px-3 py-1.5 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                     state === "pasting"
@@ -302,6 +303,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
               {json ? (
                 <textarea
                   value={json}
+                  aria-label="Paste JSON subject data here"
                   onChange={(e) => { setJson(e.target.value); validate(e.target.value) }}
                   placeholder="JSON pasted here..."
                   spellCheck={false}

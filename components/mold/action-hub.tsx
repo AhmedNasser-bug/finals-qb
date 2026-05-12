@@ -32,6 +32,7 @@ export function ActionHub({
     <div className={cn("flex flex-col sm:flex-row gap-3", className)}>
       {/* Encyclopedia */}
       <button
+        aria-label="Open Encyclopedia"
         onClick={onEncyclopedia}
         className={cn(
           "flex items-center justify-center gap-2 px-4 py-2.5 rounded border text-sm font-mono",
