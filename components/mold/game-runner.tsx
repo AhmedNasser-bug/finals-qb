@@ -116,7 +116,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       const accuracyPct   = calculateAccuracy(state.score, state.wrongAnswers)
       const totalQuestions = state.questions.length
       const run: RunRecord = {
-        id:              `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        id:              crypto.randomUUID(),
         date:            new Date().toISOString(),
         mode:            state.mode,
         score:           accuracyPct,

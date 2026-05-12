@@ -4,6 +4,7 @@ import { useState, useCallback, useMemo } from "react"
 import type { Flashcard } from "@/lib/mold-types"
 import { formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
+import { shuffle } from "@/lib/crypto-utils"
 
 interface FlashcardScreenProps {
   flashcards: Flashcard[]
@@ -20,10 +21,9 @@ interface CardScore {
 
 /** Sort deck by score ascending — most negative first. Random tiebreak within same score. */
 function sortByPriority(flashcards: Flashcard[], scores: Record<string, number>): Flashcard[] {
-  return [...flashcards].sort((a, b) => {
-    const diff = (scores[a.id] ?? 0) - (scores[b.id] ?? 0)
-    if (diff !== 0) return diff
-    return Math.random() - 0.5
+  // We shuffle first to ensure random tie-breaking during the stable sort
+  return shuffle(flashcards).sort((a, b) => {
+    return (scores[a.id] ?? 0) - (scores[b.id] ?? 0)
   })
 }
 
