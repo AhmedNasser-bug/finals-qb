@@ -1,18 +1,13 @@
 /**
- * Shuffles an array using the Fisher-Yates algorithm
- * and cryptographically secure random values.
- * Returns a new array.
+ * Cryptographically secure shuffle using the Fisher-Yates algorithm and crypto.getRandomValues().
  */
-export function shuffle<T>(array: T[]): T[] {
-  const result = [...array];
-  if (result.length <= 1) return result;
-
-  for (let i = result.length - 1; i > 0; i--) {
-    const randomBuffer = new Uint32Array(1);
-    crypto.getRandomValues(randomBuffer);
-    const j = randomBuffer[0] % (i + 1);
-
-    [result[i], result[j]] = [result[j], result[i]];
+export function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  const randomValues = new Uint32Array(1)
+  for (let i = a.length - 1; i > 0; i--) {
+    crypto.getRandomValues(randomValues)
+    const j = randomValues[0] % (i + 1)
+    ;[a[i], a[j]] = [a[j], a[i]]
   }
-  return result;
+  return a
 }

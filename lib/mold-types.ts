@@ -149,6 +149,7 @@ export interface AggregateStats {
   totalRuns: number
   bestScore: number      // accuracy %
   bestStreak: number
+  currentStreak: number
   averageScore: number
 }
 
@@ -183,6 +184,20 @@ export interface SetupConfig {
 
 // ─── Grade Calculator ────────────────────────────────────────────────────────
 
+/** Returns the theme color slug for a grade (e.g. "s-plus", "a") */
+export function gradeToken(grade: LetterGrade): string {
+  switch (grade) {
+    case "S+": return "s-plus"
+    case "S":  return "s"
+    case "A+": return "a-plus"
+    case "A":  return "a"
+    case "B+": return "b-plus"
+    case "C+": return "c-plus"
+    case "D+": return "d-plus"
+    case "F":  return "f"
+  }
+}
+
 export function calculateGrade(score: number): LetterGrade {
   if (score >= 97) return "S+"
   if (score >= 93) return "S"
@@ -195,29 +210,16 @@ export function calculateGrade(score: number): LetterGrade {
 }
 
 export function gradeColor(grade: LetterGrade): string {
-  switch (grade) {
-    case "S+": return "text-amber-400"
-    case "S":  return "text-amber-300"
-    case "A+": return "text-emerald-400"
-    case "A":  return "text-emerald-300"
-    case "B+": return "text-sky-400"
-    case "C+": return "text-orange-400"
-    case "D+": return "text-red-400"
-    case "F":  return "text-red-600"
-  }
+  return `text-grade-${gradeToken(grade)}`
+}
+
+export function gradeBgClass(grade: LetterGrade): string {
+  return `bg-grade-${gradeToken(grade)}`
 }
 
 export function gradeBgColor(grade: LetterGrade): string {
-  switch (grade) {
-    case "S+": return "bg-amber-400/10 border-amber-400/30 text-amber-400"
-    case "S":  return "bg-amber-300/10 border-amber-300/30 text-amber-300"
-    case "A+": return "bg-emerald-400/10 border-emerald-400/30 text-emerald-400"
-    case "A":  return "bg-emerald-300/10 border-emerald-300/30 text-emerald-300"
-    case "B+": return "bg-sky-400/10 border-sky-400/30 text-sky-400"
-    case "C+": return "bg-orange-400/10 border-orange-400/30 text-orange-400"
-    case "D+": return "bg-red-400/10 border-red-400/30 text-red-400"
-    case "F":  return "bg-red-600/10 border-red-600/30 text-red-500"
-  }
+  const token = gradeToken(grade)
+  return `bg-grade-${token}/10 border-grade-${token}/30 text-grade-${token}`
 }
 
 // ─── Mode Registry ────────────────────────────────────────────────────────────
@@ -276,12 +278,13 @@ export const GAME_MODES: GameMode[] = [
 
 export function computeAggregateStats(runs: RunRecord[]): AggregateStats {
   if (runs.length === 0) {
-    return { totalRuns: 0, bestScore: 0, bestStreak: 0, averageScore: 0 }
+    return { totalRuns: 0, bestScore: 0, bestStreak: 0, currentStreak: 0, averageScore: 0 }
   }
   return {
     totalRuns: runs.length,
     bestScore: Math.max(...runs.map((r) => r.score)),
     bestStreak: Math.max(...runs.map((r) => r.streak)),
+    currentStreak: runs[runs.length - 1].streak,
     averageScore: Math.round(runs.reduce((sum, r) => sum + r.score, 0) / runs.length),
   }
 }
@@ -321,4 +324,50 @@ export function formatLabel(slug: string): string {
 export function calculateAccuracy(score: number, wrongAnswers: number): number {
   const answeredCount = score + wrongAnswers
   return answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0
+}
+
+// ─── Streak / Focus Chain ────────────────────────────────────────────────────────
+
+export type StreakTierName = "DORMANT" | "FOCUSED" | "LOCKED IN" | "PRECISION" | "OVERCLOCK" | "MASTERY"
+
+export interface StreakTier {
+  name: StreakTierName
+  min: number
+  colorClass: string
+  glowClass: string
+}
+
+export const STREAK_TIERS: StreakTier[] = [
+  { name: "MASTERY", min: 12, colorClass: "text-[#4ae176]", glowClass: "shadow-[0px_0px_25px_rgba(74,225,118,0.4)] border-[#4ae176]" },
+  { name: "OVERCLOCK", min: 8, colorClass: "text-[#930013]", glowClass: "shadow-[0px_0px_20px_rgba(147,0,10,0.4)] border-[#930013]" },
+  { name: "PRECISION", min: 5, colorClass: "text-orange-500", glowClass: "shadow-[0px_0px_15px_rgba(249,115,22,0.3)] border-orange-500" },
+  { name: "LOCKED IN", min: 3, colorClass: "text-[#fecc17]", glowClass: "shadow-[0px_0px_10px_rgba(254,204,23,0.2)] border-[#fecc17]" },
+  { name: "FOCUSED", min: 1, colorClass: "text-[#e5e2e1]", glowClass: "border-[#4e4632]" },
+  { name: "DORMANT", min: 0, colorClass: "text-zinc-500", glowClass: "border-[#353534]" },
+]
+
+export function getStreakTier(streak: number): StreakTier {
+  return STREAK_TIERS.find((t) => streak >= t.min) || STREAK_TIERS[STREAK_TIERS.length - 1]
+}
+
+export function getNextStreakThreshold(streak: number): number | null {
+  for (let i = STREAK_TIERS.length - 1; i >= 0; i--) {
+    if (STREAK_TIERS[i].min > streak) {
+      return STREAK_TIERS[i].min
+    }
+  }
+  return null
+}
+
+export function getStreakTierProgress(streak: number): { current: number, total: number } {
+  const currentTier = getStreakTier(streak)
+  const nextThreshold = getNextStreakThreshold(streak)
+  if (nextThreshold === null) {
+    return { current: 1, total: 1 } // Maxed out
+  }
+  const min = currentTier.min
+  return {
+    current: streak - min,
+    total: nextThreshold - min
+  }
 }

@@ -32,11 +32,13 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
   }, [])
 
   const entries = terminology?.[activeCategory] ?? []
-  const filtered = search.trim()
+  const hasSearch = search.trim()
+  const loweredSearch = hasSearch.toLowerCase()
+  const filtered = hasSearch
     ? entries.filter(
         (e) =>
-          e.term.toLowerCase().includes(search.toLowerCase()) ||
-          e.definition.toLowerCase().includes(search.toLowerCase())
+          e.term.toLowerCase().includes(loweredSearch) ||
+          e.definition.toLowerCase().includes(loweredSearch)
       )
     : entries
 
@@ -58,7 +60,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
           </p>
           <button
             onClick={onClose}
-            className="mt-6 font-mono text-xs px-4 py-2 border border-border rounded hover:border-primary/40 hover:text-primary transition-colors"
+            className="mt-6 font-mono text-xs px-4 py-2 border border-border rounded hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             CLOSE
           </button>
@@ -111,7 +113,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
                 key={cat}
                 onClick={() => { setActiveCategory(cat); setSearch("") }}
                 className={cn(
-                  "text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate",
+                  "text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                   activeCategory === cat
                     ? "bg-primary/10 text-primary border border-primary/20"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/60 border border-transparent"
@@ -128,6 +130,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             <div className="px-4 py-2.5 border-b border-border shrink-0">
               <input
                 type="search"
+                aria-label={`Search ${formatLabel(activeCategory)}`}
                 placeholder={`Search ${formatLabel(activeCategory)}…`}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}

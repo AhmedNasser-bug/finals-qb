@@ -17,6 +17,7 @@ import type {
   Question,
   GameModeId,
 } from "@/lib/mold-types"
+import { shuffle } from "@/lib/crypto-utils"
 
 // ─── Initial state factory ────────────────────────────────────────────────────
 
@@ -255,11 +256,11 @@ interface GameEngineProviderProps {
 export function GameEngineProvider({ config, questions, children }: GameEngineProviderProps) {
   // Fix 4-A: Stabilize config/questions on first mount so parent re-renders
   // can never trigger a silent game state reset via the lazy initializer.
-  const configRef   = useRef(config)
-  const questionsRef = useRef(questions)
+  const stableConfig = useRef(config).current
+  const stableQuestions = useRef(questions).current
 
   const [state, dispatch] = useReducer(reducer, undefined, () =>
-    buildInitialState(configRef.current, questionsRef.current)
+    buildInitialState(stableConfig, stableQuestions)
   )
 
   // Global tick (every second) — only while playing
@@ -281,7 +282,6 @@ export function GameEngineProvider({ config, questions, children }: GameEnginePr
 
   const currentQuestion = state.questions[state.currentIndex] ?? null
 
-  // Fix 2-A: accuracy denominator is answered questions (correct + wrong), not currentIndex.
   const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
 
   return (

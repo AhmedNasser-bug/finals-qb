@@ -187,3 +187,30 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 }
+
+@layer utilities {
+  @keyframes flame-flicker {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+    25% { transform: scale(1.05) rotate(-2deg); opacity: 0.9; filter: brightness(1.2); }
+    50% { transform: scale(0.95) rotate(1deg); opacity: 1; filter: brightness(0.9); }
+    75% { transform: scale(1.02) rotate(-1deg); opacity: 0.85; filter: brightness(1.1); }
+  }
+  .animate-flame {
+    animation: flame-flicker 2s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .animate-flame-intense {
+    animation: flame-flicker 0.4s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+
+  @keyframes float-up {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.8; }
+    100% { transform: translateY(-80px) translateX(20px) scale(0.2); opacity: 0; }
+  }
+  .particle-1 { animation: float-up 3s linear infinite; }
+  .particle-2 { animation: float-up 4s linear infinite 1s; }
+  .particle-3 { animation: float-up 2.5s linear infinite 2s; }
+}
