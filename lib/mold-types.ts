@@ -338,12 +338,12 @@ export interface StreakTier {
 }
 
 export const STREAK_TIERS: StreakTier[] = [
-  { name: "MASTERY", min: 12, colorClass: "text-[#4ae176]", glowClass: "shadow-[0px_0px_25px_rgba(74,225,118,0.4)] border-[#4ae176]" },
-  { name: "OVERCLOCK", min: 8, colorClass: "text-[#930013]", glowClass: "shadow-[0px_0px_20px_rgba(147,0,10,0.4)] border-[#930013]" },
-  { name: "PRECISION", min: 5, colorClass: "text-orange-500", glowClass: "shadow-[0px_0px_15px_rgba(249,115,22,0.3)] border-orange-500" },
-  { name: "LOCKED IN", min: 3, colorClass: "text-[#fecc17]", glowClass: "shadow-[0px_0px_10px_rgba(254,204,23,0.2)] border-[#fecc17]" },
-  { name: "FOCUSED", min: 1, colorClass: "text-[#e5e2e1]", glowClass: "border-[#4e4632]" },
-  { name: "DORMANT", min: 0, colorClass: "text-zinc-500", glowClass: "border-[#353534]" },
+  { name: "MASTERY", min: 12, colorClass: "text-grade-a", glowClass: "shadow-[0_0_25px_theme(colors.grade.a)/.4] border-grade-a" },
+  { name: "OVERCLOCK", min: 8, colorClass: "text-destructive", glowClass: "shadow-[0_0_20px_theme(colors.destructive.DEFAULT)/.4] border-destructive" },
+  { name: "PRECISION", min: 5, colorClass: "text-grade-c", glowClass: "shadow-[0_0_15px_theme(colors.grade.c)/.3] border-grade-c" },
+  { name: "LOCKED IN", min: 3, colorClass: "text-primary", glowClass: "shadow-[0_0_10px_theme(colors.primary.DEFAULT)/.2] border-primary" },
+  { name: "FOCUSED", min: 1, colorClass: "text-foreground", glowClass: "border-outline-variant" },
+  { name: "DORMANT", min: 0, colorClass: "text-muted-foreground", glowClass: "border-surface-variant" },
 ]
 
 export function getStreakTier(streak: number): StreakTier {
