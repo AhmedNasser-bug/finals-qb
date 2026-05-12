@@ -6,9 +6,12 @@ import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/
 import type { FullSubjectData } from "@/lib/mold-types"
 
 // ─── AI prompt the user can copy to generate a valid JSON ─────────────────────
-const AI_PROMPT = `You are a curriculum designer. Generate a complete MOLD V2 subject dataset for: [YOUR TOPIC HERE]
+const AI_PROMPT = `You are a pedagogical expert and curriculum designer. Using the PARTS framework (Persona, Act, Recipient, Theme, Structure), generate a complete MOLD V2 subject dataset for: [YOUR TOPIC HERE]
 
-Return ONLY a single raw JSON object. No markdown, no code fences, no explanation — just the JSON.
+Act: Design a comprehensive, inquiry-based dataset.
+Recipient: For students who need high-quality practice and scaffolding to stimulate curiosity and deepen metacognition.
+Theme: [YOUR TOPIC HERE]
+Structure: Generate ONLY a single raw JSON object. No markdown, no code fences, no explanation — just the JSON.
 
 The JSON structure:
 {
@@ -25,7 +28,7 @@ The JSON structure:
       "type": "MCQ" or "TrueFalse",
       "difficulty": "Easy" or "Medium" or "Hard",
       "category": "category-slug",
-      "question": "The question text?",
+      "question": "The question text? Ensure the question inspires active learning, encourages reasoning, and creates space for meaningful struggle.",
       "options": [
         { "label": "A", "text": "Option A" },
         { "label": "B", "text": "Option B" },
@@ -33,15 +36,15 @@ The JSON structure:
         { "label": "D", "text": "Option D" }
       ],
       "answer": "A",
-      "explanation": "Why A is correct.",
-      "hint": "A brief nudge without the answer."
+      "explanation": "Why A is correct. Deepen metacognition by explaining the 'how' and 'why', surfacing common misconceptions if applicable.",
+      "hint": "A guiding nudge. Stimulate curiosity and manage cognitive load by breaking down complexity without giving away the answer directly."
     }
   ],
   "flashcards": [
     {
       "id": "f1",
       "term": "Key Concept",
-      "definition": "Clear, concise definition (1-2 sentences).",
+      "definition": "Clear, concise definition. Make sure the definition is digestible to manage cognitive load.",
       "category": "category-slug"
     }
   ],
@@ -62,18 +65,17 @@ The JSON structure:
 }
 
 REQUIREMENTS:
-- MINIMUM 100 questions (Easy: 30+, Medium: 40+, Hard: 30+)
 - MCQ questions: exactly 4 options (A, B, C, D)
 - TrueFalse questions: exactly 2 options (A=True, B=False)
-- Include at least 15 TrueFalse questions
-- MINIMUM 40 flashcards (at least 6 per category)
-- MINIMUM 10 achievements (last one must have "all_unlocked" condition)
-- Spread questions across 4-6 distinct categories
+- Include a substantial amount of questions, flashcards, and achievements to provide thorough practice.
+- Ensure varying levels of difficulty (Easy, Medium, Hard).
+- Include TrueFalse questions.
+- Spread questions across distinct categories.
 - All ids must be unique and kebab-case
 - No duplicate question text
 - HTML and MermaidJS are supported and ENCOURAGED in the question text. You can use inline styles (color, font-weight), <br>, <i>, <b>, <code>, <pre>, and other HTML tags to format the question or add HTML tables. For diagrams, flowchart, sequence diagrams, state diagrams, etc, you MUST use MermaidJS syntax inside a <pre><code class="language-mermaid">...</code></pre> block or \`\`\`mermaid ... \`\`\` block.
 - Every category slug used in questions must exist in terminology
-- All questions MUST have both explanation and hint fields populated
+- All questions MUST have both explanation and hint fields populated. Explanations must adapt to the learner and deepen understanding.
 
 ACHIEVEMENT CONDITION TYPES:
 - "runs_gte": { "type": "runs_gte", "value": N } — Complete N runs
