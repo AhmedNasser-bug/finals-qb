@@ -130,6 +130,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             <div className="px-4 py-2.5 border-b border-border shrink-0">
               <input
                 type="search"
+                aria-label={`Search ${formatLabel(activeCategory)}`}
                 placeholder={`Search ${formatLabel(activeCategory)}…`}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}

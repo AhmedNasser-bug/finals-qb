@@ -72,6 +72,7 @@ export function SetupPanel({
                   onClick={() => onChange({ questionCount: n })}
                   className={cn(
                     "px-2.5 py-1 text-xs font-mono rounded border transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     config.questionCount === n
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
