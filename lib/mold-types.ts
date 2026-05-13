@@ -304,8 +304,13 @@ export function formatDate(iso: string): string {
   })
 }
 
+const MODE_LABEL_MAP: Record<string, string> = Object.create(null)
+for (const m of GAME_MODES) {
+  MODE_LABEL_MAP[m.id] = m.label
+}
+
 export function modeLabel(id: GameModeId): string {
-  return GAME_MODES.find((m) => m.id === id)?.label ?? id
+  return MODE_LABEL_MAP[id] ?? id
 }
 
 /**
