@@ -17,7 +17,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
   
   try {
     const files = await fs.readdir(examplesDir)
-    const jsonFiles = files.filter(f => f.endsWith(".json"))
+    const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
     const manifestPromises = jsonFiles.map(async (file) => {
       const filePath = path.join(examplesDir, file)
