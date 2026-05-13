@@ -1,13 +1,26 @@
 "use client"
 
+import { useMemo } from "react"
+
 import { useAchievements } from "@/lib/achievement-engine"
 import type { Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
 export function AchievementGallery({ onClose }: { onClose: () => void }) {
   const { achievements, reset } = useAchievements()
-  const unlocked = achievements.filter((a) => a.unlockedAt !== null)
-  const locked = achievements.filter((a) => a.unlockedAt === null)
+
+  const { unlocked, locked } = useMemo(() => {
+    const u: Achievement[] = []
+    const l: Achievement[] = []
+    for (let i = 0; i < achievements.length; i++) {
+      if (achievements[i].unlockedAt !== null) {
+        u.push(achievements[i])
+      } else {
+        l.push(achievements[i])
+      }
+    }
+    return { unlocked: u, locked: l }
+  }, [achievements])
 
   return (
     <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
