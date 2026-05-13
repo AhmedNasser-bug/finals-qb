@@ -140,9 +140,10 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       await saveAchievements(updated)
 
       // Sync local state: update unlockedAt for the achievements we are currently displaying
+      const updatedMap = new Map(updated.map((u) => [u.id, u]))
       setAchievements((prev) =>
         prev.map((a) => {
-          const match = updated.find((u) => u.id === a.id)
+          const match = updatedMap.get(a.id)
           return match ? { ...a, unlockedAt: match.unlockedAt } : a
         })
       )

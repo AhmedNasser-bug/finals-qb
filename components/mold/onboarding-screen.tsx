@@ -198,7 +198,7 @@ const ONBOARDING_STEPS = [
   },
   {
     title: "Generate JSON with any AI",
-    body: "Paste the prompt into ChatGPT, Claude, Gemini, or any capable LLM. It will return a fully structured JSON dataset with 100+ questions, 40+ flashcards, and 10+ achievements matching the required schema.",
+    body: "Paste the prompt into ChatGPT, Claude, Gemini, or any capable LLM. It will return a fully structured JSON dataset with questions, flashcards, and achievements matching the required schema.",
   },
   {
     title: "Paste and verify",
