@@ -470,6 +470,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     if (answers[i] === true) categoryMap[cat].correct++
   })
   const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => {
+    // OPTIMIZATION: pct is calculated once and reused for the grade to avoid redundant division and Math.round calls
     const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
     return {
       id:    `MOD_${String(idx + 1).padStart(2, "0")}`,
