@@ -131,6 +131,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
               <div className="self-start">
                 <button
                   onClick={() => setStep("welcome")}
+                  aria-label="Go back to welcome screen"
                   className="flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
                 >
                   <ChevronLeftIcon />
