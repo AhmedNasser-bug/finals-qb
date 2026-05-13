@@ -23,7 +23,7 @@ export function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
     mermaid.initialize({
       startOnLoad: false,
       theme: isDark ? "dark" : "default",
-      securityLevel: "loose",
+      securityLevel: "strict",
       fontFamily: "var(--font-geist-sans), sans-serif",
     })
 
