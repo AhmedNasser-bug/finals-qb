@@ -17,7 +17,7 @@ interface GameRunnerProps {
   config: GameConfig
   /** The active subject — provides questions and flashcards for this run. */
   subject: FullSubjectData
-  /** Real persisted run history — used for achievement evaluation (Fix 1-A). */
+  /** Real persisted run history — used for achievement evaluation. */
   runs: RunRecord[]
   onReturnHome: () => void
   onRunComplete?: () => void
@@ -51,7 +51,6 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete,
     <ToastLayer>
       {(showUnlocks) => (
         <div className="min-h-screen bg-background flex flex-col animate-fade-in">
-          {/* Fix 4-A: Error boundary wraps the engine so crashes are recoverable */}
           <GameErrorBoundary onReturnHome={onReturnHome}>
             {config.mode === "flashcards" ? (
               <FlashcardScreen
@@ -64,7 +63,6 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete,
                 config={config}
                 questions={subject.questions}
               >
-                {/* Fix 1-A: real runs passed down for accurate achievement evaluation */}
                 <GameRunnerInner
                   onReturnHome={onReturnHome}
                   onRunComplete={onRunComplete}
@@ -89,7 +87,7 @@ interface InnerProps {
   onRunComplete?: () => void
   onRunSaved?: (run: RunRecord) => void
   config: GameConfig
-  /** Fix 1-A: real persisted run history for achievement evaluation */
+  /** Real persisted run history for achievement evaluation. */
   runs: RunRecord[]
   showUnlocks: (unlocked: Achievement[]) => void
 }
@@ -98,8 +96,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   const { state, forfeit, currentQuestion } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const [showHint, setShowHint] = useState(false)
-  const achievementsFiredRef = useRef(false)
-  const runSavedRef = useRef(false)
+  const completionProcessedRef = useRef(false)
 
   // Reset hint visibility when question advances
   const [lastIndex, setLastIndex] = useState(state.currentIndex)
@@ -108,38 +105,34 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     setShowHint(false)
   }
 
-  // Build and emit RunRecord exactly once when the game transitions to complete.
+  // Build RunRecord and evaluate achievements exactly once when the game transitions to complete.
   useEffect(() => {
-    if (state.phase === "complete" && !runSavedRef.current) {
-      runSavedRef.current = true
+    if (state.phase === "complete" && !completionProcessedRef.current) {
+      completionProcessedRef.current = true
 
-      const accuracyPct   = calculateAccuracy(state.score, state.wrongAnswers)
+      const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
       const totalQuestions = state.questions.length
       const run: RunRecord = {
-        id:              crypto.randomUUID(),
-        date:            new Date().toISOString(),
-        mode:            state.mode,
-        score:           accuracyPct,
-        correctAnswers:  state.score,
+        id: crypto.randomUUID(),
+        date: new Date().toISOString(),
+        mode: state.mode,
+        score: accuracyPct,
+        correctAnswers: state.score,
         totalQuestions,
-        timeTaken:       state.elapsedSeconds,
-        streak:          state.bestStreak,
-        grade:           calculateGrade(accuracyPct),
+        timeTaken: state.elapsedSeconds,
+        streak: state.bestStreak,
+        grade: calculateGrade(accuracyPct),
       }
-      onRunSaved?.(run)
-    }
-  }, [state.phase, state, onRunSaved])
 
-  // Fire achievement evaluation exactly once when the game transitions to complete.
-  useEffect(() => {
-    if (state.phase === "complete" && !achievementsFiredRef.current) {
-      achievementsFiredRef.current = true
-      onGameComplete(state, runs).then((unlocked) => {
+      onRunSaved?.(run)
+
+      // Evaluate achievements using full history (including the current run)
+      onGameComplete(state, [...runs, run]).then((unlocked) => {
         if (unlocked.length > 0) showUnlocks(unlocked)
         onRunComplete?.()
       })
     }
-  }, [state.phase, state, runs, onGameComplete, showUnlocks, onRunComplete])
+  }, [state, runs, onRunSaved, onGameComplete, showUnlocks, onRunComplete])
 
   if (state.phase === "complete") {
     return (
