@@ -347,7 +347,13 @@ export const STREAK_TIERS: StreakTier[] = [
 ]
 
 export function getStreakTier(streak: number): StreakTier {
-  return STREAK_TIERS.find((t) => streak >= t.min) || STREAK_TIERS[STREAK_TIERS.length - 1]
+  for (let i = 0; i < STREAK_TIERS.length; i++) {
+    const tier = STREAK_TIERS[i]
+    if (streak >= tier.min) {
+      return tier
+    }
+  }
+  return STREAK_TIERS[STREAK_TIERS.length - 1]
 }
 
 export function getNextStreakThreshold(streak: number): number | null {
