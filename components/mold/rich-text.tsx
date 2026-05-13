@@ -20,7 +20,7 @@ export function RichText({ content, className, id = "q" }: RichTextProps) {
     // For simplicity we will look for a custom tag pattern or just parse standard code blocks
 
     // First let's normalize markdown-style mermaid blocks if they exist in the HTML
-    let normalized = content.replace(/```mermaid\n([\s\S]*?)```/g, '<div class="mermaid-block">$1</div>')
+    let normalized = content.replace(/```mermaid\s*[\r\n]+([\s\S]*?)```/g, '<div class="mermaid-block">$1</div>')
 
     // Split by our custom mermaid block class
     const segments = []
