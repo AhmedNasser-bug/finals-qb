@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, type DragEvent } from "react"
+import { useState, useCallback, useMemo, type DragEvent } from "react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
@@ -109,6 +109,10 @@ interface SubjectImporterProps {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function SubjectImporter({ onImport, onCancel, existingIds = [] }: SubjectImporterProps) {
+  // Convert existingIds array to a Set once to optimize O(1) lookups during validation,
+  // avoiding O(N) Array.includes calls that scale poorly with large subject libraries.
+  const existingIdsSet = useMemo(() => new Set(existingIds), [existingIds])
+
   const [json, setJson] = useState("")
   const [state, setState] = useState<ImporterState>("idle")
   const [result, setResult] = useState<ValidationResult | null>(null)
@@ -147,7 +151,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
       const validation = validateSubjectData(parsed.data)
 
       // Duplicate id check
-      if (validation.valid && validation.subject && existingIds.includes(validation.subject.id)) {
+      if (validation.valid && validation.subject && existingIdsSet.has(validation.subject.id)) {
         validation.warnings.push(
           `A subject with id "${validation.subject.id}" already exists — importing will replace it.`
         )
@@ -156,7 +160,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
       setResult(validation)
       setState(validation.valid ? "valid" : "error")
     })
-  }, [existingIds])
+  }, [existingIdsSet])
 
   function handleChange(value: string) {
     setJson(value)
