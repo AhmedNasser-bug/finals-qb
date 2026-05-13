@@ -50,7 +50,8 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete,
   return (
     <ToastLayer>
       {(showUnlocks) => (
-        <div className="min-h-screen bg-background flex flex-col animate-fade-in">
+        <div className="h-screen bg-background flex flex-col animate-fade-in">
+          {/* Fix 4-A: Error boundary wraps the engine so crashes are recoverable */}
           <GameErrorBoundary onReturnHome={onReturnHome}>
             {config.mode === "flashcards" ? (
               <FlashcardScreen
@@ -154,7 +155,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   }
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 overflow-hidden">
       <GameHeader onForfeit={forfeit} />
 
       {/* Survival per-question stress bar */}

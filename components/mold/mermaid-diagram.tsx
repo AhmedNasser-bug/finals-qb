@@ -31,10 +31,19 @@ export function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
       try {
         setError(null)
         // Check if the code is valid
-        if (await mermaid.parse(chart)) {
+        // Mermaid fails if \N is capitalized or if html entities are unparsed.
+        // We also want to replace common html entities just in case.
+        let cleanChart = chart
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&amp;/g, "&")
+          .replace(/\\N/g, "\n") // decode literal backslash N
+          .replace(/\\n/gi, "\n");
+
+        if (await mermaid.parse(cleanChart)) {
            // We need a unique ID for each render to avoid Mermaid cache collisions
            const uniqueId = `mermaid-${id}-${Date.now()}`
-           const { svg } = await mermaid.render(uniqueId, chart)
+           const { svg } = await mermaid.render(uniqueId, cleanChart)
            setSvg(svg)
         }
       } catch (err: any) {
