@@ -48,7 +48,7 @@ export class GameErrorBoundary extends Component<Props, State> {
           )}
           <button
             onClick={this.props.onReturnHome}
-            className="mt-2 px-4 py-2 text-xs font-mono tracking-widest border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors rounded"
+            className="mt-2 px-4 py-2 text-xs font-mono tracking-widest border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >
             RETURN TO HOME
           </button>
