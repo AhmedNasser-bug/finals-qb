@@ -72,8 +72,6 @@ export function HomeScreen({
   const { achievements, syncSubjectAchievements } = useAchievements()
 
   // Seed achievement definitions from the active subject on mount.
-  // This is the root cause fix: without it localStorage is empty on first
-  // load and the gallery always shows 0/0.
   useEffect(() => {
     syncSubjectAchievements(activeSubject)
   }, [activeSubject.id, syncSubjectAchievements]) // eslint-disable-line react-hooks/exhaustive-deps
