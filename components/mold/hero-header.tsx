@@ -59,7 +59,7 @@ export function HeroHeader({ subject, achievements, onTrophyClick, className }: 
           </div>
           <div
             role={onTrophyClick ? "button" : undefined}
-            aria-label={onTrophyClick ? "View achievements" : undefined}
+            aria-label={onTrophyClick ? "View achievements gallery" : undefined}
             tabIndex={onTrophyClick ? 0 : undefined}
             onClick={onTrophyClick}
             onKeyDown={(e) => e.key === "Enter" && onTrophyClick?.()}
