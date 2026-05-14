@@ -70,6 +70,7 @@ export function SetupPanel({
                 <button
                   key={n}
                   onClick={() => onChange({ questionCount: n })}
+                  aria-pressed={config.questionCount === n}
                   className={cn(
                     "px-2.5 py-1 text-xs font-mono rounded border transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -194,6 +195,7 @@ function CategoryTile({ name, questionCount, selected, onSelect }: CategoryTileP
   return (
     <button
       onClick={onSelect}
+      aria-pressed={selected}
       className={cn(
         "flex flex-col gap-1 p-3 rounded border text-left transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
