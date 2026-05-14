@@ -5,3 +5,7 @@
 ## 2026-05-13 - Added aria-pressed for Keyboard/Screen Reader A11y
 **Learning:** Custom UI elements like Mode Cards, Question Count pills, and Category Tiles that act as toggleable selections often miss standard accessibility attributes. Without `aria-pressed`, screen readers cannot announce the active state of these elements.
 **Action:** Always include `aria-pressed={isActive}` on any custom `<button>` or `<div>` that functions as a toggle or selection option to ensure full accessibility.
+
+## 2026-05-14 - Missed Accessibility on Custom Error/Fallback Buttons
+**Learning:** Fallback error boundaries and low-level recovery screens often miss basic accessibility polish (like `aria-label` or `focus-visible` styling) because they are rarely tested during happy path development.
+**Action:** When auditing for a11y, specifically seek out Error Boundaries and generic fallback UI to ensure their recovery actions (like 'RETURN TO HOME') are as accessible as the core application.
