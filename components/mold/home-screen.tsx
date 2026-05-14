@@ -72,8 +72,6 @@ export function HomeScreen({
   const { achievements, syncSubjectAchievements } = useAchievements()
 
   // Seed achievement definitions from the active subject on mount.
-  // This is the root cause fix: without it localStorage is empty on first
-  // load and the gallery always shows 0/0.
   useEffect(() => {
     syncSubjectAchievements(activeSubject)
   }, [activeSubject.id, syncSubjectAchievements]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -166,12 +164,14 @@ export function HomeScreen({
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setShowImporter(true)}
+              title="Import a new subject"
               className="text-[10px] font-mono px-2.5 py-1 rounded border border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               Import New
             </button>
             <button
               onClick={onChangeSubject}
+              title="Change active subject"
               className="text-[10px] font-mono px-2.5 py-1 rounded border border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               Change Subject
