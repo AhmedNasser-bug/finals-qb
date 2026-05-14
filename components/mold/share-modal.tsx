@@ -174,6 +174,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                     />
                     <button
                       onClick={handleCopy}
+                      aria-label="Copy share link"
                       className={cn(
                         "shrink-0 px-3 py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                         copyState === "copied"
@@ -229,6 +230,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                               setTimeout(() => setCopyState("idle"), 2500)
                             }
                           }}
+                          aria-label="Copy shortened link"
                           className="shrink-0 px-3 py-2 rounded border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-mono font-semibold tracking-wider hover:bg-green-500/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                         >
                           Copy
