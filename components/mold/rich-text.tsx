@@ -10,53 +10,81 @@ interface RichTextProps {
   id?: string
 }
 
-export function RichText({ content, className, id = "q" }: RichTextProps) {
-  // Extract mermaid code blocks
-  const parts = useMemo(() => {
-    if (!content) return []
 
-    // Look for <pre><code class="language-mermaid">...</code></pre>
-    // or just ```mermaid ... ``` (which might have been converted to HTML or not)
-    // For simplicity we will look for a custom tag pattern or just parse standard code blocks
+export function parseRichTextParts(content: string) {
+  if (!content) return []
 
-    // First let's normalize markdown-style mermaid blocks if they exist in the HTML
-    let normalized = content.replace(/```mermaid\s*[\r\n]+([\s\S]*?)```/g, '<div class="mermaid-block">$1</div>')
+  let normalized = content
+  // Check if it's a raw mermaid string without markdown blocks
+  if (!normalized.includes('```mermaid') &&
+      /^(?:graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|requirementDiagram|gitGraph)\b/i.test(normalized.trim())) {
 
-    // Split by our custom mermaid block class
-    const segments = []
-    const mermaidRegex = /<div class="mermaid-block">([\s\S]*?)<\/div>|<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/gi
+      const lines = normalized.split(/(?:\\n|\n)/);
+      const mermaidLines = [];
+      const textLines = [];
 
-    let lastIndex = 0
-    let match
+      let isMermaid = true;
+      for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
 
-    while ((match = mermaidRegex.exec(normalized)) !== null) {
-      // Add text before the mermaid block
-      if (match.index > lastIndex) {
-        segments.push({
-          type: "html",
-          content: normalized.substring(lastIndex, match.index)
-        })
+          if (isMermaid) {
+              if (i > 0 &&
+                  !/(?:-->|---|==>|-.->)/.test(line) &&
+                  (/^[A-Z][a-z]+/.test(line) || /[?.!]$/.test(line))) {
+                  isMermaid = false;
+                  textLines.push(lines[i]);
+              } else {
+                  mermaidLines.push(lines[i]);
+              }
+          } else {
+              textLines.push(lines[i]);
+          }
       }
 
-      // Add the mermaid block (match[1] is from div, match[2] is from pre>code)
-      segments.push({
-        type: "mermaid",
-        content: (match[1] || match[2]).trim()
-      })
+      if (mermaidLines.length > 0) {
+          normalized = `<div class="mermaid-block">${mermaidLines.join('\\n')}</div>\n\n${textLines.join('\\n')}`;
+      }
+  } else {
+      normalized = normalized.replace(/```mermaid\s*[\r\n]+([\s\S]*?)```/g, '<div class="mermaid-block">$1</div>')
+  }
 
-      lastIndex = mermaidRegex.lastIndex
-    }
+  // Split by our custom mermaid block class
+  const segments: { type: "html" | "mermaid", content: string }[] = []
+  const mermaidRegex = /<div class="mermaid-block">([\s\S]*?)<\/div>|<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/gi
 
-    // Add remaining text
-    if (lastIndex < normalized.length) {
+  let lastIndex = 0
+  let match
+
+  while ((match = mermaidRegex.exec(normalized)) !== null) {
+    if (match.index > lastIndex) {
       segments.push({
         type: "html",
-        content: normalized.substring(lastIndex)
+        content: normalized.substring(lastIndex, match.index)
       })
     }
 
-    return segments.length > 0 ? segments : [{ type: "html", content }]
-  }, [content])
+    segments.push({
+      type: "mermaid",
+      content: (match[1] || match[2]).trim()
+    })
+
+    lastIndex = mermaidRegex.lastIndex
+  }
+
+  if (lastIndex < normalized.length) {
+    segments.push({
+      type: "html",
+      content: normalized.substring(lastIndex)
+    })
+  }
+
+  return segments.length > 0 ? segments : [{ type: "html", content }]
+}
+
+export function RichText({ content, className, id = "q" }: RichTextProps) {
+  // Extract mermaid code blocks
+  const parts = useMemo(() => parseRichTextParts(content), [content])
 
   return (
     <span className={className}>

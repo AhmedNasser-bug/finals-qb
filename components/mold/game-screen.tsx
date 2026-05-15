@@ -1,10 +1,13 @@
 "use client"
 
-import { RichText } from "./rich-text"
 import { useGameEngine } from "@/lib/game-engine"
 import type { Question } from "@/lib/mold-types"
-import { formatTime, gradeBgColor, gradeColor, gradeBgClass, gradeToken, calculateGrade, modeLabel, formatLabel, calculateAccuracy } from "@/lib/mold-types"
+import { formatTime, gradeBgColor, calculateGrade, modeLabel, formatLabel, calculateAccuracy } from "@/lib/mold-types"
+import * as React from "react"
 import { cn } from "@/lib/utils"
+import DOMPurify from "dompurify"
+import { parseRichTextParts } from "./rich-text"
+import { MermaidDiagram } from "./mermaid-diagram"
 
 // ─── Game Header Bar ──────────────────────────────────────────────────────────
 
@@ -169,7 +172,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             SESSION_ID: {mode.toUpperCase()}-MOLD
           </p>
           <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
-            DIFFICULTY: {state.mode.toUpperCase() === "HARDCORE" ? "HARD" : "STANDARD"}
+            DIFFICULTY: {state.config?.difficulty?.toUpperCase() ?? "STANDARD"}
           </p>
           {/* Live indicator dots */}
           <div className="mt-4 flex gap-2">
@@ -180,7 +183,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           {/* Quit — recessed, hard to miss-tap */}
           <button
             onClick={onForfeit}
-            className="mt-3 font-mono text-[9px] text-zinc-700 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-500 rounded px-1"
+            className="mt-3 font-mono text-[9px] text-zinc-700 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors"
           >
             QUIT SESSION
           </button>
@@ -203,6 +206,13 @@ export function QuestionCard({
   const { selectedOption, isRevealed, currentIndex, questions } = state
 
   const grade = calculateGrade(accuracyPct)
+  const parts = React.useMemo(() => parseRichTextParts(question.question), [question.question])
+  const hasDiagram = parts.some(p => p.type === "mermaid")
+  const gradeColor =
+    grade === "S+" || grade === "S" ? "#fecc17" :
+    grade === "A+" || grade === "A" ? "#4ae176" :
+    grade === "B"                   ? "#67d7f0" :
+    grade === "C"                   ? "#fb8c00" : "#ffb4ab"
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-slide-up">
@@ -219,10 +229,8 @@ export function QuestionCard({
             </span>
             <div className="text-right">
               <span
-                className={cn(
-                  "font-mono text-4xl font-black tracking-tighter leading-none block",
-                  gradeColor(grade)
-                )}
+                className="font-mono text-4xl font-black tracking-tighter leading-none block"
+                style={{ color: gradeColor }}
               >
                 {grade}
               </span>
@@ -232,15 +240,41 @@ export function QuestionCard({
             </div>
           </div>
 
-          {/* Question headline + subtext */}
-          <div className="space-y-3">
-            <h2 className="font-sans text-2xl md:text-3xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty">
-              <RichText content={question.question} id={question.id} />
-            </h2>
-            {/* Difficulty / type subtext */}
-            <p className="font-sans text-sm text-zinc-400">
-              {question.difficulty} &mdash; {question.type === "TrueFalse" ? "True / False" : "Multiple Choice"}
-            </p>
+          {/* Question Layout: 2 cols if diagram, Options below */}
+          <div className={cn("grid gap-8 mb-6", hasDiagram ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1")}>
+            <div className="flex flex-col justify-center space-y-3">
+              <h2 className="font-sans text-2xl md:text-3xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty">
+                <span id={question.id}>
+                  {parts.map((part: any, index: number) => {
+                    if (part.type === "html") {
+                      const cleanHtml = typeof window !== "undefined" ? DOMPurify.sanitize(part.content) : part.content;
+                      return <span key={`html-${index}`} dangerouslySetInnerHTML={{ __html: cleanHtml }} />;
+                    }
+                    return null;
+                  })}
+                </span>
+              </h2>
+              <p className="font-sans text-sm text-zinc-400">
+                {question.difficulty} &mdash; {question.type === "TrueFalse" ? "True / False" : "Multiple Choice"}
+              </p>
+            </div>
+
+            {hasDiagram && (
+              <div className="flex items-center justify-center bg-white/5 rounded-lg border border-white/10 p-4 min-h-[250px] overflow-hidden">
+                {parts.map((part: any, index: number) => {
+                  if (part.type === "mermaid") {
+                    return (
+                      <MermaidDiagram
+                        key={`mermaid-${index}`}
+                        chart={part.content}
+                        id={`${question.id}-${index}`}
+                      />
+                    )
+                  }
+                  return null;
+                })}
+              </div>
+            )}
           </div>
 
           {/* Options grid */}
@@ -357,9 +391,8 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         <button
           onClick={handleHint}
           disabled={!canHint}
-          title={!canHint ? "Hint not available" : undefined}
           className={cn(
-            "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded",
+            "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all",
             canHint
               ? "text-[#fecc17] hover:text-[#ffedc2]"
               : "text-zinc-700 cursor-not-allowed"
@@ -379,9 +412,8 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
           <button
             onClick={revealAnswer}
             disabled={!canSubmit}
-            title={!canSubmit ? "Select an option first" : undefined}
             className={cn(
-              "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded",
+              "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress",
               canSubmit
                 ? "cta-gradient"
                 : "bg-[#2a2a2a] text-zinc-600 cursor-not-allowed"
@@ -392,7 +424,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         ) : (
           <button
             onClick={nextQuestion}
-            className="w-full h-12 cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded"
+            className="w-full h-12 cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up"
           >
             {isLast ? "VIEW_RESULTS" : "CONTINUE_SESSION"}
           </button>
@@ -412,7 +444,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         {isRevealed && (
           <button
             onClick={nextQuestion}
-            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded"
+            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all"
           >
             <SkipIcon className="w-4 h-4" />
             SKIP
@@ -439,17 +471,23 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
 
   // Only count questions that were actually answered (true = correct, false = wrong).
   // Undefined entries are unanswered/skipped and must not inflate or deflate accuracy.
-  let wrongCountVal = 0
-  let skipCount = 0
-  for (let i = 0; i < answers.length; i++) {
-    const a = answers[i]
-    if (a === false) wrongCountVal++
-    else if (a === undefined) skipCount++
-  }
-
+  const wrongCountVal = answers.filter((a) => a === false).length
   const accuracyPct = calculateAccuracy(score, wrongCountVal)
   const grade       = calculateGrade(accuracyPct)
-  const answered    = score + wrongCountVal
+
+  const skipCount  = answers.filter((a) => a === undefined).length
+
+  // Grade color — must match the LetterGrade values returned by calculateGrade()
+  // ("S+", "S", "A+", "A", "B+", "C+", "D+", "F") not bare "B" / "C".
+  function resolveGradeColor(g: string): string {
+    if (g === "S+" || g === "S")   return "#fecc17"
+    if (g === "A+" || g === "A")   return "#4ae176"
+    if (g === "B+")                return "#67d7f0"
+    if (g === "C+")                return "#fb8c00"
+    return "#ffb4ab" // D+, F
+  }
+
+  const gradeHex = resolveGradeColor(grade)
 
   // Accuracy bar: 10 segments, each represents 10% — filled count proportional to accuracy
   const filledSegments = Math.round((accuracyPct / 100) * 10)
@@ -469,16 +507,12 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     categoryMap[cat].total++
     if (answers[i] === true) categoryMap[cat].correct++
   })
-  const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => {
-    // OPTIMIZATION: pct is calculated once and reused for the grade to avoid redundant division and Math.round calls
-    const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
-    return {
-      id:    `MOD_${String(idx + 1).padStart(2, "0")}`,
-      name:  cat.replace(/_/g, " "),
-      pct,
-      grade: calculateGrade(pct),
-    }
-  })
+  const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => ({
+    id:    `MOD_${String(idx + 1).padStart(2, "0")}`,
+    name:  cat.replace(/_/g, " "),
+    pct:   s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
+    grade: calculateGrade(s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
+  }))
 
   // Pixel grid: cap render at 100 cells max to prevent layout explosion;
   // group into buckets when questions exceed 100.
@@ -511,20 +545,16 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           {/* Grade box */}
           <div className="relative">
             <div
-              className={cn(
-                "absolute inset-0 blur-3xl opacity-40 pointer-events-none",
-                gradeBgClass(grade)
-              )}
+              className="absolute inset-0 blur-3xl opacity-40 pointer-events-none"
+              style={{ backgroundColor: gradeHex }}
             />
-            <div className={cn(
-                "relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden",
-                `shadow-[0_0_40px_theme(colors.grade.${gradeToken(grade)})/.2]`
-              )}
+            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden"
+              style={{ boxShadow: `0 0 40px ${gradeHex}20` }}
             >
               <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
               <span
-                className="font-sans font-black leading-none tracking-tighter z-10 select-none text-[#ffedc2]"
-                style={{ fontSize: "clamp(72px, 10vw, 128px)" }}
+                className="font-sans font-black leading-none tracking-tighter z-10 select-none"
+                style={{ fontSize: "clamp(72px, 10vw, 128px)", color: "#ffedc2" }}
               >
                 {grade}
               </span>
@@ -537,7 +567,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
                 ACCURACY_COEFFICIENT
               </span>
-              <span className={cn("font-mono text-2xl font-black", gradeColor(grade))}>
+              <span className="font-mono text-2xl font-black" style={{ color: gradeHex }}>
                 {accuracyPct}%
               </span>
             </div>
@@ -545,10 +575,11 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               {Array.from({ length: 10 }).map((_, i) => (
                 <div
                   key={i}
-                  className={cn(
-                    "flex-1 h-full",
-                    i < filledSegments ? "bg-grade-a-plus shadow-[0_0_8px_rgba(74,225,118,0.3)]" : "bg-[#353534]"
-                  )}
+                  className="flex-1 h-full"
+                  style={{
+                    backgroundColor: i < filledSegments ? "#4ae176" : "#353534",
+                    boxShadow: i < filledSegments ? "0 0 8px rgba(74,225,118,0.3)" : "none",
+                  }}
                 />
               ))}
             </div>
@@ -658,16 +689,18 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                     <div className="flex justify-between items-end">
                       <span className="font-mono text-[10px] text-zinc-500 uppercase">EFFICIENCY</span>
                       <span
-                        className={cn("font-mono text-base font-black", gradeColor(mod.grade))}
+                        className="font-mono text-base font-black"
+                        style={{ color: resolveGradeColor(mod.grade) }}
                       >
                         {mod.grade}
                       </span>
                     </div>
                     <div className="h-[2px] w-full bg-[#353534]">
                       <div
-                        className={cn("h-full transition-all duration-700 ease-out", gradeBgClass(mod.grade))}
+                        className="h-full transition-all duration-700 ease-out"
                         style={{
                           width: `${mod.pct}%`,
+                          backgroundColor: resolveGradeColor(mod.grade),
                         }}
                       />
                     </div>
@@ -691,13 +724,13 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           <div className="flex gap-3 w-full md:w-auto">
             <button
               onClick={onReturnHome}
-              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded"
+              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors"
             >
               DUMP_LOGS
             </button>
             <button
               onClick={onPlayAgain}
-              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded"
+              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress"
               style={{ boxShadow: "0 0 25px rgba(254,204,23,0.15)" }}
             >
               CONTINUE_CYCLE
