@@ -395,6 +395,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-border bg-background">
           <button
             onClick={onCancel}
+            aria-label="Cancel import"
             className="text-xs font-mono px-4 py-2 rounded border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             Cancel
