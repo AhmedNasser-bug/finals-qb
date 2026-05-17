@@ -71,6 +71,7 @@ export function SetupPanel({
                   key={n}
                   onClick={() => onChange({ questionCount: n })}
                   aria-pressed={config.questionCount === n}
+                  aria-label={`${n} questions`}
                   className={cn(
                     "px-2.5 py-1 text-xs font-mono rounded border transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
