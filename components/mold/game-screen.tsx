@@ -357,6 +357,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         <button
           onClick={handleHint}
           disabled={!canHint}
+          aria-disabled={!canHint}
           title={!canHint ? "Hint not available" : undefined}
           className={cn(
             "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded",
@@ -379,6 +380,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
           <button
             onClick={revealAnswer}
             disabled={!canSubmit}
+            aria-disabled={!canSubmit}
             title={!canSubmit ? "Select an option first" : undefined}
             className={cn(
               "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded",
