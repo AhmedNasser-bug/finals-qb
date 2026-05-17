@@ -34,7 +34,7 @@ export class GameErrorBoundary extends Component<Props, State> {
 
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 p-8">
-        <div className="border border-red-500/40 bg-red-500/5 rounded p-6 max-w-md w-full text-center space-y-4">
+        <div className="border border-red-500/40 bg-red-500/5 rounded p-6 max-w-md w-full text-center space-y-4" role="alert">
           <p className="text-xs font-mono text-red-400 tracking-widest uppercase">
             SYSTEM FAULT
           </p>
