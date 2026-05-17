@@ -184,7 +184,9 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                           : "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20"
                       )}
                     >
-                      {copyState === "copied" ? "Copied!" : copyState === "error" ? "Failed" : "Copy"}
+                      <span aria-live="polite">
+                        {copyState === "copied" ? "Copied!" : copyState === "error" ? "Failed" : "Copy"}
+                      </span>
                     </button>
                   </div>
 
