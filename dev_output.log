@@ -2,6 +2,30 @@
 > my-v0-project@0.1.0 dev /app
 > next dev
 
-sh: 1: next: not found
- ELIFECYCLE  Command failed.
--bash: ./node_modules/.bin/next: No such file or directory
+ ⚠ `eslint` configuration in next.config.mjs is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+ ⚠ Invalid next.config.mjs options detected:
+ ⚠     Unrecognized key(s) in object: 'eslint'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+   ▲ Next.js 16.0.10 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://192.168.0.2:3000
+
+ ✓ Starting...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Minimum recommended TypeScript version is v5.1.0, older versions can potentially be incompatible with Next.js. Detected: 5.0.2
+ ✓ Ready in 693ms
+
+warn - The utility `shadow-[0_0_40px_theme(colors.grade.${gradeToken(grade)})/.2]` contains an invalid theme value and was not generated.
+ ○ Compiling / ...
+ GET / 200 in 11.3s (compile: 10.5s, render: 766ms)
+ GET /subjects 200 in 819ms (compile: 735ms, render: 84ms)
+ POST /subjects 200 in 41ms (compile: 7ms, render: 34ms)
+ POST /subjects 200 in 37ms (compile: 7ms, render: 30ms)
+ GET / 200 in 70ms (compile: 8ms, render: 63ms)
+ GET /subjects 200 in 26ms (compile: 4ms, render: 22ms)
+ POST /subjects 200 in 18ms (compile: 4ms, render: 14ms)
+ POST /subjects 200 in 20ms (compile: 3ms, render: 17ms)
+ GET / 200 in 62ms (compile: 6ms, render: 56ms)
+ GET /subjects 200 in 27ms (compile: 4ms, render: 23ms)
+ POST /subjects 200 in 16ms (compile: 3ms, render: 12ms)
+ POST /subjects 200 in 20ms (compile: 3ms, render: 18ms)

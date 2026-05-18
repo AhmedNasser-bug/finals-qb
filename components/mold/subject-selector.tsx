@@ -147,9 +147,19 @@ export function SubjectSelector({
                       )}
                     >
                       {/* Clickable card body */}
-                      <button
-                        onClick={() => !isConfirming && onSelect(full)}
-                        disabled={isConfirming}
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          if (!isConfirming) onSelect(full)
+                        }}
+                        onKeyDown={(e) => {
+                          if (isConfirming) return
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault()
+                            onSelect(full)
+                          }
+                        }}
                         aria-disabled={isConfirming}
                         title={isConfirming ? "Confirm deletion first" : undefined}
                         className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
@@ -178,7 +188,7 @@ export function SubjectSelector({
                           <StatPill label="FC" value={full.flashcards?.length ?? 0} />
                           <StatPill label="Cat" value={categoryCount} />
                         </div>
-                      </button>
+                      </div>
 
                       {/* Card footer */}
                       <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
@@ -247,9 +257,19 @@ export function SubjectSelector({
                       className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-colors"
                     >
                       {/* Clickable card body */}
-                      <button
-                        onClick={() => !isLoading && handleExampleLoad(entry)}
-                        disabled={isLoading}
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          if (!isLoading) handleExampleLoad(entry)
+                        }}
+                        onKeyDown={(e) => {
+                          if (isLoading) return
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault()
+                            handleExampleLoad(entry)
+                          }
+                        }}
                         aria-disabled={isLoading}
                         aria-busy={isLoading}
                         title={isLoading ? "Loading module..." : undefined}
@@ -288,7 +308,7 @@ export function SubjectSelector({
                             </span>
                           ))}
                         </div>
-                      </button>
+                      </div>
 
                       {/* Footer — load button or spinner */}
                       <div className="border-t border-border px-4 py-2.5 flex items-center justify-between">
