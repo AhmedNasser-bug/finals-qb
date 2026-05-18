@@ -281,6 +281,8 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                 <button
                   onClick={handlePaste}
                   disabled={state === "pasting"}
+                  aria-disabled={state === "pasting"}
+                  title={state === "pasting" ? "Currently pasting data..." : undefined}
                   aria-busy={state === "pasting"}
                   className={cn(
                     "text-xs font-mono px-3 py-1.5 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
@@ -312,6 +314,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                 <textarea
                   value={json}
                   aria-label="Paste JSON subject data here"
+                  aria-invalid={state === "error"}
                   onChange={(e) => { setJson(e.target.value); validate(e.target.value) }}
                   placeholder="JSON pasted here..."
                   spellCheck={false}
@@ -332,65 +335,68 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
           </div>
 
           {/* Validation feedback */}
-          {state === "error" && result && (
-            <div className="flex flex-col gap-2 rounded border border-destructive/30 bg-destructive/5 p-3 animate-slide-up">
-              <p className="text-xs font-mono font-semibold text-destructive tracking-wide uppercase">
-                Validation Failed — {result.errors.length} error{result.errors.length !== 1 ? "s" : ""}
-              </p>
-              <ul className="flex flex-col gap-1">
-                {result.errors.map((err, i) => (
-                  <li key={i} className="text-xs text-destructive/80 leading-relaxed flex gap-2">
-                    <span className="font-mono shrink-0 text-destructive/50">{i + 1}.</span>
-                    {err}
-                  </li>
+          <div aria-live="polite">
+            {state === "error" && result && (
+              <div className="flex flex-col gap-2 rounded border border-destructive/30 bg-destructive/5 p-3 animate-slide-up">
+                <p className="text-xs font-mono font-semibold text-destructive tracking-wide uppercase">
+                  Validation Failed — {result.errors.length} error{result.errors.length !== 1 ? "s" : ""}
+                </p>
+                <ul className="flex flex-col gap-1">
+                  {result.errors.map((err, i) => (
+                    <li key={i} className="text-xs text-destructive/80 leading-relaxed flex gap-2">
+                      <span className="font-mono shrink-0 text-destructive/50">{i + 1}.</span>
+                      {err}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {result?.warnings && result.warnings.length > 0 && (
+              <div className="flex flex-col gap-1 rounded border border-amber-400/30 bg-amber-400/5 p-3">
+                <p className="text-xs font-mono font-semibold text-amber-400 tracking-wide uppercase">
+                  {result.warnings.length} Warning{result.warnings.length !== 1 ? "s" : ""}
+                </p>
+                {result.warnings.map((w, i) => (
+                  <p key={i} className="text-xs text-amber-400/70 leading-relaxed">{w}</p>
                 ))}
-              </ul>
-            </div>
-          )}
-
-          {result?.warnings && result.warnings.length > 0 && (
-            <div className="flex flex-col gap-1 rounded border border-amber-400/30 bg-amber-400/5 p-3">
-              <p className="text-xs font-mono font-semibold text-amber-400 tracking-wide uppercase">
-                {result.warnings.length} Warning{result.warnings.length !== 1 ? "s" : ""}
-              </p>
-              {result.warnings.map((w, i) => (
-                <p key={i} className="text-xs text-amber-400/70 leading-relaxed">{w}</p>
-              ))}
-            </div>
-          )}
-
-          {/* Preview card */}
-          {state === "valid" && preview && (
-            <div className="flex flex-col gap-3 rounded border border-emerald-400/30 bg-emerald-400/5 p-4 animate-slide-up">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-mono text-emerald-400 tracking-widest uppercase mb-1">
-                    Valid — Ready to import
-                  </p>
-                  <p className="text-base font-semibold text-foreground">{preview.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{preview.config.description}</p>
-                </div>
-                <span className="shrink-0 font-mono text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-400 bg-emerald-400/10">
-                  {preview.id}
-                </span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <StatChip label="Questions" value={questionCount} />
-                <StatChip label="Flashcards" value={flashcardCount} />
-                <StatChip label="Categories" value={categories.length} />
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {categories.map((cat) => (
-                  <span
-                    key={cat}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded-sm border border-border text-muted-foreground"
-                  >
-                    {cat}
+            )}
+
+            {/* Preview card */}
+            {state === "valid" && preview && (
+              <div className="flex flex-col gap-3 rounded border border-emerald-400/30 bg-emerald-400/5 p-4 animate-slide-up">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-mono text-emerald-400 tracking-widest uppercase mb-1">
+                      Valid — Ready to import
+                    </p>
+                    <p className="text-base font-semibold text-foreground">{preview.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{preview.config.description}</p>
+                  </div>
+                  <span className="shrink-0 font-mono text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-400 bg-emerald-400/10">
+                    {preview.id}
                   </span>
-                ))}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <StatChip label="Questions" value={questionCount} />
+                  <StatChip label="Flashcards" value={flashcardCount} />
+                  <StatChip label="Categories" value={categories.length} />
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {categories.map((cat) => (
+                    <span
+                      key={cat}
+                      className="text-[10px] font-mono px-2 py-0.5 rounded-sm border border-border text-muted-foreground"
+                    >
+                      {cat}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
         </div>
 
         {/* Footer actions */}
@@ -405,6 +411,8 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
           <button
             onClick={handleConfirm}
             disabled={state !== "valid"}
+            aria-disabled={state !== "valid"}
+            title={state !== "valid" ? "Subject data must be valid to import" : undefined}
             className={cn(
               "text-xs font-mono px-5 py-2 rounded border font-semibold tracking-widest uppercase transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
               state === "valid"

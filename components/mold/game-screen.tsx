@@ -319,7 +319,7 @@ export function QuestionCard({
 
       {/* ── Hint / explanation panel — surface-container-lowest ── */}
       {(showHint && question.hint) || (isRevealed && question.explanation) ? (
-        <div className="bg-[#0e0e0e] px-6 py-4 flex items-start gap-4 animate-fade-in border-t border-[#2a2a2a]">
+        <div className="bg-[#0e0e0e] px-6 py-4 flex items-start gap-4 animate-fade-in border-t border-[#2a2a2a]" aria-live="polite">
           <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
           <div className="space-y-1">
             <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
@@ -380,6 +380,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
           <button
             onClick={revealAnswer}
             disabled={!canSubmit}
+            aria-disabled={!canSubmit}
             title={!canSubmit ? "Select an option first" : undefined}
             className={cn(
               "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded",
@@ -403,7 +404,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
       {/* STATUS + SKIP */}
       <div className="flex items-center gap-4 shrink-0">
         {!isRevealed && (
-          <div className="hidden md:flex flex-col items-end">
+          <div className="hidden md:flex flex-col items-end" aria-live="polite" aria-atomic="true">
             <span className="font-mono text-[9px] text-zinc-500 tracking-widest uppercase">STATUS</span>
             <span className="font-mono text-xs text-zinc-500 font-bold uppercase">
               {canSubmit ? "READY_TO_SUBMIT" : "WAITING_FOR_INPUT"}

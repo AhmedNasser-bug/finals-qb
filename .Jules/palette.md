@@ -12,3 +12,10 @@
 ## 2026-05-18 - Added proper accessible live regions to dynamic feedback elements
 **Learning:** React components that change text dynamically based on user interaction (like button states changing from 'Copy' to 'Copied!' or empty search states) must have their text wrapped in `aria-live` regions or `role="status"`. Otherwise, screen readers may silently skip the text change.
 **Action:** When creating text that represents async feedback or empty states, always add `aria-live="polite"` inside a `<span>` wrapper or `role="status"` to the container element.
+
+## 2026-05-15 - Add aria-busy to Asynchronous Loading Buttons
+**Learning:** Buttons that trigger asynchronous actions and enter a loading state (like fetching an external resource or processing data) often use `disabled={isLoading}` to prevent multiple clicks, but forget to communicate this processing state to screen readers.
+**Action:** When a button disables itself to process an action, always add `aria-busy={isLoading}` so screen readers can explicitly announce the element is currently loading/processing rather than just being generically "disabled".
+## 2024-05-17 - Disabled States and Contextual Tooltips
+**Learning:** Adding the standard HTML `disabled` attribute prevents interaction but doesn't guarantee the clearest screen reader experience. Explicitly pairing it with `aria-disabled="true"` reinforces the state for some tooling. Additionally, users often don't know *why* a button is disabled. Adding a descriptive `title` attribute (e.g., "Confirm deletion first" or "Loading module...") provides essential context directly natively without requiring custom tooltip components. Lastly, providing an `aria-label` to an icon sitting next to readable text within a button causes redundant and annoying screen reader announcements; instead, applying `aria-hidden="true"` to the purely decorative icon is the superior pattern.
+**Action:** Always combine `disabled`, `aria-disabled="true"`, and a contextual `title` attribute for inactive interactive elements. Apply `aria-hidden="true"` to decorative icons inside elements that already contain text.
