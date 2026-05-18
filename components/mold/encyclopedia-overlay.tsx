@@ -142,7 +142,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             {/* Entries */}
             <ul className="flex-1 overflow-y-auto divide-y divide-border" role="list">
               {filtered.length === 0 ? (
-                <li className="px-5 py-6 text-xs font-mono text-muted-foreground text-center">
+                <li className="px-5 py-6 text-xs font-mono text-muted-foreground text-center" role="status" aria-live="polite">
                   No terms match &quot;{search}&quot;
                 </li>
               ) : (
