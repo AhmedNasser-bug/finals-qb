@@ -184,7 +184,9 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                           : "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20"
                       )}
                     >
-                      {copyState === "copied" ? "Copied!" : copyState === "error" ? "Failed" : "Copy"}
+                      <span aria-live="polite">
+                        {copyState === "copied" ? "Copied!" : copyState === "error" ? "Failed" : "Copy"}
+                      </span>
                     </button>
                   </div>
 
@@ -193,6 +195,8 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                     <button
                       onClick={handleShorten}
                       disabled={shortenState === "loading"}
+                      aria-disabled={shortenState === "loading"}
+                      title={shortenState === "loading" ? "Currently shortening link..." : undefined}
                       aria-busy={shortenState === "loading"}
                       className={cn(
                         "w-full py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",

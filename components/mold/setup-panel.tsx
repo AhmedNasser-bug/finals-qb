@@ -42,6 +42,7 @@ export function SetupPanel({
               onChange={(v) => onChange({ timeLimitEnabled: v })}
               activeLabel="ON"
               inactiveLabel="OFF"
+              ariaLabel="Toggle Time Limit"
             />
           </ConfigRow>
         )}
@@ -56,6 +57,7 @@ export function SetupPanel({
             onChange={(v) => onChange({ hintsEnabled: v })}
             activeLabel="ON"
             inactiveLabel="OFF"
+              ariaLabel="Toggle Hint System"
           />
         </ConfigRow>
 
@@ -71,6 +73,7 @@ export function SetupPanel({
                   key={n}
                   onClick={() => onChange({ questionCount: n })}
                   aria-pressed={config.questionCount === n}
+                  aria-label={`${n} questions`}
                   className={cn(
                     "px-2.5 py-1 text-xs font-mono rounded border transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -154,15 +157,18 @@ function Toggle({
   onChange,
   activeLabel,
   inactiveLabel,
+  ariaLabel,
 }: {
   checked: boolean
   onChange: (v: boolean) => void
   activeLabel: string
   inactiveLabel: string
+  ariaLabel?: string
 }) {
   return (
     <button
       role="switch"
+      aria-label={ariaLabel}
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={cn(

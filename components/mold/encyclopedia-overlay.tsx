@@ -112,6 +112,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
               <button
                 key={cat}
                 onClick={() => { setActiveCategory(cat); setSearch("") }}
+                aria-current={activeCategory === cat ? "page" : undefined}
                 className={cn(
                   "text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                   activeCategory === cat
@@ -141,7 +142,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             {/* Entries */}
             <ul className="flex-1 overflow-y-auto divide-y divide-border" role="list">
               {filtered.length === 0 ? (
-                <li className="px-5 py-6 text-xs font-mono text-muted-foreground text-center">
+                <li className="px-5 py-6 text-xs font-mono text-muted-foreground text-center" role="status" aria-live="polite">
                   No terms match &quot;{search}&quot;
                 </li>
               ) : (
