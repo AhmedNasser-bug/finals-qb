@@ -310,6 +310,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                 <textarea
                   value={json}
                   aria-label="Paste JSON subject data here"
+                  aria-invalid={state === "error"}
                   onChange={(e) => { setJson(e.target.value); validate(e.target.value) }}
                   placeholder="JSON pasted here..."
                   spellCheck={false}
@@ -406,6 +407,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
           <button
             onClick={handleConfirm}
             disabled={state !== "valid"}
+            title={state !== "valid" ? "Subject JSON must be valid to continue" : undefined}
             className={cn(
               "text-xs font-mono px-5 py-2 rounded border font-semibold tracking-widest uppercase transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
               state === "valid"

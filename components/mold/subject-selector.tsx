@@ -248,6 +248,8 @@ export function SubjectSelector({
                       <button
                         onClick={() => !isLoading && handleExampleLoad(entry)}
                         disabled={isLoading}
+                        aria-busy={isLoading}
+                        title={isLoading ? "Loading module..." : undefined}
                         className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
                       >
                         <div className="flex items-start justify-between gap-2">
