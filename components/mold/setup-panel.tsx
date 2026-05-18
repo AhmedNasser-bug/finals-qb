@@ -67,7 +67,7 @@ export function SetupPanel({
             label="Question Count"
             description="Number of questions to pull per session"
           >
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1 justify-end">
               {QUESTION_COUNT_OPTIONS.map((n) => (
                 <button
                   key={n}
@@ -173,6 +173,7 @@ function Toggle({
       onClick={() => onChange(!checked)}
       className={cn(
         "flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-mono transition-all duration-150",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
         checked
           ? "border-primary/50 bg-primary/10 text-primary"
           : "border-border bg-secondary text-muted-foreground hover:text-foreground hover:border-border/80"

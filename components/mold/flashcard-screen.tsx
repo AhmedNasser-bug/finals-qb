@@ -177,6 +177,8 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           <div className="flex gap-3 w-full max-w-sm">
             <button
               onClick={onReturnHome}
+              aria-label="Return to home screen"
+              title="Return to home screen"
               className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground hover:border-border/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               HOME
@@ -244,6 +246,8 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           <div className="flex gap-3 w-full max-w-sm">
             <button
               onClick={() => setPhase("session-end")}
+              aria-label="End current flashcard session"
+              title="End current session"
               className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               END SESSION
