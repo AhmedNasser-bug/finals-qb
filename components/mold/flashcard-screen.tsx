@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, useRef } from "react"
 import type { Flashcard } from "@/lib/mold-types"
 import { formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
@@ -14,14 +14,24 @@ interface FlashcardScreenProps {
 
 type Phase = "studying" | "round-end" | "session-end"
 
-interface CardScore {
-  cardId: string
-  score: number
+// ─── Category accent map ───────────────────────────────────────────────────
+const CATEGORY_ACCENT: Record<string, { color: string; border: string; label: string }> = {
+  "fundamentals": { color: "text-primary", border: "border-t-primary", label: "CORE" },
+  "finite-automata": { color: "text-cyan-400", border: "border-t-cyan-400", label: "FA" },
+  "turing-machines": { color: "text-violet-400", border: "border-t-violet-400", label: "TM" },
+  "complexity": { color: "text-red-400", border: "border-t-red-400", label: "COMP" },
+  "regular-languages": { color: "text-emerald-400", border: "border-t-emerald-400", label: "REG" },
+  "context-free": { color: "text-orange-400", border: "border-t-orange-400", label: "CFL" },
+}
+
+const DEFAULT_ACCENT = { color: "text-primary", border: "border-t-primary", label: "NODE" }
+
+function getAccent(category: string) {
+  return CATEGORY_ACCENT[category] ?? DEFAULT_ACCENT
 }
 
 /** Sort deck by score ascending — most negative first. Random tiebreak within same score. */
 function sortByPriority(flashcards: Flashcard[], scores: Record<string, number>): Flashcard[] {
-  // Group flashcards by score
   const groups: Record<number, Flashcard[]> = {}
   flashcards.forEach((f) => {
     const score = scores[f.id] ?? 0
@@ -29,12 +39,10 @@ function sortByPriority(flashcards: Flashcard[], scores: Record<string, number>)
     groups[score].push(f)
   })
 
-  // Get unique scores and sort them ascending
   const sortedScores = Object.keys(groups)
     .map(Number)
     .sort((a, b) => a - b)
 
-  // For each score group, shuffle the cards and add to result
   const result: Flashcard[] = []
   sortedScores.forEach((score) => {
     result.push(...shuffle(groups[score]))
@@ -44,51 +52,68 @@ function sortByPriority(flashcards: Flashcard[], scores: Record<string, number>)
 }
 
 export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: FlashcardScreenProps) {
-  // ── Priority scores: card.id → cumulative score ──────────────────────────
   const [scores, setScores] = useState<Record<string, number>>(() =>
     Object.fromEntries(flashcards.map((c) => [c.id, 0]))
   )
 
-  // ── Current round deck — sorted after round 1 ────────────────────────────
   const [deck, setDeck] = useState<Flashcard[]>(() => [...flashcards])
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [round, setRound] = useState(1)
   const [phase, setPhase] = useState<Phase>("studying")
 
-  // Round-level tracking: how many got-it vs still-learning this round
   const [roundGotIt, setRoundGotIt] = useState(0)
   const [roundStillLearning, setRoundStillLearning] = useState(0)
+
+  // Animation state for card transitions
+  const [animClass, setAnimClass] = useState<string>("animate-fade-in")
+  const respondingRef = useRef(false)
 
   const card = deck[index]
   const progress = ((index + 1) / deck.length) * 100
 
-  // ── Respond to a card ─────────────────────────────────────────────────────
+  // ── Respond to a card ───────────────────────────────────────────────────
   const handleRespond = useCallback(
     (knew: boolean) => {
+      if (respondingRef.current) return
+      respondingRef.current = true
+
       const delta = knew ? 1 : -1
-      const newScores = { ...scores, [card.id]: (scores[card.id] ?? 0) + delta }
-      setScores(newScores)
+      const exitAnim = knew ? "animate-card-exit-right" : "animate-card-exit-left"
 
-      if (knew) {
-        setRoundGotIt((n) => n + 1)
-      } else {
-        setRoundStillLearning((n) => n + 1)
-      }
+      // Play exit animation, then update state
+      setAnimClass(exitAnim)
 
-      setFlipped(false)
+      setTimeout(() => {
+        const newScores = { ...scores, [card.id]: (scores[card.id] ?? 0) + delta }
+        setScores(newScores)
 
-      if (index + 1 >= deck.length) {
-        // Round complete — go to round-end screen
-        setPhase("round-end")
-      } else {
-        setIndex((i) => i + 1)
-      }
+        if (knew) {
+          setRoundGotIt((n) => n + 1)
+        } else {
+          setRoundStillLearning((n) => n + 1)
+        }
+
+        setFlipped(false)
+
+        if (index + 1 >= deck.length) {
+          setAnimClass("animate-fade-in")
+          setPhase("round-end")
+        } else {
+          setIndex((i) => i + 1)
+          setAnimClass("animate-card-enter-right")
+        }
+
+        setTimeout(() => {
+          setAnimClass("")
+          respondingRef.current = false
+        }, 50)
+      }, 220)
     },
     [card, index, deck.length, scores]
   )
 
-  // ── Start next round: re-sort full deck by updated scores ─────────────────
+  // ── Start next round ────────────────────────────────────────────────────
   function handleContinue() {
     const sorted = sortByPriority(flashcards, scores)
     setDeck(sorted)
@@ -97,10 +122,11 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
     setRound((r) => r + 1)
     setRoundGotIt(0)
     setRoundStillLearning(0)
+    setAnimClass("animate-fade-in")
     setPhase("studying")
   }
 
-  // ── Derived stats ─────────────────────────────────────────────────────────
+  // ── Derived stats ───────────────────────────────────────────────────────
   const { confident, neutral, learning, hardestCards, worstScore, hardest } = useMemo(() => {
     let conf = 0
     let neut = 0
@@ -109,18 +135,18 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
     let hardestCard: Flashcard | undefined = undefined
     const learningList: Flashcard[] = []
 
-    for (const card of flashcards) {
-      const s = scores[card.id] ?? 0
+    for (const crd of flashcards) {
+      const s = scores[crd.id] ?? 0
       if (s > 0) conf++
       else if (s === 0) neut++
       else {
         learn++
-        learningList.push(card)
+        learningList.push(crd)
       }
 
       if (s < worst) {
         worst = s
-        hardestCard = card
+        hardestCard = crd
       }
     }
 
@@ -138,11 +164,18 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
     }
   }, [flashcards, scores])
 
-  // ── Session-end screen ────────────────────────────────────────────────────
+  // ── Session-end screen ──────────────────────────────────────────────────
   if (phase === "session-end") {
     return (
       <div className="flex flex-col flex-1">
-        <Header onQuit={onReturnHome} progress={100} position={`${flashcards.length} / ${flashcards.length}`} round={round} />
+        <Header
+          onQuit={onReturnHome}
+          progress={100}
+          position={`${flashcards.length} / ${flashcards.length}`}
+          round={round}
+          confident={confident}
+          learning={learning}
+        />
 
         <div className="flex-1 flex flex-col items-center justify-center px-4 py-10 gap-8 animate-fade-in">
           <div className="flex flex-col items-center gap-2">
@@ -155,14 +188,12 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
             </p>
           </div>
 
-          {/* Score distribution */}
           <div className="w-full max-w-sm grid grid-cols-3 gap-3">
             <StatCell label="CONFIDENT" value={String(confident)} color="text-emerald-400" borderColor="border-emerald-400/30" />
-            <StatCell label="NEUTRAL"   value={String(neutral)}   color="text-muted-foreground" borderColor="border-border" />
-            <StatCell label="LEARNING"  value={String(learning)}  color="text-red-400" borderColor="border-red-400/30" />
+            <StatCell label="NEUTRAL" value={String(neutral)} color="text-muted-foreground" borderColor="border-border" />
+            <StatCell label="LEARNING" value={String(learning)} color="text-red-400" borderColor="border-red-400/30" />
           </div>
 
-          {/* Hardest card */}
           {hardest && (
             <div className="w-full max-w-sm flex flex-col gap-1.5">
               <p className="text-[10px] font-mono text-muted-foreground tracking-widest">HARDEST CARD</p>
@@ -195,22 +226,28 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
     )
   }
 
-  // ── Round-end screen ──────────────────────────────────────────────────────
+  // ── Round-end screen ────────────────────────────────────────────────────
   if (phase === "round-end") {
     return (
       <div className="flex flex-col flex-1">
-        <Header onQuit={onReturnHome} progress={100} position={`${deck.length} / ${deck.length}`} round={round} />
+        <Header
+          onQuit={onReturnHome}
+          progress={100}
+          position={`${deck.length} / ${deck.length}`}
+          round={round}
+          confident={confident}
+          learning={learning}
+        />
 
         <div className="flex-1 flex flex-col items-center justify-center px-4 py-10 gap-8 animate-slide-up">
           <div className="flex flex-col items-center gap-2">
             <p className="text-[10px] font-mono text-muted-foreground tracking-widest">ROUND {round} COMPLETE</p>
             <div className="flex items-center gap-4 mt-2">
-              <ScorePill label="GOT IT"        count={roundGotIt}        color="emerald" />
+              <ScorePill label="GOT IT" count={roundGotIt} color="emerald" />
               <ScorePill label="STILL LEARNING" count={roundStillLearning} color="red" />
             </div>
           </div>
 
-          {/* Cumulative distribution bar */}
           <div className="w-full max-w-sm flex flex-col gap-2">
             <p className="text-[10px] font-mono text-muted-foreground tracking-widest">DECK STATUS</p>
             <DistributionBar confident={confident} neutral={neutral} learning={learning} total={flashcards.length} />
@@ -221,7 +258,6 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
             </div>
           </div>
 
-          {/* Hardest cards preview */}
           {hardestCards.length > 0 && (
             <div className="w-full max-w-sm flex flex-col gap-2">
               <p className="text-[10px] font-mono text-muted-foreground tracking-widest">
@@ -264,71 +300,181 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
     )
   }
 
-  // ── Study screen ──────────────────────────────────────────────────────────
-  const cardScore = scores[card.id] ?? 0
+  // ── Study screen ────────────────────────────────────────────────────────
+  const accent = getAccent(card.category)
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-h-0">
       <Header
         onQuit={onReturnHome}
         progress={progress}
         position={`${index + 1} / ${deck.length}`}
         round={round}
+        confident={confident}
+        learning={learning}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6">
-        {/* Category + priority score badge */}
-        <div className="flex items-center gap-3">
-          <p className="text-xs font-mono text-muted-foreground tracking-wider uppercase">
-            {formatLabel(card.category)}
-          </p>
-          {cardScore !== 0 && (
-            <span className={cn(
-              "text-[10px] font-mono px-1.5 py-0.5 rounded border",
-              cardScore > 0
-                ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-400"
-                : "border-red-400/30 bg-red-400/10 text-red-400"
-            )}>
-              {cardScore > 0 ? `+${cardScore}` : cardScore}
-            </span>
-          )}
-        </div>
-
-        {/* Flip card */}
-        <button
-          onClick={() => setFlipped((f) => !f)}
-          aria-label={flipped ? "Show term" : "Show definition"}
+      {/* ── Centered Dossier Card ─────────────────────────────────── */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-4 relative overflow-hidden">
+        {/* Card outer shell */}
+        <div
           className={cn(
-            "w-full max-w-lg min-h-[200px] p-6 rounded border text-left flex flex-col justify-between",
-            "transition-all duration-200 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-            flipped ? "border-primary/40 bg-primary/5" : "border-border bg-panel"
+            "w-full max-w-2xl min-h-[380px] flex flex-col relative",
+            "border border-border",
+            "bg-surface-container-high",
+            "transition-all duration-200",
+            "hover:border-primary/30",
+            accent.border,
+            "border-t-[3px]",
+            animClass
           )}
         >
-          <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">
-            {flipped ? "DEFINITION" : "TERM — click to reveal"}
-          </span>
-          <p className={cn(
-            "mt-4 leading-relaxed text-pretty",
-            flipped ? "text-sm text-muted-foreground" : "text-xl font-semibold text-foreground"
-          )}>
-            {flipped ? card.definition : card.term}
-          </p>
-        </button>
+          {/* Scanline overlay */}
+          <div className="absolute inset-0 scanlines pointer-events-none z-10" />
 
-        {/* Response controls — only after flip */}
+          {/* Radial spotlight */}
+          <div
+            className="absolute inset-0 pointer-events-none z-0"
+            style={{
+              background: `radial-gradient(ellipse at 50% 45%, hsl(var(--primary) / 0.04) 0%, transparent 70%)`,
+            }}
+          />
+
+          {/* Animated scanline sweep */}
+          <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden opacity-50">
+            <div className="w-full h-full animate-scanline-sweep bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+          </div>
+
+          {/* Corner markers */}
+          <span className="absolute top-1 left-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">┌</span>
+          <span className="absolute top-1 right-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">┐</span>
+          <span className="absolute bottom-1 left-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">└</span>
+          <span className="absolute bottom-1 right-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">┘</span>
+
+          {/* ── Card Front (Term) ───────────────────────────────── */}
+          <div
+            className={cn(
+              "flex-1 flex flex-col relative z-10 transition-all duration-300 ease-out",
+              flipped ? "opacity-0 scale-[0.97] pointer-events-none absolute inset-0" : "opacity-100 scale-100"
+            )}
+          >
+            {/* Top meta strip */}
+            <div className="flex items-center justify-between px-5 pt-4 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">
+                  TERM
+                </span>
+                <span className={cn("text-[10px] font-mono tracking-wider", accent.color)}>
+                  // {accent.label}
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider animate-pulse-soft">
+                TAP TO FLIP
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="mx-5 border-t border-border/40" />
+
+            {/* Term content */}
+            <div className="flex-1 flex flex-col items-center justify-center px-8 py-6">
+              <p className="text-4xl sm:text-5xl font-mono font-bold text-foreground text-center break-words tracking-tight">
+                {card.term}
+              </p>
+            </div>
+
+            {/* Bottom metadata bar */}
+            <div className="mx-5 border-t border-border/40" />
+            <div className="flex items-center justify-between px-5 py-2.5">
+              <span className="text-[10px] font-mono tracking-wider text-muted-foreground/60">
+                MEMORY NODE {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="text-[10px] font-mono tracking-wider text-emerald-400/70">
+                SIGNAL: STABLE
+              </span>
+            </div>
+          </div>
+
+          {/* ── Card Back (Definition) ──────────────────────────── */}
+          <div
+            className={cn(
+              "flex-1 flex flex-col relative z-10 transition-all duration-300 ease-out",
+              flipped ? "opacity-100 scale-100" : "opacity-0 scale-[0.97] pointer-events-none absolute inset-0"
+            )}
+          >
+            {/* Top meta strip */}
+            <div className="flex items-center justify-between px-5 pt-4 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">
+                  DEFINITION
+                </span>
+              </div>
+              <span className={cn(
+                "text-[10px] font-mono px-1.5 py-0.5 border tracking-wider",
+                "border-emerald-400/30 bg-emerald-400/10 text-emerald-400"
+              )}>
+                DECODED
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="mx-5 border-t border-border/40" />
+
+            {/* Definition content */}
+            <div className="flex-1 flex flex-col justify-center px-8 py-6">
+              <p className="text-sm sm:text-base text-foreground/90 leading-relaxed text-pretty">
+                {card.definition}
+              </p>
+            </div>
+
+            {/* Bottom metadata bar */}
+            <div className="mx-5 border-t border-border/40" />
+            <div className="flex items-center justify-between px-5 py-2.5">
+              <span className={cn("text-[10px] font-mono tracking-wider", accent.color)}>
+                {formatLabel(card.category)}
+              </span>
+              <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider">
+                TAP AGAIN TO REVIEW TERM
+              </span>
+            </div>
+          </div>
+
+          {/* Invisible click zone covering the entire card */}
+          <button
+            onClick={() => setFlipped((f) => !f)}
+            aria-label={flipped ? "Show term" : "Show definition"}
+            className="absolute inset-0 z-20 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          />
+        </div>
+
+        {/* ── Response controls — only after flip ───────────────── */}
         {flipped && (
-          <div className="flex gap-3 w-full max-w-lg animate-fade-in">
+          <div className="flex gap-5 w-full max-w-2xl mt-6 animate-fade-in">
             <button
               onClick={() => handleRespond(false)}
-              className="flex-1 py-2.5 px-4 rounded border border-red-400/30 bg-red-400/5 text-red-400 text-sm font-mono hover:bg-red-400/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
+              className={cn(
+                "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider",
+                "border-red-400/40 bg-red-400/5 text-red-400",
+                "hover:bg-red-400/10 hover:border-red-400/50",
+                "transition-all duration-150",
+                "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400",
+                "btn-depress"
+              )}
             >
-              STILL LEARNING  &nbsp;-1
+              ✕ &nbsp;STILL LEARNING &nbsp;-1
             </button>
             <button
               onClick={() => handleRespond(true)}
-              className="flex-1 py-2.5 px-4 rounded border border-emerald-400/30 bg-emerald-400/5 text-emerald-400 text-sm font-mono font-bold hover:bg-emerald-400/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400"
+              className={cn(
+                "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider font-bold",
+                "border-emerald-400/40 bg-emerald-400/5 text-emerald-400",
+                "hover:bg-emerald-400/10 hover:border-emerald-400/50",
+                "transition-all duration-150",
+                "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400",
+                "btn-depress"
+              )}
             >
-              GOT IT  &nbsp;+1
+              ✓ &nbsp;GOT IT &nbsp;+1
             </button>
           </div>
         )}
@@ -344,14 +490,19 @@ function Header({
   progress,
   position,
   round,
+  confident,
+  learning,
 }: {
   onQuit: () => void
   progress: number
   position: string
   round: number
+  confident: number
+  learning: number
 }) {
   return (
     <header className="border-b border-border bg-panel px-4 py-3 flex flex-col gap-2">
+      {/* Top row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-xs font-mono text-muted-foreground tracking-widest">FLASHCARDS</span>
@@ -366,13 +517,23 @@ function Header({
           QUIT
         </button>
       </div>
+
+      {/* Progress bar */}
       <div className="h-1 bg-secondary rounded-full overflow-hidden">
         <div
           className="h-full bg-primary transition-all duration-300 rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <span className="text-xs font-mono text-muted-foreground">{position}</span>
+
+      {/* Rich stats rail */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-mono text-muted-foreground">{position}</span>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] font-mono text-emerald-400/80">KNOWN {confident}</span>
+          <span className="text-[10px] font-mono text-red-400/80">LEARNING {learning}</span>
+        </div>
+      </div>
     </header>
   )
 }
@@ -428,9 +589,9 @@ function DistributionBar({
   learning: number
   total: number
 }) {
-  const confPct    = (confident / total) * 100
-  const neutralPct = (neutral   / total) * 100
-  const learnPct   = (learning  / total) * 100
+  const confPct = (confident / total) * 100
+  const neutralPct = (neutral / total) * 100
+  const learnPct = (learning / total) * 100
 
   return (
     <div className="h-3 rounded-full overflow-hidden flex bg-secondary">
