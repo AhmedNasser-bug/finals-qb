@@ -380,6 +380,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
           <button
             onClick={revealAnswer}
             disabled={!canSubmit}
+            aria-disabled={!canSubmit}
             title={!canSubmit ? "Select an option first" : undefined}
             className={cn(
               "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded",

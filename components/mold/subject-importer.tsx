@@ -279,6 +279,8 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                 <button
                   onClick={handlePaste}
                   disabled={state === "pasting"}
+                  aria-disabled={state === "pasting"}
+                  title={state === "pasting" ? "Currently pasting data..." : undefined}
                   aria-busy={state === "pasting"}
                   className={cn(
                     "text-xs font-mono px-3 py-1.5 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
@@ -407,7 +409,8 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
           <button
             onClick={handleConfirm}
             disabled={state !== "valid"}
-            title={state !== "valid" ? "Subject JSON must be valid to continue" : undefined}
+            aria-disabled={state !== "valid"}
+            title={state !== "valid" ? "Subject data must be valid to import" : undefined}
             className={cn(
               "text-xs font-mono px-5 py-2 rounded border font-semibold tracking-widest uppercase transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
               state === "valid"
