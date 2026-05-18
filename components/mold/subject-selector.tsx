@@ -246,6 +246,7 @@ export function SubjectSelector({
                       <button
                         onClick={() => !isLoading && handleExampleLoad(entry)}
                         disabled={isLoading}
+                        aria-busy={isLoading}
                         className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -255,6 +256,7 @@ export function SubjectSelector({
                             <button
                               onClick={(e) => !isLoading && handleExampleShare(e, entry)}
                               disabled={isLoading}
+                              aria-busy={isLoading}
                               className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                               aria-label={`Share ${entry.name}`}
                               title="Share subject"
