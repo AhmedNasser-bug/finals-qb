@@ -17,7 +17,7 @@ interface GameRunnerProps {
   config: GameConfig
   /** The active subject — provides questions and flashcards for this run. */
   subject: FullSubjectData
-  /** Real persisted run history — used for achievement evaluation. */
+  /** Real persisted run history — used for achievement evaluation (Fix 1-A). */
   runs: RunRecord[]
   onReturnHome: () => void
   onRunComplete?: () => void
@@ -51,7 +51,7 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete,
     <ToastLayer>
       {(showUnlocks) => (
         <div className="h-screen bg-background flex flex-col animate-fade-in">
-          {/* Fix 4-A: Error boundary wraps the engine so crashes are recoverable */}
+          {/* Error boundary wraps the engine so crashes are recoverable */}
           <GameErrorBoundary onReturnHome={onReturnHome}>
             {config.mode === "flashcards" ? (
               <FlashcardScreen
