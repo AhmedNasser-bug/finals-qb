@@ -42,6 +42,7 @@ export function SetupPanel({
               onChange={(v) => onChange({ timeLimitEnabled: v })}
               activeLabel="ON"
               inactiveLabel="OFF"
+              ariaLabel="Toggle Time Limit"
             />
           </ConfigRow>
         )}
@@ -56,6 +57,7 @@ export function SetupPanel({
             onChange={(v) => onChange({ hintsEnabled: v })}
             activeLabel="ON"
             inactiveLabel="OFF"
+              ariaLabel="Toggle Hint System"
           />
         </ConfigRow>
 
@@ -65,12 +67,13 @@ export function SetupPanel({
             label="Question Count"
             description="Number of questions to pull per session"
           >
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1 justify-end">
               {QUESTION_COUNT_OPTIONS.map((n) => (
                 <button
                   key={n}
                   onClick={() => onChange({ questionCount: n })}
                   aria-pressed={config.questionCount === n}
+                  aria-label={`${n} questions`}
                   className={cn(
                     "px-2.5 py-1 text-xs font-mono rounded border transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -154,19 +157,23 @@ function Toggle({
   onChange,
   activeLabel,
   inactiveLabel,
+  ariaLabel,
 }: {
   checked: boolean
   onChange: (v: boolean) => void
   activeLabel: string
   inactiveLabel: string
+  ariaLabel?: string
 }) {
   return (
     <button
       role="switch"
+      aria-label={ariaLabel}
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={cn(
         "flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-mono transition-all duration-150",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
         checked
           ? "border-primary/50 bg-primary/10 text-primary"
           : "border-border bg-secondary text-muted-foreground hover:text-foreground hover:border-border/80"

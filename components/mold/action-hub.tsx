@@ -50,6 +50,8 @@ export function ActionHub({
       <button
         onClick={onInitialize}
         disabled={disabled}
+        aria-disabled={disabled}
+        title={disabled ? "Action not available" : undefined}
         className={cn(
           "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded border",
           "text-sm font-mono font-bold tracking-wide",

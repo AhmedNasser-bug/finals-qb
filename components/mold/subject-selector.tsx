@@ -147,9 +147,21 @@ export function SubjectSelector({
                       )}
                     >
                       {/* Clickable card body */}
-                      <button
-                        onClick={() => !isConfirming && onSelect(full)}
-                        disabled={isConfirming}
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          if (!isConfirming) onSelect(full)
+                        }}
+                        onKeyDown={(e) => {
+                          if (isConfirming) return
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault()
+                            onSelect(full)
+                          }
+                        }}
+                        aria-disabled={isConfirming}
+                        title={isConfirming ? "Confirm deletion first" : undefined}
                         className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -176,7 +188,7 @@ export function SubjectSelector({
                           <StatPill label="FC" value={full.flashcards?.length ?? 0} />
                           <StatPill label="Cat" value={categoryCount} />
                         </div>
-                      </button>
+                      </div>
 
                       {/* Card footer */}
                       <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
@@ -186,10 +198,12 @@ export function SubjectSelector({
                             <span className="text-[10px] font-mono text-destructive/80">Delete?</span>
                             <button
                               onClick={() => handleDeleteConfirm(full.id)}
+                              aria-label={`Confirm deletion of ${full.name}`}
                               className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
                             >Yes</button>
                             <button
                               onClick={() => setConfirmDeleteId(null)}
+                              aria-label={`Cancel deletion of ${full.name}`}
                               className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                             >No</button>
                           </div>
@@ -210,7 +224,7 @@ export function SubjectSelector({
                   onClick={() => setShowImporter(true)}
                   className="flex flex-col items-center justify-center gap-3 p-6 border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[140px]"
                 >
-                  <PlusIcon />
+                  <PlusIcon aria-hidden="true" />
                   <span className="text-xs font-mono tracking-wider">Import Subject</span>
                 </button>
               </div>
@@ -243,9 +257,22 @@ export function SubjectSelector({
                       className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-colors"
                     >
                       {/* Clickable card body */}
-                      <button
-                        onClick={() => !isLoading && handleExampleLoad(entry)}
-                        disabled={isLoading}
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          if (!isLoading) handleExampleLoad(entry)
+                        }}
+                        onKeyDown={(e) => {
+                          if (isLoading) return
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault()
+                            handleExampleLoad(entry)
+                          }
+                        }}
+                        aria-disabled={isLoading}
+                        aria-busy={isLoading}
+                        title={isLoading ? "Loading module..." : undefined}
                         className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -255,9 +282,11 @@ export function SubjectSelector({
                             <button
                               onClick={(e) => !isLoading && handleExampleShare(e, entry)}
                               disabled={isLoading}
+                              aria-busy={isLoading}
+                              aria-disabled={isLoading}
                               className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                               aria-label={`Share ${entry.name}`}
-                              title="Share subject"
+                              title={isLoading ? "Loading module..." : "Share subject"}
                             >
                               <ShareIcon />
                             </button>
@@ -279,7 +308,7 @@ export function SubjectSelector({
                             </span>
                           ))}
                         </div>
-                      </button>
+                      </div>
 
                       {/* Footer — load button or spinner */}
                       <div className="border-t border-border px-4 py-2.5 flex items-center justify-between">
@@ -312,7 +341,7 @@ export function SubjectSelector({
                 onClick={() => setShowImporter(true)}
                 className="flex items-center gap-3 px-6 py-3 border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-xs font-mono tracking-wider"
               >
-                <PlusIcon />
+                <PlusIcon aria-hidden="true" />
                 Import Your Own Subject
               </button>
             </div>

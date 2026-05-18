@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { SubjectSelector } from "@/components/mold/subject-selector"
 import { ShareReceiver } from "@/components/mold/share-receiver"
 import {
@@ -17,10 +16,8 @@ import type { FullSubjectData } from "@/lib/mold-types"
 type SubjectsView = "loading" | "receiving" | "selecting"
 
 export default function SubjectsPage() {
-  const router = useRouter()
-
-  const [view, setView]               = useState<SubjectsView>("loading")
-  const [subjects, setSubjects]       = useState<FullSubjectData[]>([])
+  const [view, setView] = useState<SubjectsView>("loading")
+  const [subjects, setSubjects] = useState<FullSubjectData[]>([])
   const [sharePayload, setSharePayload] = useState<string | null>(null)
 
   // ── Hydrate from localStorage; detect share hash ─────────────────────────
@@ -42,7 +39,9 @@ export default function SubjectsPage() {
 
   function handleSubjectSelected(subject: FullSubjectData) {
     setActiveSubject(subject)
-    router.push("/")
+    // Full navigation ensures sessionStorage is available on the target page
+    // and prevents the root page's useEffect from redirecting back here
+    window.location.href = "/"
   }
 
   function handleSubjectAdded(incoming: FullSubjectData) {
@@ -51,19 +50,13 @@ export default function SubjectsPage() {
     setSubjects(updated)
     // Immediately start studying the newly imported subject
     setActiveSubject(incoming)
-    router.push("/")
+    window.location.href = "/"
   }
 
   function handleSubjectRemoved(id: string) {
     const updated = removeSubject(subjects, id)
     saveSubjects(updated)
     setSubjects(updated)
-  }
-
-  /** Called when user selects an example subject — ephemeral, not saved to localStorage */
-  function handleExampleSelected(subject: FullSubjectData) {
-    setActiveSubject(subject)
-    router.push("/")
   }
 
   function handleShareAccepted(incoming: FullSubjectData) {
@@ -104,7 +97,6 @@ export default function SubjectsPage() {
       onSelect={handleSubjectSelected}
       onAddSubject={handleSubjectAdded}
       onRemoveSubject={handleSubjectRemoved}
-      onSelectExample={handleExampleSelected}
     />
   )
 }
