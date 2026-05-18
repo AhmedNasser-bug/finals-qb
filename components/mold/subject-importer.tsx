@@ -257,7 +257,9 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                     : "border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
                 )}
               >
-                {promptCopied ? "Copied" : "Copy Prompt"}
+                <span aria-live="polite">
+                  {promptCopied ? "Copied" : "Copy Prompt"}
+                </span>
               </button>
             </div>
             <div className="rounded border border-border bg-background p-3">

@@ -9,6 +9,9 @@
 ## 2026-05-14 - Missed Accessibility on Custom Error/Fallback Buttons
 **Learning:** Fallback error boundaries and low-level recovery screens often miss basic accessibility polish (like `aria-label` or `focus-visible` styling) because they are rarely tested during happy path development.
 **Action:** When auditing for a11y, specifically seek out Error Boundaries and generic fallback UI to ensure their recovery actions (like 'RETURN TO HOME') are as accessible as the core application.
+## 2026-05-18 - Added proper accessible live regions to dynamic feedback elements
+**Learning:** React components that change text dynamically based on user interaction (like button states changing from 'Copy' to 'Copied!' or empty search states) must have their text wrapped in `aria-live` regions or `role="status"`. Otherwise, screen readers may silently skip the text change.
+**Action:** When creating text that represents async feedback or empty states, always add `aria-live="polite"` inside a `<span>` wrapper or `role="status"` to the container element.
 
 ## 2026-05-15 - Add aria-busy to Asynchronous Loading Buttons
 **Learning:** Buttons that trigger asynchronous actions and enter a loading state (like fetching an external resource or processing data) often use `disabled={isLoading}` to prevent multiple clicks, but forget to communicate this processing state to screen readers.

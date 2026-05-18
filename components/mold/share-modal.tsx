@@ -207,11 +207,13 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                           : "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20"
                       )}
                     >
-                      {shortenState === "loading"
-                        ? "Shortening..."
-                        : shortenState === "done"
-                        ? "Shortened!"
-                        : "Shorten Link"}
+                      <span aria-live="polite">
+                        {shortenState === "loading"
+                          ? "Shortening..."
+                          : shortenState === "done"
+                          ? "Shortened!"
+                          : "Shorten Link"}
+                      </span>
                     </button>
                     {shortUrl && (
                       <div className="flex gap-2">
@@ -237,7 +239,9 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
                           aria-label="Copy shortened link"
                           className="shrink-0 px-3 py-2 rounded border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-mono font-semibold tracking-wider hover:bg-green-500/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                         >
-                          Copy
+                          <span aria-live="polite">
+                            {copyState === "copied" ? "Copied!" : copyState === "error" ? "Failed" : "Copy"}
+                          </span>
                         </button>
                       </div>
                     )}
