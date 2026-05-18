@@ -1,0 +1,65 @@
+--- components/mold/subject-selector.tsx
++++ components/mold/subject-selector.tsx
+@@ -147,11 +147,19 @@
+                       )}
+                     >
+                       {/* Clickable card body */}
+-                      <button
+-                        onClick={() => !isConfirming && onSelect(full)}
+-                        disabled={isConfirming}
++                      <div
++                        role="button"
++                        tabIndex={0}
++                        onClick={() => {
++                          if (!isConfirming) onSelect(full)
++                        }}
++                        onKeyDown={(e) => {
++                          if (isConfirming) return
++                          if (e.key === 'Enter' || e.key === ' ') {
++                            e.preventDefault();
++                            onSelect(full);
++                          }
++                        }}
+                         aria-disabled={isConfirming}
+                         title={isConfirming ? "Confirm deletion first" : undefined}
+                         className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
+                       >
+@@ -178,5 +186,5 @@
+                           <StatPill label="Cat" value={categoryCount} />
+                         </div>
+-                      </button>
++                      </div>
+
+                       {/* Card footer */}
+@@ -247,13 +255,20 @@
+                     >
+                       {/* Clickable card body */}
+-                      <button
+-                        onClick={() => !isLoading && handleExampleLoad(entry)}
+-                        disabled={isLoading}
+-                        aria-disabled={isLoading}
++                      <div
++                        role="button"
++                        tabIndex={0}
++                        onClick={() => {
++                          if (!isLoading) handleExampleLoad(entry)
++                        }}
++                        onKeyDown={(e) => {
++                          if (isLoading) return
++                          if (e.key === 'Enter' || e.key === ' ') {
++                            e.preventDefault();
++                            handleExampleLoad(entry);
++                          }
++                        }}
++                        aria-disabled={isLoading}
+                         aria-busy={isLoading}
+                         title={isLoading ? "Loading module..." : undefined}
+                         className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
+                       >
+@@ -288,5 +303,5 @@
+                           ))}
+                         </div>
+-                      </button>
++                      </div>
+
+                       {/* Footer — load button or spinner */}
