@@ -22,3 +22,7 @@
 ## 2024-05-18 - Invalid Nested Buttons in Card Components
 **Learning:** Found instances where interactive card bodies were implemented as `<button>` elements, but contained nested interactive elements (like share or delete buttons). This results in invalid HTML (`<button>` inside `<button>`), which severely impacts screen readers and keyboard navigation.
 **Action:** When a clickable card needs to contain other independent actions, convert the outer card wrapper to a `<div role="button" tabIndex={0}>` and implement an `onKeyDown` handler to capture `Enter` and `Space` key events (being sure to call `e.preventDefault()` for Space) to preserve native button behavior without HTML validity violations.
+
+## 2024-05-18 - Missing focus visibility and contextual tooltips
+**Learning:** Certain interactive components like toggles and icon-only actions often lack keyboard focus indicators (`focus-visible` classes) or contextual `title` text. Mobile layouts also frequently hide essential actions (like forfeiting a game) inside desktop-only wrappers, making them inaccessible to touch users.
+**Action:** Audit all interactive elements to ensure they have explicit focus outlines and `title` attributes where the action may be ambiguous. Always verify that critical session actions are visible in mobile viewport contexts.

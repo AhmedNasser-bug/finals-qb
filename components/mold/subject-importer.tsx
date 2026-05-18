@@ -250,6 +250,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
               </p>
               <button
                 onClick={handleCopyPrompt}
+                title="Copy the AI prompt to your clipboard"
                 className={cn(
                   "text-xs font-mono px-3 py-1.5 rounded border transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                   promptCopied
@@ -282,7 +283,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                   onClick={handlePaste}
                   disabled={state === "pasting"}
                   aria-disabled={state === "pasting"}
-                  title={state === "pasting" ? "Currently pasting data..." : undefined}
+                  title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
                   aria-busy={state === "pasting"}
                   className={cn(
                     "text-xs font-mono px-3 py-1.5 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
