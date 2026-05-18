@@ -2,6 +2,78 @@
 > my-v0-project@0.1.0 dev /app
 > next dev
 
-sh: 1: next: not found
- ELIFECYCLE  Command failed.
--bash: ./node_modules/.bin/next: No such file or directory
+ ⚠ `eslint` configuration in next.config.mjs is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+ ⚠ Invalid next.config.mjs options detected:
+ ⚠     Unrecognized key(s) in object: 'eslint'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+   ▲ Next.js 16.0.10 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://192.168.0.2:3000
+
+ ✓ Starting...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Minimum recommended TypeScript version is v5.1.0, older versions can potentially be incompatible with Next.js. Detected: 5.0.2
+ ✓ Ready in 666ms
+
+warn - The utility `shadow-[0_0_40px_theme(colors.grade.${gradeToken(grade)})/.2]` contains an invalid theme value and was not generated.
+ ○ Compiling / ...
+ GET / 200 in 11.2s (compile: 10.5s, render: 743ms)
+ GET /subjects 200 in 900ms (compile: 784ms, render: 116ms)
+ POST /subjects 200 in 48ms (compile: 9ms, render: 39ms)
+ POST /subjects 200 in 27ms (compile: 4ms, render: 24ms)
+ GET / 200 in 65ms (compile: 6ms, render: 58ms)
+ GET /subjects 200 in 28ms (compile: 4ms, render: 23ms)
+ POST /subjects 200 in 16ms (compile: 3ms, render: 13ms)
+ POST /subjects 200 in 14ms (compile: 3ms, render: 12ms)
+ GET / 200 in 26ms (compile: 6ms, render: 21ms)
+ GET /subjects 200 in 24ms (compile: 4ms, render: 20ms)
+ POST /subjects 200 in 16ms (compile: 3ms, render: 13ms)
+ POST /subjects 200 in 19ms (compile: 3ms, render: 17ms)
+ GET / 200 in 50ms (compile: 4ms, render: 47ms)
+ GET /subjects 200 in 22ms (compile: 3ms, render: 19ms)
+ POST /subjects 200 in 16ms (compile: 3ms, render: 13ms)
+ POST /subjects 200 in 18ms (compile: 4ms, render: 14ms)
+ GET / 200 in 52ms (compile: 4ms, render: 48ms)
+ GET /subjects 200 in 24ms (compile: 7ms, render: 17ms)
+ POST /subjects 200 in 16ms (compile: 3ms, render: 13ms)
+ POST /subjects 200 in 17ms (compile: 3ms, render: 14ms)
+ GET / 200 in 58ms (compile: 4ms, render: 53ms)
+ GET /subjects 200 in 26ms (compile: 3ms, render: 23ms)
+ POST /subjects 200 in 20ms (compile: 3ms, render: 17ms)
+ POST /subjects 200 in 14ms (compile: 4ms, render: 11ms)
+ GET / 200 in 50ms (compile: 4ms, render: 46ms)
+ GET /subjects 200 in 24ms (compile: 3ms, render: 21ms)
+ POST /subjects 200 in 18ms (compile: 4ms, render: 14ms)
+ POST /subjects 200 in 17ms (compile: 3ms, render: 14ms)
+ GET / 200 in 22ms (compile: 4ms, render: 19ms)
+ GET /subjects 200 in 27ms (compile: 3ms, render: 24ms)
+ POST /subjects 200 in 18ms (compile: 3ms, render: 15ms)
+ POST /subjects 200 in 14ms (compile: 3ms, render: 12ms)
+ GET / 200 in 65ms (compile: 5ms, render: 60ms)
+ GET /subjects 200 in 27ms (compile: 3ms, render: 24ms)
+ POST /subjects 200 in 14ms (compile: 3ms, render: 10ms)
+ POST /subjects 200 in 15ms (compile: 3ms, render: 11ms)
+ GET / 200 in 28ms (compile: 4ms, render: 24ms)
+ GET /subjects 200 in 30ms (compile: 5ms, render: 25ms)
+ POST /subjects 200 in 14ms (compile: 3ms, render: 11ms)
+ POST /subjects 200 in 15ms (compile: 2ms, render: 12ms)
+ GET / 200 in 56ms (compile: 4ms, render: 52ms)
+ GET /subjects 200 in 21ms (compile: 2ms, render: 18ms)
+ POST /subjects 200 in 13ms (compile: 3ms, render: 10ms)
+ POST /subjects 200 in 13ms (compile: 2ms, render: 11ms)
+ GET / 200 in 46ms (compile: 4ms, render: 42ms)
+ GET /subjects 200 in 21ms (compile: 3ms, render: 19ms)
+ POST /subjects 200 in 18ms (compile: 3ms, render: 15ms)
+ POST /subjects 200 in 14ms (compile: 2ms, render: 12ms)
+ GET / 200 in 29ms (compile: 3ms, render: 25ms)
+ GET /subjects 200 in 28ms (compile: 2ms, render: 26ms)
+ POST /subjects 200 in 24ms (compile: 3ms, render: 21ms)
+ POST /subjects 200 in 31ms (compile: 3ms, render: 28ms)
+ GET / 200 in 65ms (compile: 5ms, render: 60ms)
+ GET /subjects 200 in 25ms (compile: 3ms, render: 21ms)
+ POST /subjects 200 in 18ms (compile: 3ms, render: 15ms)
+ POST /subjects 200 in 15ms (compile: 2ms, render: 12ms)
+ GET / 200 in 23ms (compile: 4ms, render: 18ms)
+ GET /subjects 200 in 22ms (compile: 3ms, render: 19ms)
+ POST /subjects 200 in 14ms (compile: 3ms, render: 11ms)
+ POST /subjects 200 in 13ms (compile: 2ms, render: 10ms)

@@ -164,23 +164,27 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         </div>
 
         {/* Right — session metadata + dots */}
-        <div className="hidden md:flex flex-col items-end gap-1">
-          <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
-            SESSION_ID: {mode.toUpperCase()}-MOLD
-          </p>
-          <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
-            DIFFICULTY: {state.mode.toUpperCase() === "HARDCORE" ? "HARD" : "STANDARD"}
-          </p>
-          {/* Live indicator dots */}
-          <div className="mt-4 flex gap-2">
-            <div className="w-2 h-2 bg-[#4ae176] animate-pulse" />
-            <div className="w-2 h-2 bg-[#4ae176]/40" />
-            <div className="w-2 h-2 bg-[#4ae176]/40" />
+        <div className="flex flex-col items-end gap-1">
+          <div className="hidden md:flex flex-col items-end gap-1">
+            <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+              SESSION_ID: {mode.toUpperCase()}-MOLD
+            </p>
+            <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+              DIFFICULTY: {state.mode.toUpperCase() === "HARDCORE" ? "HARD" : "STANDARD"}
+            </p>
+            {/* Live indicator dots */}
+            <div className="mt-4 flex gap-2">
+              <div className="w-2 h-2 bg-[#4ae176] animate-pulse" />
+              <div className="w-2 h-2 bg-[#4ae176]/40" />
+              <div className="w-2 h-2 bg-[#4ae176]/40" />
+            </div>
           </div>
-          {/* Quit — recessed, hard to miss-tap */}
+          {/* Quit — recessed, hard to miss-tap. Visible on mobile too. */}
           <button
             onClick={onForfeit}
-            className="mt-3 font-mono text-[9px] text-zinc-700 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-500 rounded px-1"
+            aria-label="Quit current game session"
+            title="Quit current game session"
+            className="md:mt-3 font-mono text-[9px] text-zinc-500 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-500 rounded px-1"
           >
             QUIT SESSION
           </button>
