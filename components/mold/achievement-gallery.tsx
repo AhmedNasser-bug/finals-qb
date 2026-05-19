@@ -40,7 +40,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
             className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             aria-label="Close achievement gallery"
           >
-            <XIcon className="w-4 h-4" />
+            <XIcon className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
@@ -149,9 +149,9 @@ function AchievementRow({
   )
 }
 
-function XIcon({ className }: { className?: string }) {
+function XIcon({ className, "aria-hidden": ariaHidden }: { className?: string, "aria-hidden"?: boolean | "true" | "false" }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden={ariaHidden} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>

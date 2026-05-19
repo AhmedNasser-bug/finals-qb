@@ -94,7 +94,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                   ? "border-orange-500 shadow-[0px_0px_15px_rgba(251,146,60,0.2)]"
                   : "border-[#fecc17] shadow-[0px_0px_15px_rgba(254,204,23,0.15)]"
             )}>
-              <BoltIcon className={cn(
+              <BoltIcon aria-hidden="true" className={cn(
                 "w-4 h-4 shrink-0",
                 streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
               )} />
@@ -531,7 +531,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
             onClick={nextQuestion}
             className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all"
           >
-            <SkipIcon className="w-4 h-4" />
+            <SkipIcon className="w-4 h-4" aria-hidden="true" />
             SKIP
           </button>
         )}
@@ -851,9 +851,9 @@ function StatCell({
 
 // ─── SVG icons ────────────────────────────────────────────────────────────────
 
-function BoltIcon({ className }: { className?: string }) {
+function BoltIcon({ className, "aria-hidden": ariaHidden }: { className?: string, "aria-hidden"?: boolean | "true" | "false" }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <svg aria-hidden={ariaHidden} className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M13 2L4.09 12.97H11L10 22L19.91 11.03H13L13 2Z" />
     </svg>
   )
@@ -908,9 +908,9 @@ function RadioIcon({ className }: { className?: string }) {
   )
 }
 
-function SkipIcon({ className }: { className?: string }) {
+function SkipIcon({ className, "aria-hidden": ariaHidden }: { className?: string, "aria-hidden"?: boolean | "true" | "false" }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <svg aria-hidden={ariaHidden} className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
     </svg>
   )

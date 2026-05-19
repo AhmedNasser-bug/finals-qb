@@ -26,3 +26,7 @@
 ## 2024-05-18 - Missing focus visibility and contextual tooltips
 **Learning:** Certain interactive components like toggles and icon-only actions often lack keyboard focus indicators (`focus-visible` classes) or contextual `title` text. Mobile layouts also frequently hide essential actions (like forfeiting a game) inside desktop-only wrappers, making them inaccessible to touch users.
 **Action:** Audit all interactive elements to ensure they have explicit focus outlines and `title` attributes where the action may be ambiguous. Always verify that critical session actions are visible in mobile viewport contexts.
+
+## 2026-05-19 - Adding aria-hidden to inline icons
+**Learning:** The previous learning mentioned adding aria-hidden to decorative icons next to text, but the code was still missing many instances. It is critical to ensure that all locally defined SVG icon components accept an `aria-hidden` prop so it can be passed down without TypeScript errors.
+**Action:** Update the prop types for any icon component before adding `aria-hidden="true"`.

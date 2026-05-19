@@ -62,16 +62,16 @@ export function ActionHub({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         )}
       >
-        <PlayIcon className="w-4 h-4 shrink-0" />
+        <PlayIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
         {modeLabels[selectedMode]}
       </button>
     </div>
   )
 }
 
-function PlayIcon({ className }: { className?: string }) {
+function PlayIcon({ className, "aria-hidden": ariaHidden }: { className?: string, "aria-hidden"?: boolean | "true" | "false" }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <svg aria-hidden={ariaHidden} className={className} viewBox="0 0 24 24" fill="currentColor">
       <polygon points="5 3 19 12 5 21 5 3" />
     </svg>
   )

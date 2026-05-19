@@ -115,7 +115,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
             aria-label="Close share modal"
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded p-1"
           >
-            <CloseIcon />
+            <CloseIcon aria-hidden="true" />
           </button>
         </div>
 
@@ -311,9 +311,9 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
-function CloseIcon() {
+function CloseIcon({ "aria-hidden": ariaHidden }: { "aria-hidden"?: boolean | "true" | "false" }) {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden={ariaHidden} className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M18 6 6 18M6 6l12 12" />
     </svg>
   )
