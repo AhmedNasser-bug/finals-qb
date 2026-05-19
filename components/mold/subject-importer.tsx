@@ -28,7 +28,9 @@ The JSON structure:
       "type": "MCQ" or "TrueFalse",
       "difficulty": "Easy" or "Medium" or "Hard",
       "category": "category-slug",
-      "question": "The question text? Ensure the question inspires active learning, encourages reasoning, and creates space for meaningful struggle.",
+      "question": "The question text (HTML supported — see FORMATTING RULES below).",
+      "diagram": "Optional. Raw Mermaid diagram source code string (see DIAGRAM RULES below). Omit field entirely if no diagram.",
+      "diagramPosition": "right",
       "options": [
         { "label": "A", "text": "Option A" },
         { "label": "B", "text": "Option B" },
@@ -73,9 +75,32 @@ REQUIREMENTS:
 - Spread questions across distinct categories.
 - All ids must be unique and kebab-case
 - No duplicate question text
-- HTML and MermaidJS are supported and ENCOURAGED in the question text. You can use inline styles (color, font-weight), <br>, <i>, <b>, <code>, <pre>, and other HTML tags to format the question or add HTML tables. For diagrams, flowchart, sequence diagrams, state diagrams, etc, you MUST use MermaidJS syntax inside a <pre><code class="language-mermaid">...</code></pre> block or \`\`\`mermaid ... \`\`\` block.
 - Every category slug used in questions must exist in terminology
 - All questions MUST have both explanation and hint fields populated. Explanations must adapt to the learner and deepen understanding.
+
+FORMATTING RULES (question field):
+- The "question" field supports HTML for rich text formatting.
+- You MAY use inline styles (color, font-weight), <br>, <i>, <b>, <code>, <pre>, and HTML tables to format question text.
+- DO NOT embed Mermaid diagrams inside the "question" field. Use the dedicated "diagram" field instead (see DIAGRAM RULES).
+- Keep the "question" field focused on prose — it appears in the LEFT column of the split layout.
+
+DIAGRAM RULES (diagram field — NEW ARCHITECTURE):
+- To include a visual diagram with a question, add a "diagram" field containing raw Mermaid source code as a plain string.
+- Supported diagram types: graph, flowchart, sequenceDiagram, classDiagram, stateDiagram-v2, erDiagram, gantt, pie, gitGraph, mindmap, timeline.
+- When "diagram" is present, the question card enters a two-column split layout:
+    LEFT column (40%): question text + answer options
+    RIGHT column (60%): the rendered diagram
+- "diagramPosition" controls layout: "right" (default, side-by-side) or "below" (stacked under question text).
+- The diagram string must be valid Mermaid syntax. Do not wrap it in code fences or quotes — write the raw syntax directly as the field value.
+- Use \\n for line breaks within the diagram string value in JSON.
+- SECURITY: Do not include <script>, javascript:, onerror=, onclick=, onload=, or data:text/html in diagram code.
+- Strongly encouraged for topics involving: state machines, automata, flowcharts, decision trees, class hierarchies, sequence flows, network topologies, data structures, algorithms, circuit diagrams (use flowchart), timelines, and any concept better understood visually.
+
+DIAGRAM EXAMPLE (stateDiagram):
+"diagram": "stateDiagram-v2\\n    [*] --> q0\\n    q0 --> q1 : a\\n    q1 --> q2 : b\\n    q2 --> [*]"
+
+DIAGRAM EXAMPLE (flowchart):
+"diagram": "graph TD\\n    A[Start] --> B{Condition?}\\n    B -->|Yes| C[Do X]\\n    B -->|No| D[Do Y]\\n    C --> E[End]\\n    D --> E"
 
 ACHIEVEMENT CONDITION TYPES:
 - "runs_gte": { "type": "runs_gte", "value": N } — Complete N runs
