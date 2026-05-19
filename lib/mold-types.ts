@@ -18,6 +18,14 @@ export interface Question {
   answer: string        // correct option label e.g. "B"
   explanation?: string
   hint?: string
+
+  // ── Diagram fields (opt-in, backwards-compatible) ──────────────────────
+  /** Mermaid diagram source code. If present, QuestionCard enters split-layout mode. */
+  diagram?: string
+  /** Layout hint: side-by-side (default) or stacked below question text. */
+  diagramPosition?: "right" | "below"
+  /** Width percentage for the diagram column in the split layout. Default 50. */
+  diagramWidth?: number
 }
 
 export interface Flashcard {

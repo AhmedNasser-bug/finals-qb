@@ -421,3 +421,78 @@
     animation: float-up 2.5s linear infinite 2s;
   }
 }
+
+/* ── Mermaid Diagram Container ─────────────────────────────────────────────── */
+@layer utilities {
+  /* SVG fills its container; height is controlled by container or viewBox ratio */
+  .mermaid-container svg {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Default: visible overflow — no scrollbars on desktop */
+  .mermaid-container {
+    width: 100%;
+    overflow: visible;
+  }
+
+  /* Mobile-only: allow horizontal scroll if an extreme diagram overflows */
+  @media (max-width: 768px) {
+    .mermaid-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  /* ── MOLD amber/dark theme overrides for generated SVG ───────────────── */
+  /* Node shapes */
+  .mermaid-container .node rect,
+  .mermaid-container .node circle,
+  .mermaid-container .node ellipse,
+  .mermaid-container .node polygon,
+  .mermaid-container .node path {
+    stroke: #4e4632 !important;
+    stroke-width: 1.5px;
+  }
+
+  /* Edge paths */
+  .mermaid-container .edgePath .path,
+  .mermaid-container .flowchart-link {
+    stroke: rgba(254, 204, 23, 0.45) !important;
+    stroke-width: 1.5px;
+  }
+
+  /* Arrow marker fills */
+  .mermaid-container .arrowheadPath {
+    fill: rgba(254, 204, 23, 0.45) !important;
+    stroke: none !important;
+  }
+
+  /* Edge labels */
+  .mermaid-container .edgeLabel rect,
+  .mermaid-container .edgeLabel foreignObject {
+    background: #1c1b1b !important;
+    fill: #1c1b1b !important;
+  }
+
+  /* Cluster (subgraph) boxes */
+  .mermaid-container .cluster rect {
+    fill: #201f1f !important;
+    stroke: #353534 !important;
+  }
+
+  /* Sequence diagram actors */
+  .mermaid-container .actor {
+    stroke: #fecc17 !important;
+    fill: #201f1f !important;
+  }
+
+  /* State diagram states */
+  .mermaid-container .stateGroup circle {
+    fill: #fecc17 !important;
+    stroke: #fecc17 !important;
+  }
+}
+

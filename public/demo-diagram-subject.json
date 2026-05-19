@@ -1,0 +1,195 @@
+{
+  "id": "theory-of-computation-demo",
+  "name": "Theory of Computation",
+  "config": {
+    "title": "Theory of Computation",
+    "description": "Automata, grammars, complexity, and computability — with diagram-enhanced questions.",
+    "version": "2.0",
+    "storageKey": "mold_toc_demo"
+  },
+  "questions": [
+    {
+      "id": "q_dfa_01",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "finite-automata",
+      "question": "The state diagram below shows a DFA. Which language does it accept?",
+      "diagram": "stateDiagram-v2\n    [*] --> q0\n    q0 --> q0 : b\n    q0 --> q1 : a\n    q1 --> q1 : a\n    q1 --> q2 : b\n    q2 --> q2 : b\n    q2 --> [*]",
+      "diagramPosition": "right",
+      "options": [
+        { "label": "A", "text": "All strings ending in ab" },
+        { "label": "B", "text": "All strings containing at least one a followed by at least one b" },
+        { "label": "C", "text": "All strings with an even number of a's" },
+        { "label": "D", "text": "All strings over {a,b} with no two consecutive b's" }
+      ],
+      "answer": "B",
+      "explanation": "The DFA moves to q1 on the first 'a', stays in q1 on further a's, and moves to q2 on seeing 'b'. q2 is the only accept state, so it accepts strings with ≥1 a followed by ≥1 b.",
+      "hint": "Trace what happens for 'ab', 'aab', 'abb', and 'b' to identify the pattern."
+    },
+    {
+      "id": "q_nfa_02",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "finite-automata",
+      "question": "How many distinct strings of length exactly 2 does the NFA below accept?",
+      "diagram": "graph LR\n    q0((q0)) -->|0| q0\n    q0 -->|1| q0\n    q0 -->|1| q1((q1))\n    q1 -->|0| q2(((q2)))\n    q1 -->|1| q2",
+      "diagramPosition": "right",
+      "options": [
+        { "label": "A", "text": "1" },
+        { "label": "B", "text": "2" },
+        { "label": "C", "text": "3" },
+        { "label": "D", "text": "4" }
+      ],
+      "answer": "B",
+      "explanation": "Strings of length 2 accepted: '10' and '11'. Both start with 1 (activating q1) and then reach q2 on any second symbol.",
+      "hint": "An NFA accepts if ANY path through its transitions ends in an accept state."
+    },
+    {
+      "id": "q_cfg_03",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "context-free-grammars",
+      "question": "The parse tree below represents a derivation from grammar G. Which string is being derived?",
+      "diagram": "graph TD\n    S --> A\n    S --> B\n    A --> a\n    B --> bB\n    B --> b\n    bB --> b2[b]\n    bB --> B2[B]\n    B2 --> b3[b]",
+      "diagramPosition": "right",
+      "options": [
+        { "label": "A", "text": "ab" },
+        { "label": "B", "text": "abb" },
+        { "label": "C", "text": "abbb" },
+        { "label": "D", "text": "aab" }
+      ],
+      "answer": "C",
+      "explanation": "The derivation produces S → AB → a(bB) → ab(bB) → ab(bb) = abbb.",
+      "hint": "Read the leaves of the parse tree left to right."
+    },
+    {
+      "id": "q_complexity_04",
+      "type": "MCQ",
+      "difficulty": "Easy",
+      "category": "complexity-theory",
+      "question": "Based on the decision tree structure shown, what is the <strong>worst-case time complexity</strong> of this algorithm?",
+      "diagram": "graph TD\n    A[Start] --> B{n le 1?}\n    B -->|Yes| C[Return: O of 1]\n    B -->|No| D[Split into 2 halves]\n    D --> E[Recurse left]\n    D --> F[Recurse right]\n    E --> G[Merge: O of n]\n    F --> G",
+      "diagramPosition": "right",
+      "options": [
+        { "label": "A", "text": "O(n)" },
+        { "label": "B", "text": "O(n log n)" },
+        { "label": "C", "text": "O(n²)" },
+        { "label": "D", "text": "O(log n)" }
+      ],
+      "answer": "B",
+      "explanation": "This is the merge sort recurrence: T(n) = 2T(n/2) + O(n), which solves to O(n log n) by the Master theorem.",
+      "hint": "Count the depth of recursion and the work done at each level."
+    },
+    {
+      "id": "q_turing_05",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "turing-machines",
+      "question": "The transition diagram below shows a Turing Machine. Starting with input '0', what does the machine output?",
+      "diagram": "stateDiagram-v2\n    [*] --> q0\n    q0 --> q1 : 0 / X , R\n    q0 --> q3 : B / B , R\n    q1 --> q1 : 0 / 0 , R\n    q1 --> q2 : B / 0 , L\n    q2 --> q0 : 0 / 0 , L\n    q2 --> q0 : X / X , R\n    q3 --> [*]",
+      "diagramPosition": "right",
+      "options": [
+        { "label": "A", "text": "X0" },
+        { "label": "B", "text": "00" },
+        { "label": "C", "text": "X" },
+        { "label": "D", "text": "The machine loops forever" }
+      ],
+      "answer": "A",
+      "explanation": "The machine marks the input 0 with X, moves right, writes 0, moves left, then hits X which transitions to q3 via the second q0→q3 path. Tape: X0.",
+      "hint": "Trace each transition carefully: the notation is symbol_read / symbol_write , direction."
+    },
+    {
+      "id": "q_pumping_06",
+      "type": "TrueFalse",
+      "difficulty": "Easy",
+      "category": "computability",
+      "question": "The language L = { aⁿbⁿ | n ≥ 0 } is context-free.",
+      "options": [
+        { "label": "A", "text": "True" },
+        { "label": "B", "text": "False" }
+      ],
+      "answer": "A",
+      "explanation": "L is accepted by the CFG: S → ε | aSb. It is context-free but NOT regular (fails the pumping lemma for regular languages).",
+      "hint": "Can you write a simple grammar for it?"
+    },
+    {
+      "id": "q_regex_07",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "regular-expressions",
+      "question": "The DFA shown accepts strings over {a,b}. Which <em>regular expression</em> describes the same language?",
+      "diagram": "stateDiagram-v2\n    [*] --> s0\n    s0 --> s0 : a\n    s0 --> s1 : b\n    s1 --> s0 : b\n    s1 --> s2 : a\n    s2 --> s2 : a\n    s2 --> s2 : b\n    s0 --> [*]\n    s1",
+      "diagramPosition": "right",
+      "options": [
+        { "label": "A", "text": "a*b(b | ab)*" },
+        { "label": "B", "text": "a*(ba)*" },
+        { "label": "C", "text": "(a | bb)*" },
+        { "label": "D", "text": "a*(ba)*(a | b)*" }
+      ],
+      "answer": "C",
+      "explanation": "s0 is the only accept state. It accepts ε, any number of a's, or 'bb' sequences. The pattern (a | bb)* captures this.",
+      "hint": "Identify what strings are accepted from the start state and build the pattern from there."
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "fc_dfa_01",
+      "term": "Deterministic Finite Automaton (DFA)",
+      "definition": "A 5-tuple (Q, Σ, δ, q₀, F) where each state has exactly one transition per input symbol. Recognises regular languages.",
+      "category": "finite-automata"
+    },
+    {
+      "id": "fc_nfa_01",
+      "term": "Nondeterministic Finite Automaton (NFA)",
+      "definition": "Extends DFA by allowing multiple transitions per symbol and ε-transitions. Equivalent in power to DFA via subset construction.",
+      "category": "finite-automata"
+    },
+    {
+      "id": "fc_cfg_01",
+      "term": "Context-Free Grammar (CFG)",
+      "definition": "A grammar with production rules of the form A → α where A is a single non-terminal. Generates context-free languages.",
+      "category": "context-free-grammars"
+    },
+    {
+      "id": "fc_tm_01",
+      "term": "Turing Machine",
+      "definition": "An abstract computation model with an infinite tape, a read/write head, and a transition function. Computes all computable functions.",
+      "category": "turing-machines"
+    }
+  ],
+  "terminology": {
+    "finite-automata": [
+      { "term": "State", "definition": "A configuration of the machine at a given point in computation." },
+      { "term": "Transition function δ", "definition": "Maps (state, symbol) → next state(s)." },
+      { "term": "Accept state", "definition": "A state where the machine halts and accepts the input." }
+    ],
+    "complexity-theory": [
+      { "term": "P", "definition": "Decision problems solvable in polynomial time." },
+      { "term": "NP", "definition": "Decision problems verifiable in polynomial time." },
+      { "term": "NP-complete", "definition": "NP problems that every NP problem reduces to in polynomial time." }
+    ]
+  },
+  "achievements": [
+    {
+      "id": "ach_first_run",
+      "title": "Boot Sequence",
+      "description": "Complete your first quiz session.",
+      "icon": "🚀",
+      "condition": { "type": "runs_gte", "value": 1 }
+    },
+    {
+      "id": "ach_perfect",
+      "title": "Flawless Execution",
+      "description": "Achieve 100% accuracy on any session.",
+      "icon": "⚡",
+      "condition": { "type": "accuracy_gte", "value": 100 }
+    },
+    {
+      "id": "ach_streak_5",
+      "title": "Precision Strike",
+      "description": "Build a streak of 5 or more.",
+      "icon": "🔥",
+      "condition": { "type": "streak_gte", "value": 5 }
+    }
+  ]
+}
