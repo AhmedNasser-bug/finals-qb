@@ -3,6 +3,7 @@
 "use client"
 
 import { Component, type ReactNode, type ErrorInfo } from "react"
+import { logger } from "@/lib/logger"
 
 interface Props {
   onReturnHome: () => void
@@ -26,7 +27,7 @@ export class GameErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     // Surface to Sentry or equivalent in production
-    console.error("[MOLD] GameErrorBoundary caught:", error, info.componentStack)
+    logger.error("[MOLD] GameErrorBoundary caught:", error, info.componentStack)
   }
 
   render() {
