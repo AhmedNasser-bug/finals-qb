@@ -1,11 +1,19 @@
-💡 **What:**
-Replaced the double array `.filter()` operation on the `achievements` array in `AchievementGallery` with a single `for` loop wrapped in a `useMemo` hook. This partitions the achievements into `locked` and `unlocked` arrays in a single pass.
+### 💡 Refactor: Flatten deeply nested validation logic
 
-🎯 **Why:**
-Previously, the code iterated over the entire `achievements` array twice. By consolidating this into a single loop, we reduce iterator overhead and halve the time complexity from O(2N) to O(N). The `useMemo` wrapper ensures this efficient partitioning only runs when the `achievements` data actually changes, rather than on every render.
+This PR refactors the core `validateSubjectData` function in `lib/subject-persistence.ts` to improve maintainability and readability by eliminating complex, deeply nested conditional hierarchies.
 
-📊 **Measured Improvement:**
-A benchmark simulating 100,000 achievements was run comparing the two approaches.
-- Baseline (2x filter): ~5.74ms per run
-- Optimized (1x loop): ~2.54ms per run
-- Improvement: **55.77% faster** execution time for array partitioning.
+**Structural Modifications:**
+1. **Phase 1 (Normalization) Extraction**:
+   - Extracted legacy data normalization logic into modular helper functions: `normalizeFlashcards`, `normalizeTerminology`, and `normalizeAchievements`.
+   - Replaced nested conditionals inside these helpers with guard clauses and early returns.
+
+2. **Phase 2 (Strict Validation) Extraction**:
+   - Extracted strict schema validation checks into dedicated helpers: `validateConfig`, `validateQuestions`, `validateFlashcards`, `validateTerminology`, and `validateAchievements`.
+   - Converted the `forEach` loop in `validateQuestions` to a standard `for` loop, allowing the early `return` to properly halt execution upon reaching the maximum error limit (8 errors), resolving a dormant bug.
+   - Employed guard clauses and early returns extensively within each helper to maintain a flat control flow.
+
+3. **Orchestration**:
+   - The main `validateSubjectData` function now acts as a clean orchestrator, simply sequentially calling the Phase 1 and Phase 2 helpers.
+
+**Verification:**
+- Full functional parity is maintained. All 18 existing unit tests run successfully without modification.
