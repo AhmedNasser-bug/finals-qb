@@ -10,6 +10,7 @@ import { calculateGrade } from "@/lib/mold-types"
 import { GameHeader, QuestionCard, GameFooter, ResultsScreen } from "@/components/mold/game-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard-screen"
 import { calculateAccuracy } from "@/lib/mold-types"
+import { uuid } from "@/lib/crypto-utils"
 
 // ─── Public interface ─────────────────────────────────────────────────────────
 
@@ -114,7 +115,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
       const totalQuestions = state.questions.length
       const run: RunRecord = {
-        id: crypto.randomUUID(),
+        id: uuid(),
         date: new Date().toISOString(),
         mode: state.mode,
         score: accuracyPct,

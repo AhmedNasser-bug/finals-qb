@@ -18,11 +18,11 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
     globalTimeRemaining, globalTimeLimit, elapsedSeconds, livesRemaining,
   } = state
 
-  const total          = questions.length
-  const isTimedGlobal  = globalTimeLimit > 0
-  const isSurvival     = mode === "survival"
-  const isCritical     = isTimedGlobal && globalTimeRemaining <= 30
-  const isUrgent       = isTimedGlobal && globalTimeRemaining <= 10
+  const total = questions.length
+  const isTimedGlobal = globalTimeLimit > 0
+  const isSurvival = mode === "survival"
+  const isCritical = isTimedGlobal && globalTimeRemaining <= 30
+  const isUrgent = isTimedGlobal && globalTimeRemaining <= 10
 
   // Segmented progress bar — each segment maps to one question.
   // When there are more than 60 questions the bar would produce hairline-thin
@@ -32,21 +32,21 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
   const MAX_SEGMENTS = 60
   const answers = state.answers ?? []
   const segmentCount = Math.min(total, MAX_SEGMENTS)
-  const bucketSize   = total / segmentCount  // may be fractional
+  const bucketSize = total / segmentCount  // may be fractional
 
   const segments = Array.from({ length: segmentCount }, (_, s) => {
     const startIdx = Math.round(s * bucketSize)
-    const endIdx   = Math.round((s + 1) * bucketSize)
-    const slice    = answers.slice(startIdx, endIdx)
+    const endIdx = Math.round((s + 1) * bucketSize)
+    const slice = answers.slice(startIdx, endIdx)
     const hasCurrent = currentIndex >= startIdx && currentIndex < endIdx
 
-    const allAnswered  = slice.length > 0 && slice.every((a) => a !== undefined)
-    const anyWrong     = slice.some((a) => a === false)
-    const allCorrect   = slice.every((a) => a === true)
+    const allAnswered = slice.length > 0 && slice.every((a) => a !== undefined)
+    const anyWrong = slice.some((a) => a === false)
+    const allCorrect = slice.every((a) => a === true)
 
-    if (allAnswered && allCorrect)  return "correct"
-    if (allAnswered && anyWrong)    return "wrong"
-    if (hasCurrent)                 return "current"
+    if (allAnswered && allCorrect) return "correct"
+    if (allAnswered && anyWrong) return "wrong"
+    if (hasCurrent) return "current"
     if (slice.some((a) => a !== undefined)) return "partial"
     return "unseen"
   })
@@ -69,11 +69,11 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               key={i}
               className={cn(
                 "h-2 flex-1",
-                seg === "correct"  && "bg-[#4ae176]",
-                seg === "wrong"    && "bg-[#930013]",
-                seg === "current"  && "bg-[#fecc17]/70",
-                seg === "partial"  && "bg-[#fecc17]/30",
-                seg === "unseen"   && "bg-[#353534]",
+                seg === "correct" && "bg-[#4ae176]",
+                seg === "wrong" && "bg-[#930013]",
+                seg === "current" && "bg-[#fecc17]/70",
+                seg === "partial" && "bg-[#fecc17]/30",
+                seg === "unseen" && "bg-[#353534]",
               )}
             />
           ))}
@@ -91,8 +91,8 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               streak >= 10
                 ? "border-[#930013] shadow-[0px_0px_20px_rgba(147,0,10,0.3)]"
                 : streak >= 5
-                ? "border-orange-500 shadow-[0px_0px_15px_rgba(251,146,60,0.2)]"
-                : "border-[#fecc17] shadow-[0px_0px_15px_rgba(254,204,23,0.15)]"
+                  ? "border-orange-500 shadow-[0px_0px_15px_rgba(251,146,60,0.2)]"
+                  : "border-[#fecc17] shadow-[0px_0px_15px_rgba(254,204,23,0.15)]"
             )}>
               <BoltIcon className={cn(
                 "w-4 h-4 shrink-0",
@@ -212,9 +212,9 @@ export function QuestionCard({
   const hasDiagram = parts.some(p => p.type === "mermaid")
   const gradeColor =
     grade === "S+" || grade === "S" ? "#fecc17" :
-    grade === "A+" || grade === "A" ? "#4ae176" :
-    grade === "B"                   ? "#67d7f0" :
-    grade === "C"                   ? "#fb8c00" : "#ffb4ab"
+      grade === "A+" || grade === "A" ? "#4ae176" :
+        grade === "B" ? "#67d7f0" :
+          grade === "C" ? "#fb8c00" : "#ffb4ab"
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-slide-up">
@@ -287,9 +287,9 @@ export function QuestionCard({
           >
             {question.options.map((opt, idx) => {
               const isSelected = selectedOption === opt.label
-              const isCorrect  = opt.label === question.answer
-              const isWrong    = isRevealed && isSelected && !isCorrect
-              const isDimmed   = isRevealed && !isCorrect && !isSelected
+              const isCorrect = opt.label === question.answer
+              const isWrong = isRevealed && isSelected && !isCorrect
+              const isDimmed = isRevealed && !isCorrect && !isSelected
 
               return (
                 <button
@@ -303,30 +303,30 @@ export function QuestionCard({
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
                     // Base + selected
                     !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
-                    !isRevealed && isSelected  && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
+                    !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
                     // Revealed states
-                    isRevealed && isCorrect    && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
-                    isRevealed && isWrong      && "bg-[#930013]/10 border-l-4 border-[#930013]",
-                    isDimmed                   && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
+                    isRevealed && isCorrect && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
+                    isRevealed && isWrong && "bg-[#930013]/10 border-l-4 border-[#930013]",
+                    isDimmed && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
                   )}
                 >
                   <div className="flex flex-col gap-2 flex-1 min-w-0">
                     <span className={cn(
                       "font-mono text-[10px] tracking-widest uppercase",
-                      !isRevealed && isSelected  ? "text-[#fecc17]" :
-                      isRevealed  && isCorrect   ? "text-[#4ae176]" :
-                      isRevealed  && isWrong     ? "text-[#ffb4ab]" :
-                                                   "text-zinc-500"
+                      !isRevealed && isSelected ? "text-[#fecc17]" :
+                        isRevealed && isCorrect ? "text-[#4ae176]" :
+                          isRevealed && isWrong ? "text-[#ffb4ab]" :
+                            "text-zinc-500"
                     )}>
                       OPTION_{String(idx + 1).padStart(2, "0")}
                     </span>
                     <span className={cn(
                       "font-mono text-base font-bold leading-snug",
-                      !isRevealed && isSelected  ? "text-[#fecc17]" :
-                      isRevealed  && isCorrect   ? "text-[#4ae176]" :
-                      isRevealed  && isWrong     ? "text-[#ffb4ab]" :
-                      isDimmed                   ? "text-zinc-600"  :
-                                                   "text-[#e5e2e1]"
+                      !isRevealed && isSelected ? "text-[#fecc17]" :
+                        isRevealed && isCorrect ? "text-[#4ae176]" :
+                          isRevealed && isWrong ? "text-[#ffb4ab]" :
+                            isDimmed ? "text-zinc-600" :
+                              "text-[#e5e2e1]"
                     )}>
                       {opt.text}
                     </span>
@@ -377,9 +377,9 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
   const { state, revealAnswer, nextQuestion, useHint } = useGameEngine()
   const { isRevealed, selectedOption, config, currentIndex, questions } = state
 
-  const isLast    = currentIndex >= questions.length - 1
+  const isLast = currentIndex >= questions.length - 1
   const canSubmit = selectedOption !== null && !isRevealed
-  const canHint   = config.hintsEnabled && !isRevealed
+  const canHint = config.hintsEnabled && !isRevealed
 
   function handleHint() {
     useHint()
@@ -472,24 +472,24 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const { state } = useGameEngine()
   const { score, questions, bestStreak, elapsedSeconds, mode, config, hintsUsedTotal } = state
 
-  const total    = questions.length
-  const answers  = state.answers ?? []
+  const total = questions.length
+  const answers = state.answers ?? []
 
   // Only count questions that were actually answered (true = correct, false = wrong).
   // Undefined entries are unanswered/skipped and must not inflate or deflate accuracy.
   const wrongCountVal = answers.filter((a) => a === false).length
   const accuracyPct = calculateAccuracy(score, wrongCountVal)
-  const grade       = calculateGrade(accuracyPct)
+  const grade = calculateGrade(accuracyPct)
 
-  const skipCount  = answers.filter((a) => a === undefined).length
+  const skipCount = answers.filter((a) => a === undefined).length
 
   // Grade color — must match the LetterGrade values returned by calculateGrade()
   // ("S+", "S", "A+", "A", "B+", "C+", "D+", "F") not bare "B" / "C".
   function resolveGradeColor(g: string): string {
-    if (g === "S+" || g === "S")   return "#fecc17"
-    if (g === "A+" || g === "A")   return "#4ae176"
-    if (g === "B+")                return "#67d7f0"
-    if (g === "C+")                return "#fb8c00"
+    if (g === "S+" || g === "S") return "#fecc17"
+    if (g === "A+" || g === "A") return "#4ae176"
+    if (g === "B+") return "#67d7f0"
+    if (g === "C+") return "#fb8c00"
     return "#ffb4ab" // D+, F
   }
 
@@ -502,7 +502,8 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const xpYield = Math.round(accuracyPct * 18 + bestStreak * 12)
 
   // Avg time per question in seconds (more useful than synthetic "latency" in ms)
-  const avgTimeSec = answered > 0 ? (elapsedSeconds / answered).toFixed(1) : null
+  const answeredCount = score + wrongCountVal
+  const avgTimeSec = answeredCount > 0 ? (elapsedSeconds / answeredCount).toFixed(1) : null
 
   // Module performance: group questions by category.
   // Using question index to align with answers[] array correctly.
@@ -514,9 +515,9 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     if (answers[i] === true) categoryMap[cat].correct++
   })
   const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => ({
-    id:    `MOD_${String(idx + 1).padStart(2, "0")}`,
-    name:  cat.replace(/_/g, " "),
-    pct:   s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
+    id: `MOD_${String(idx + 1).padStart(2, "0")}`,
+    name: cat.replace(/_/g, " "),
+    pct: s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
     grade: calculateGrade(s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
   }))
 
@@ -526,14 +527,14 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const pixelCount = Math.min(total, MAX_PIXELS)
   const pixelBucket = total / pixelCount
   const pixels = Array.from({ length: pixelCount }, (_, p) => {
-    const start  = Math.round(p * pixelBucket)
-    const end    = Math.round((p + 1) * pixelBucket)
-    const slice  = answers.slice(start, end)
-    const anyWrong   = slice.some((a) => a === false)
+    const start = Math.round(p * pixelBucket)
+    const end = Math.round((p + 1) * pixelBucket)
+    const slice = answers.slice(start, end)
+    const anyWrong = slice.some((a) => a === false)
     const anyCorrect = slice.some((a) => a === true)
     const allSkipped = slice.every((a) => a === undefined)
     if (allSkipped) return "skip"
-    if (anyWrong)   return "wrong"
+    if (anyWrong) return "wrong"
     if (anyCorrect) return "correct"
     return "skip"
   })
@@ -644,8 +645,8 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                     style={{
                       backgroundColor:
                         state === "correct" ? "rgba(74,225,118,0.8)" :
-                        state === "wrong"   ? "#93000a" :
-                                              "#353534",
+                          state === "wrong" ? "#93000a" :
+                            "#353534",
                     }}
                   />
                 ))}
@@ -815,7 +816,7 @@ function LightbulbIcon({ className }: { className?: string }) {
 function CheckCircleIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.58L18 8.5l-8 8z"/>
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.58L18 8.5l-8 8z" />
     </svg>
   )
 }
@@ -831,7 +832,7 @@ function RadioIcon({ className }: { className?: string }) {
 function SkipIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/>
+      <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
     </svg>
   )
 }
