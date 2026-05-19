@@ -5,6 +5,8 @@ import path from "path"
 
 export interface ExampleManifestEntry {
   id: string
+  /** The file stem (without .json) used to fetch the full JSON from /examples/ */
+  filename: string
   name: string
   description: string
   questionCount: number
@@ -14,13 +16,14 @@ export interface ExampleManifestEntry {
 
 export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
   const examplesDir = path.join(process.cwd(), "public", "examples")
-  
+
   try {
     const files = await fs.readdir(examplesDir)
     const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
     const manifestPromises = jsonFiles.map(async (file) => {
       const filePath = path.join(examplesDir, file)
+      const fileStem = file.replace(/\.json$/i, "")
       try {
         const content = await fs.readFile(filePath, "utf-8")
         const data = JSON.parse(content)
@@ -39,8 +42,9 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
         }
 
         return {
-          id: data.id || file.replace(".json", ""),
-          name: data.name || file.replace(".json", ""),
+          id: data.id || fileStem,
+          filename: fileStem,   // always the actual file name, not the subject id
+          name: data.name || fileStem,
           description: data.config?.description || "",
           questionCount: data.questions?.length || 0,
           categoryCount: categories.size,

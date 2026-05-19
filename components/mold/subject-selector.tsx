@@ -11,6 +11,7 @@ import type { FullSubjectData } from "@/lib/mold-types"
 // ─── Example subject manifest (only metadata, no questions yet) ───────────────
 
 import { getExamplesManifest, type ExampleManifestEntry } from "@/app/actions"
+import { validateSubjectData } from "@/lib/subject-persistence"
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -27,12 +28,12 @@ export function SubjectSelector({
   onAddSubject,
   onRemoveSubject,
 }: SubjectSelectorProps) {
-  const [showImporter, setShowImporter]       = useState(false)
+  const [showImporter, setShowImporter] = useState(false)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
-  const [sharingSubject, setSharingSubject]   = useState<FullSubjectData | null>(null)
+  const [sharingSubject, setSharingSubject] = useState<FullSubjectData | null>(null)
 
   // Example manifest — fetched once, just metadata (fast)
-  const [examples, setExamples]             = useState<ExampleManifestEntry[]>([])
+  const [examples, setExamples] = useState<ExampleManifestEntry[]>([])
   const [examplesLoading, setExamplesLoading] = useState(true)
 
   // Per-example loading state (full JSON fetch on click)
@@ -65,12 +66,17 @@ export function SubjectSelector({
     setLoadingExampleId(entry.id)
     setExampleError(null)
     try {
-      const res = await fetch(`/examples/${entry.id}.json`)
+      const res = await fetch(`/examples/${entry.filename}.json`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const full: FullSubjectData = await res.json()
-      onSelect(full)
-    } catch {
-      setExampleError(`Failed to load "${entry.name}". Please try again.`)
+      const raw = await res.json()
+      const result = validateSubjectData(raw)
+      if (!result.valid || !result.subject) {
+        throw new Error(result.errors[0] || "Validation failed")
+      }
+      onSelect(result.subject)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error"
+      setExampleError(`Failed to load "${entry.name}". ${msg}`)
     } finally {
       setLoadingExampleId(null)
     }
@@ -84,10 +90,14 @@ export function SubjectSelector({
     setLoadingExampleId(entry.id)
     setExampleError(null)
     try {
-      const res = await fetch(`/examples/${entry.id}.json`)
+      const res = await fetch(`/examples/${entry.filename}.json`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const full: FullSubjectData = await res.json()
-      setSharingSubject(full)
+      const raw = await res.json()
+      const result = validateSubjectData(raw)
+      if (!result.valid || !result.subject) {
+        throw new Error(result.errors[0] || "Validation failed")
+      }
+      setSharingSubject(result.subject)
     } catch {
       setExampleError(`Could not load "${entry.name}" for sharing.`)
     } finally {
@@ -95,7 +105,7 @@ export function SubjectSelector({
     }
   }
 
-  const existingIds    = subjects.map((s) => s.id)
+  const existingIds = subjects.map((s) => s.id)
   const hasUserSubjects = subjects.length > 0
 
   return (
@@ -134,9 +144,9 @@ export function SubjectSelector({
               <SectionLabel label="YOUR_SUBJECTS" count={subjects.length} />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {subjects.map((full) => {
-                  const data             = toSubjectData(full)
-                  const isConfirming     = confirmDeleteId === full.id
-                  const categoryCount    = data.categories.length
+                  const data = toSubjectData(full)
+                  const isConfirming = confirmDeleteId === full.id
+                  const categoryCount = data.categories.length
 
                   return (
                     <div

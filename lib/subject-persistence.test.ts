@@ -27,7 +27,10 @@ describe("validateSubjectData", () => {
         difficulty: "Easy",
         category: "Cat",
         question: "Q?",
-        options: ["A", "B"],
+        options: [
+          { label: "A", text: "Option A" },
+          { label: "B", text: "Option B" }
+        ],
         answer: "A"
       }
     ]
@@ -149,7 +152,7 @@ describe("validateSubjectData", () => {
     assert.ok(res.errors.length <= 80);
   });
 
-  test("accepts valid full subject data without warnings", () => {
+  test("accepts valid full subject data — legacy normalised with warnings", () => {
     const validFull = {
       ...validBase,
       flashcards: [
@@ -159,13 +162,17 @@ describe("validateSubjectData", () => {
         "Term 1": "Def 1"
       },
       achievements: [
-        { id: "a-1", name: "Ach 1", description: "Desc", criteriaType: "speed" }
+        { id: "a-1", title: "Ach 1", description: "Desc", icon: "Award", condition: { type: "runs_gte", value: 1 } }
       ]
     };
     const res = validateSubjectData(validFull);
     assert.strictEqual(res.valid, true);
     assert.strictEqual(res.errors.length, 0);
-    assert.strictEqual(res.warnings.length, 0);
+    // Legacy front/back → term/definition, flat terminology, and no-icon achievement each warn
+    assert.ok(res.warnings.length > 0, "expected warnings for legacy format normalisation");
+    // The normalised subject should have term/definition keys
+    assert.strictEqual(res.subject!.flashcards[0].term, "Front");
+    assert.strictEqual(res.subject!.flashcards[0].definition, "Back");
   });
 
   test("validates flashcards empty and non-array arrays", () => {
