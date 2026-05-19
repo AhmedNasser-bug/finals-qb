@@ -5,6 +5,7 @@ import type { Flashcard } from "@/lib/mold-types"
 import { formatLabel } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { shuffle } from "@/lib/crypto-utils"
+import { RichText } from "./rich-text"
 
 interface FlashcardScreenProps {
   flashcards: Flashcard[]
@@ -379,7 +380,7 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
             {/* Term content */}
             <div className="flex-1 flex flex-col items-center justify-center px-8 py-6">
               <p className="text-4xl sm:text-5xl font-mono font-bold text-foreground text-center break-words tracking-tight">
-                {card.term}
+                <RichText content={card.term || ""} id={`term-${card.id}`} />
               </p>
             </div>
 
@@ -423,7 +424,7 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
             {/* Definition content */}
             <div className="flex-1 flex flex-col justify-center px-8 py-6">
               <p className="text-sm sm:text-base text-foreground/90 leading-relaxed text-pretty">
-                {card.definition}
+                <RichText content={card.definition || ""} id={`def-${card.id}`} />
               </p>
             </div>
 
