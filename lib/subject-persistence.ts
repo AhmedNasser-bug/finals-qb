@@ -17,6 +17,14 @@ export interface ValidationResult {
  * Validates a parsed JSON object against the FullSubjectData contract.
  * Returns detailed field-level errors so the UI can display actionable feedback.
  * Does NOT throw — always returns a ValidationResult.
+ *
+ * LEGACY COMPATIBILITY — the following are normalised automatically (warning, not error):
+ *   - flashcards with "front"/"back" keys  → remapped to "term"/"definition"
+ *   - flashcards missing "category"        → defaulted to "_general"
+ *   - terminology as flat { term: string } → lifted to { _general: [{term, definition}] }
+ *   - achievements missing "icon"          → defaulted to "Award"
+ *   - achievements missing "condition"     → defaulted to { type: "runs_gte", value: 1 }
+ *   - achievements with unknown cond type  → condition reset to runs_gte:1 (warning only)
  */
 export function validateSubjectData(raw: unknown): ValidationResult {
   const errors: string[] = []
@@ -26,9 +34,107 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     return { valid: false, errors: ["Root value must be a JSON object, not an array or primitive."], warnings }
   }
 
-  const obj = raw as Record<string, unknown>
+  // Shallow-clone so normalisation does not mutate the caller's object
+  const obj = { ...(raw as Record<string, unknown>) }
 
-  // ── Required top-level string fields ─────────────────────────────────────
+  // ════════════════════════════════════════════════════════════════════════════
+  // PHASE 1 — NORMALISATION  (legacy → current schema, warnings only)
+  // ════════════════════════════════════════════════════════════════════════════
+
+  // 1a. Flashcards: front/back → term/definition; missing category → _general
+  if (Array.isArray(obj.flashcards)) {
+    let legacyKeys = false
+    obj.flashcards = obj.flashcards.map((fc: unknown) => {
+      if (typeof fc !== "object" || fc === null) return fc
+      const card = { ...(fc as Record<string, unknown>) }
+      if ("front" in card && !("term" in card)) {
+        card.term = card.front
+        delete card.front
+        legacyKeys = true
+      }
+      if ("back" in card && !("definition" in card)) {
+        card.definition = card.back
+        delete card.back
+        legacyKeys = true
+      }
+      if (typeof card.category !== "string" || card.category.trim() === "") {
+        card.category = "_general"
+      }
+      return card
+    })
+    if (legacyKeys) {
+      warnings.push('"flashcards": legacy "front"/"back" keys remapped to "term"/"definition".')
+    }
+  }
+
+  // 1b. Terminology: flat { "TermName": "definition string" } → nested category arrays
+  if (
+    typeof obj.terminology === "object" &&
+    obj.terminology !== null &&
+    !Array.isArray(obj.terminology)
+  ) {
+    const termObj = obj.terminology as Record<string, unknown>
+    const firstVal = Object.values(termObj)[0]
+    if (typeof firstVal === "string") {
+      // Entire map is flat strings — lift into a single _general bucket
+      const lifted = Object.entries(termObj).map(([term, definition]) => ({
+        term,
+        definition: definition as string,
+      }))
+      obj.terminology = { _general: lifted }
+      warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
+    }
+    // Otherwise already the correct nested format — validated in Phase 2
+  }
+
+  // 1c. Achievements: supply safe defaults for missing icon / condition
+  const VALID_CONDITION_TYPES = new Set([
+    "accuracy_gte", "streak_gte", "mode_complete", "speedrun_under",
+    "no_hints", "all_categories", "runs_gte", "all_unlocked",
+  ])
+  if (Array.isArray(obj.achievements)) {
+    let missingIcons = 0
+    let missingConditions = 0
+    let unknownCondTypes = 0
+    obj.achievements = obj.achievements.map((ach: unknown) => {
+      if (typeof ach !== "object" || ach === null) return ach
+      const a = { ...(ach as Record<string, unknown>) }
+      // Default icon
+      if (typeof a.icon !== "string" || a.icon.trim() === "") {
+        a.icon = "Award"
+        missingIcons++
+      }
+      // Default / fix condition
+      if (typeof a.condition !== "object" || a.condition === null) {
+        a.condition = { type: "runs_gte", value: 1 }
+        missingConditions++
+      } else {
+        const cond = { ...(a.condition as Record<string, unknown>) }
+        if (typeof cond.type !== "string" || !VALID_CONDITION_TYPES.has(cond.type)) {
+          cond.type = "runs_gte"
+          cond.value = 1
+          unknownCondTypes++
+        }
+        a.condition = cond
+      }
+      return a
+    })
+    if (missingIcons > 0) {
+      warnings.push(`achievements: ${missingIcons} entr${missingIcons === 1 ? "y" : "ies"} missing "icon" — defaulted to "Award".`)
+    }
+    if (missingConditions > 0) {
+      warnings.push(`achievements: ${missingConditions} entr${missingConditions === 1 ? "y" : "ies"} missing "condition" — defaulted to runs_gte:1.`)
+    }
+    if (unknownCondTypes > 0) {
+      warnings.push(`achievements: ${unknownCondTypes} entr${unknownCondTypes === 1 ? "y" : "ies"} had unknown condition type — defaulted to runs_gte:1.`)
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // PHASE 2 — STRICT VALIDATION  (hard errors only for broken core data)
+  // ════════════════════════════════════════════════════════════════════════════
+
+  // Required top-level string fields
   if (typeof obj.id !== "string" || obj.id.trim() === "") {
     errors.push('Missing required string field: "id".')
   }
@@ -36,7 +142,7 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     errors.push('Missing required string field: "name".')
   }
 
-  // ── config block ─────────────────────────────────────────────────────────
+  // config block
   if (typeof obj.config !== "object" || obj.config === null || Array.isArray(obj.config)) {
     errors.push('Missing required object field: "config".')
   } else {
@@ -49,7 +155,7 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     }
   }
 
-  // ── questions array ───────────────────────────────────────────────────────
+  // questions array — this is the only truly load-bearing array
   if (!Array.isArray(obj.questions)) {
     errors.push('"questions" must be an array.')
   } else if (obj.questions.length === 0) {
@@ -94,26 +200,85 @@ export function validateSubjectData(raw: unknown): ValidationResult {
         errors.push(`${prefix}: missing "answer".`)
       }
 
-      // Bail early after 8 errors to avoid flooding the UI
+      // diagramPosition must be a known value if present
+      if (qObj.diagramPosition != null && !["right", "below"].includes(qObj.diagramPosition as string)) {
+        errors.push(`${prefix}: "diagramPosition" must be "right" or "below", got "${qObj.diagramPosition}".`)
+      }
+
+      // answer label must exist in options
+      if (Array.isArray(qObj.options) && qObj.options.length > 0 && typeof qObj.answer === "string") {
+        const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
+        if (!labels.includes(qObj.answer)) {
+          errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
+        }
+        if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
+          errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`)
+        }
+      }
+
+      // Bail after 8 errors to avoid flooding the UI
       if (errors.length >= 8) return
     })
   }
 
-  // ── flashcards array ──────────────────────────────────────────────────────
+  // flashcards (post-normalisation — term/definition required now)
   if (!Array.isArray(obj.flashcards)) {
     warnings.push('"flashcards" field is missing or not an array — flashcard mode will be empty.')
   } else if (obj.flashcards.length === 0) {
     warnings.push('"flashcards" array is empty — flashcard mode will have no cards.')
+  } else {
+    obj.flashcards.forEach((fc: unknown, i: number) => {
+      if (typeof fc !== "object" || fc === null) {
+        errors.push(`flashcards[${i}]: must be an object.`)
+        return
+      }
+      const fcObj = fc as Record<string, unknown>
+      if (typeof fcObj.id !== "string" || fcObj.id.trim() === "") {
+        errors.push(`flashcards[${i}]: missing "id".`)
+      }
+      if (typeof fcObj.term !== "string" || fcObj.term.trim() === "") {
+        errors.push(`flashcards[${i}]: missing "term" (or legacy "front").`)
+      }
+      if (typeof fcObj.definition !== "string" || fcObj.definition.trim() === "") {
+        errors.push(`flashcards[${i}]: missing "definition" (or legacy "back").`)
+      }
+    })
   }
 
-  // ── terminology ───────────────────────────────────────────────────────────
-  if (typeof obj.terminology !== "object" || obj.terminology === null) {
-    warnings.push('"terminology" field is missing — Full Revision glossary will be empty.')
+  // terminology (post-normalisation — structural issues are warnings, not errors)
+  if (
+    typeof obj.terminology !== "object" ||
+    obj.terminology === null ||
+    Array.isArray(obj.terminology)
+  ) {
+    warnings.push('"terminology" field is missing or invalid — Full Revision glossary will be empty.')
+  } else if (Object.keys(obj.terminology as object).length === 0) {
+    warnings.push('"terminology" object is empty — Full Revision glossary will be empty.')
+  } else {
+    for (const [catKey, entries] of Object.entries(obj.terminology as Record<string, unknown>)) {
+      if (!Array.isArray(entries)) {
+        warnings.push(`terminology["${catKey}"]: expected an array of {term, definition} objects — category skipped.`)
+        continue
+      }
+      entries.forEach((entry: unknown, i: number) => {
+        if (typeof entry !== "object" || entry === null) {
+          warnings.push(`terminology["${catKey}"][${i}]: not an object — entry skipped.`)
+          return
+        }
+        const e = entry as Record<string, unknown>
+        if (typeof e.term !== "string" || e.term.trim() === "") {
+          warnings.push(`terminology["${catKey}"][${i}]: missing "term" — entry skipped.`)
+        }
+        if (typeof e.definition !== "string" || e.definition.trim() === "") {
+          warnings.push(`terminology["${catKey}"][${i}]: missing "definition" — entry skipped.`)
+        }
+      })
+    }
   }
 
-  // ── achievements ──────────────────────────────────────────────────────────
+  // achievements (post-normalisation — already fixed up in Phase 1, just note if absent)
   if (!Array.isArray(obj.achievements)) {
-    warnings.push('"achievements" field is missing — default achievement set will be used.')
+    warnings.push('"achievements" field is missing — no achievements will be tracked for this subject.')
   }
 
   if (errors.length > 0) {
@@ -149,7 +314,16 @@ export function loadSubjects(): FullSubjectData[] {
     if (!raw) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
-    return parsed as FullSubjectData[]
+    
+    // Pass everything through validateSubjectData so old formats are normalised at runtime
+    const validSubjects: FullSubjectData[] = []
+    for (const item of parsed) {
+      const res = validateSubjectData(item)
+      if (res.valid && res.subject) {
+        validSubjects.push(res.subject)
+      }
+    }
+    return validSubjects
   } catch {
     return []
   }

@@ -1,0 +1,266 @@
+{
+    "id": "advanced-programming-lec-11-12",
+    "name": "Advanced Programming: Design Patterns & Architecture",
+    "config": {
+        "title": "Advanced Programming Scenarios",
+        "description": "Master SOLID principles, design patterns, and architectural styles through real-world software engineering scenarios.",
+        "version": "1.0"
+    },
+    "questions": [
+        {
+            "id": "q1-dependency-inversion",
+            "type": "MCQ",
+            "difficulty": "Medium",
+            "category": "solid-principles",
+            "question": "Scenario: You are reviewing a junior developer's code for a notification system. The Notification class currently instantiates an EmailService directly within its methods using new EmailService(). As a software advisor, how would you recommend refactoring this to adhere to the Dependency Inversion Principle?",
+            "diagram": "classDiagram\nclass Notification {\n-IMessageService service\n+Notify()\n}\nclass IMessageService {\n<>\n+Send(message)\n}\nclass EmailService {\n+Send(message)\n}\nclass SmsService {\n+Send(message)\n}\nNotification --> IMessageService\nEmailService ..|> IMessageService\nSmsService ..|> IMessageService",
+            "diagramPosition": "right",
+            "options": [
+                {
+                    "label": "A",
+                    "text": "Create an IMessageService interface, pass it into the Notification constructor, and have EmailService implement it."
+                },
+                {
+                    "label": "B",
+                    "text": "Make the EmailService methods static so the Notification class doesn't need to instantiate it."
+                },
+                {
+                    "label": "C",
+                    "text": "Implement the Singleton pattern on EmailService to ensure only one instance is used."
+                },
+                {
+                    "label": "D",
+                    "text": "Have the Notification class inherit from EmailService to gain access to its methods directly."
+                }
+            ],
+            "answer": "A",
+            "explanation": "Dependency Inversion states that high-level modules (Notification) should not depend on low-level modules (EmailService). Both should depend on abstractions (IMessageService). Injecting the interface decouples the classes and makes it easy to swap in an SmsService later without altering the Notification class.",
+            "hint": "Think about how you can decouple the high-level class from the specific concrete implementation. What construct defines a contract without implementation?"
+        },
+        {
+            "id": "q2-event-driven-architecture",
+            "type": "MCQ",
+            "difficulty": "Medium",
+            "category": "architecture",
+            "question": "Scenario: Your team is designing a Smart Home IoT system. When a motion sensor detects movement, it needs to trigger the thermostat, the security camera, and the lighting system. However, new device types will be added frequently in the future, and you want to ensure the sensor code never has to be updated when a new device is added. Which architectural style best fits this requirement?",
+            "diagram": "flowchart TD\nS[Motion Sensor] -->|Detects Motion| D(Event Dispatcher)\nD -->|Notify| T[Thermostat]\nD -->|Notify| C[Security Camera]\nD -->|Notify| L[Lighting System]\nD -.->|Notify| X[Future Devices]",
+            "diagramPosition": "right",
+            "options": [
+                {
+                    "label": "A",
+                    "text": "Layered Architecture"
+                },
+                {
+                    "label": "B",
+                    "text": "Pipe-and-Filter Architecture"
+                },
+                {
+                    "label": "C",
+                    "text": "Event-Driven Architecture"
+                },
+                {
+                    "label": "D",
+                    "text": "Shared-Data Architecture"
+                }
+            ],
+            "answer": "C",
+            "explanation": "The Event-Driven style uses an Event Dispatcher to mediate communication. The sensor simply fires an event, and the dispatcher routes it to any registered listeners. This decouples the components, making it highly extensible and easy to add or remove new components without modifying the source of the event.",
+            "hint": "Which architecture allows a component to simply 'announce' that something happened without knowing who is listening?"
+        },
+        {
+            "id": "q3-builder-pattern-scenario",
+            "type": "MCQ",
+            "difficulty": "Easy",
+            "category": "design-patterns",
+            "question": "Scenario: A client wants a web application that generates professional resumes. Users can customize sections such as personal info, experience, education, and skills. Some users want a 'Full Resume' with all sections, while others want a 'Minimal Resume' skipping education and skills. Which design pattern provides the best solution to encapsulate this step-by-step object construction?",
+            "diagram": "classDiagram\nclass Director {\n+make(type)\n}\nclass Builder {\n<>\n+buildInfo()\n+buildExperience()\n+buildEducation()\n}\nclass FullResumeBuilder {\n+buildInfo()\n+buildExperience()\n+buildEducation()\n}\nclass MinimalResumeBuilder {\n+buildInfo()\n+buildExperience()\n}\nDirector --> Builder\nFullResumeBuilder ..|> Builder\nMinimalResumeBuilder ..|> Builder",
+            "diagramPosition": "right",
+            "options": [
+                {
+                    "label": "A",
+                    "text": "Factory Method"
+                },
+                {
+                    "label": "B",
+                    "text": "Builder Pattern"
+                },
+                {
+                    "label": "C",
+                    "text": "Prototype Pattern"
+                },
+                {
+                    "label": "D",
+                    "text": "Singleton Pattern"
+                }
+            ],
+            "answer": "B",
+            "explanation": "The Builder pattern is specifically designed to separate the construction of a complex object from its representation. It allows you to create different representations (Full vs Minimal) using the same construction process (Director) by calling construction steps selectively.",
+            "hint": "Look for the pattern designed to handle 'step-by-step complex object construction'."
+        },
+        {
+            "id": "q4-prototype-pattern",
+            "type": "TrueFalse",
+            "difficulty": "Easy",
+            "category": "design-patterns",
+            "question": "Scenario: You are managing the development of an RPG video game. When a player spawns into a battle, the system needs to generate 50 enemy characters of the 'Warrior' type. Instantiating each Warrior from scratch using a standard constructor and querying the database for base stats causes a massive performance bottleneck. \n\nStatement: Using the Prototype design pattern to clone an existing base Warrior object in memory would resolve this performance issue better than using a standard constructor.",
+            "options": [
+                {
+                    "label": "A",
+                    "text": "True"
+                },
+                {
+                    "label": "B",
+                    "text": "False"
+                }
+            ],
+            "answer": "A",
+            "explanation": "True. The Prototype pattern is ideal for scenarios where the cost of creating a new object from scratch (e.g., database reads, complex calculations) is resource-intensive. Cloning a pre-existing 'prototype' object in memory is significantly faster and allows for rapid generation of entities like video game enemies.",
+            "hint": "Think about the performance difference between reading data from a hard drive to build an object versus just copying a blueprint already in RAM."
+        },
+        {
+            "id": "q5-code-scaffold",
+            "type": "MCQ",
+            "difficulty": "Medium",
+            "category": "software-engineering-practices",
+            "question": "Scenario: You are onboarding a team of junior developers. They need to implement several complex Design Patterns. To ensure they follow the patterns correctly, reduce boilerplate, and speed up implementation, you decide to provide them with a template containing class definitions, method stubs, and placeholder logic. What is this concept called?",
+            "options": [
+                {
+                    "label": "A",
+                    "text": "Code Scaffold"
+                },
+                {
+                    "label": "B",
+                    "text": "Minimum Viable Product (MVP)"
+                },
+                {
+                    "label": "C",
+                    "text": "Continuous Integration"
+                },
+                {
+                    "label": "D",
+                    "text": "Agile Methodology"
+                }
+            ],
+            "answer": "A",
+            "explanation": "A Code Scaffold is a skeleton or template structure that provides the basic framework for an application or component. In the context of Design Patterns, scaffolding ensures consistency, helps juniors learn the structure step-by-step, and significantly speeds up implementation by eliminating boilerplate setup.",
+            "hint": "It acts like the temporary support structure used when constructing a building."
+        },
+        {
+            "id": "q6-hybrid-architecture",
+            "type": "TrueFalse",
+            "difficulty": "Hard",
+            "category": "architecture",
+            "question": "Scenario: A large-scale enterprise system is being audited. You notice that the overall application follows a strict Layered style (Presentation, Business Logic, Data Access). However, within the Business Logic layer, an Event-Driven style is used to process asynchronous payment events, and the Data Access layer relies on a Shared-Data style. \n\nStatement: This is an anti-pattern and a sign of poor design. Systems of any size must strictly adhere to a single architectural style to guarantee maintainability.",
+            "options": [
+                {
+                    "label": "A",
+                    "text": "True"
+                },
+                {
+                    "label": "B",
+                    "text": "False"
+                }
+            ],
+            "answer": "B",
+            "explanation": "False. Most systems of any significant size are actually Hybrid Architectures. They include several architectural styles at different levels of abstraction. Using Layered for overall structure while leveraging Event-Driven for asynchronous tasks within a layer is a robust, common, and highly practical design choice.",
+            "hint": "Consider the complexity of modern enterprise applications. Can one single paradigm effectively solve every type of problem within a massive system?"
+        }
+    ],
+    "flashcards": [
+        {
+            "id": "f1-dependency-inversion",
+            "term": "Dependency Inversion Principle",
+            "definition": "High-level modules should not depend on low-level modules; both should depend on abstractions. Depend on interfaces, not concrete classes.",
+            "category": "solid-principles"
+        },
+        {
+            "id": "f2-builder-pattern",
+            "term": "Builder Pattern",
+            "definition": "A creational design pattern that lets you construct complex objects step by step. It separates construction from representation.",
+            "category": "design-patterns"
+        },
+        {
+            "id": "f3-prototype-pattern",
+            "term": "Prototype Pattern",
+            "definition": "A creational design pattern that allows copying existing objects without making your code dependent on their classes, useful for performance.",
+            "category": "design-patterns"
+        },
+        {
+            "id": "f4-event-driven",
+            "term": "Event-Driven Architecture",
+            "definition": "An architectural style where decoupled components communicate via events through a central dispatcher. Highly reusable but timing is un-guaranteed.",
+            "category": "architecture"
+        },
+        {
+            "id": "f5-code-scaffold",
+            "term": "Code Scaffold",
+            "definition": "A template or skeleton code that provides structure, method stubs, and basic logic to ensure consistency and speed up implementation.",
+            "category": "software-engineering-practices"
+        }
+    ],
+    "terminology": {
+        "solid-principles": [
+            {
+                "term": "Dependency Inversion Principle",
+                "definition": "High-level modules should not depend on low-level modules; both should depend on abstractions."
+            }
+        ],
+        "design-patterns": [
+            {
+                "term": "Builder Pattern",
+                "definition": "Separates the construction of a complex object from its representation."
+            },
+            {
+                "term": "Prototype Pattern",
+                "definition": "Creates new objects by copying an existing object, known as the prototype."
+            }
+        ],
+        "architecture": [
+            {
+                "term": "Event-Driven Architecture",
+                "definition": "Components communicate by emitting and listening for events via a dispatcher."
+            },
+            {
+                "term": "Hybrid Architecture",
+                "definition": "A system that combines multiple architectural styles at different levels of abstraction."
+            }
+        ],
+        "software-engineering-practices": [
+            {
+                "term": "Code Scaffold",
+                "definition": "A skeleton code structure used as a starting point for development."
+            }
+        ]
+    },
+    "achievements": [
+        {
+            "id": "ach-architect-initiate",
+            "title": "Architect Initiate",
+            "description": "Complete 5 runs to prove your dedication to software design.",
+            "icon": "Compass",
+            "condition": {
+                "type": "runs_gte",
+                "value": 5
+            }
+        },
+        {
+            "id": "ach-design-master",
+            "title": "Design Pattern Master",
+            "description": "Achieve an accuracy of 85% or higher on the advanced programming scenarios.",
+            "icon": "Award",
+            "condition": {
+                "type": "accuracy_gte",
+                "value": 85
+            }
+        },
+        {
+            "id": "ach-all-knowledge",
+            "title": "Full Stack Knowledge",
+            "description": "Unlock all other achievements in the Advanced Programming module.",
+            "icon": "Star",
+            "condition": {
+                "type": "all_unlocked"
+            }
+        }
+    ]
+}
