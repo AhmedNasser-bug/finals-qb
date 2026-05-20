@@ -165,10 +165,12 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     const VALID_TYPES = new Set(["MCQ", "TrueFalse"])
     const seenIds = new Set<string>()
 
-    obj.questions.forEach((q: unknown, i: number) => {
+    const questionsLen = obj.questions.length;
+    for (let i = 0; i < questionsLen; i++) {
+      const q = obj.questions[i];
       if (typeof q !== "object" || q === null) {
         errors.push(`questions[${i}]: must be an object.`)
-        return
+        continue
       }
       const qObj = q as Record<string, unknown>
       const prefix = `questions[${i}]`
@@ -207,8 +209,17 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
       // answer label must exist in options
       if (Array.isArray(qObj.options) && qObj.options.length > 0 && typeof qObj.answer === "string") {
-        const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
-        if (!labels.includes(qObj.answer)) {
+        const opts = qObj.options as Record<string, unknown>[];
+        let hasMatch = false;
+        const labels: string[] = [];
+        for (let j = 0; j < opts.length; j++) {
+          const label = opts[j].label as string;
+          labels.push(label);
+          if (label === qObj.answer) {
+            hasMatch = true;
+          }
+        }
+        if (!hasMatch) {
           errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
         }
         if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
@@ -217,8 +228,8 @@ export function validateSubjectData(raw: unknown): ValidationResult {
       }
 
       // Bail after 8 errors to avoid flooding the UI
-      if (errors.length >= 8) return
-    })
+      if (errors.length >= 8) break
+    }
   }
 
   // flashcards (post-normalisation — term/definition required now)
@@ -227,10 +238,12 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   } else if (obj.flashcards.length === 0) {
     warnings.push('"flashcards" array is empty — flashcard mode will have no cards.')
   } else {
-    obj.flashcards.forEach((fc: unknown, i: number) => {
+    const flashcardsLen = obj.flashcards.length;
+    for (let i = 0; i < flashcardsLen; i++) {
+      const fc = obj.flashcards[i];
       if (typeof fc !== "object" || fc === null) {
         errors.push(`flashcards[${i}]: must be an object.`)
-        return
+        continue
       }
       const fcObj = fc as Record<string, unknown>
       if (typeof fcObj.id !== "string" || fcObj.id.trim() === "") {
@@ -242,7 +255,7 @@ export function validateSubjectData(raw: unknown): ValidationResult {
       if (typeof fcObj.definition !== "string" || fcObj.definition.trim() === "") {
         errors.push(`flashcards[${i}]: missing "definition" (or legacy "back").`)
       }
-    })
+    }
   }
 
   // terminology (post-normalisation — structural issues are warnings, not errors)
@@ -260,10 +273,12 @@ export function validateSubjectData(raw: unknown): ValidationResult {
         warnings.push(`terminology["${catKey}"]: expected an array of {term, definition} objects — category skipped.`)
         continue
       }
-      entries.forEach((entry: unknown, i: number) => {
+      const entriesLen = entries.length;
+      for (let i = 0; i < entriesLen; i++) {
+        const entry = entries[i];
         if (typeof entry !== "object" || entry === null) {
           warnings.push(`terminology["${catKey}"][${i}]: not an object — entry skipped.`)
-          return
+          continue
         }
         const e = entry as Record<string, unknown>
         if (typeof e.term !== "string" || e.term.trim() === "") {
@@ -272,7 +287,7 @@ export function validateSubjectData(raw: unknown): ValidationResult {
         if (typeof e.definition !== "string" || e.definition.trim() === "") {
           warnings.push(`terminology["${catKey}"][${i}]: missing "definition" — entry skipped.`)
         }
-      })
+      }
     }
   }
 

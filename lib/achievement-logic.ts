@@ -14,57 +14,27 @@ import type {
  * @param state      - The completed GameState
  * @param allRuns    - Full run history (including the just-completed run)
  */
+type Evaluator = (condition: AchievementCondition, state: GameState, allRuns: RunRecord[], accuracyPct: number) => boolean;
+
+const conditionEvaluators: Record<string, Evaluator> = {
+  "accuracy_gte": (c, s, _, acc) => acc >= (c.value ?? 0),
+  "streak_gte": (c, s) => s.bestStreak >= (c.value ?? 0),
+  "mode_complete": (c, s) => s.mode === c.mode,
+  "speedrun_under": (c, s) => s.mode === "speedrun" && s.elapsedSeconds <= (c.seconds ?? Infinity),
+  "no_hints": (c, s) => s.mode === c.mode && s.hintsUsedTotal === 0,
+  "runs_gte": (c, _, runs) => runs.length >= (c.value ?? 0),
+  "all_categories": (_, __, runs) => runs.filter((r) => r.mode === "practice").length >= 3,
+  "all_unlocked": () => false,
+};
+
 export function evaluateCondition(
   condition: AchievementCondition,
   state: GameState,
   allRuns: RunRecord[]
 ): boolean {
   const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
-
-  switch (condition.type) {
-    case "accuracy_gte":
-      return accuracyPct >= (condition.value ?? 0)
-
-    case "streak_gte":
-      return state.bestStreak >= (condition.value ?? 0)
-
-    case "mode_complete":
-      return state.mode === condition.mode
-
-    case "speedrun_under":
-      return (
-        state.mode === "speedrun" &&
-        state.elapsedSeconds <= (condition.seconds ?? Infinity)
-      )
-
-    case "no_hints":
-      return (
-        state.mode === condition.mode &&
-        state.hintsUsedTotal === 0
-      )
-
-    case "runs_gte":
-      return allRuns.length >= (condition.value ?? 0)
-
-    case "all_categories": {
-      // Check that at least one run exists for each category (via practice mode)
-      // Simplified: check that the player has used practice mode for every category
-      const practicedCategories = new Set(
-        allRuns
-          .filter((r) => r.mode === "practice")
-          .map((r) => r.mode)  // In full impl this would track selectedCategory per run
-      )
-      // For demo purposes: unlock when they have 3+ practice runs
-      return allRuns.filter((r) => r.mode === "practice").length >= 3
-    }
-
-    case "all_unlocked":
-      // Meta-achievement — evaluated separately after all others
-      return false
-
-    default:
-      return false
-  }
+  const evaluator = conditionEvaluators[condition.type]
+  return evaluator ? evaluator(condition, state, allRuns, accuracyPct) : false
 }
 
 /**
