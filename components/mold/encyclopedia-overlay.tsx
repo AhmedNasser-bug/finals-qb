@@ -98,7 +98,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             aria-label="Close encyclopedia"
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
           >
-            <CloseIcon className="w-4 h-4" />
+            <CloseIcon className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 

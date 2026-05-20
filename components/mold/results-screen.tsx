@@ -293,13 +293,13 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           <div className="flex gap-3 w-full md:w-auto">
             <button
               onClick={onReturnHome}
-              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors"
+              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded-sm"
             >
               DUMP_LOGS
             </button>
             <button
               onClick={onPlayAgain}
-              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress"
+              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded-sm"
               style={{ boxShadow: "0 0 25px rgba(254,204,23,0.15)" }}
             >
               CONTINUE_CYCLE

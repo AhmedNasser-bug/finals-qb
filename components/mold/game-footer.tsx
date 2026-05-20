@@ -28,7 +28,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
           aria-label="Request hint"
           title={!canHint ? "Hint not available" : "Request hint"}
           className={cn(
-            "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all",
+            "flex flex-col items-center justify-center gap-1 px-4 w-16 shrink-0 btn-depress transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded-sm",
             canHint
               ? "text-[#fecc17] hover:text-[#ffedc2]"
               : "text-zinc-700 cursor-not-allowed"
@@ -51,7 +51,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
             aria-disabled={!canSubmit}
             title={!canSubmit ? "Select an option first" : undefined}
             className={cn(
-              "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress",
+              "w-full h-12 font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded-sm",
               canSubmit
                 ? "cta-gradient"
                 : "bg-[#2a2a2a] text-zinc-600 cursor-not-allowed"
@@ -62,7 +62,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         ) : (
           <button
             onClick={nextQuestion}
-            className="w-full h-12 cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up"
+            className="w-full h-12 cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded-sm"
           >
             {isLast ? "VIEW_RESULTS" : "CONTINUE_SESSION"}
           </button>
@@ -82,9 +82,9 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         {isRevealed && (
           <button
             onClick={nextQuestion}
-            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all"
+            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17] rounded-sm"
           >
-            <SkipIcon className="w-4 h-4" />
+            <SkipIcon className="w-4 h-4" aria-hidden="true" />
             SKIP
           </button>
         )}
