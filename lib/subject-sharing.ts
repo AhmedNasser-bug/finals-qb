@@ -129,8 +129,10 @@ export function downloadSubjectJson(subject: FullSubjectData): void {
 function arrayBufferToBase64url(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer)
   let binary = ""
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i])
+  const MAX_CHUNK = 8192
+  for (let i = 0; i < bytes.byteLength; i += MAX_CHUNK) {
+    const chunk = bytes.slice(i, i + MAX_CHUNK)
+    binary += String.fromCharCode.apply(null, Array.from(chunk))
   }
   return btoa(binary)
     .replace(/\+/g, "-")
