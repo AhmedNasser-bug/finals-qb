@@ -2,6 +2,7 @@
 
 import fs from "fs/promises"
 import path from "path"
+import { logger } from "@/lib/logger"
 
 export interface ExampleManifestEntry {
   id: string
@@ -51,7 +52,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
           tags: data.tags || tags
         }
       } catch (err) {
-        console.error(`Failed to parse Example Example: ${file}`, err)
+        logger.error(`Failed to parse Example Example: ${file}`, err)
         return null
       }
     })
@@ -59,7 +60,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
     const manifestResults = await Promise.all(manifestPromises)
     return manifestResults.filter((entry): entry is ExampleManifestEntry => entry !== null)
   } catch (err) {
-    console.error("Failed to read examples directory", err)
+    logger.error("Failed to read examples directory", err)
     return []
   }
 }
