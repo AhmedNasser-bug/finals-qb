@@ -165,10 +165,11 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     const VALID_TYPES = new Set(["MCQ", "TrueFalse"])
     const seenIds = new Set<string>()
 
-    obj.questions.forEach((q: unknown, i: number) => {
+    for (let i = 0; i < obj.questions.length; i++) {
+      const q = obj.questions[i]
       if (typeof q !== "object" || q === null) {
         errors.push(`questions[${i}]: must be an object.`)
-        return
+        continue
       }
       const qObj = q as Record<string, unknown>
       const prefix = `questions[${i}]`
@@ -207,8 +208,17 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
       // answer label must exist in options
       if (Array.isArray(qObj.options) && qObj.options.length > 0 && typeof qObj.answer === "string") {
-        const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
-        if (!labels.includes(qObj.answer)) {
+        const options = qObj.options as Record<string, unknown>[]
+        let hasAnswer = false
+        const labels: string[] = []
+        for (let j = 0; j < options.length; j++) {
+          const label = options[j].label as string
+          labels.push(label)
+          if (label === qObj.answer) {
+            hasAnswer = true
+          }
+        }
+        if (!hasAnswer) {
           errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
         }
         if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
@@ -217,8 +227,8 @@ export function validateSubjectData(raw: unknown): ValidationResult {
       }
 
       // Bail after 8 errors to avoid flooding the UI
-      if (errors.length >= 8) return
-    })
+      if (errors.length >= 8) break
+    }
   }
 
   // flashcards (post-normalisation — term/definition required now)
