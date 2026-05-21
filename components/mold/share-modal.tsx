@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { shortenUrl } from "@/lib/url-shortener"
 import {
@@ -30,6 +30,13 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
   const [copyState, setCopyState] = useState<CopyState>("idle")
   const [shortenState, setShortenState] = useState<ShortenState>("idle")
   const [shortenError, setShortenError] = useState<string | null>(null)
+
+  const overlayRef = useRef<HTMLDivElement>(null)
+
+  // Trap focus inside overlay
+  useEffect(() => {
+    overlayRef.current?.focus()
+  }, [])
 
   // ── Encode on mount ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -94,10 +101,12 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
 
   return (
     <div
+      ref={overlayRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="share-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in outline-none"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="w-full max-w-lg bg-panel border border-border rounded flex flex-col shadow-xl animate-slide-up">

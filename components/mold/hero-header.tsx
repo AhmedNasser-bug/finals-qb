@@ -62,7 +62,12 @@ export function HeroHeader({ subject, achievements, onTrophyClick, className }: 
             aria-label={onTrophyClick ? "View achievements gallery" : undefined}
             tabIndex={onTrophyClick ? 0 : undefined}
             onClick={onTrophyClick}
-            onKeyDown={(e) => e.key === "Enter" && onTrophyClick?.()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                onTrophyClick?.()
+              }
+            }}
             className={cn(
               "w-12 h-12 rounded border flex items-center justify-center text-xl",
               unlocked === total
