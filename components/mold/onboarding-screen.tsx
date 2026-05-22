@@ -5,7 +5,11 @@ import { GAME_MODES } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { SubjectImporter } from "@/components/mold/subject-importer"
 import { Footer } from "@/components/mold/footer"
-import type { FullSubjectData } from "@/lib/mold-types"
+import type { FullSubjectData, GameMode } from "@/lib/mold-types"
+
+interface ModeCardProps {
+  mode: GameMode;
+}
 
 interface OnboardingScreenProps {
   onSubjectAdded: (subject: FullSubjectData) => void
@@ -76,36 +80,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {GAME_MODES.map((mode) => (
-                    <div
-                      key={mode.id}
-                      className={cn(
-                        "flex gap-3 p-4 rounded border bg-panel",
-                        mode.category === "challenge"
-                          ? "border-red-400/20"
-                          : "border-emerald-400/20"
-                      )}
-                    >
-                      <div className={cn(
-                        "shrink-0 w-1.5 rounded-full self-stretch",
-                        mode.category === "challenge" ? "bg-red-400/40" : "bg-emerald-400/40"
-                      )} />
-                      <div className="flex flex-col gap-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-semibold text-foreground">{mode.label}</p>
-                          <span className={cn(
-                            "text-[10px] font-mono px-1.5 py-0.5 rounded-sm border leading-none shrink-0",
-                            mode.category === "challenge"
-                              ? "border-red-400/30 text-red-400"
-                              : "border-emerald-400/30 text-emerald-400"
-                          )}>
-                            {mode.tag}
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {mode.description}
-                        </p>
-                      </div>
-                    </div>
+                    <ModeCard key={mode.id} mode={mode} />
                   ))}
                 </div>
               </div>
@@ -206,6 +181,42 @@ const ONBOARDING_STEPS = [
     body: "Copy the AI response and paste it into the importer. MOLD validates every field in real time — question count, difficulty spread, achievement conditions — and shows a preview before you confirm.",
   },
 ]
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function ModeCard({ mode }: ModeCardProps) {
+  return (
+    <div
+      className={cn(
+        "flex gap-3 p-4 rounded border bg-panel",
+        mode.category === "challenge"
+          ? "border-red-400/20"
+          : "border-emerald-400/20"
+      )}
+    >
+      <div className={cn(
+        "shrink-0 w-1.5 rounded-full self-stretch",
+        mode.category === "challenge" ? "bg-red-400/40" : "bg-emerald-400/40"
+      )} />
+      <div className="flex flex-col gap-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-semibold text-foreground">{mode.label}</p>
+          <span className={cn(
+            "text-[10px] font-mono px-1.5 py-0.5 rounded-sm border leading-none shrink-0",
+            mode.category === "challenge"
+              ? "border-red-400/30 text-red-400"
+              : "border-emerald-400/30 text-emerald-400"
+          )}>
+            {mode.tag}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {mode.description}
+        </p>
+      </div>
+    </div>
+  )
+}
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
