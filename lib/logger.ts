@@ -6,16 +6,31 @@ const PII_PATTERNS = [
   // Private keys
   /-----BEGIN[\s\w]+PRIVATE KEY-----[\s\S]+?-----END[\s\w]+PRIVATE KEY-----/g,
   // Common secrets
-  /(?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*["']?([^"'\s]+)["']?/gi,
+  /(api_key|apikey|secret|token|password)(["']?\s*[:=]\s*["']?)([^"'\s]+)(["']?)/gi,
   // JWTs
   /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g
 ];
 
 function maskString(str: string): string {
   let masked = str;
-  for (const pattern of PII_PATTERNS) {
-    masked = masked.replace(pattern, '[REDACTED]');
-  }
+  // Emails
+  masked = masked.replace(PII_PATTERNS[0], '[REDACTED]');
+  // Bearer tokens
+  masked = masked.replace(PII_PATTERNS[1], '[REDACTED]');
+  // Private keys
+  masked = masked.replace(PII_PATTERNS[2], '[REDACTED]');
+  // Common secrets
+  masked = masked.replace(PII_PATTERNS[3], (match, p1, p2, p3, p4) => {
+    let replacement = '[REDACTED]';
+    // Preserve trailing punctuation commonly found in JSON or logs
+    const lastChar = p3.slice(-1);
+    if (['}', ',', ']', ')'].includes(lastChar)) {
+      replacement += lastChar;
+    }
+    return `${p1}${p2}${replacement}${p4}`;
+  });
+  // JWTs
+  masked = masked.replace(PII_PATTERNS[4], '[REDACTED]');
   return masked;
 }
 
