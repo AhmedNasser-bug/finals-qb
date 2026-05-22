@@ -15,6 +15,24 @@ import { validateSubjectData } from "@/lib/subject-persistence"
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
+interface UserSubjectCardProps {
+  full: FullSubjectData;
+  isConfirming: boolean;
+  categoryCount: number;
+  onSelect: (full: FullSubjectData) => void;
+  onShare: (full: FullSubjectData) => void;
+  onDeleteConfirm: (id: string) => void;
+  onDeleteCancel: () => void;
+  onRemoveClick: (id: string) => void;
+}
+
+interface ExampleModuleCardProps {
+  entry: ExampleManifestEntry;
+  isLoading: boolean;
+  onLoad: (entry: ExampleManifestEntry) => void;
+  onShare: (e: React.MouseEvent, entry: ExampleManifestEntry) => void;
+}
+
 interface SubjectSelectorProps {
   subjects: FullSubjectData[]
   onSelect: (subject: FullSubjectData) => void
@@ -149,83 +167,17 @@ export function SubjectSelector({
                   const categoryCount = data.categories.length
 
                   return (
-                    <div
+                    <UserSubjectCard
                       key={full.id}
-                      className={cn(
-                        "group relative flex flex-col bg-panel border transition-colors",
-                        isConfirming ? "border-destructive/40" : "border-border hover:border-border/80"
-                      )}
-                    >
-                      {/* Clickable card body */}
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          if (!isConfirming) onSelect(full)
-                        }}
-                        onKeyDown={(e) => {
-                          if (isConfirming) return
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault()
-                            onSelect(full)
-                          }
-                        }}
-                        aria-disabled={isConfirming}
-                        title={isConfirming ? "Confirm deletion first" : undefined}
-                        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{full.name}</p>
-                          <div className="flex items-center gap-1 shrink-0">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setSharingSubject(full) }}
-                              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                              aria-label={`Share ${full.name}`}
-                              title="Share subject"
-                            >
-                              <ShareIcon aria-hidden="true" />
-                            </button>
-                            <span className="text-[10px] font-mono px-1.5 py-0.5 border border-border text-muted-foreground">
-                              v{full.config.version ?? "1.0"}
-                            </span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                          {full.config.description}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          <StatPill label="Q" value={data.totalQuestions} />
-                          <StatPill label="FC" value={full.flashcards?.length ?? 0} />
-                          <StatPill label="Cat" value={categoryCount} />
-                        </div>
-                      </div>
-
-                      {/* Card footer */}
-                      <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
-                        <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[120px]">{full.id}</span>
-                        {isConfirming ? (
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-mono text-destructive/80">Delete?</span>
-                            <button
-                              onClick={() => handleDeleteConfirm(full.id)}
-                              aria-label={`Confirm deletion of ${full.name}`}
-                              className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
-                            >Yes</button>
-                            <button
-                              onClick={() => setConfirmDeleteId(null)}
-                              aria-label={`Cancel deletion of ${full.name}`}
-                              className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                            >No</button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(full.id) }}
-                            className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
-                            aria-label={`Remove ${full.name}`}
-                          >Remove</button>
-                        )}
-                      </div>
-                    </div>
+                      full={full}
+                      isConfirming={isConfirming}
+                      categoryCount={categoryCount}
+                      onSelect={onSelect}
+                      onShare={(f) => setSharingSubject(f)}
+                      onDeleteConfirm={handleDeleteConfirm}
+                      onDeleteCancel={() => setConfirmDeleteId(null)}
+                      onRemoveClick={(id) => setConfirmDeleteId(id)}
+                    />
                   )
                 })}
 
@@ -262,82 +214,13 @@ export function SubjectSelector({
                 {examples.map((entry) => {
                   const isLoading = loadingExampleId === entry.id
                   return (
-                    <div
+                    <ExampleModuleCard
                       key={entry.id}
-                      className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-colors"
-                    >
-                      {/* Clickable card body */}
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          if (!isLoading) handleExampleLoad(entry)
-                        }}
-                        onKeyDown={(e) => {
-                          if (isLoading) return
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault()
-                            handleExampleLoad(entry)
-                          }
-                        }}
-                        aria-disabled={isLoading}
-                        aria-busy={isLoading}
-                        title={isLoading ? "Loading module..." : undefined}
-                        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{entry.name}</p>
-                          <div className="flex items-center gap-1 shrink-0">
-                            {/* Share — fetches full JSON first */}
-                            <button
-                              onClick={(e) => !isLoading && handleExampleShare(e, entry)}
-                              disabled={isLoading}
-                              aria-busy={isLoading}
-                              aria-disabled={isLoading}
-                              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                              aria-label={`Share ${entry.name}`}
-                              title={isLoading ? "Loading module..." : "Share subject"}
-                            >
-                              <ShareIcon aria-hidden="true" />
-                            </button>
-                            {/* Example badge */}
-                            <span className="text-[10px] font-mono px-1.5 py-0.5 border border-primary/30 text-primary/70 bg-primary/5">
-                              EXAMPLE
-                            </span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                          {entry.description}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          <StatPill label="Q" value={entry.questionCount} />
-                          <StatPill label="Cat" value={entry.categoryCount} />
-                          {entry.tags.map((tag) => (
-                            <span key={tag} className="text-[10px] font-mono px-2 py-0.5 border border-border bg-background text-muted-foreground">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Footer — load button or spinner */}
-                      <div className="border-t border-border px-4 py-2.5 flex items-center justify-between">
-                        <span className="text-[10px] font-mono text-muted-foreground">{entry.id}</span>
-                        {isLoading ? (
-                          <div className="flex items-center gap-2 text-[10px] font-mono text-primary">
-                            <SpinnerIcon />
-                            LOADING...
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => handleExampleLoad(entry)}
-                            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                          >
-                            LOAD_MODULE →
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                      entry={entry}
+                      isLoading={isLoading}
+                      onLoad={handleExampleLoad}
+                      onShare={handleExampleShare}
+                    />
                   )
                 })}
               </div>
@@ -377,6 +260,178 @@ export function SubjectSelector({
         />
       )}
     </>
+  )
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function UserSubjectCard({
+  full,
+  isConfirming,
+  categoryCount,
+  onSelect,
+  onShare,
+  onDeleteConfirm,
+  onDeleteCancel,
+  onRemoveClick,
+}: UserSubjectCardProps) {
+  const data = toSubjectData(full);
+  return (
+    <div
+      className={cn(
+        "group relative flex flex-col bg-panel border transition-colors",
+        isConfirming ? "border-destructive/40" : "border-border hover:border-border/80"
+      )}
+    >
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          if (!isConfirming) onSelect(full)
+        }}
+        onKeyDown={(e) => {
+          if (isConfirming) return
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            onSelect(full)
+          }
+        }}
+        aria-disabled={isConfirming}
+        title={isConfirming ? "Confirm deletion first" : undefined}
+        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
+      >
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{full.name}</p>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={(e) => { e.stopPropagation(); onShare(full) }}
+              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              aria-label={`Share ${full.name}`}
+              title="Share subject"
+            >
+              <ShareIcon />
+            </button>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 border border-border text-muted-foreground">
+              v{full.config.version ?? "1.0"}
+            </span>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+          {full.config.description}
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          <StatPill label="Q" value={data.totalQuestions} />
+          <StatPill label="FC" value={full.flashcards?.length ?? 0} />
+          <StatPill label="Cat" value={categoryCount} />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
+        <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[120px]">{full.id}</span>
+        {isConfirming ? (
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono text-destructive/80">Delete?</span>
+            <button
+              onClick={() => onDeleteConfirm(full.id)}
+              aria-label={`Confirm deletion of ${full.name}`}
+              className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
+            >Yes</button>
+            <button
+              onClick={onDeleteCancel}
+              aria-label={`Cancel deletion of ${full.name}`}
+              className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >No</button>
+          </div>
+        ) : (
+          <button
+            onClick={(e) => { e.stopPropagation(); onRemoveClick(full.id) }}
+            className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
+            aria-label={`Remove ${full.name}`}
+          >Remove</button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function ExampleModuleCard({
+  entry,
+  isLoading,
+  onLoad,
+  onShare,
+}: ExampleModuleCardProps) {
+  return (
+    <div
+      className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-colors"
+    >
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          if (!isLoading) onLoad(entry)
+        }}
+        onKeyDown={(e) => {
+          if (isLoading) return
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            onLoad(entry)
+          }
+        }}
+        aria-disabled={isLoading}
+        aria-busy={isLoading}
+        title={isLoading ? "Loading module..." : undefined}
+        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
+      >
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{entry.name}</p>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={(e) => !isLoading && onShare(e, entry)}
+              disabled={isLoading}
+              aria-busy={isLoading}
+              aria-disabled={isLoading}
+              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              aria-label={`Share ${entry.name}`}
+              title={isLoading ? "Loading module..." : "Share subject"}
+            >
+              <ShareIcon />
+            </button>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 border border-primary/30 text-primary/70 bg-primary/5">
+              EXAMPLE
+            </span>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+          {entry.description}
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          <StatPill label="Q" value={entry.questionCount} />
+          <StatPill label="Cat" value={entry.categoryCount} />
+          {entry.tags.map((tag) => (
+            <span key={tag} className="text-[10px] font-mono px-2 py-0.5 border border-border bg-background text-muted-foreground">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-t border-border px-4 py-2.5 flex items-center justify-between">
+        <span className="text-[10px] font-mono text-muted-foreground">{entry.id}</span>
+        {isLoading ? (
+          <div className="flex items-center gap-2 text-[10px] font-mono text-primary">
+            <SpinnerIcon />
+            LOADING...
+          </div>
+        ) : (
+          <button
+            onClick={() => onLoad(entry)}
+            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            LOAD_MODULE →
+          </button>
+        )}
+      </div>
+    </div>
   )
 }
 
