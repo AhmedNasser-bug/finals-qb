@@ -44,8 +44,13 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   // 1a. Flashcards: front/back → term/definition; missing category → _general
   if (Array.isArray(obj.flashcards)) {
     let legacyKeys = false
-    obj.flashcards = obj.flashcards.map((fc: unknown) => {
-      if (typeof fc !== "object" || fc === null) return fc
+    const newFlashcards = new Array(obj.flashcards.length)
+    for (let i = 0; i < obj.flashcards.length; i++) {
+      const fc = obj.flashcards[i]
+      if (typeof fc !== "object" || fc === null) {
+        newFlashcards[i] = fc
+        continue
+      }
       const card = { ...(fc as Record<string, unknown>) }
       if ("front" in card && !("term" in card)) {
         card.term = card.front
@@ -60,8 +65,9 @@ export function validateSubjectData(raw: unknown): ValidationResult {
       if (typeof card.category !== "string" || card.category.trim() === "") {
         card.category = "_general"
       }
-      return card
-    })
+      newFlashcards[i] = card
+    }
+    obj.flashcards = newFlashcards
     if (legacyKeys) {
       warnings.push('"flashcards": legacy "front"/"back" keys remapped to "term"/"definition".')
     }
@@ -77,10 +83,14 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     const firstVal = Object.values(termObj)[0]
     if (typeof firstVal === "string") {
       // Entire map is flat strings — lift into a single _general bucket
-      const lifted = Object.entries(termObj).map(([term, definition]) => ({
-        term,
-        definition: definition as string,
-      }))
+      const entries = Object.entries(termObj)
+      const lifted = new Array(entries.length)
+      for (let i = 0; i < entries.length; i++) {
+        lifted[i] = {
+          term: entries[i][0],
+          definition: entries[i][1] as string,
+        }
+      }
       obj.terminology = { _general: lifted }
       warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
     }
@@ -96,8 +106,13 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     let missingIcons = 0
     let missingConditions = 0
     let unknownCondTypes = 0
-    obj.achievements = obj.achievements.map((ach: unknown) => {
-      if (typeof ach !== "object" || ach === null) return ach
+    const newAchievements = new Array(obj.achievements.length)
+    for (let i = 0; i < obj.achievements.length; i++) {
+      const ach = obj.achievements[i]
+      if (typeof ach !== "object" || ach === null) {
+        newAchievements[i] = ach
+        continue
+      }
       const a = { ...(ach as Record<string, unknown>) }
       // Default icon
       if (typeof a.icon !== "string" || a.icon.trim() === "") {
@@ -117,8 +132,9 @@ export function validateSubjectData(raw: unknown): ValidationResult {
         }
         a.condition = cond
       }
-      return a
-    })
+      newAchievements[i] = a
+    }
+    obj.achievements = newAchievements
     if (missingIcons > 0) {
       warnings.push(`achievements: ${missingIcons} entr${missingIcons === 1 ? "y" : "ies"} missing "icon" — defaulted to "Award".`)
     }
@@ -166,7 +182,7 @@ export function validateSubjectData(raw: unknown): ValidationResult {
     const seenIds = new Set<string>()
 
     for (let i = 0; i < obj.questions.length; i++) {
-      const q = obj.questions[i]
+      const q = obj.questions[i];
       if (typeof q !== "object" || q === null) {
         errors.push(`questions[${i}]: must be an object.`)
         continue
@@ -237,10 +253,11 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   } else if (obj.flashcards.length === 0) {
     warnings.push('"flashcards" array is empty — flashcard mode will have no cards.')
   } else {
-    obj.flashcards.forEach((fc: unknown, i: number) => {
+    for (let i = 0; i < obj.flashcards.length; i++) {
+      const fc = obj.flashcards[i];
       if (typeof fc !== "object" || fc === null) {
         errors.push(`flashcards[${i}]: must be an object.`)
-        return
+        continue
       }
       const fcObj = fc as Record<string, unknown>
       if (typeof fcObj.id !== "string" || fcObj.id.trim() === "") {
@@ -252,7 +269,7 @@ export function validateSubjectData(raw: unknown): ValidationResult {
       if (typeof fcObj.definition !== "string" || fcObj.definition.trim() === "") {
         errors.push(`flashcards[${i}]: missing "definition" (or legacy "back").`)
       }
-    })
+    }
   }
 
   // terminology (post-normalisation — structural issues are warnings, not errors)
@@ -270,10 +287,11 @@ export function validateSubjectData(raw: unknown): ValidationResult {
         warnings.push(`terminology["${catKey}"]: expected an array of {term, definition} objects — category skipped.`)
         continue
       }
-      entries.forEach((entry: unknown, i: number) => {
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i];
         if (typeof entry !== "object" || entry === null) {
           warnings.push(`terminology["${catKey}"][${i}]: not an object — entry skipped.`)
-          return
+          continue
         }
         const e = entry as Record<string, unknown>
         if (typeof e.term !== "string" || e.term.trim() === "") {
@@ -282,7 +300,7 @@ export function validateSubjectData(raw: unknown): ValidationResult {
         if (typeof e.definition !== "string" || e.definition.trim() === "") {
           warnings.push(`terminology["${catKey}"][${i}]: missing "definition" — entry skipped.`)
         }
-      })
+      }
     }
   }
 
