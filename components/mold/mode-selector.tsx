@@ -110,7 +110,7 @@ function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <span className={cn("shrink-0", isSelected ? accentClass : "text-muted-foreground group-hover:text-foreground transition-colors")}>
+        <span className={cn("shrink-0", isSelected ? accentClass : "text-muted-foreground group-hover:text-foreground transition-colors")} aria-hidden="true">
           {icon}
         </span>
         <span className={cn(

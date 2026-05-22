@@ -42,7 +42,7 @@ export function ActionHub({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         )}
       >
-        <BookIcon className="w-4 h-4 shrink-0" />
+        <BookIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
         ENCYCLOPEDIA
       </button>
 
@@ -62,7 +62,7 @@ export function ActionHub({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         )}
       >
-        <PlayIcon className="w-4 h-4 shrink-0" />
+        <PlayIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
         {modeLabels[selectedMode]}
       </button>
     </div>

@@ -54,61 +54,56 @@ function buildInitialState(config: GameConfig, questions: Question[]): GameState
 function buildQuestionPool(config: GameConfig, allQuestions: Question[]): Question[] {
   let pool = [...allQuestions]
 
-  switch (config.mode) {
-    case "hardcore":
-      // Hard only; fall back to full pool if fewer than 5 hard questions
-      const hard = pool.filter((q) => q.difficulty === "Hard")
-      pool = hard.length >= 5 ? hard : shuffle(pool)
-      break
-
-    case "practice":
-      // Filter by selected category if set
-      if (config.selectedCategory) {
-        pool = pool.filter((q) => q.category === config.selectedCategory)
-      }
-      break
-
-    case "full-revision":
-      // Strict sequential — no shuffle
-      return pool
-
-    case "blitz":
-      pool = shuffle(pool)
-      pool = pool.slice(0, config.questionCount > 0 ? config.questionCount : 20)
-      return pool
-
-    default:
-      pool = shuffle(pool)
-      break
+  if (config.mode === "full-revision") {
+    // Strict sequential — no shuffle
+    return pool
   }
 
-  if (config.mode !== "full-revision") {
+  if (config.mode === "blitz") {
     pool = shuffle(pool)
-    if (config.questionCount > 0) {
-      pool = pool.slice(0, config.questionCount)
+    return pool.slice(0, config.questionCount > 0 ? config.questionCount : 20)
+  }
+
+  if (config.mode === "hardcore") {
+    // Hard only; fall back to full pool if fewer than 5 hard questions
+    const hard = pool.filter((q) => q.difficulty === "Hard")
+    pool = hard.length >= 5 ? hard : shuffle(pool)
+  } else if (config.mode === "practice") {
+    // Filter by selected category if set
+    if (config.selectedCategory) {
+      pool = pool.filter((q) => q.category === config.selectedCategory)
     }
+  } else {
+    pool = shuffle(pool)
+  }
+
+  pool = shuffle(pool)
+  if (config.questionCount > 0) {
+    pool = pool.slice(0, config.questionCount)
   }
 
   return pool
 }
 
+const GLOBAL_TIME_LIMITS: Record<string, number> = {
+  speedrun: 300, // 5 minutes
+  blitz: 120,    // 2 minutes
+  hardcore: 0,   // no global limit for hardcore
+}
+
 function getGlobalTimeLimit(config: GameConfig): number {
   if (!config.timeLimitEnabled) return 0
-  switch (config.mode) {
-    case "speedrun": return 300        // 5 minutes
-    case "blitz":    return 120        // 2 minutes
-    case "hardcore": return 0          // no global limit for hardcore
-    default:         return 0
-  }
+  return GLOBAL_TIME_LIMITS[config.mode] ?? 0
+}
+
+const PER_QUESTION_TIME_LIMITS: Record<string, number> = {
+  survival: 15, // starts at 15s, decreases
+  blitz: 0,     // global limit instead
 }
 
 function getPerQuestionTimeLimit(config: GameConfig): number {
   if (!config.timeLimitEnabled) return 0
-  switch (config.mode) {
-    case "survival": return 15         // starts at 15s, decreases
-    case "blitz":    return 0          // global limit instead
-    default:         return 0
-  }
+  return PER_QUESTION_TIME_LIMITS[config.mode] ?? 0
 }
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
@@ -253,8 +248,6 @@ interface GameEngineProviderProps {
 }
 
 export function GameEngineProvider({ config, questions, children }: GameEngineProviderProps) {
-  // Fix 4-A: Stabilize config/questions on first mount so parent re-renders
-  // can never trigger a silent game state reset via the lazy initializer.
   const stableConfig = useRef(config).current
   const stableQuestions = useRef(questions).current
 

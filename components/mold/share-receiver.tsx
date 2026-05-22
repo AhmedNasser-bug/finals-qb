@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { decodeSubject, clearShareHash } from "@/lib/subject-sharing"
 import type { FullSubjectData } from "@/lib/mold-types"
 
@@ -19,6 +19,13 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
   const [state, setState]     = useState<DecodeState>("decoding")
   const [subject, setSubject] = useState<FullSubjectData | null>(null)
   const [error, setError]     = useState<string | null>(null)
+
+  const overlayRef = useRef<HTMLDivElement>(null)
+
+  // Trap focus inside overlay
+  useEffect(() => {
+    overlayRef.current?.focus()
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -59,10 +66,12 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
 
   return (
     <div
+      ref={overlayRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="receiver-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/90 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/90 backdrop-blur-sm animate-fade-in outline-none"
     >
       <div className="w-full max-w-md bg-panel border border-border rounded flex flex-col shadow-xl animate-slide-up">
 

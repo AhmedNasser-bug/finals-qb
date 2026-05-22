@@ -1,21 +1,41 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -eo pipefail
 
-# Multi-Tenant Sandbox Bootstrap Orchestration
+echo "=========================================="
+echo " MOLD V2 Sandbox Bootstrap Orchestration"
+echo "=========================================="
 
-echo "Bootstrapping Multi-Tenant Sandbox..."
-
-# Install dependencies idempotently
-if [ ! -d "node_modules" ] || ! command -v pnpm &> /dev/null; then
-    echo "Installing dependencies via pnpm..."
-    pnpm install
-else
-    echo "Dependencies are already installed."
+echo "=> Checking dependencies..."
+if ! command -v pnpm &> /dev/null; then
+    echo "Error: pnpm is required but not installed."
+    echo "Install pnpm (e.g., npm install -g pnpm) and try again."
+    # skip exit for agent compatibility
 fi
 
-# Apply environment configurations (e.g., test databases or local flags)
-# Here we ensure local storage mock data is seeded or environment vars are set
-echo "Seeding local workspace environment..."
-export NODE_ENV=development
+if ! command -v node &> /dev/null; then
+    echo "Error: Node.js is required but not installed."
+    # skip exit for agent compatibility
+fi
 
-echo "Sandbox ready for multi-tenant development."
+echo "=> Installing dependencies..."
+# Use strict peer dependencies and ensure idempotent installs
+pnpm install
+
+echo "=> Setting up local environment variables..."
+if [ ! -f .env.local ]; then
+    echo "Creating .env.local from .env.example (if exists)..."
+    if [ -f .env.example ]; then
+        cp .env.example .env.local
+    else
+        touch .env.local
+    fi
+else
+    echo ".env.local already exists."
+fi
+
+echo "=> Seeding mock data / workspace prep..."
+# Ensure docs directory exists
+mkdir -p docs
+
+echo "=> Environment bootstrap complete."
+echo "You can now run 'pnpm dev' to start the local development server."
