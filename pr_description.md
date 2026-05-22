@@ -1,11 +1,10 @@
-💡 **What:**
-Replaced the double array `.filter()` operation on the `achievements` array in `AchievementGallery` with a single `for` loop wrapped in a `useMemo` hook. This partitions the achievements into `locked` and `unlocked` arrays in a single pass.
+🎯 **What:**
+Fixed a Cross-Site Scripting (XSS) vulnerability caused by bypassing `DOMPurify` sanitization during Server-Side Rendering (SSR) in `components/mold/question-card.tsx` and `components/mold/rich-text.tsx`.
 
-🎯 **Why:**
-Previously, the code iterated over the entire `achievements` array twice. By consolidating this into a single loop, we reduce iterator overhead and halve the time complexity from O(2N) to O(N). The `useMemo` wrapper ensures this efficient partitioning only runs when the `achievements` data actually changes, rather than on every render.
+⚠️ **Risk:**
+When the React component rendered on the server (SSR), the check `typeof window !== "undefined"` evaluated to false, causing the application to fallback to rendering the unsanitized `part.content` and `question.question` raw strings directly into the DOM using `dangerouslySetInnerHTML`. This could allow an attacker to inject malicious scripts into the page if the payload was server-rendered.
 
-📊 **Measured Improvement:**
-A benchmark simulating 100,000 achievements was run comparing the two approaches.
-- Baseline (2x filter): ~5.74ms per run
-- Optimized (1x loop): ~2.54ms per run
-- Improvement: **55.77% faster** execution time for array partitioning.
+🛡️ **Solution:**
+Replaced the client-only `dompurify` package with `isomorphic-dompurify`. This allows the sanitization function to run safely on both the server (Node.js) and the client. The conditional bypass logic was removed entirely, ensuring that the payloads are always sanitized before being injected into the DOM.
+
+Tests successfully complete, and formatting & linting checks were respected in light of the project constraints (no `pnpm format`, `next lint` fails globally on this repo configuration).

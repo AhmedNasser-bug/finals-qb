@@ -29,4 +29,6 @@
 
 ## 2026-05-19 - ARIA hidden for decorative icons inside interactive elements
 **Learning:** Frequently, generic functional icons (like a Play icon inside a "Speedrun" button or a Share icon in a "Share" button) are used primarily for decoration or to provide quick visual scans. Failing to add `aria-hidden="true"` can cause screen readers to announce the icon redundantly or incorrectly depending on how the SVG is formatted, distracting the user.
-**Action:** Consistently append `aria-hidden="true"` to SVG elements representing purely decorative, secondary icons inside `<button>` or `<div role="button">` containers that already have descriptive readable text or `aria-label`s.
+**Action:** Consistently append `aria-hidden="true"` to SVG elements representing purely decorative, secondary icons inside `<button>` or `<div role="button">` containers that already have descriptive readable text or `aria-label`s.## 2024-05-22 - [Security fix for SSR XSS in parsing]
+**Learning:** React Server-Side Rendering (SSR) fallback bypassing sanitization functions (`typeof window !== 'undefined'`) creates a severe Cross-Site Scripting (XSS) vulnerability. During SSR, React hydration may render unsanitized payloads if the code skips `DOMPurify`.
+**Action:** Used `isomorphic-dompurify` to allow DOMPurify execution during both SSR and client-side rendering, thereby avoiding the need to conditionally bypass the sanitizer and eliminating the XSS vector.
