@@ -129,8 +129,11 @@ export function downloadSubjectJson(subject: FullSubjectData): void {
 function arrayBufferToBase64url(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer)
   let binary = ""
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i])
+  const chunkSize = 8192
+  for (let i = 0; i < bytes.byteLength; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize)
+    // @ts-expect-error apply accepts an array-like object
+    binary += String.fromCharCode.apply(null, chunk)
   }
   return btoa(binary)
     .replace(/\+/g, "-")
@@ -146,9 +149,6 @@ function base64urlToArrayBuffer(base64url: string): ArrayBuffer {
     .padEnd(base64url.length + ((4 - (base64url.length % 4)) % 4), "=")
 
   const binary = atob(base64)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i)
-  }
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
   return bytes.buffer
 }
