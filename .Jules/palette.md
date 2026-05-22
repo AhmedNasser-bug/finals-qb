@@ -26,3 +26,7 @@
 ## 2024-05-18 - Missing focus visibility and contextual tooltips
 **Learning:** Certain interactive components like toggles and icon-only actions often lack keyboard focus indicators (`focus-visible` classes) or contextual `title` text. Mobile layouts also frequently hide essential actions (like forfeiting a game) inside desktop-only wrappers, making them inaccessible to touch users.
 **Action:** Audit all interactive elements to ensure they have explicit focus outlines and `title` attributes where the action may be ambiguous. Always verify that critical session actions are visible in mobile viewport contexts.
+
+## 2026-05-19 - ARIA hidden for decorative icons inside interactive elements
+**Learning:** Frequently, generic functional icons (like a Play icon inside a "Speedrun" button or a Share icon in a "Share" button) are used primarily for decoration or to provide quick visual scans. Failing to add `aria-hidden="true"` can cause screen readers to announce the icon redundantly or incorrectly depending on how the SVG is formatted, distracting the user.
+**Action:** Consistently append `aria-hidden="true"` to SVG elements representing purely decorative, secondary icons inside `<button>` or `<div role="button">` containers that already have descriptive readable text or `aria-label`s.
