@@ -5,6 +5,28 @@ echo "=========================================="
 echo " MOLD V2 Sandbox Bootstrap Orchestration"
 echo "=========================================="
 
+# Check for multi-tenant flag
+if [ "$1" == "--multi-tenant" ]; then
+    echo "=> Multi-Tenant Sandbox Mode Enabled"
+
+    if ! command -v docker &> /dev/null; then
+        echo "Error: Docker is required for multi-tenant orchestration."
+        exit 1
+    fi
+
+    # Idempotency check: verify if services are already up
+    if docker compose ps | grep -q "Up"; then
+        echo "=> Multi-tenant sandbox services are already running."
+    else
+        echo "=> Spinning up multi-tenant sandbox via Docker Compose..."
+        docker compose up -d
+    fi
+
+    echo "=> Tenant A available at http://localhost:3000"
+    echo "=> Tenant B available at http://localhost:3001"
+    exit 0
+fi
+
 echo "=> Checking dependencies..."
 if ! command -v pnpm &> /dev/null; then
     echo "Error: pnpm is required but not installed."

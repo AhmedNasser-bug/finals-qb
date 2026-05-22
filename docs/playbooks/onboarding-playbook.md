@@ -26,6 +26,18 @@ pnpm dev
 ```
 Navigate to `http://localhost:3000` to view the application.
 
+### Multi-Tenant Sandbox Orchestration
+
+For engineers working on cross-tenant features, you can spin up an isolated, multi-tenant development environment instantly using **Docker Compose**.
+
+Run the bootstrap script with the explicit multi-tenant flag:
+```bash
+./scripts/setup/setup.sh --multi-tenant
+```
+This idempotent command will orchestrate two independent instances:
+- **Tenant A UI** mapped to **`http://localhost:3000`**
+- **Tenant B UI** mapped to **`http://localhost:3001`**
+
 ## Localized Testing Workflows
 
 The application utilizes the built-in Node.js test runner (`node:test`). Tests are configured to automatically strip TypeScript types (`--experimental-strip-types`) and map `@/` aliases to the repository root via a custom module resolution hook defined in `test-runner.mjs`. Because of `--experimental-strip-types`, automated tests are generally restricted to `.ts` logic files, and cannot test `.tsx` components directly.

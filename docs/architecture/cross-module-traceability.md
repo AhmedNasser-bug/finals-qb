@@ -30,6 +30,43 @@ MOLD V2 is a Next.js 16 App Router application. The system primarily operates as
 ## 3. Data Contracts & Interfaces
 All primary data contracts are defined in `lib/mold-types.ts`.
 
+- **GameRunnerProps**: The entry point interface for an active session.
+  ```typescript
+  interface GameRunnerProps {
+    config: GameConfig
+    /** The active subject — provides questions and flashcards for this run. */
+    subject: FullSubjectData
+    /** Real persisted run history — used for achievement evaluation (Fix 1-A). */
+    runs: RunRecord[]
+    onReturnHome: () => void
+    onRunComplete?: () => void
+    /** Called with the completed RunRecord so the parent can persist it. */
+    onRunSaved?: (run: RunRecord) => void
+  }
+  ```
+
+- **GameState**: The ephemeral state for an active game session within `GameEngineProvider`.
+  ```typescript
+  export interface GameState {
+    phase: GamePhase
+    mode: GameModeId
+    questions: Question[]          // shuffled/filtered pool for this run
+    currentIndex: number
+    selectedOption: string | null  // option label the user picked
+    isRevealed: boolean            // whether the answer is shown
+    score: number                  // correct answers so far
+    streak: number                 // current streak
+    bestStreak: number
+    wrongAnswers: number           // incorrect answers so far (used for accurate accuracy %)
+    /** Per-question result history: true = correct, false = wrong, undefined = not yet answered */
+    answers: (boolean | undefined)[]
+    livesRemaining: number         // Survival mode only (0 = unlimited)
+    startTime: number              // Date.now() when session started
+    elapsedSeconds: number         // updated by the timer
+    // ...
+  }
+  ```
+
 - **FullSubjectData**: The primary external schema for subject definitions.
   ```typescript
   interface FullSubjectData {
@@ -61,7 +98,9 @@ All primary data contracts are defined in `lib/mold-types.ts`.
 ## 4. Persistence Pipeline
 The application currently uses an asynchronous persistence pipeline interfacing with `localStorage`, with an explicit design to support IndexedDB or server-side API swaps.
 
-- **Run History**: Stored under "mold_v2_runs". Managed via `loadRuns()` and `saveRuns()`. Appended by the client after game completion (currently a known seam to be implemented in `onRunComplete`).
+- **Run History**: Stored under "mold_v2_runs". Managed via `loadRuns()` and `saveRuns()` functions defined in `components/mold/home-screen.tsx`. Appended by the client after game completion (currently a known seam to be implemented in `onRunComplete`).
+  - `loadRuns(): RunRecord[]` fetches the runs.
+  - `saveRuns(runs: RunRecord[]): void` persists them, typically capping the history (e.g. slicing the last 50).
 - **Achievements**: Stored under "mold_v2_achievements". Managed via `loadAchievements()` and `saveAchievements()`. Automatically synced by `onGameComplete`.
 
 ## 5. Cloud Infrastructure Targets & Future Extensions

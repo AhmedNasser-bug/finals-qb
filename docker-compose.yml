@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  tenant-a-ui:
+    image: node:18-alpine
+    container_name: mold-tenant-a
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - tenant-a-node-modules:/app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+      - NEXT_DIST_DIR=.next-tenant-a
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm dev --port 3000"
+
+  tenant-b-ui:
+    image: node:18-alpine
+    container_name: mold-tenant-b
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/app
+      - tenant-b-node-modules:/app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+      - NEXT_DIST_DIR=.next-tenant-b
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm dev --port 3001"
+
+volumes:
+  tenant-a-node-modules:
+  tenant-b-node-modules:
