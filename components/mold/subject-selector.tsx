@@ -183,7 +183,7 @@ export function SubjectSelector({
                               aria-label={`Share ${full.name}`}
                               title="Share subject"
                             >
-                              <ShareIcon />
+                              <ShareIcon aria-hidden="true" />
                             </button>
                             <span className="text-[10px] font-mono px-1.5 py-0.5 border border-border text-muted-foreground">
                               v{full.config.version ?? "1.0"}
@@ -298,7 +298,7 @@ export function SubjectSelector({
                               aria-label={`Share ${entry.name}`}
                               title={isLoading ? "Loading module..." : "Share subject"}
                             >
-                              <ShareIcon />
+                              <ShareIcon aria-hidden="true" />
                             </button>
                             {/* Example badge */}
                             <span className="text-[10px] font-mono px-1.5 py-0.5 border border-primary/30 text-primary/70 bg-primary/5">
