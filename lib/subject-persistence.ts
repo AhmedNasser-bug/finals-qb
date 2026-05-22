@@ -224,17 +224,17 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
       // answer label must exist in options
       if (Array.isArray(qObj.options) && qObj.options.length > 0 && typeof qObj.answer === "string") {
-        let labelExists = false;
-        for (let j = 0; j < qObj.options.length; j++) {
-          const opt = qObj.options[j] as Record<string, unknown>;
-          if (opt.label === qObj.answer) {
-            labelExists = true;
-            break;
+        const options = qObj.options as Record<string, unknown>[]
+        let hasAnswer = false
+        const labels: string[] = []
+        for (let j = 0; j < options.length; j++) {
+          const label = options[j].label as string
+          labels.push(label)
+          if (label === qObj.answer) {
+            hasAnswer = true
           }
         }
-
-        if (!labelExists) {
-          const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
+        if (!hasAnswer) {
           errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
         }
         if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
