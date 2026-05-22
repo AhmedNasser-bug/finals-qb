@@ -45,7 +45,9 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
   if (categories.length === 0) {
     return (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+        ref={overlayRef}
+        tabIndex={-1}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm outline-none"
         onClick={onClose}
         aria-modal="true"
         role="dialog"
