@@ -117,105 +117,108 @@ type Action =
   | { type: "USE_HINT" }
   | { type: "FORFEIT" }                   // user quits early
 
+const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) => GameState> = {
+  SELECT_OPTION: (state, action) => {
+    if (state.isRevealed || state.phase !== "playing") return state
+    return { ...state, selectedOption: action.option }
+  },
+
+  REVEAL_ANSWER: (state) => {
+    if (state.isRevealed || state.selectedOption === null) return state
+    const current = state.questions[state.currentIndex]
+    const isCorrect = state.selectedOption === current.answer
+
+    const newScore = isCorrect ? state.score + 1 : state.score
+    const newStreak = isCorrect ? state.streak + 1 : 0
+    const newBestStreak = Math.max(state.bestStreak, newStreak)
+    const newWrongAnswers = isCorrect ? state.wrongAnswers : state.wrongAnswers + 1
+
+    // Survival: lose a life on wrong answer
+    const livesRemaining =
+      state.config.mode === "survival" && !isCorrect
+        ? state.livesRemaining - 1
+        : state.livesRemaining
+
+    // Record per-question result in answers array
+    const newAnswers = [...state.answers]
+    newAnswers[state.currentIndex] = isCorrect
+
+    return {
+      ...state,
+      isRevealed: true,
+      phase: "reviewing",
+      score: newScore,
+      streak: newStreak,
+      bestStreak: newBestStreak,
+      wrongAnswers: newWrongAnswers,
+      livesRemaining,
+      answers: newAnswers,
+    }
+  },
+
+  NEXT_QUESTION: (state) => {
+    const isLast = state.currentIndex >= state.questions.length - 1
+    const outOfLives = state.config.mode === "survival" && state.livesRemaining <= 0
+
+    if (isLast || outOfLives) {
+      return { ...state, phase: "complete", isRevealed: false, selectedOption: null }
+    }
+
+    // Survival: decrease per-question time limit by 1s every 5 questions (min 5s)
+    let newPerLimit = state.perQuestionTimeLimit
+    if (state.config.mode === "survival" && state.perQuestionTimeLimit > 5) {
+      const nextIndex = state.currentIndex + 1
+      if (nextIndex % 5 === 0) newPerLimit = Math.max(5, newPerLimit - 1)
+    }
+
+    return {
+      ...state,
+      phase: "playing",
+      currentIndex: state.currentIndex + 1,
+      selectedOption: null,
+      isRevealed: false,
+      perQuestionTimeLimit: newPerLimit,
+    }
+  },
+
+  TICK: (state) => {
+    const newElapsed = state.elapsedSeconds + 1
+
+    // Global timer countdown (Speedrun / Blitz)
+    if (state.globalTimeLimit > 0) {
+      const newRemaining = state.globalTimeRemaining - 1
+      if (newRemaining <= 0) {
+        return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: 0, phase: "complete" }
+      }
+      return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: newRemaining }
+    }
+
+    return { ...state, elapsedSeconds: newElapsed }
+  },
+
+  PER_QUESTION_TICK: (state) => {
+    // Survival: forfeit current question when per-question timer hits 0
+    if (state.perQuestionTimeLimit <= 0 || state.isRevealed) return state
+    // This is handled by the component via elapsed tracking; reducer just accepts the reveal
+    return state
+  },
+
+  USE_HINT: (state) => {
+    if (!state.config.hintsEnabled) return state
+    return { ...state, hintsUsedTotal: state.hintsUsedTotal + 1 }
+  },
+
+  FORFEIT: (state) => {
+    return { ...state, phase: "complete" }
+  },
+}
+
 function reducer(state: GameState, action: Action): GameState {
-  switch (action.type) {
-    case "SELECT_OPTION": {
-      if (state.isRevealed || state.phase !== "playing") return state
-      return { ...state, selectedOption: action.option }
-    }
-
-    case "REVEAL_ANSWER": {
-      if (state.isRevealed || state.selectedOption === null) return state
-      const current = state.questions[state.currentIndex]
-      const isCorrect = state.selectedOption === current.answer
-
-      const newScore = isCorrect ? state.score + 1 : state.score
-      const newStreak = isCorrect ? state.streak + 1 : 0
-      const newBestStreak = Math.max(state.bestStreak, newStreak)
-      const newWrongAnswers = isCorrect ? state.wrongAnswers : state.wrongAnswers + 1
-
-      // Survival: lose a life on wrong answer
-      const livesRemaining =
-        state.config.mode === "survival" && !isCorrect
-          ? state.livesRemaining - 1
-          : state.livesRemaining
-
-      // Record per-question result in answers array
-      const newAnswers = [...state.answers]
-      newAnswers[state.currentIndex] = isCorrect
-
-      return {
-        ...state,
-        isRevealed: true,
-        phase: "reviewing",
-        score: newScore,
-        streak: newStreak,
-        bestStreak: newBestStreak,
-        wrongAnswers: newWrongAnswers,
-        livesRemaining,
-        answers: newAnswers,
-      }
-    }
-
-    case "NEXT_QUESTION": {
-      const isLast = state.currentIndex >= state.questions.length - 1
-      const outOfLives = state.config.mode === "survival" && state.livesRemaining <= 0
-
-      if (isLast || outOfLives) {
-        return { ...state, phase: "complete", isRevealed: false, selectedOption: null }
-      }
-
-      // Survival: decrease per-question time limit by 1s every 5 questions (min 5s)
-      let newPerLimit = state.perQuestionTimeLimit
-      if (state.config.mode === "survival" && state.perQuestionTimeLimit > 5) {
-        const nextIndex = state.currentIndex + 1
-        if (nextIndex % 5 === 0) newPerLimit = Math.max(5, newPerLimit - 1)
-      }
-
-      return {
-        ...state,
-        phase: "playing",
-        currentIndex: state.currentIndex + 1,
-        selectedOption: null,
-        isRevealed: false,
-        perQuestionTimeLimit: newPerLimit,
-      }
-    }
-
-    case "TICK": {
-      const newElapsed = state.elapsedSeconds + 1
-
-      // Global timer countdown (Speedrun / Blitz)
-      if (state.globalTimeLimit > 0) {
-        const newRemaining = state.globalTimeRemaining - 1
-        if (newRemaining <= 0) {
-          return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: 0, phase: "complete" }
-        }
-        return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: newRemaining }
-      }
-
-      return { ...state, elapsedSeconds: newElapsed }
-    }
-
-    case "PER_QUESTION_TICK": {
-      // Survival: forfeit current question when per-question timer hits 0
-      if (state.perQuestionTimeLimit <= 0 || state.isRevealed) return state
-      // This is handled by the component via elapsed tracking; reducer just accepts the reveal
-      return state
-    }
-
-    case "USE_HINT": {
-      if (!state.config.hintsEnabled) return state
-      return { ...state, hintsUsedTotal: state.hintsUsedTotal + 1 }
-    }
-
-    case "FORFEIT": {
-      return { ...state, phase: "complete" }
-    }
-
-    default:
-      return state
+  const handler = ACTION_HANDLERS[action.type]
+  if (handler) {
+    return handler(state, action)
   }
+  return state
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
