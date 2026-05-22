@@ -193,17 +193,19 @@ export interface SetupConfig {
 // ─── Grade Calculator ────────────────────────────────────────────────────────
 
 /** Returns the theme color slug for a grade (e.g. "s-plus", "a") */
+const GRADE_TOKENS: Record<LetterGrade, string> = {
+  "S+": "s-plus",
+  "S":  "s",
+  "A+": "a-plus",
+  "A":  "a",
+  "B+": "b-plus",
+  "C+": "c-plus",
+  "D+": "d-plus",
+  "F":  "f",
+}
+
 export function gradeToken(grade: LetterGrade): string {
-  switch (grade) {
-    case "S+": return "s-plus"
-    case "S":  return "s"
-    case "A+": return "a-plus"
-    case "A":  return "a"
-    case "B+": return "b-plus"
-    case "C+": return "c-plus"
-    case "D+": return "d-plus"
-    case "F":  return "f"
-  }
+  return GRADE_TOKENS[grade]
 }
 
 export function calculateGrade(score: number): LetterGrade {

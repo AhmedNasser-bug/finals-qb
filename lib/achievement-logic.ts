@@ -14,57 +14,56 @@ import type {
  * @param state      - The completed GameState
  * @param allRuns    - Full run history (including the just-completed run)
  */
+type ConditionEvaluator = (
+  condition: AchievementCondition,
+  state: GameState,
+  allRuns: RunRecord[]
+) => boolean;
+
+const CONDITION_EVALUATORS: Record<string, ConditionEvaluator> = {
+  accuracy_gte: (condition, state) => {
+    const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers);
+    return accuracyPct >= (condition.value ?? 0);
+  },
+  streak_gte: (condition, state) => {
+    return state.bestStreak >= (condition.value ?? 0);
+  },
+  mode_complete: (condition, state) => {
+    return state.mode === condition.mode;
+  },
+  speedrun_under: (condition, state) => {
+    return state.mode === "speedrun" && state.elapsedSeconds <= (condition.seconds ?? Infinity);
+  },
+  no_hints: (condition, state) => {
+    return state.mode === condition.mode && state.hintsUsedTotal === 0;
+  },
+  runs_gte: (condition, _state, allRuns) => {
+    return allRuns.length >= (condition.value ?? 0);
+  },
+  all_categories: (_condition, _state, allRuns) => {
+    let practiceCount = 0;
+    for (let i = 0; i < allRuns.length; i++) {
+      if (allRuns[i].mode === "practice") {
+        practiceCount++;
+      }
+    }
+    return practiceCount >= 3;
+  },
+  all_unlocked: () => {
+    return false;
+  },
+};
+
 export function evaluateCondition(
   condition: AchievementCondition,
   state: GameState,
   allRuns: RunRecord[]
 ): boolean {
-  const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
-
-  switch (condition.type) {
-    case "accuracy_gte":
-      return accuracyPct >= (condition.value ?? 0)
-
-    case "streak_gte":
-      return state.bestStreak >= (condition.value ?? 0)
-
-    case "mode_complete":
-      return state.mode === condition.mode
-
-    case "speedrun_under":
-      return (
-        state.mode === "speedrun" &&
-        state.elapsedSeconds <= (condition.seconds ?? Infinity)
-      )
-
-    case "no_hints":
-      return (
-        state.mode === condition.mode &&
-        state.hintsUsedTotal === 0
-      )
-
-    case "runs_gte":
-      return allRuns.length >= (condition.value ?? 0)
-
-    case "all_categories": {
-      // Check that at least one run exists for each category (via practice mode)
-      // Simplified: check that the player has used practice mode for every category
-      const practicedCategories = new Set(
-        allRuns
-          .filter((r) => r.mode === "practice")
-          .map((r) => r.mode)  // In full impl this would track selectedCategory per run
-      )
-      // For demo purposes: unlock when they have 3+ practice runs
-      return allRuns.filter((r) => r.mode === "practice").length >= 3
-    }
-
-    case "all_unlocked":
-      // Meta-achievement — evaluated separately after all others
-      return false
-
-    default:
-      return false
+  const evaluator = CONDITION_EVALUATORS[condition.type];
+  if (evaluator) {
+    return evaluator(condition, state, allRuns);
   }
+  return false;
 }
 
 /**
@@ -80,7 +79,8 @@ export function checkNewUnlocks(
   const newlyUnlocked: string[] = []
   const activeConditions = conditionMap ?? ACHIEVEMENT_CONDITIONS
 
-  for (const ach of achievements) {
+  for (let i = 0; i < achievements.length; i++) {
+    const ach = achievements[i];
     if (ach.unlockedAt !== null) continue   // already unlocked — skip
 
     // Find raw definition to get the condition
@@ -93,14 +93,21 @@ export function checkNewUnlocks(
   }
 
   // Check "all_unlocked" meta-achievement separately
-  const allOthersLocked = achievements
-    .filter((a) => a.id !== "grand-master" && a.id !== "grand_master")
-    .every((a) => a.unlockedAt !== null || newlyUnlocked.includes(a.id))
+  let allOthersLocked = true;
+  let grandMaster: Achievement | undefined;
+
+  for (let i = 0; i < achievements.length; i++) {
+    const a = achievements[i];
+    if (a.id === "grand-master" || a.id === "grand_master") {
+      grandMaster = a;
+    } else {
+      if (a.unlockedAt === null && !newlyUnlocked.includes(a.id)) {
+        allOthersLocked = false;
+      }
+    }
+  }
 
   if (allOthersLocked) {
-    const grandMaster = achievements.find(
-      (a) => a.id === "grand-master" || a.id === "grand_master"
-    )
     if (grandMaster && grandMaster.unlockedAt === null) {
       newlyUnlocked.push(grandMaster.id)
     }
