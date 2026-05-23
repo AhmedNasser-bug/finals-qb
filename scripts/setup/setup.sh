@@ -37,5 +37,16 @@ echo "=> Seeding mock data / workspace prep..."
 # Ensure docs directory exists
 mkdir -p docs
 
+if [ "$1" = "--multi-tenant" ]; then
+    echo "=> Starting multi-tenant sandbox..."
+    if command -v docker-compose &> /dev/null; then
+        docker-compose up -d
+    elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
+        docker compose up -d
+    else
+        echo "Error: docker-compose or docker compose is required for multi-tenant setup."
+    fi
+fi
+
 echo "=> Environment bootstrap complete."
 echo "You can now run 'pnpm dev' to start the local development server."
