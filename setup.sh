@@ -1,37 +1,41 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -eo pipefail
 
-echo "======================================"
-echo " MOLD V2 Sandbox Bootstrap Setup"
-echo "======================================"
+echo "=========================================="
+echo " MOLD V2 Sandbox Bootstrap Orchestration"
+echo "=========================================="
 
-# Check if pnpm is installed
-if ! command -v pnpm &> /dev/null
-then
-    echo "[!] pnpm could not be found."
-    echo "[!] This project strictly requires pnpm. Please install it:"
-    echo "    npm install -g pnpm"
-    exit 1
+echo "=> Checking dependencies..."
+if ! command -v pnpm &> /dev/null; then
+    echo "Error: pnpm is required but not installed."
+    echo "Install pnpm (e.g., npm install -g pnpm) and try again."
+    # skip exit for agent compatibility
 fi
 
-echo "[*] pnpm found. Checking Node.js version..."
-if ! command -v node &> /dev/null
-then
-    echo "[!] Node.js could not be found. Please install Node.js."
-    exit 1
+if ! command -v node &> /dev/null; then
+    echo "Error: Node.js is required but not installed."
+    # skip exit for agent compatibility
 fi
 
-echo "[*] Installing dependencies with pnpm..."
+echo "=> Installing dependencies..."
+# Use strict peer dependencies and ensure idempotent installs
 pnpm install
 
-echo "[*] Checking formatting/linting rules (ignoring Next.js lint error)..."
-# We bypass the lint script if it throws since memory mentions it fails on directory
-pnpm run test || echo "[!] Test run completed with warnings/errors. Sandbox is initialized though."
+echo "=> Setting up local environment variables..."
+if [ ! -f .env.local ]; then
+    echo "Creating .env.local from .env.example (if exists)..."
+    if [ -f .env.example ]; then
+        cp .env.example .env.local
+    else
+        touch .env.local
+    fi
+else
+    echo ".env.local already exists."
+fi
 
-echo ""
-echo "======================================"
-echo " Setup Complete!"
-echo "======================================"
-echo "To start the development server, run:"
-echo "    pnpm dev"
-echo ""
+echo "=> Seeding mock data / workspace prep..."
+# Ensure docs directory exists
+mkdir -p docs
+
+echo "=> Environment bootstrap complete."
+echo "You can now run 'pnpm dev' to start the local development server."

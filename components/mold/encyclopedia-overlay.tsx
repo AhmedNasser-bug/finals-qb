@@ -45,7 +45,9 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
   if (categories.length === 0) {
     return (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+        ref={overlayRef}
+        tabIndex={-1}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm outline-none"
         onClick={onClose}
         aria-modal="true"
         role="dialog"
@@ -54,6 +56,8 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
         <div
           className="bg-panel border border-border rounded p-8 max-w-sm w-full mx-4 text-center"
           onClick={(e) => e.stopPropagation()}
+          role="status"
+          aria-live="polite"
         >
           <p className="font-mono text-sm text-muted-foreground">
             No terminology data found in this subject.
