@@ -5,7 +5,7 @@
 ## **Step 1: Workspace Initialization**
 Run the following script to bootstrap the multi-tenant sandbox and install dependencies:
 ```bash
-./setup.sh
+./scripts/setup/setup.sh --multi-tenant
 ```
 This script is idempotent and sets up your local development environment instantly.
 

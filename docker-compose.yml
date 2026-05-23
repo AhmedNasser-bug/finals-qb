@@ -1,0 +1,21 @@
+services:
+  tenant-a:
+    image: node:alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - NEXT_DIST_DIR=.next-tenant-a
+    ports:
+      - "3001:3000"
+    command: sh -c "corepack enable pnpm && pnpm dev --port 3000"
+  tenant-b:
+    image: node:alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - NEXT_DIST_DIR=.next-tenant-b
+    ports:
+      - "3002:3000"
+    command: sh -c "corepack enable pnpm && pnpm dev --port 3000"
