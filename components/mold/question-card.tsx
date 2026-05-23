@@ -5,7 +5,7 @@ import type { Question } from "@/lib/mold-types"
 import { calculateGrade, formatLabel } from "@/lib/mold-types"
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import DOMPurify from "dompurify"
+import DOMPurify from "isomorphic-dompurify"
 import { parseRichTextParts } from "./rich-text"
 import { MermaidDiagram } from "./mermaid-diagram"
 import { CheckCircleIcon, RadioIcon, LightbulbIcon, XIcon } from "./game-icons"
@@ -153,17 +153,13 @@ export function QuestionCard({
                     <span id={question.id}>
                       {hasDedicatedDiagram ? (
                         <span dangerouslySetInnerHTML={{
-                          __html: typeof window !== "undefined"
-                            ? DOMPurify.sanitize(question.question)
-                            : question.question
+                          __html: DOMPurify.sanitize(question.question)
                         }} />
                       ) : (
                         parts.map((part: { type: string; content: string }, i: number) =>
                           part.type === "html" ? (
                             <span key={i} dangerouslySetInnerHTML={{
-                              __html: typeof window !== "undefined"
-                                ? DOMPurify.sanitize(part.content)
-                                : part.content
+                              __html: DOMPurify.sanitize(part.content)
                             }} />
                           ) : null
                         )
@@ -196,17 +192,13 @@ export function QuestionCard({
                   <span id={question.id}>
                     {hasDedicatedDiagram ? (
                       <span dangerouslySetInnerHTML={{
-                        __html: typeof window !== "undefined"
-                          ? DOMPurify.sanitize(question.question)
-                          : question.question
+                        __html: DOMPurify.sanitize(question.question)
                       }} />
                     ) : (
                       parts.map((part: { type: string; content: string }, i: number) =>
                         part.type === "html" ? (
                           <span key={i} dangerouslySetInnerHTML={{
-                            __html: typeof window !== "undefined"
-                              ? DOMPurify.sanitize(part.content)
-                              : part.content
+                            __html: DOMPurify.sanitize(part.content)
                           }} />
                         ) : null
                       )
