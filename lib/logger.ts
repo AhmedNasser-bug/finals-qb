@@ -1,20 +1,35 @@
 const PII_PATTERNS = [
-  // Emails
-  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
-  // Bearer tokens
-  /Bearer\s+[A-Za-z0-9\-\._~\+\/]+=*/g,
-  // Private keys
-  /-----BEGIN[\s\w]+PRIVATE KEY-----[\s\S]+?-----END[\s\w]+PRIVATE KEY-----/g,
-  // Common secrets
-  /(?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*["']?([^"'\s]+)["']?/gi,
-  // JWTs
-  /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g
+  {
+    // Emails
+    pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+    replacement: '[REDACTED]'
+  },
+  {
+    // Bearer tokens
+    pattern: /(Bearer\s+)[A-Za-z0-9\-\._~\+\/]+=*/g,
+    replacement: '$1[REDACTED]'
+  },
+  {
+    // Private keys
+    pattern: /-----BEGIN[\s\w]+PRIVATE KEY-----[\s\S]+?-----END[\s\w]+PRIVATE KEY-----/g,
+    replacement: '[REDACTED]'
+  },
+  {
+    // Common secrets
+    pattern: /((?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*["']?)([^"'\s\,\]\}]+)/gi,
+    replacement: '$1[REDACTED]'
+  },
+  {
+    // JWTs
+    pattern: /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g,
+    replacement: '[REDACTED]'
+  }
 ];
 
 function maskString(str: string): string {
   let masked = str;
-  for (const pattern of PII_PATTERNS) {
-    masked = masked.replace(pattern, '[REDACTED]');
+  for (const { pattern, replacement } of PII_PATTERNS) {
+    masked = masked.replace(pattern, replacement);
   }
   return masked;
 }
