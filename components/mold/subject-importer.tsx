@@ -4,6 +4,7 @@ import { useState, useCallback, useMemo, type DragEvent } from "react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
+import { StatChip, CloseIcon } from "./subject-importer-components"
 
 // ─── AI prompt the user can copy to generate a valid JSON ─────────────────────
 const AI_PROMPT = `You are a pedagogical expert and curriculum designer. Using the PARTS framework (Persona, Act, Recipient, Theme, Structure), generate a complete MOLD V2 subject dataset for: [YOUR TOPIC HERE]
@@ -454,21 +455,3 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   )
 }
 
-// ─── Small helpers ────────────────────────────────────────────────────────────
-
-function StatChip({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex items-center gap-1.5 text-xs font-mono rounded border border-border bg-background px-2.5 py-1">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="text-foreground font-semibold">{value}</span>
-    </div>
-  )
-}
-
-function CloseIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 6 6 18M6 6l12 12" />
-    </svg>
-  )
-}

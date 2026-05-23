@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { validateSubjectData } from "./subject-persistence.ts";
+import { validateSubjectData, parseSubjectJson } from "./subject-persistence.ts";
 
 describe("validateSubjectData", () => {
   test("rejects invalid root types", () => {
@@ -27,7 +27,10 @@ describe("validateSubjectData", () => {
         difficulty: "Easy",
         category: "Cat",
         question: "Q?",
-        options: [{ label: "A" }, { label: "B" }],
+        options: [
+          { label: "A", text: "Option A" },
+          { label: "B", text: "Option B" }
+        ],
         answer: "A"
       }
     ]
@@ -161,7 +164,7 @@ describe("validateSubjectData", () => {
     assert.ok(res.errors.length <= 80);
   });
 
-  test("accepts valid full subject data without warnings", () => {
+  test("accepts valid full subject data — legacy normalised with warnings", () => {
     const validFull = {
       ...validBase,
       flashcards: [
@@ -173,13 +176,17 @@ describe("validateSubjectData", () => {
         ]
       },
       achievements: [
-        { id: "a-1", name: "Ach 1", description: "Desc", icon: "Award", condition: { type: "runs_gte", value: 1 } }
+        { id: "a-1", title: "Ach 1", description: "Desc", icon: "Award", condition: { type: "runs_gte", value: 1 } }
       ]
     };
     const res = validateSubjectData(validFull);
     assert.strictEqual(res.valid, true);
     assert.strictEqual(res.errors.length, 0);
-    assert.strictEqual(res.warnings.length, 0);
+    // Legacy front/back → term/definition, flat terminology, and no-icon achievement each warn
+    assert.ok(res.warnings.length > 0, "expected warnings for legacy format normalisation");
+    // The normalised subject should have term/definition keys
+    assert.strictEqual(res.subject!.flashcards[0].term, "Front");
+    assert.strictEqual(res.subject!.flashcards[0].definition, "Back");
   });
 
   test("validates flashcards empty and non-array arrays", () => {
@@ -190,5 +197,29 @@ describe("validateSubjectData", () => {
     const invalidFlashcards = { ...validBase, flashcards: "invalid" };
     const resInvalid = validateSubjectData(invalidFlashcards);
     assert.ok(resInvalid.warnings.some(w => w.includes('"flashcards" field is missing or not an array')));
+  });
+});
+
+describe("parseSubjectJson", () => {
+  test("successfully parses valid JSON", () => {
+    const jsonStr = '{"id":"test","value":123}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, { id: "test", value: 123 });
+    assert.strictEqual(result.parseError, undefined);
+  });
+
+  test("returns parseError for invalid JSON", () => {
+    const invalidJsonStr = '{"id":"test", value:123}'; // missing quotes around value
+    const result = parseSubjectJson(invalidJsonStr);
+    assert.strictEqual(result.data, undefined);
+    assert.ok(typeof result.parseError === "string");
+    assert.ok(result.parseError.startsWith("JSON parse error:"));
+  });
+
+  test("handles empty string", () => {
+    const result = parseSubjectJson("");
+    assert.strictEqual(result.data, undefined);
+    assert.ok(typeof result.parseError === "string");
+    assert.ok(result.parseError.startsWith("JSON parse error:"));
   });
 });
