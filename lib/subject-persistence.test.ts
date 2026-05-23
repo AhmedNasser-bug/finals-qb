@@ -105,9 +105,21 @@ describe("validateSubjectData", () => {
 
     const invalidOptions = {
       ...validBase,
-      questions: [{ ...validBase.questions[0], options: ["A"] }] // Only 1 option
+      questions: [{ ...validBase.questions[0], options: [{ label: "A" }] }] // Only 1 option
     };
     assert.strictEqual(validateSubjectData(invalidOptions).valid, false);
+
+    const noMatchingAnswer = {
+      ...validBase,
+      questions: [{ ...validBase.questions[0], answer: "C" }]
+    };
+    assert.strictEqual(validateSubjectData(noMatchingAnswer).valid, false);
+
+    const invalidDiagramPosition = {
+      ...validBase,
+      questions: [{ ...validBase.questions[0], diagramPosition: "above" }]
+    };
+    assert.strictEqual(validateSubjectData(invalidDiagramPosition).valid, false);
 
     const missingQuestionId = {
       ...validBase,
@@ -156,10 +168,12 @@ describe("validateSubjectData", () => {
     const validFull = {
       ...validBase,
       flashcards: [
-        { id: "f-1", front: "Front", back: "Back", category: "Cat" }
+        { id: "f-1", term: "Term", definition: "Def", category: "Cat" }
       ],
       terminology: {
-        "Term 1": "Def 1"
+        "Cat 1": [
+          { term: "Term 1", definition: "Def 1" }
+        ]
       },
       achievements: [
         { id: "a-1", title: "Ach 1", description: "Desc", icon: "Award", condition: { type: "runs_gte", value: 1 } }
