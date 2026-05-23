@@ -104,8 +104,7 @@ const MOLD_MERMAID_CONFIG = {
   sequence: {
     useMaxWidth: true,
   },
-  // securityLevel loose so node labels with parens/quotes work; we sanitize before passing
-  securityLevel: "loose" as const,
+  securityLevel: "strict" as const,
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
