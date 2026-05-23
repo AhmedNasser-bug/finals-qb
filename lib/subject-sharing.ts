@@ -148,9 +148,6 @@ function base64urlToArrayBuffer(base64url: string): ArrayBuffer {
     .padEnd(base64url.length + ((4 - (base64url.length % 4)) % 4), "=")
 
   const binary = atob(base64)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i)
-  }
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
   return bytes.buffer
 }

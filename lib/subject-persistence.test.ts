@@ -168,15 +168,13 @@ describe("validateSubjectData", () => {
     const validFull = {
       ...validBase,
       flashcards: [
-        { id: "f-1", term: "Term", definition: "Def", category: "Cat" }
+        { id: "f-1", front: "Front", back: "Back", category: "Cat" }
       ],
       terminology: {
-        "Cat 1": [
-          { term: "Term 1", definition: "Def 1" }
-        ]
+        "Term 1": "Def 1"
       },
       achievements: [
-        { id: "a-1", title: "Ach 1", description: "Desc", icon: "Award", condition: { type: "runs_gte", value: 1 } }
+        { id: "a-1", title: "Ach 1", description: "Desc" }
       ]
     };
     const res = validateSubjectData(validFull);

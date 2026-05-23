@@ -203,7 +203,7 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
     }
 
     // diagramPosition must be a known value if present
-    if (qObj.diagramPosition != null && !["right", "below"].includes(qObj.diagramPosition as string)) {
+    if (qObj.diagramPosition != null && qObj.diagramPosition !== "right" && qObj.diagramPosition !== "below") {
       errors.push(`${prefix}: "diagramPosition" must be "right" or "below", got "${qObj.diagramPosition}".`)
     }
 
