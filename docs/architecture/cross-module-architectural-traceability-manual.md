@@ -4,9 +4,38 @@
 This manual provides a detailed mapping of component interactions across the MOLD V2 frontend client apps, the underlying state and persistence layers, and cloud infrastructure targets (where applicable, focusing on local-first storage). It serves as a clear guide for cross-layer development by documenting interface properties, data pipelines, and state architecture.
 
 ## 1. System Overview
-MOLD V2 is a Next.js 16 App Router application. The system primarily operates as a client-side architecture with local storage persistence, designed for high performance and zero-latency user interactions. It implements a decoupled state architecture featuring three independent domains: Root Achievements, Session Game Engine, and View State.
+MOLD V2 is a frontend-only Next.js 16 App Router application. The system primarily operates as a client-side architecture with local storage persistence, designed for high performance and zero-latency user interactions. It implements a decoupled state architecture featuring three independent domains: Root Achievements, Session Game Engine, and View State.
+
+### Core Stack
+- **Framework:** Next.js 16 (App Router)
+- **UI Library:** React 19, Tailwind CSS, shadcn/ui
+- **State Management:** React Context + React State + Ephemeral Reducer (`GameEngine`)
+- **Persistence:** `localStorage` & `sessionStorage`
 
 ## 2. Component Interactions & Data Flow
+
+The interaction is mainly between `HomeScreen` (which orchestrates user intent and loads subject/history data) and `GameRunner` (which mounts the ephemeral engine for a session).
+
+### The Component Tree
+
+```
+app/layout.tsx
+└── AchievementProvider
+    └── app/page.tsx
+        └── HomeScreen
+            ├── HeroHeader (View: Home)
+            ├── PerformanceTable (View: Home)
+            └── GameRunner (View: Game)
+                └── ToastLayer
+                    └── GameErrorBoundary
+                        ├── FlashcardScreen (Flashcard Mode)
+                        └── GameEngineProvider (Normal Modes)
+                            └── GameRunnerInner
+                                ├── GameHeader
+                                ├── QuestionCard
+                                ├── GameFooter
+                                └── ResultsScreen
+```
 
 ### 2.1 View Layer (HomeScreen & GameRunner)
 - **HomeScreen (`components/mold/home-screen.tsx`)**: The entry point for the user interface. It owns the `view` state ("home" vs. "game"), `runs` (historical run records), `selectedMode`, and `config`.
@@ -27,7 +56,21 @@ MOLD V2 is a Next.js 16 App Router application. The system primarily operates as
   - **Interface Properties**: Exposes `achievements: Achievement[]`, `onGameComplete`, and `resetAchievements` via `useAchievements()` hook.
   - **Data Pipeline**: Hydrates from `localStorage` ("mold_v2_achievements") on mount. When `onGameComplete` is called by `GameRunner`, it evaluates conditions using the current game state and historical runs, updates unlocked achievements, saves back to `localStorage`, and returns newly unlocked items for toast notifications.
 
-## 3. Data Contracts & Interfaces
+## 3. State Architecture
+
+State is divided into three domains:
+
+1. **Achievement Engine (`AchievementProvider`)**
+   - Lives at the app root, survives navigation.
+   - Responsible for tracking and evaluating unlocking conditions.
+2. **Global UI/Subject State (`HomeScreen`)**
+   - Owns `view`, `runs`, `selectedMode`, `config`, and `showGallery`.
+   - Passes `runs` to `GameRunner` for accurate achievement history evaluation.
+3. **Game Engine (`GameEngineProvider`)**
+   - Ephemeral. Only mounted during gameplay.
+   - Contains a reducer handling the game cycle, question pooling, score tracking, and time.
+
+## 4. Data Contracts & Interfaces
 All primary data contracts are defined in `lib/mold-types.ts`.
 
 - **FullSubjectData**: The primary external schema for subject definitions.
@@ -58,13 +101,24 @@ All primary data contracts are defined in `lib/mold-types.ts`.
   }
   ```
 
-## 4. Persistence Pipeline
+- **Achievement**: Schema for achievements including dynamic conditions mapped from subject data.
+
+## 5. Persistence Pipeline
 The application currently uses an asynchronous persistence pipeline interfacing with `localStorage`, with an explicit design to support IndexedDB or server-side API swaps.
 
-- **Run History**: Stored under "mold_v2_runs". Managed via `loadRuns()` and `saveRuns()`. Appended by the client after game completion (currently a known seam to be implemented in `onRunComplete`).
+### Storage Keys (The "Database")
+
+| Key | Type | Storage | Description |
+|---|---|---|---|
+| `mold_v2_subjects` | `FullSubjectData[]` | `localStorage` | Contains imported subject files. |
+| `mold_v2_active_subject` | `string` (ID) | `sessionStorage` | Keeps track of the currently selected subject across lists/home. |
+| `mold_v2_runs` | `RunRecord[]` | `localStorage` | Keeps the history of past completed sessions (capped at 50). |
+| `mold_v2_achievements` | `Achievement[]` | `localStorage` | The user's achievement unlocks merged dynamically with the subject's conditions. |
+
+- **Run History**: Stored under "mold_v2_runs". Managed via `loadRuns()` and `saveRuns()`. Appended by the client after game completion.
 - **Achievements**: Stored under "mold_v2_achievements". Managed via `loadAchievements()` and `saveAchievements()`. Automatically synced by `onGameComplete`.
 
-## 5. Cloud Infrastructure Targets & Future Extensions
+## 6. Cloud Infrastructure Targets & Future Extensions
 While current operations are local-first, the architecture defines clear boundaries for backend integration:
 - The `FullSubjectData` schema provides the contract for fetching new subjects from a remote API.
 - The async nature of `loadRuns`, `saveRuns`, `loadAchievements`, and `saveAchievements` allows direct replacement with fetch/REST calls or GraphQL mutations without altering the UI component logic.
