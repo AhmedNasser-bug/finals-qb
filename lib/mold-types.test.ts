@@ -1,6 +1,13 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { getStreakTier, getNextStreakThreshold, getStreakTierProgress } from "./mold-types.ts"
+import {
+  getStreakTier,
+  getNextStreakThreshold,
+  getStreakTierProgress,
+  formatTime,
+  computeAggregateStats,
+  formatLabel
+} from "./mold-types.ts"
 
 test("getStreakTier", () => {
   assert.equal(getStreakTier(0).name, "DORMANT")
@@ -33,3 +40,69 @@ test("getStreakTierProgress", () => {
   // Since it's the max tier, we expect current 1, total 1. (progress = 1)
   assert.deepEqual(getStreakTierProgress(12), { current: 1, total: 1 })
 })
+
+test('formatTime utility', async (t) => {
+  await t.test('returns "—" for 0 seconds', () => {
+    assert.strictEqual(formatTime(0), "—");
+  });
+
+  await t.test('formats seconds under a minute correctly', () => {
+    assert.strictEqual(formatTime(45), "0:45");
+  });
+
+  await t.test('formats seconds over a minute correctly', () => {
+    assert.strictEqual(formatTime(125), "2:05");
+  });
+
+  await t.test('formats exactly 60 seconds correctly', () => {
+    assert.strictEqual(formatTime(60), "1:00");
+  });
+
+  await t.test('formats large values into total minutes correctly', () => {
+    // 3661 seconds = 61 minutes and 1 second
+    assert.strictEqual(formatTime(3661), "61:01");
+  });
+});
+
+test('computeAggregateStats aggregate stats utility', async (t) => {
+  await t.test('handles empty runs array correctly', () => {
+    const emptyStats = computeAggregateStats([]);
+    assert.strictEqual(emptyStats.totalRuns, 0);
+    assert.strictEqual(emptyStats.bestScore, 0);
+    assert.strictEqual(emptyStats.bestStreak, 0);
+    assert.strictEqual(emptyStats.averageScore, 0);
+  });
+
+  const mockRuns = [
+    { id: '1', date: '2026-05-12T23:25:55Z', mode: 'blitz', score: 80, correctAnswers: 8, totalQuestions: 10, timeTaken: 50, streak: 5, grade: 'B+' },
+    { id: '2', date: '2026-05-13T23:25:55Z', mode: 'speedrun', score: 90, correctAnswers: 9, totalQuestions: 10, timeTaken: 60, streak: 8, grade: 'A' },
+    { id: '3', date: '2026-05-14T23:25:55Z', mode: 'survival', score: 71, correctAnswers: 7, totalQuestions: 10, timeTaken: 70, streak: 2, grade: 'C+' }
+  ];
+
+  await t.test('aggregates multiple runs statistics correctly', () => {
+    const aggregated = computeAggregateStats(mockRuns as any);
+    assert.strictEqual(aggregated.totalRuns, 3);
+    assert.strictEqual(aggregated.bestScore, 90);
+    assert.strictEqual(aggregated.bestStreak, 8);
+    // Average score: (80 + 90 + 71) / 3 = 80.33 -> round is 80
+    assert.strictEqual(aggregated.averageScore, 80);
+  });
+
+  await t.test('handles rounding correct average score boundary values', () => {
+    const boundaryRuns = [
+      { id: '1', score: 80 },
+      { id: '2', score: 81 }
+    ];
+    // Average score: 80.5 -> round is 81
+    const aggregated = computeAggregateStats(boundaryRuns as any);
+    assert.strictEqual(aggregated.averageScore, 81);
+  });
+});
+
+test("formatLabel converts kebab-case to Title Case", () => {
+  assert.strictEqual(formatLabel("finite-automata"), "Finite Automata");
+  assert.strictEqual(formatLabel("hello"), "Hello");
+  assert.strictEqual(formatLabel(""), "");
+  assert.strictEqual(formatLabel("a-b-c"), "A B C");
+  assert.strictEqual(formatLabel("a"), "A");
+});
