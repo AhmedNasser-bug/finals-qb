@@ -82,6 +82,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         {isRevealed && (
           <button
             onClick={nextQuestion}
+            aria-label="Skip question"
             className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >
             <SkipIcon className="w-4 h-4" aria-hidden="true" />

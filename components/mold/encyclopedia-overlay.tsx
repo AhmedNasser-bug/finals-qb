@@ -64,6 +64,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
           </p>
           <button
             onClick={onClose}
+            aria-label="Close encyclopedia overlay"
             className="mt-6 font-mono text-xs px-4 py-2 border border-border rounded hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             CLOSE
