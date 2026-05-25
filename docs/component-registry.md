@@ -1,3 +1,4 @@
+
 # MOLD V2 Component Registry & Developer Guide
 
 This document serves as an automated registry of all UI modules and core libraries, specifying exact properties, state dependencies, performance characteristics, and routing/hydration behaviors. It also outlines explicit edge-case input handling and validation rules for seamless developer onboarding.
@@ -25,645 +26,736 @@ This document serves as an automated registry of all UI modules and core librari
 
 ## Component Registry
 
+# Frontend Component Registry & Developer Guide
+
+This document serves as a comprehensive registry for the modern frontend architecture. It outlines component APIs, content hydration pipelines, state dependencies, performance characteristics, and routing/lazy-loading logic.
+
+## 1. Core Architecture & Hydration Pipelines
+
+The application uses Next.js with React Server Components where applicable, but primarily relies on Client Components (`"use client"`) for interactive UI. State management utilizes a combination of React hooks, context (`AchievementProvider`), and local/session storage for persistence.
+
+### 1.1 State Dependencies
+Global state like active subjects is managed through `active-subject-store.ts` and `subject-store.ts`. Real-time game engine state is driven by custom hooks like `useGameEngine`.
+
+### 1.2 Asset Delivery & Lazy Loading
+The application leverages Next.js optimizations. No explicit `next/dynamic` calls are currently used for components; standard Next.js routing handles code splitting at the page level.
+
+### 1.3 Routing States
+Routing is managed via Next.js App Router. Components utilizing routing hooks (`useRouter`, `useSearchParams`) are documented below.
+
+## 2. Component Registry
+
 ### `app/layout.tsx`
 
-**Components:**
-- **`RootLayout`**
-  - **Props Interface:** `children`
-  - **Slots:** Exposes a `children` slot for composition.
+**Module Name:** RootLayout
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `app/page.tsx`
 
-**Components:**
-- **`Home`**
-  - **Props:** Implicit or None
+**Module Name:** Home
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `Yes`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useEffect, useRouter, useState
+useEffect, useRouter, useState
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 
 ---
 
 ### `app/subjects/page.tsx`
 
-**Components:**
-- **`SubjectsPage`**
-  - **Props:** Implicit or None
+**Module Name:** SubjectsPage
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useEffect, useState
+useEffect, useState
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 
 ---
 
 ### `components/mold/achievement-gallery.tsx`
 
-**Components:**
-- **`AchievementGallery`**
-  - **Props Interface:** `onClose`
+**Module Name:** Achievement-Gallery
 
-- **`Section`**
-  - **Props Interface:** `label`
-  - **Slots:** Exposes a `children` slot for composition.
-
-- **`AchievementRow`**
-  - **Props Interface:** `achievement`
-
-- **`XIcon`**
-  - **Props Interface:** `className?`
-
-- **`TrophyIcon`**
-  - **Props Interface:** `className?`
-
-- **`LockIcon`**
-  - **Props Interface:** `className?`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useAchievements, useMemo
+useMemo, useAchievements
 
 **Performance Characteristics:**
-- Uses `useMemo` to memoize expensive computations.
+Utilizes memoization: useMemo to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `components/mold/achievement-toast.tsx`
 
-**Components:**
-- **`AchievementToastContainer`**
-  - **Props:**
-    - `toasts: ToastItem[]`
-    - `onDismiss: (id: string) => void`
+**Module Name:** Achievement-Toast
 
-- **`AchievementToastItem`**
-  - **Props Interface:** `item`
-
-- **`TrophyIcon`**
-  - **Props Interface:** `className?`
-
-- **`XSmallIcon`**
-  - **Props Interface:** `className?`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useAchievementToast, useCallback, useEffect, useState
+useCallback, useEffect, useAchievementToast, useState
 
 **Performance Characteristics:**
-- Uses `useCallback` to memoize event handlers.
+Utilizes memoization: useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+toasts: ToastItem[]
+  onDismiss: (id: string) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `components/mold/action-hub.tsx`
 
-**Components:**
-- **`ActionHub`**
-  - **Props:**
-    - `onInitialize: () => void`
-    - `onEncyclopedia: () => void`
-    - `selectedMode: GameModeId`
-    - `disabled?: boolean`
-    - `className?: string`
+**Module Name:** Action-Hub
 
-- **`PlayIcon`**
-  - **Props Interface:** `className?`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
-- **`BookIcon`**
-  - **Props Interface:** `className?`
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+onInitialize: () => void
+  onEncyclopedia: () => void
+  selectedMode: GameModeId
+  disabled?: boolean
+  className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/encyclopedia-overlay.tsx`
 
-**Components:**
-- **`EncyclopediaOverlay`**
-  - **Props:**
-    - `subject: FullSubjectData`
-    - `onClose: () => void`
+**Module Name:** Encyclopedia-Overlay
 
-- **`CloseIcon`**
-  - **Props Interface:** `className?`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useEffect, useRef, useState
+useEffect, useState, useRef
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+subject: FullSubjectData
+  onClose: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `components/mold/flashcard-screen.tsx`
 
-**Components:**
-- **`FlashcardScreen`**
-  - **Props:**
-    - `flashcards: Flashcard[]`
-    - `onComplete: () => void`
-    - `onReturnHome: () => void`
+**Module Name:** Flashcard-Screen
 
-- **`Header`**
-  - **Props Interface:** `onQuit`
-
-- **`StatCell`**
-  - **Props Interface:** `label`
-
-- **`ScorePill`**
-  - **Props Interface:** `label`
-
-- **`DistributionBar`**
-  - **Props Interface:** `confident`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useCallback, useMemo, useRef, useState
+useCallback, useMemo, useState, useRef
 
 **Performance Characteristics:**
-- Uses `useMemo` to memoize expensive computations.
-- Uses `useCallback` to memoize event handlers.
+Utilizes memoization: useCallback, useMemo to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+flashcards: Flashcard[]
+  onComplete: () => void
+  onReturnHome: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `components/mold/footer.tsx`
 
-**Components:**
-- **`Footer`**
-  - **Props:**
-    - `rightText?: string`
-    - `className?: string`
+**Module Name:** Footer
 
----
-
-### `components/mold/game-footer.tsx`
-
-**Components:**
-- **`GameFooter`**
-  - **Props Interface:** `onHintRequest`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useGameEngine, useHint
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+rightText?: string
+  className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
-### `components/mold/game-header.tsx`
+### `components/mold/game-error-boundary.tsx`
 
-**Components:**
-- **`GameHeader`**
-  - **Props Interface:** `onForfeit`
+**Module Name:** Game-Error-Boundary
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useGameEngine
+None
 
----
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
 
-### `components/mold/game-icons.tsx`
+**Properties & Slots (Interface):**
+```typescript
+None
+```
 
-**Components:**
-- **`BoltIcon`**
-  - **Props Interface:** `className?`
-
-- **`HeartIcon`**
-  - **Props Interface:** `className?`
-
-- **`CheckIcon`**
-  - **Props Interface:** `className?`
-
-- **`XIcon`**
-  - **Props Interface:** `className?`
-
-- **`LightbulbIcon`**
-  - **Props Interface:** `className?`
-
-- **`CheckCircleIcon`**
-  - **Props Interface:** `className?`
-
-- **`RadioIcon`**
-  - **Props Interface:** `className?`
-
-- **`SkipIcon`**
-  - **Props Interface:** `className?`
-
-- **`ChevronRightIcon`**
-  - **Props Interface:** `className?`
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `components/mold/game-runner.tsx`
 
-**Components:**
-- **`ToastLayer`**
-  - **Props Interface:** `children`
-  - **Slots:** Exposes a `children` slot for composition.
+**Module Name:** Game-Runner
 
-- **`GameRunner`**
-  - **Props:**
-    - `config: GameConfig`
-    - `/** The active subject — provides questions and flashcards for this run. */`
-    - `subject: FullSubjectData`
-    - `/** Real persisted run history — used for achievement evaluation (Fix 1-A). */`
-    - `runs: RunRecord[]`
-    - `onReturnHome: () => void`
-    - `onRunComplete?: () => void`
-    - `/** Called with the completed RunRecord so the parent can persist it. */`
-    - `onRunSaved?: (run: RunRecord) => void`
-
-- **`GameRunnerInner`**
-  - **Props:**
-    - `onReturnHome: () => void`
-    - `onRunComplete?: () => void`
-    - `onRunSaved?: (run: RunRecord) => void`
-    - `config: GameConfig`
-    - `/** Real persisted run history for achievement evaluation. */`
-    - `runs: RunRecord[]`
-    - `showUnlocks: (unlocked: Achievement[]) => void`
-
-- **`SurvivalStressBar`**
-  - **Props Interface:** `timeLimit`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useAchievementToast, useAchievements, useEffect, useGameEngine, useRef, useState
+useAchievementToast, useState, useRef, useEffect, useAchievements, useGameEngine
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+config: GameConfig
+  /** The active subject — provides questions and flashcards for this run. */
+  subject: FullSubjectData
+  /** Real persisted run history — used for achievement evaluation (Fix 1-A). */
+  runs: RunRecord[]
+  onReturnHome: () => void
+  onRunComplete?: () => void
+  /** Called with the completed RunRecord so the parent can persist it. */
+  onRunSaved?: (run: RunRecord) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
-### `components/mold/game-stat-cell.tsx`
+### `components/mold/game-screen.tsx`
 
-**Components:**
-- **`StatCell`**
-  - **Props Interface:** `label`
+**Module Name:** Game-Screen
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useMemo, useHint, useGameEngine
+
+**Performance Characteristics:**
+Utilizes memoization: useMemo to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+onReturnHome: () => void
+  onPlayAgain: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
+- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
 
 ### `components/mold/hero-header.tsx`
 
-**Components:**
-- **`HeroHeader`**
-  - **Props:**
-    - `subject: SubjectData`
-    - `achievements: Achievement[]`
-    - `onTrophyClick?: () => void`
-    - `className?: string`
+**Module Name:** Hero-Header
 
-- **`TrophyIcon`**
-  - **Props Interface:** `className?`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+subject: SubjectData
+  achievements: Achievement[]
+  onTrophyClick?: () => void
+  className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/home-screen.tsx`
 
-**Components:**
-- **`HomeScreen`**
-  - **Props:**
-    - `/** The currently active FullSubjectData, chosen by the root orchestrator. */`
-    - `activeSubject: FullSubjectData`
-    - `/** All subjects in the store — passed down so the importer can check for duplicate ids. */`
-    - `allSubjectIds: string[]`
-    - `/** Called when the user imports a new subject from the home screen header. */`
-    - `onAddSubject: (subject: FullSubjectData) => void`
-    - `/** Called when the user clicks "Change Subject" in the header. */`
-    - `onChangeSubject: () => void`
+**Module Name:** Home-Screen
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useAchievements, useEffect, useState
+useAchievements, useEffect, useState
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+/** The currently active FullSubjectData, chosen by the root orchestrator. */
+  activeSubject: FullSubjectData
+  /** All subjects in the store — passed down so the importer can check for duplicate ids. */
+  allSubjectIds: string[]
+  /** Called when the user imports a new subject from the home screen header. */
+  onAddSubject: (subject: FullSubjectData) => void
+  /** Called when the user clicks "Change Subject" in the header. */
+  onChangeSubject: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.
+- Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 
 ---
 
 ### `components/mold/mermaid-diagram.tsx`
 
-**Components:**
-- **`MermaidDiagram`**
-  - **Props:**
-    - `/** Raw Mermaid source code. Required. */`
-    - `chart: string`
-    - `/** Unique ID used as the SVG element ID — must be unique across the page. */`
-    - `id: string`
-    - `/** Optional extra className for the wrapper div. */`
-    - `className?: string`
+**Module Name:** Mermaid-Diagram
 
-- **`WarningIcon`**
-  - **Props Interface:** `className?`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useEffect, useMaxWidth, useRef, useState
+useEffect, useMaxWidth, useState, useRef
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+/** Raw Mermaid source code. Required. */
+  chart: string
+  /** Unique ID used as the SVG element ID — must be unique across the page. */
+  id: string
+  /** Optional extra className for the wrapper div. */
+  className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
 
 ### `components/mold/mode-selector.tsx`
 
-**Components:**
-- **`ModeSelector`**
-  - **Props:**
-    - `selected: GameModeId`
-    - `onSelect: (id: GameModeId) => void`
-    - `className?: string`
+**Module Name:** Mode-Selector
 
-- **`ModeGroup`**
-  - **Props:**
-    - `label: string`
-    - `modes: GameMode[]`
-    - `selected: GameModeId`
-    - `onSelect: (id: GameModeId) => void`
-    - `accent: "danger" | "success"`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
-- **`ModeCard`**
-  - **Props:**
-    - `mode: GameMode`
-    - `icon: React.ReactNode`
-    - `isSelected: boolean`
-    - `onSelect: (id: GameModeId) => void`
-    - `selectedClass: string`
-    - `accentClass: string`
+**State Dependencies (Hooks):**
+None
 
-- **`SpeedrunIcon`**
-  - **Props:** Implicit or None
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
 
-- **`BlitzIcon`**
-  - **Props:** Implicit or None
+**Properties & Slots (Interface):**
+```typescript
+selected: GameModeId
+  onSelect: (id: GameModeId) => void
+  className?: string
+```
 
-- **`HardcoreIcon`**
-  - **Props:** Implicit or None
-
-- **`SurvivalIcon`**
-  - **Props:** Implicit or None
-
-- **`PracticeIcon`**
-  - **Props:** Implicit or None
-
-- **`FlashcardsIcon`**
-  - **Props:** Implicit or None
-
-- **`FullRevisionIcon`**
-  - **Props:** Implicit or None
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
 ### `components/mold/onboarding-screen.tsx`
 
-**Components:**
-- **`OnboardingScreen`**
-  - **Props:**
-    - `onSubjectAdded: (subject: FullSubjectData) => void`
+**Module Name:** Onboarding-Screen
 
-- **`ProtocolIcon`**
-  - **Props:** Implicit or None
-
-- **`TargetIcon`**
-  - **Props:** Implicit or None
-
-- **`ChevronLeftIcon`**
-  - **Props:** Implicit or None
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useState
+useState
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+onSubjectAdded: (subject: FullSubjectData) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
 
 ---
 
 ### `components/mold/performance-table.tsx`
 
-**Components:**
-- **`PerformanceTable`**
-  - **Props:**
-    - `runs: RunRecord[]`
-    - `stats: AggregateStats`
-    - `className?: string`
+**Module Name:** Performance-Table
 
-- **`StatCell`**
-  - **Props Interface:** `label`
-
-- **`RunRow`**
-  - **Props Interface:** `run`
-
----
-
-### `components/mold/question-card.tsx`
-
-**Components:**
-- **`QuestionCard`**
-  - **Props Interface:** `question`
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useGameEngine, useMemo
+None
 
 **Performance Characteristics:**
-- Uses `useMemo` to memoize expensive computations.
+No explicit memoization hooks (useMemo/useCallback) used.
 
----
+**Properties & Slots (Interface):**
+```typescript
+runs: RunRecord[]
+  stats: AggregateStats
+  className?: string
+```
 
-### `components/mold/results-screen.tsx`
-
-**Components:**
-- **`ResultsScreen`**
-  - **Props:**
-    - `onReturnHome: () => void`
-    - `onPlayAgain: () => void`
-
-**State Dependencies (Hooks):**
-- useGameEngine
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/rich-text.tsx`
 
-**Components:**
-- **`RichText`**
-  - **Props:**
-    - `content: string`
-    - `className?: string`
-    - `id?: string`
+**Module Name:** Rich-Text
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useMemo
+useMemo
 
 **Performance Characteristics:**
-- Uses `useMemo` to memoize expensive computations.
+Utilizes memoization: useMemo to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+content: string
+  className?: string
+  id?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
+- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
+- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
 
 ### `components/mold/setup-panel.tsx`
 
-**Components:**
-- **`SetupPanel`**
-  - **Props:**
-    - `config: SetupConfig`
-    - `onChange: (patch: Partial<SetupConfig>) => void`
-    - `selectedMode: GameModeId`
-    - `categories: CategoryData[]`
-    - `className?: string`
+**Module Name:** Setup-Panel
 
-- **`ConfigRow`**
-  - **Props Interface:** `label`
-  - **Slots:** Exposes a `children` slot for composition.
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
-- **`Toggle`**
-  - **Props Interface:** `checked`
+**State Dependencies (Hooks):**
+None
 
-- **`CategoryTile`**
-  - **Props:**
-    - `id: string | null`
-    - `name: string`
-    - `questionCount: number`
-    - `selected: boolean`
-    - `onSelect: () => void`
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+config: SetupConfig
+  onChange: (patch: Partial<SetupConfig>) => void
+  selectedMode: GameModeId
+  categories: CategoryData[]
+  className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/share-modal.tsx`
 
-**Components:**
-- **`ShareModal`**
-  - **Props:**
-    - `subject: FullSubjectData`
-    - `onClose: () => void`
+**Module Name:** Share-Modal
 
-- **`CloseIcon`**
-  - **Props:** Implicit or None
-
-- **`SpinnerIcon`**
-  - **Props:** Implicit or None
-
-- **`InfoIcon`**
-  - **Props:** Implicit or None
-
-- **`WarnIcon`**
-  - **Props:** Implicit or None
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useCallback, useEffect, useRef, useState
+useCallback, useEffect, useState
 
 **Performance Characteristics:**
-- Uses `useCallback` to memoize event handlers.
+Utilizes memoization: useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+subject: FullSubjectData
+  onClose: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `components/mold/share-receiver.tsx`
 
-**Components:**
-- **`ShareReceiver`**
-  - **Props:**
-    - `/** The raw Base64url payload extracted from the URL hash. */`
-    - `payload: string`
-    - `/** Called when the user accepts the import. */`
-    - `onAccept: (subject: FullSubjectData) => void`
-    - `/** Called when the user declines or closes. */`
-    - `onDecline: () => void`
+**Module Name:** Share-Receiver
 
-- **`StatPill`**
-  - **Props Interface:** `label`
-
-- **`SpinnerIcon`**
-  - **Props:** Implicit or None
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useEffect, useRef, useState
+useEffect, useState
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+/** The raw Base64url payload extracted from the URL hash. */
+  payload: string
+  /** Called when the user accepts the import. */
+  onAccept: (subject: FullSubjectData) => void
+  /** Called when the user declines or closes. */
+  onDecline: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 ---
 
 ### `components/mold/streak-ascent.tsx`
 
-**Components:**
-- **`StreakAscent`**
-  - **Props:**
-    - `currentStreak: number`
-    - `bestStreak: number`
-    - `isAtRisk?: boolean // If true, make the flame flicker more intensely/look fragile`
-    - `className?: string`
+**Module Name:** Streak-Ascent
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+currentStreak: number
+  bestStreak: number
+  isAtRisk?: boolean // If true, make the flame flicker more intensely/look fragile
+  className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/subject-importer.tsx`
 
-**Components:**
-- **`SubjectImporter`**
-  - **Props:**
-    - `onImport: (subject: FullSubjectData) => void`
-    - `onCancel: () => void`
-    - `existingIds?: string[]`
+**Module Name:** Subject-Importer
 
-- **`StatChip`**
-  - **Props Interface:** `label`
-
-- **`CloseIcon`**
-  - **Props:** Implicit or None
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useCallback, useMemo, useState
+useCallback, useMemo, useState
 
 **Performance Characteristics:**
-- Uses `useMemo` to memoize expensive computations.
-- Uses `useCallback` to memoize event handlers.
+Utilizes memoization: useCallback, useMemo to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+onImport: (subject: FullSubjectData) => void
+  onCancel: () => void
+  existingIds?: string[]
+```
+
+**Edge-Case Input Handling & Validation:**
+- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
+- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
 
 ### `components/mold/subject-selector.tsx`
 
-**Components:**
-- **`SubjectSelector`**
-  - **Props:**
-    - `subjects: FullSubjectData[]`
-    - `onSelect: (subject: FullSubjectData) => void`
-    - `onAddSubject: (subject: FullSubjectData) => void`
-    - `onRemoveSubject: (id: string) => void`
+**Module Name:** Subject-Selector
 
-- **`SectionLabel`**
-  - **Props Interface:** `label`
-
-- **`StatPill`**
-  - **Props Interface:** `label`
-
-- **`ProtocolIcon`**
-  - **Props:** Implicit or None
-
-- **`PlusIcon`**
-  - **Props:** Implicit or None
-
-- **`ShareIcon`**
-  - **Props:** Implicit or None
-
-- **`SpinnerIcon`**
-  - **Props:** Implicit or None
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-- useEffect, useState
-
----
-
-### `components/theme-provider.tsx`
-
-**Components:**
-- **`ThemeProvider`**
-  - **Props Interface:** `ThemeProviderProps`
-  - **Slots:** Exposes a `children` slot for composition.
-
----
-
-### `components/ui/button.tsx`
-
-**Components:**
-- **`Button`**
-  - **Props:** Implicit or None
-
----
-
-### `lib/achievement-engine.tsx`
-
-**Components:**
-- **`AchievementProvider`**
-  - **Props Interface:** `children`
-  - **Slots:** Exposes a `children` slot for composition.
-
-**State Dependencies (Hooks):**
-- useAchievements, useCallback, useContext, useEffect, useState
+useEffect, useState
 
 **Performance Characteristics:**
-- Uses `useCallback` to memoize event handlers.
+No explicit memoization hooks (useMemo/useCallback) used.
 
----
+**Properties & Slots (Interface):**
+```typescript
+subjects: FullSubjectData[]
+  onSelect: (subject: FullSubjectData) => void
+  onAddSubject: (subject: FullSubjectData) => void
+  onRemoveSubject: (id: string) => void
+```
 
-### `lib/game-engine.tsx`
-
-**Components:**
-- **`GameEngineProvider`**
-  - **Props:**
-    - `config: GameConfig`
-    - `questions: Question[]`
-    - `children: ReactNode`
-  - **Slots:** Exposes a `children` slot for composition.
-
-**State Dependencies (Hooks):**
-- useCallback, useContext, useEffect, useGameEngine, useHint, useReducer, useRef
-
-**Performance Characteristics:**
-- Uses `useCallback` to memoize event handlers.
+**Edge-Case Input Handling & Validation:**
+- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
 
 ---
