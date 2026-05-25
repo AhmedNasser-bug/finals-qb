@@ -1,33 +1,25 @@
-# MOLD V2 Component Registry & Developer Guide
+# Frontend Component Registry & Developer Guide
 
-This document serves as an automated registry of all UI modules and core libraries, specifying exact properties, state dependencies, performance characteristics, and routing/hydration behaviors. It also outlines explicit edge-case input handling and validation rules for seamless developer onboarding.
+This document serves as a comprehensive registry for the modern frontend architecture. It outlines component APIs, content hydration pipelines, state dependencies, performance characteristics, and routing/lazy-loading logic.
 
-## Architecture & Hydration Overview
+## 1. Core Architecture & Hydration Pipelines
 
-### Routing States
-- **Root Route (`/`)**: Manages the active study session. It reads the active subject from `sessionStorage` (`mold_v2_active_subject`). If found, it hydrates the `HomeScreen`. If not, it redirects to `/subjects`.
-- **Subjects Route (`/subjects`)**: Manages subject selection, importation, and sharing. Handles share links via URL hash detection (`#share=...`) and transitions gracefully between `loading`, `receiving`, and `selecting` states.
+The application uses Next.js with React Server Components where applicable, but primarily relies on Client Components (`"use client"`) for interactive UI. State management utilizes a combination of React hooks, context (`AchievementProvider`), and local/session storage for persistence.
 
-### Client-side Hydration & Lazy-Loading Logic
-- Components like complex editors or heavy visualizers may utilize `next/dynamic` for client-side lazy-loading to reduce initial bundle size.
-- State is hydrated synchronously from storage providers (e.g., `localStorage`) during `useEffect` hooks, utilizing a `ready` or `loading` state flag to prevent Server-Side Rendering (SSR) mismatch errors.
-- Dynamic loading configurations strictly ensure fallbacks are rendered while assets are being parsed and loaded.
+### 1.1 State Dependencies
+Global state like active subjects is managed through `active-subject-store.ts` and `subject-store.ts`. Real-time game engine state is driven by custom hooks like `useGameEngine`.
 
-### Asset Delivery Configurations
-- The framework uses **Next.js (Turbopack)** with explicitly disabled Image optimization (`unoptimized: true` in `next.config.mjs`) to accommodate static exports (`output: export`) and distinct custom asset pipelines.
-- Content hydration relies on local state management and persistence without depending heavily on backend databases. Asset streaming and manifest resolution handles I/O operations concurrently where applicable.
+### 1.2 Asset Delivery & Lazy Loading
+The application leverages Next.js optimizations. No explicit `next/dynamic` calls are currently used for components; standard Next.js routing handles code splitting at the page level.
 
-### Edge-case Input Handling & Validation Rules
-- **Subject Validation (`lib/mold-types.ts`)**: Rigorous validation ensures imported schemas adhere to strict standards. `multipleChoice` options must be an array of objects containing a `label` string, and flashcards must define `term` and `definition` properties (preventing legacy formatting breaks).
-- **Data Hydration Failures**: Fallback to empty states or onboarding flows when storage (`localStorage`/`sessionStorage`) is unavailable or heavily corrupted.
-- **Error Boundaries (`GameErrorBoundary`)**: Implements `role="alert"` and fallback UIs to gracefully capture, report, and recover from render-phase failures within interactive components.
-- **Circular References (`logger.ts`)**: Deep traversal and masking algorithms use `WeakSet` caching mechanisms to safely evaluate potentially recursive, deeply-nested error states to prevent stack overflows.
+### 1.3 Routing States
+Routing is managed via Next.js App Router. Components utilizing routing hooks (`useRouter`, `useSearchParams`) are documented below.
 
-## Component Registry
+## 2. Component Registry
 
 ### `app/actions.ts`
 
-**Module Name:** Actions
+**Module Name:** Actions.Ts
 
 **Characteristics:**
 - Client Component: `No`
@@ -47,7 +39,7 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.
+- Standard component behavior.
 
 ---
 
@@ -73,7 +65,7 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Standard component behavior.
 
 ---
 
@@ -99,9 +91,8 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Pure presentation component or interactive client component.
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -127,14 +118,14 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Pure presentation component or interactive client component.
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 
 ---
 
 ### `components/mold/achievement-gallery.tsx`
 
-**Module Name:** AchievementGallery
+**Module Name:** Achievement-Gallery
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -154,14 +145,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/achievement-toast.tsx`
 
-**Module Name:** AchievementToast
+**Module Name:** Achievement-Toast
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -182,14 +172,13 @@ toasts: ToastItem[]
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/action-hub.tsx`
 
-**Module Name:** ActionHub
+**Module Name:** Action-Hub
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -213,14 +202,14 @@ onInitialize: () => void
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
 ### `components/mold/encyclopedia-overlay.tsx`
 
-**Module Name:** EncyclopediaOverlay
+**Module Name:** Encyclopedia-Overlay
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -241,14 +230,13 @@ subject: FullSubjectData
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/example-module-card.tsx`
 
-**Module Name:** ExampleModuleCard
+**Module Name:** Example-Module-Card
 
 **Characteristics:**
 - Client Component: `No`
@@ -271,14 +259,13 @@ entry: ExampleManifestEntry
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Standard component behavior.
 
 ---
 
 ### `components/mold/flashcard-components.tsx`
 
-**Module Name:** FlashcardComponents
+**Module Name:** Flashcard-Components
 
 **Characteristics:**
 - Client Component: `No`
@@ -303,14 +290,13 @@ onQuit: () => void
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Standard component behavior.
 
 ---
 
 ### `components/mold/flashcard-screen.tsx`
 
-**Module Name:** FlashcardScreen
+**Module Name:** Flashcard-Screen
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -332,8 +318,7 @@ flashcards: Flashcard[]
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
@@ -360,13 +345,14 @@ rightText?: string
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/game-error-boundary.tsx`
 
-**Module Name:** GameErrorBoundary
+**Module Name:** Game-Error-Boundary
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -386,14 +372,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/game-footer.tsx`
 
-**Module Name:** GameFooter
+**Module Name:** Game-Footer
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -413,14 +398,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/game-header.tsx`
 
-**Module Name:** GameHeader
+**Module Name:** Game-Header
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -440,14 +424,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/game-icons.tsx`
 
-**Module Name:** GameIcons
+**Module Name:** Game-Icons
 
 **Characteristics:**
 - Client Component: `No`
@@ -467,13 +450,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Standard component behavior.
 
 ---
 
 ### `components/mold/game-runner.tsx`
 
-**Module Name:** GameRunner
+**Module Name:** Game-Runner
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -501,13 +484,13 @@ config: GameConfig
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/game-stat-cell.tsx`
 
-**Module Name:** GameStatCell
+**Module Name:** Game-Stat-Cell
 
 **Characteristics:**
 - Client Component: `No`
@@ -527,13 +510,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Standard component behavior.
 
 ---
 
 ### `components/mold/hero-header.tsx`
 
-**Module Name:** HeroHeader
+**Module Name:** Hero-Header
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -556,14 +539,14 @@ subject: SubjectData
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
 ### `components/mold/home-screen.tsx`
 
-**Module Name:** HomeScreen
+**Module Name:** Home-Screen
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -590,17 +573,14 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Pure presentation component or interactive client component.
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
-- Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
-- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
 
 ---
 
 ### `components/mold/mermaid-diagram.tsx`
 
-**Module Name:** MermaidDiagram
+**Module Name:** Mermaid-Diagram
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -625,15 +605,14 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
-- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
 
 ### `components/mold/mode-selector.tsx`
 
-**Module Name:** ModeSelector
+**Module Name:** Mode-Selector
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -655,14 +634,14 @@ selected: GameModeId
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
 ### `components/mold/onboarding-screen.tsx`
 
-**Module Name:** OnboardingScreen
+**Module Name:** Onboarding-Screen
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -682,15 +661,14 @@ mode: GameMode;
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
-- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Pure presentation component or interactive client component.
+- Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 
 ---
 
 ### `components/mold/performance-table.tsx`
 
-**Module Name:** PerformanceTable
+**Module Name:** Performance-Table
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -712,13 +690,14 @@ runs: RunRecord[]
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/question-card.tsx`
 
-**Module Name:** QuestionCard
+**Module Name:** Question-Card
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -746,16 +725,13 @@ idx: number;
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
-- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/results-screen-components.tsx`
 
-**Module Name:** ResultsScreenComponents
+**Module Name:** Results-Screen-Components
 
 **Characteristics:**
 - Client Component: `No`
@@ -778,13 +754,13 @@ elapsedSeconds: number
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Standard component behavior.
 
 ---
 
 ### `components/mold/results-screen.tsx`
 
-**Module Name:** ResultsScreen
+**Module Name:** Results-Screen
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -805,14 +781,13 @@ onReturnHome: () => void
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/rich-text.tsx`
 
-**Module Name:** RichText
+**Module Name:** Rich-Text
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -834,15 +809,14 @@ content: string
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
-- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
 
 ### `components/mold/setup-panel.tsx`
 
-**Module Name:** SetupPanel
+**Module Name:** Setup-Panel
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -866,14 +840,14 @@ config: SetupConfig
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
 ### `components/mold/share-modal.tsx`
 
-**Module Name:** ShareModal
+**Module Name:** Share-Modal
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -904,14 +878,13 @@ encoding: boolean;
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/share-receiver.tsx`
 
-**Module Name:** ShareReceiver
+**Module Name:** Share-Receiver
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -936,14 +909,13 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/streak-ascent.tsx`
 
-**Module Name:** StreakAscent
+**Module Name:** Streak-Ascent
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -966,13 +938,14 @@ currentStreak: number
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
 ### `components/mold/subject-importer-components.tsx`
 
-**Module Name:** SubjectImporterComponents
+**Module Name:** Subject-Importer-Components
 
 **Characteristics:**
 - Client Component: `No`
@@ -992,13 +965,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Standard component behavior.
 
 ---
 
 ### `components/mold/subject-importer.tsx`
 
-**Module Name:** SubjectImporter
+**Module Name:** Subject-Importer
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -1020,17 +993,13 @@ onImport: (subject: FullSubjectData) => void
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
-- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
-- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/subject-selector-components.tsx`
 
-**Module Name:** SubjectSelectorComponents
+**Module Name:** Subject-Selector-Components
 
 **Characteristics:**
 - Client Component: `No`
@@ -1050,13 +1019,13 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Standard component behavior.
 
 ---
 
 ### `components/mold/subject-selector.tsx`
 
-**Module Name:** SubjectSelector
+**Module Name:** Subject-Selector
 
 **Characteristics:**
 - Client Component: `Yes`
@@ -1079,15 +1048,13 @@ subjects: FullSubjectData[]
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
-- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Pure presentation component or interactive client component.
 
 ---
 
 ### `components/mold/user-subject-card.tsx`
 
-**Module Name:** UserSubjectCard
+**Module Name:** User-Subject-Card
 
 **Characteristics:**
 - Client Component: `No`
@@ -1114,7 +1081,110 @@ full: FullSubjectData
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+- Standard component behavior.
+
+---
+
+### `components/theme-provider.tsx`
+
+**Module Name:** Theme-Provider
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component or interactive client component.
+
+---
+
+### `components/ui/button.tsx`
+
+**Module Name:** Button
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Standard component behavior.
+
+---
+
+### `components/ui/card.tsx`
+
+**Module Name:** Card
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Standard component behavior.
+
+---
+
+### `components/ui/input.tsx`
+
+**Module Name:** Input
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Standard component behavior.
 
 ---
