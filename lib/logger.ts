@@ -1,4 +1,6 @@
-const PII_PATTERNS = [
+type RedactReplacement = string | ((match: string, ...args: any[]) => string);
+
+const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
     pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
@@ -16,8 +18,10 @@ const PII_PATTERNS = [
   },
   {
     // Common secrets
-    pattern: /((?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*["']?)([^"'\s\,\]\}]+)/gi,
-    replacement: '$1[REDACTED]'
+    pattern: /((?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*)(?:(["'])(.*?)\2|([^,\]\}\s]+))/gi,
+    replacement: (match: string, p1: string, p2: string, p3: string, p4: string) => {
+      return p1 + (p2 ? p2 + "[REDACTED]" + p2 : '"[REDACTED]"');
+    }
   },
   {
     // JWTs
@@ -29,7 +33,7 @@ const PII_PATTERNS = [
 function maskString(str: string): string {
   let masked = str;
   for (const { pattern, replacement } of PII_PATTERNS) {
-    masked = masked.replace(pattern, replacement);
+    masked = masked.replace(pattern, replacement as any);
   }
   return masked;
 }
