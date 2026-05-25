@@ -52,6 +52,7 @@ export function ActionHub({
         disabled={disabled}
         aria-disabled={disabled}
         title={disabled ? "Action not available" : undefined}
+        aria-label={disabled ? "Action not available" : "Initialize session"}
         className={cn(
           "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded border",
           "text-sm font-mono font-bold tracking-wide",
