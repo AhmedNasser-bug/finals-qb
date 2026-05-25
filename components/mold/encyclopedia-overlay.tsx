@@ -76,16 +76,16 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in"
+      ref={overlayRef}
+      tabIndex={-1}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm outline-none animate-fade-in"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
       aria-label="Encyclopedia"
     >
       <div
-        ref={overlayRef}
-        tabIndex={-1}
-        className="bg-panel border border-border rounded w-full max-w-3xl mx-4 flex flex-col max-h-[85vh] outline-none animate-slide-up"
+        className="bg-panel border border-border rounded w-full max-w-3xl mx-4 flex flex-col max-h-[85vh] animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -180,7 +180,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
 
 function CloseIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg className={className} aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>

@@ -62,10 +62,11 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
           "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] rounded-full blur-[60px] opacity-20 pointer-events-none transition-colors duration-1000",
           currentTier.baseBgClass
         )}
+        aria-hidden="true"
       />
 
       {/* The Central Path (Ascent Line) */}
-      <div className="absolute top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
+      <div className="absolute top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-border to-transparent" aria-hidden="true" />
 
       {/* Upcoming Milestone (Aspirational) */}
       {nextMilestone && (
@@ -83,7 +84,7 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
       <div className="relative z-20 flex flex-col items-center my-8">
 
         {/* Particle System for Flame */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none" aria-hidden="true">
            {currentStreak > 0 && (
              <>
                 <div className={cn("absolute top-1/2 left-[40%] w-2 h-2 rounded-full particle-1", currentTier.baseBgClass)} />

@@ -332,7 +332,7 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           )}
         >
           {/* Scanline overlay */}
-          <div className="absolute inset-0 scanlines pointer-events-none z-10" />
+          <div className="absolute inset-0 scanlines pointer-events-none z-10" aria-hidden="true" />
 
           {/* Radial spotlight */}
           <div

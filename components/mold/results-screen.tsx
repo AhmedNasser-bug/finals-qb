@@ -121,11 +121,12 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
             <div
               className="absolute inset-0 blur-3xl opacity-40 pointer-events-none"
               style={{ backgroundColor: gradeHex }}
+              aria-hidden="true"
             />
             <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden"
               style={{ boxShadow: `0 0 40px ${gradeHex}20` }}
             >
-              <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
+              <div className="scanlines absolute inset-0 pointer-events-none opacity-20" aria-hidden="true" />
               <span
                 className="font-sans font-black leading-none tracking-tighter z-10 select-none"
                 style={{ fontSize: "clamp(72px, 10vw, 128px)", color: "#ffedc2" }}

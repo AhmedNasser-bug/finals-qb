@@ -120,7 +120,7 @@ export function QuestionCard({
     <div className="flex flex-col flex-1 min-h-0 animate-slide-up">
       {/* ── Main card ── */}
       <div className="relative flex-1 bg-[#1c1b1b] flex flex-col min-h-0">
-        <div className="scanlines absolute inset-0 opacity-20 pointer-events-none z-0" />
+        <div className="scanlines absolute inset-0 opacity-20 pointer-events-none z-0" aria-hidden="true" />
 
         <div className="relative z-10 flex flex-col flex-1 min-h-0 p-4 md:p-6 lg:p-8 gap-4">
 
@@ -227,7 +227,7 @@ export function QuestionCard({
       {/* ── Hint / explanation panel ── */}
       {(showHint && question.hint) || (isRevealed && question.explanation) ? (
         <div className="bg-[#0e0e0e] px-6 py-4 flex items-start gap-4 animate-fade-in border-t border-[#2a2a2a] shrink-0" aria-live="polite">
-          <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
+          <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" aria-hidden="true" />
           <div className="space-y-1">
             <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
               {isRevealed ? "SYSTEM_EXPLANATION" : "SYSTEM_HINT"}
@@ -260,6 +260,8 @@ function OptionButton({
       role="radio"
       aria-checked={isSelected}
       disabled={isRevealed}
+      aria-disabled={isRevealed}
+      title={isRevealed ? "Option locked" : undefined}
       onClick={onSelect}
       className={cn(
         "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
@@ -294,10 +296,10 @@ function OptionButton({
         </span>
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
-        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
-        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
+        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" aria-hidden="true" />}
+        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" aria-hidden="true" />}
+        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" aria-hidden="true" />}
+        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" aria-hidden="true" />}
       </div>
     </button>
   )

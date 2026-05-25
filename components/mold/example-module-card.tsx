@@ -18,6 +18,7 @@ export function ExampleModuleCard({
     <div
       className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-colors"
     >
+      {/* Absolute overlay for primary action (load module) to avoid nesting buttons */}
       <div
         role="button"
         tabIndex={0}
@@ -34,8 +35,11 @@ export function ExampleModuleCard({
         aria-disabled={isLoading}
         aria-busy={isLoading}
         title={isLoading ? "Loading module..." : undefined}
-        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
-      >
+        aria-label={`Load module ${entry.name}`}
+        className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      />
+
+      <div className="relative z-10 flex flex-col gap-3 p-4 text-left flex-1 pointer-events-none">
         <div className="flex items-start justify-between gap-2">
           <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{entry.name}</p>
           <div className="flex items-center gap-1 shrink-0">
@@ -44,7 +48,7 @@ export function ExampleModuleCard({
               disabled={isLoading}
               aria-busy={isLoading}
               aria-disabled={isLoading}
-              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-events-auto"
               aria-label={`Share ${entry.name}`}
               title={isLoading ? "Loading module..." : "Share subject"}
             >
@@ -69,7 +73,7 @@ export function ExampleModuleCard({
         </div>
       </div>
 
-      <div className="border-t border-border px-4 py-2.5 flex items-center justify-between">
+      <div className="relative z-10 border-t border-border px-4 py-2.5 flex items-center justify-between pointer-events-none">
         <span className="text-[10px] font-mono text-muted-foreground">{entry.id}</span>
         {isLoading ? (
           <div className="flex items-center gap-2 text-[10px] font-mono text-primary">
@@ -79,7 +83,7 @@ export function ExampleModuleCard({
         ) : (
           <button
             onClick={() => onLoad(entry)}
-            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring pointer-events-auto"
           >
             LOAD_MODULE →
           </button>

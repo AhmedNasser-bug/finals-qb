@@ -54,7 +54,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
             <>
               {/* Hero */}
               <div className="flex flex-col items-center text-center gap-4 max-w-xl">
-                <div className="w-14 h-14 rounded border border-primary/30 bg-primary/10 flex items-center justify-center text-primary scanlines">
+                <div className="w-14 h-14 rounded border border-primary/30 bg-primary/10 flex items-center justify-center text-primary scanlines" aria-hidden="true">
                   <TargetIcon />
                 </div>
                 <div className="flex flex-col gap-2">
