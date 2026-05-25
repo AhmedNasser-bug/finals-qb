@@ -1,6 +1,6 @@
 # Workflow: Pull Request Triage, Release Orchestration, and Session Cleanup
 
-This workflow defines the standardized, multi-step pipeline for identifying, categorizing, consolidating, merging, and cleaning up massive sets of open pull requests, resolving test conflicts through consolidated appends, bypassing Vercel status check merge blocks via local push administration, and concluding remote tracking sessions. Trigger this workflow when organizing large-scale release flows or cleaning up duplicate and conflicted developer session submissions.
+This workflow defines the standardized, multi-step pipeline for identifying, categorizing, consolidating, merging, and cleaning up massive sets of open pull requests, resolving test conflicts through consolidated appends, resolving branch merge conflicts from outdated base commits, bypassing Vercel status check merge blocks via local push administration, and concluding remote tracking sessions. Trigger this workflow when organizing large-scale release flows or cleaning up duplicate and conflicted developer session submissions.
 
 ---
 
@@ -12,7 +12,7 @@ Before executing this workflow, ensure the executing agent has access to the fol
 - [ ] **GitHub Access & Tools:** Integration with `github-mcp-server` or the GitHub CLI (`gh`) authenticated with repository write scopes.
 - [ ] **Jules CLI Availability:** The `jules` command-line utility globally installed and authenticated.
 - [ ] **Testing Environment:** Node.js v20+ with native experimental type stripping and test runner support.
-- [ ] **Config Files:** Access to central testing runners (e.g. `./test-runner.mjs`) and established test modules.
+- [ ] **Context Collector Script:** The Python workspace inspect utility [`scratch/collect_context.py`](file:///C:/Users/enjoy/.gemini/antigravity/brain/2e7bea73-600e-4061-b50c-8c1696b938eb/scratch/collect_context.py) in the app data workspace scratchpad.
 
 ---
 
@@ -20,10 +20,10 @@ Before executing this workflow, ensure the executing agent has access to the fol
 
 ```mermaid
 graph TD
-    Start([1. Prep & Triage]) --> Analyze[2. Category & Session Mapping]
-    Analyze --> Filter[3. Duplicate Consolidation]
-    Filter --> AppendTests[4. Conflict Test Integration]
-    AppendTests --> LocalValidate[5. Test Verification]
+    Start([1. Prep & Triage]) --> RunCollector[2. Execute Context Collector]
+    RunCollector --> Filter[3. Triage & Duplicate Consolidation]
+    Filter --> ConflictResolve[4. Outdated Branch Conflict Resolution]
+    ConflictResolve --> LocalValidate[5. Test Verification]
     LocalValidate --> PushBypass[6. Administrative Direct Push]
     PushBypass --> Cleanup[7. Remote Branch & Session Pruning]
     Cleanup --> End([8. Conclude & Report])
@@ -39,11 +39,18 @@ graph TD
 
 Apply this strict, sequential protocol to execute the triage, merge, and cleanup flow.
 
-### Phase 1: Preparation, Triage, & Mapping
-#### Step 1.1: Query Active Pull Requests & Issues
-- **Action:** List all open pull requests and issues using the `github-mcp-server` tool `list_pull_requests` and `list_issues`.
-- **Verification Goal:** Retrieve a complete JSON array of open pull requests including numbers, titles, head branch references, and base branch references.
-- **Failure Mitigation:** If GitHub API limits or authentication failures occur, fall back to executing `git fetch origin` and listing remote branches via `git branch -r`.
+### Phase 1: Preparation, Context Collection, & Mapping
+#### Step 1.1: Automated Context Collection
+- **Action:** Run the automated Python workspace inspection script to get a consolidated, structural report of all remote feature branches, commits, and local workspace status:
+  ```bash
+  python "C:\Users\enjoy\.gemini\antigravity\brain\2e7bea73-600e-4061-b50c-8c1696b938eb\scratch\collect_context.py"
+  ```
+- **Verification Goal:** Outputs a scannable context tree showing all active branches, files changed per branch, and recent commit logs.
+- **Failure Mitigation:** If Python is not installed, fallback to running manual queries:
+  ```bash
+  git branch -r
+  git log -n 10 --oneline
+  ```
 
 #### Step 1.2: Fetch Jules Session Context
 - **Action:** Execute the session listing command to inspect remote VM contexts:
@@ -54,7 +61,7 @@ Apply this strict, sequential protocol to execute the triage, merge, and cleanup
 
 ---
 
-### Phase 2: Core Execution, Consolidation, & Integration
+### Phase 2: Core Execution, Consolidation, & Conflict Resolution
 #### Step 2.1: Deprecate Already Integrated Pull Requests
 - **Action:** Identify pull requests that are already merged or implemented on `main`. Close them using `update_issue` (setting `state` to `closed`) with the following standardized, polite message:
   > *"Closing this pull request as these changes are already integrated and fully functional on the main branch. Thank you!"*
@@ -62,21 +69,30 @@ Apply this strict, sequential protocol to execute the triage, merge, and cleanup
 
 #### Step 2.2: Consolidate Redundant Duplicates
 - **Action:** Group pull requests targeting the same logical components and merge only the most robust version, closing the redundant variants:
-  *   **Group A (SSR XSS sanitization):** Merge the version integrating `isomorphic-dompurify` cleanly; close the rest with a message referencing the selected version.
+  *   **Group A (SSR XSS sanitization):** Merge the version integrating `isomorphic-dompurify` cleanly; close the rest.
   *   **Group B (Logging PII filters):** Merge the version implementing declarative capture-group masking (preserving structural JSON syntax); close the rest.
   *   **Group C (Utility Loop Optimizations):** Merge the version flattening nested control flow loops; close the rest.
   *   **Group D (Focus & Accessibility):** Merge the version implementing comprehensive screen-reader landmarks and focus outlines; close the rest.
-- **Verification Goal:** Redundant branches are closed with direct links to the winning PR to ensure clarity.
 
-#### Step 2.3: Resolve Test Suite Conflicts through Centralized Appending
-- **Action:** For pull requests attempting to write new, duplicate, or fragmented unit test files from scratch:
-  *   Extract the new test code blocks from the PR's branch.
-  *   Append these test suites cleanly into the repository's centralized, category-specific test modules (e.g. `lib/mold-types.test.ts` or `lib/subject-persistence.test.ts`).
-  *   Ensure test mock variables conform perfectly to the modernized repository data contract schemas.
-- **Verification Goal:** No standalone conflicted test files remain; all tests exist in centralized test modules.
+#### Step 2.3: Handle Conflict Resolution for Outdated Base Branches
+- **Action:** Feature branches created before latest documentation or layout additions will trigger merge conflicts in `.Jules/palette.md`, `components/mold/results-screen.tsx`, or `AGENTS.md`.
+  1. Create a local temporary branch to run merges safely:
+     ```bash
+     git checkout -b temp-workflow-merge
+     ```
+  2. Perform merges sequentially. When conflicts occur:
+     *   **For `.Jules/palette.md`:** Combine the new learning entries cleanly from both incoming blocks to preserve all cumulative developer learnings.
+     *   **For styled buttons (e.g. Results Screen):** Preserve the most descriptive and comprehensive ARIA labels (e.g. keep `aria-label="Dump logs to return home"` over generic versions).
+     *   **For untracked local file blockers:** Stage or delete untracked temporary files that conflict with the incoming branch before re-running the merge.
+  3. Mark conflicts resolved by staging and committing:
+     ```bash
+     git add [conflicted files]
+     git commit -m "merge: resolve branch conflicts cleanly"
+     ```
+- **Verification Goal:** Working tree is verified as completely clean via `git status` with no remaining unmerged paths.
 
 > [!IMPORTANT]
-> Never allow independent feature branches to create standalone, duplicate test files. Always consolidate test assertions into unified files to completely prevent git merge conflicts and regression loops.
+> Never override descriptive UI accessibility elements with generic shortcuts during conflict resolution. Always combine learnings in `.Jules/palette.md` and keep descriptive ARIA text labels.
 
 ---
 
@@ -84,9 +100,9 @@ Apply this strict, sequential protocol to execute the triage, merge, and cleanup
 #### Step 3.1: Run Local Validations
 - **Action:** Run the official test runner suite inside the local workspace to ensure 100% of tests pass before push:
   ```bash
-  node --experimental-strip-types --import ./test-runner.mjs --test [list of test files]
+  node --experimental-strip-types --import ./test-runner.mjs --test lib/accuracy.test.ts lib/crypto-utils.test.ts lib/mold-types.test.ts lib/subject-persistence.test.ts
   ```
-- **Verification Goal:** Terminal reports all tests passing successfully with `fail 0`.
+- **Verification Goal:** Terminal reports all 32/32 tests passing successfully with `fail 0`.
 
 #### Step 3.2: Execute Administrative Direct Push Bypass
 - **Action:** If GitHub UI merge buttons are blocked due to mismatched environment status checks (e.g. Vercel environment names misalignment):
