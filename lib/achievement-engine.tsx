@@ -133,8 +133,9 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       if (newIds.length === 0) return []
 
       const now = new Date().toISOString()
+      const newIdsSet = new Set(newIds)
       const updated = current.map((a) =>
-        newIds.includes(a.id) ? { ...a, unlockedAt: now } : a
+        newIdsSet.has(a.id) ? { ...a, unlockedAt: now } : a
       )
 
       await saveAchievements(updated)
@@ -149,7 +150,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       )
 
       // Return the newly unlocked Achievement objects for the toast
-      return updated.filter((a) => newIds.includes(a.id))
+      return updated.filter((a) => newIdsSet.has(a.id))
     },
     [conditions]
   )
