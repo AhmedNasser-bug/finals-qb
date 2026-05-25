@@ -45,4 +45,7 @@
 
 ## 2026-05-24 - Resolving Fragmented Test Suite PR Conflicts
 **Learning:** Multiple independent pull requests attempting to write new, duplicate, or fragmented unit test files from scratch will cause immediate merge conflicts and legacy schema mismatch regressions.
-**Action:** Consolidate external pull request test blocks by appending them directly into centralized test modules (e.g. `mold-types.test.ts`), aligning data mocks with modern schemas, and verifying via a single standardized test execution pipeline.
+**Action:** Consolidate external pull request test blocks by appending them directly into centralized test modules (e.g. `mold-types.test.ts`), aligning data mocks with modern schemas, and verifying via a single standardized test execution pipeline.
+## 2026-05-24 - Adding aria-hidden to decorative layout elements and roles to generic footers
+**Learning:** Decorative geometric layout elements (like absolute positioned scanlines or backgrounds) can be distracting to assistive tools if not explicitly hidden. Basic footer elements that act as system stamps also benefit from an explicit `role="contentinfo"` to establish proper page landmarks.
+**Action:** Apply `aria-hidden="true"` to layout-only `<div>`s or graphical elements. Apply `role="contentinfo"` to global footer wrappers to enforce standard a11y landmarks.
