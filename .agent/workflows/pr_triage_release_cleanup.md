@@ -165,3 +165,45 @@ Execute these protocols to verify execution success at the end of the workflow:
 - **Known Seams:**
   *   **Vercel Deployment Mismatch:** Status checks posted by integrations might mismatch branch protection requirements. Bypass via administrative push override or align check names in repo settings.
   *   **Line Endings Warning:** CRLF/LF transitions during PowerShell script git pushes. Let Git handle replacements automatically.
+
+---
+
+## 6. Jules Session Integration & Overnight Tasks
+
+### 6.1. Vercel Deployment Troubleshooting (Overnight Task 1)
+- **The Problem:** Merges on `main` may become blocked in the GitHub UI due to missing active status check updates for `Production – finals-qb` and `Preview – finals-qb` deployments. Mismatched Vercel settings cause deployments to build under generic environments rather than reporting under these repository-specific branch protection check names.
+- **The Fix:**
+  1. **Align GitHub Status Check Settings:**
+     - Navigate to repository: `AhmedNasser-bug/finals-qb`.
+     - Go to **Settings** -> **Branches** -> edit the protection rule for `main`.
+     - Locate the **Status checks that are required to pass before merging** section.
+     - Update or remove the outdated check names `Production – finals-qb` and `Preview – finals-qb` and add the actual status checks currently posted by the Vercel GitHub integration (e.g. `Vercel – Production` or `Vercel – Preview`).
+  2. **Verify Vercel Project Configurations:**
+     - Open Vercel Dashboard.
+     - Navigate to **Project Settings** -> **Git**.
+     - Under the **GitHub Integration** section, confirm the repository mapping and check that environment status reporting is toggled on.
+  3. **Local Merging Strategy (Emergency Fallback):**
+     - If status checks block UI merges, perform merges locally, test them, and run a direct push:
+       ```bash
+       git push origin main
+       ```
+
+### 6.2. Categorized Log Files inside the `.Jules` Folder (Overnight Task 2)
+To prevent regressions or accidental refactoring of security, accessibility, and architectural elements, maintain these detailed, category-specific markdown files in the `.Jules/` directory:
+- **`.../security.md`:** Documents the Server-Side Rendering (SSR) XSS sanitization standards utilizing `isomorphic-dompurify` and strict Mermaid configurations (`securityLevel: 'strict'`).
+- **`.../logging.md`:** Standardizes log-sanitization patterns utilizing declarative capture-group masking in `lib/logger.ts` to preserve JSON structural integrity.
+- **`.../accessibility.md`:** Defines accessibility first rules including focus ring indicators (`focus-visible`), hiding purely decorative icons (`aria-hidden="true"`), and wrapping dynamic feedback elements inside screen-reader live regions.
+- **`.../multi_tenant.md`:** Mandates absolute Next.js build separation (`NEXT_DIST_DIR`) in DockerCompose orchestrations to avoid cross-tenant build cache collisions.
+- **`.../testing.md`:** Establishes test consolidation strategies to prevent fragmented test files and enforces the official test runner command.
+
+### 6.3. Jules CLI Remote Session Context Analysis & Cleanup (Overnight Task 3)
+Using the `jules` CLI, collect and manage the remote session context (`jules remote list --session`):
+- **Completed Sessions & Cleanup:** Identify completed sessions (e.g., `6151588204005495427` (PII Masking), `10667588300932973810` (SSR XSS), etc.). Push delete all remote-tracking git feature branches matching these completed sessions from `origin` to keep remote references pristine.
+- **Sessions Awaiting Feedback (Interaction Required):**
+  Identify sessions awaiting feedback. Since manual consolidations and merges are fully integrated into `main`, safely reply to these sessions or close them with:
+  > *"Merged and integrated successfully on the main branch. Closing this task."*
+- **Prompt Improvements for the Running Automation:**
+  *   **Test Suite Appending:** Instruct automated tasks to append new tests directly to central files (e.g. `lib/mold-types.test.ts`) instead of creating separate files.
+  *   **Structural Log Preservation:** Require using strict, declarative capture-groups in `lib/logger.ts` to avoid scrubbing JSON syntax characters.
+  *   **Isomorphic Dompurify Uniformity:** Specify using `isomorphic-dompurify` directly to guarantee uniform sanitization during SSR.
+
