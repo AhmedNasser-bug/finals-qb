@@ -215,14 +215,7 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
       continue
     }
 
-    let labelExists = false;
-    for (let j = 0; j < qObj.options.length; j++) {
-      const opt = qObj.options[j] as Record<string, unknown>;
-      if (opt.label === qObj.answer) {
-        labelExists = true;
-        break;
-      }
-    }
+    const labelExists = (qObj.options as Record<string, unknown>[]).some((opt) => opt.label === qObj.answer);
 
     if (!labelExists) {
       const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)

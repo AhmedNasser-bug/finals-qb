@@ -196,15 +196,15 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
     const newElapsed = state.elapsedSeconds + 1
 
     // Global timer countdown (Speedrun / Blitz)
-    if (state.globalTimeLimit > 0) {
-      const newRemaining = state.globalTimeRemaining - 1
-      if (newRemaining <= 0) {
-        return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: 0, phase: "complete" }
-      }
-      return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: newRemaining }
+    if (state.globalTimeLimit <= 0) {
+      return { ...state, elapsedSeconds: newElapsed }
     }
 
-    return { ...state, elapsedSeconds: newElapsed }
+    const newRemaining = state.globalTimeRemaining - 1
+    if (newRemaining <= 0) {
+      return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: 0, phase: "complete" }
+    }
+    return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: newRemaining }
   },
 
   PER_QUESTION_TICK: (state) => {

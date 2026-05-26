@@ -66,10 +66,9 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
     }
 
     // Explicitly preserve custom properties
-    for (const key of Object.getOwnPropertyNames(data)) {
-      if (key !== 'name' && key !== 'message' && key !== 'stack') {
-        (maskedError as any)[key] = maskData((data as any)[key], seen);
-      }
+    const customKeys = Object.getOwnPropertyNames(data).filter(key => key !== 'name' && key !== 'message' && key !== 'stack');
+    for (const key of customKeys) {
+      (maskedError as any)[key] = maskData((data as any)[key], seen);
     }
     return maskedError;
   }

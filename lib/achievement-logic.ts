@@ -47,12 +47,9 @@ const CONDITION_EVALUATORS: Record<string, ConditionEvaluator> = {
 
     // Fallback logic for backward compatibility until full implementation tracks selectedCategory per run
     for (let i = 0; i < allRuns.length; i++) {
-      if (allRuns[i].mode === "practice") {
-        practiceCount++;
-        if (practiceCount >= 3) {
-          return true;
-        }
-      }
+      if (allRuns[i].mode !== "practice") continue;
+      practiceCount++;
+      if (practiceCount >= 3) return true;
     }
 
     // For demo purposes: unlock when they have 3+ practice runs
