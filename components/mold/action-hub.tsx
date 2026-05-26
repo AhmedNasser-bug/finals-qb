@@ -42,7 +42,7 @@ export function ActionHub({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         )}
       >
-        <BookIcon className="w-4 h-4 shrink-0" />
+        <BookIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
         ENCYCLOPEDIA
       </button>
 
@@ -52,6 +52,7 @@ export function ActionHub({
         disabled={disabled}
         aria-disabled={disabled}
         title={disabled ? "Action not available" : undefined}
+        aria-label={disabled ? "Action not available" : "Initialize session"}
         className={cn(
           "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded border",
           "text-sm font-mono font-bold tracking-wide",
@@ -62,7 +63,7 @@ export function ActionHub({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         )}
       >
-        <PlayIcon className="w-4 h-4 shrink-0" />
+        <PlayIcon className="w-4 h-4 shrink-0" aria-hidden="true" />
         {modeLabels[selectedMode]}
       </button>
     </div>

@@ -5,10 +5,22 @@ import type { Question } from "@/lib/mold-types"
 import { calculateGrade, formatLabel } from "@/lib/mold-types"
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import DOMPurify from "dompurify"
+import DOMPurify from "isomorphic-dompurify"
 import { parseRichTextParts } from "./rich-text"
 import { MermaidDiagram } from "./mermaid-diagram"
 import { CheckCircleIcon, RadioIcon, LightbulbIcon, XIcon } from "./game-icons"
+
+interface OptionButtonProps {
+  idx: number;
+  label: string;
+  text?: string;
+  isSelected: boolean;
+  isRevealed: boolean;
+  isCorrect: boolean;
+  isWrong: boolean;
+  isDimmed: boolean;
+  onSelect: () => void;
+}
 
 export function QuestionCard({
   question,
@@ -55,51 +67,18 @@ export function QuestionCard({
         const isDimmed = isRevealed && !isCorrect && !isSelected
 
         return (
-          <button
+          <OptionButton
             key={opt.label}
-            role="radio"
-            aria-checked={isSelected}
-            disabled={isRevealed}
-            onClick={() => selectOption(opt.label)}
-            className={cn(
-              "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
-              !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
-              !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
-              isRevealed && isCorrect && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
-              isRevealed && isWrong && "bg-[#930013]/10 border-l-4 border-[#930013]",
-              isDimmed && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
-            )}
-          >
-            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-              <span className={cn(
-                "font-mono text-[10px] tracking-widest uppercase",
-                !isRevealed && isSelected ? "text-[#fecc17]" :
-                  isRevealed && isCorrect ? "text-[#4ae176]" :
-                    isRevealed && isWrong ? "text-[#ffb4ab]" :
-                      "text-zinc-500"
-              )}>
-                OPTION_{String(idx + 1).padStart(2, "0")}
-              </span>
-              <span className={cn(
-                "font-mono text-sm font-bold leading-snug",
-                !isRevealed && isSelected ? "text-[#fecc17]" :
-                  isRevealed && isCorrect ? "text-[#4ae176]" :
-                    isRevealed && isWrong ? "text-[#ffb4ab]" :
-                      isDimmed ? "text-zinc-600" :
-                        "text-[#e5e2e1]"
-              )}>
-                {/* Fallback to label if text is undefined for compatibility with types */}
-                {opt.text ?? opt.label}
-              </span>
-            </div>
-            <div className="ml-3 mt-0.5 shrink-0">
-              {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-              {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
-              {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-              {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
-            </div>
-          </button>
+            idx={idx}
+            label={opt.label}
+            text={opt.text}
+            isSelected={isSelected}
+            isRevealed={isRevealed}
+            isCorrect={isCorrect}
+            isWrong={isWrong}
+            isDimmed={isDimmed}
+            onSelect={() => selectOption(opt.label)}
+          />
         )
       })}
     </div>
@@ -174,17 +153,13 @@ export function QuestionCard({
                     <span id={question.id}>
                       {hasDedicatedDiagram ? (
                         <span dangerouslySetInnerHTML={{
-                          __html: typeof window !== "undefined"
-                            ? DOMPurify.sanitize(question.question)
-                            : question.question
+                          __html: DOMPurify.sanitize(question.question)
                         }} />
                       ) : (
                         parts.map((part: { type: string; content: string }, i: number) =>
                           part.type === "html" ? (
                             <span key={i} dangerouslySetInnerHTML={{
-                              __html: typeof window !== "undefined"
-                                ? DOMPurify.sanitize(part.content)
-                                : part.content
+                              __html: DOMPurify.sanitize(part.content)
                             }} />
                           ) : null
                         )
@@ -217,17 +192,13 @@ export function QuestionCard({
                   <span id={question.id}>
                     {hasDedicatedDiagram ? (
                       <span dangerouslySetInnerHTML={{
-                        __html: typeof window !== "undefined"
-                          ? DOMPurify.sanitize(question.question)
-                          : question.question
+                        __html: DOMPurify.sanitize(question.question)
                       }} />
                     ) : (
                       parts.map((part: { type: string; content: string }, i: number) =>
                         part.type === "html" ? (
                           <span key={i} dangerouslySetInnerHTML={{
-                            __html: typeof window !== "undefined"
-                              ? DOMPurify.sanitize(part.content)
-                              : part.content
+                            __html: DOMPurify.sanitize(part.content)
                           }} />
                         ) : null
                       )
@@ -268,5 +239,66 @@ export function QuestionCard({
         </div>
       ) : null}
     </div>
+  )
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function OptionButton({
+  idx,
+  label,
+  text,
+  isSelected,
+  isRevealed,
+  isCorrect,
+  isWrong,
+  isDimmed,
+  onSelect,
+}: OptionButtonProps) {
+  return (
+    <button
+      role="radio"
+      aria-checked={isSelected}
+      disabled={isRevealed}
+      onClick={onSelect}
+      className={cn(
+        "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
+        !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
+        !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
+        isRevealed && isCorrect && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
+        isRevealed && isWrong && "bg-[#930013]/10 border-l-4 border-[#930013]",
+        isDimmed && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
+      )}
+    >
+      <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+        <span className={cn(
+          "font-mono text-[10px] tracking-widest uppercase",
+          !isRevealed && isSelected ? "text-[#fecc17]" :
+            isRevealed && isCorrect ? "text-[#4ae176]" :
+              isRevealed && isWrong ? "text-[#ffb4ab]" :
+                "text-zinc-500"
+        )}>
+          OPTION_{String(idx + 1).padStart(2, "0")}
+        </span>
+        <span className={cn(
+          "font-mono text-sm font-bold leading-snug",
+          !isRevealed && isSelected ? "text-[#fecc17]" :
+            isRevealed && isCorrect ? "text-[#4ae176]" :
+              isRevealed && isWrong ? "text-[#ffb4ab]" :
+                isDimmed ? "text-zinc-600" :
+                  "text-[#e5e2e1]"
+        )}>
+          {/* Fallback to label if text is undefined for compatibility with types */}
+          {text ?? label}
+        </span>
+      </div>
+      <div className="ml-3 mt-0.5 shrink-0">
+        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
+        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
+        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
+        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
+      </div>
+    </button>
   )
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import DOMPurify from "dompurify"
+import DOMPurify from "isomorphic-dompurify"
 import { MermaidDiagram } from "./mermaid-diagram"
 
 interface RichTextProps {
@@ -100,9 +100,7 @@ export function RichText({ content, className, id = "q" }: RichTextProps) {
         }
 
         // Use DOMPurify for HTML content
-        const cleanHtml = typeof window !== "undefined"
-          ? DOMPurify.sanitize(part.content)
-          : part.content // fallback for SSR (dangerouslySetInnerHTML handles basic sanitization)
+        const cleanHtml = DOMPurify.sanitize(part.content)
 
         return (
           <span

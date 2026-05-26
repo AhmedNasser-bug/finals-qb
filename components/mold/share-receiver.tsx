@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { decodeSubject, clearShareHash } from "@/lib/subject-sharing"
 import type { FullSubjectData } from "@/lib/mold-types"
 
@@ -19,6 +19,13 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
   const [state, setState]     = useState<DecodeState>("decoding")
   const [subject, setSubject] = useState<FullSubjectData | null>(null)
   const [error, setError]     = useState<string | null>(null)
+
+  const overlayRef = useRef<HTMLDivElement>(null)
+
+  // Trap focus inside overlay
+  useEffect(() => {
+    overlayRef.current?.focus()
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -59,10 +66,12 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
 
   return (
     <div
+      ref={overlayRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="receiver-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/90 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/90 backdrop-blur-sm animate-fade-in outline-none"
     >
       <div className="w-full max-w-md bg-panel border border-border rounded flex flex-col shadow-xl animate-slide-up">
 
@@ -83,8 +92,8 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
         {/* Body */}
         <div className="px-5 py-4 flex flex-col gap-4">
           {state === "decoding" && (
-            <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground animate-pulse py-2">
-              <SpinnerIcon />
+            <div role="status" aria-live="polite" className="flex items-center gap-3 text-xs font-mono text-muted-foreground animate-pulse py-2">
+              <SpinnerIcon aria-hidden="true" />
               Decompressing and validating data...
             </div>
           )}
@@ -99,6 +108,7 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
               </p>
               <button
                 onClick={handleDecline}
+                aria-label="Dismiss error"
                 className="w-full py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               >
                 Dismiss
@@ -128,12 +138,14 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
               <div className="flex gap-3">
                 <button
                   onClick={handleDecline}
+                  title="Decline and dismiss subject"
                   className="flex-1 py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                   Decline
                 </button>
                 <button
                   onClick={handleAccept}
+                  title="Accept and add subject to your local library"
                   className="flex-1 py-2.5 rounded border border-primary/50 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                   Add to Library
@@ -157,9 +169,9 @@ function StatPill({ label, value }: { label: string; value: number }) {
   )
 }
 
-function SpinnerIcon() {
+function SpinnerIcon({ "aria-hidden": ariaHidden }: { "aria-hidden"?: boolean | "true" | "false" }) {
   return (
-    <svg className="w-3.5 h-3.5 animate-spin shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg className="w-3.5 h-3.5 animate-spin shrink-0" aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
     </svg>
   )

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { logger } from "@/lib/logger"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -103,8 +104,7 @@ const MOLD_MERMAID_CONFIG = {
   sequence: {
     useMaxWidth: true,
   },
-  // securityLevel loose so node labels with parens/quotes work; we sanitize before passing
-  securityLevel: "loose" as const,
+  securityLevel: "strict" as const,
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -216,7 +216,7 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
         mermaid.initialize(MOLD_MERMAID_CONFIG)
       } catch (e) {
         // Non-fatal — continue with whatever state mermaid is in
-        console.warn("[MermaidDiagram] initialize warning:", e)
+        logger.warn("[MermaidDiagram] initialize warning:", e)
       }
 
       // ── Error Case 6: Syntax validation ─────────────────────────────────

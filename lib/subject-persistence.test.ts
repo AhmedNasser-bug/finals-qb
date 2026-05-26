@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { validateSubjectData } from "./subject-persistence.ts";
+import { validateSubjectData, parseSubjectJson } from "./subject-persistence.ts";
 
 describe("validateSubjectData", () => {
   test("rejects invalid root types", () => {
@@ -105,9 +105,21 @@ describe("validateSubjectData", () => {
 
     const invalidOptions = {
       ...validBase,
-      questions: [{ ...validBase.questions[0], options: ["A"] }] // Only 1 option
+      questions: [{ ...validBase.questions[0], options: [{ label: "A" }] }] // Only 1 option
     };
     assert.strictEqual(validateSubjectData(invalidOptions).valid, false);
+
+    const noMatchingAnswer = {
+      ...validBase,
+      questions: [{ ...validBase.questions[0], answer: "C" }]
+    };
+    assert.strictEqual(validateSubjectData(noMatchingAnswer).valid, false);
+
+    const invalidDiagramPosition = {
+      ...validBase,
+      questions: [{ ...validBase.questions[0], diagramPosition: "above" }]
+    };
+    assert.strictEqual(validateSubjectData(invalidDiagramPosition).valid, false);
 
     const missingQuestionId = {
       ...validBase,
@@ -162,7 +174,7 @@ describe("validateSubjectData", () => {
         "Term 1": "Def 1"
       },
       achievements: [
-        { id: "a-1", title: "Ach 1", description: "Desc", icon: "Award", condition: { type: "runs_gte", value: 1 } }
+        { id: "a-1", title: "Ach 1", description: "Desc" }
       ]
     };
     const res = validateSubjectData(validFull);
@@ -183,5 +195,29 @@ describe("validateSubjectData", () => {
     const invalidFlashcards = { ...validBase, flashcards: "invalid" };
     const resInvalid = validateSubjectData(invalidFlashcards);
     assert.ok(resInvalid.warnings.some(w => w.includes('"flashcards" field is missing or not an array')));
+  });
+});
+
+describe("parseSubjectJson", () => {
+  test("successfully parses valid JSON", () => {
+    const jsonStr = '{"id":"test","value":123}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, { id: "test", value: 123 });
+    assert.strictEqual(result.parseError, undefined);
+  });
+
+  test("returns parseError for invalid JSON", () => {
+    const invalidJsonStr = '{"id":"test", value:123}'; // missing quotes around value
+    const result = parseSubjectJson(invalidJsonStr);
+    assert.strictEqual(result.data, undefined);
+    assert.ok(typeof result.parseError === "string");
+    assert.ok(result.parseError.startsWith("JSON parse error:"));
+  });
+
+  test("handles empty string", () => {
+    const result = parseSubjectJson("");
+    assert.strictEqual(result.data, undefined);
+    assert.ok(typeof result.parseError === "string");
+    assert.ok(result.parseError.startsWith("JSON parse error:"));
   });
 });

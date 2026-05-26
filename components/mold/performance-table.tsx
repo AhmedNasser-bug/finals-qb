@@ -27,7 +27,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
 
       {/* Runs table or empty state */}
       {runs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-2 py-12 rounded border border-dashed border-border/60 text-muted-foreground">
+        <div className="flex flex-col items-center justify-center gap-2 py-12 rounded border border-dashed border-border/60 text-muted-foreground" role="status" aria-live="polite">
           <p className="text-sm font-mono tracking-widest">NO RUNS RECORDED</p>
           <p className="text-xs text-muted-foreground/60">Complete your first session to begin tracking.</p>
         </div>

@@ -19,6 +19,7 @@ This document is the single source of truth for any agent (human or AI) working 
 11. [Connecting a Real Subject](#11-connecting-a-real-subject)
 12. [Known Seams and Production TODOs](#12-known-seams-and-production-todos)
 13. [Engineering Constraints](#13-engineering-constraints)
+14. [Available Workflows](#14-available-workflows)
 
 ---
 
@@ -510,7 +511,7 @@ These are explicitly acknowledged incomplete areas, not bugs:
 | 4 | `achievement-engine.tsx` `checkNewUnlocks` | `ACHIEVEMENT_CONDITIONS` is the demo fallback. | Call `loadConditionsFromSubject()` and pass the result into `checkNewUnlocks`. |
 | 5 | `game-runner.tsx` | `DEMO_FULL_SUBJECT` is imported directly. | Accept the subject as a prop from `HomeScreen` so it can be swapped per subject. |
 | 6 | Persistence | localStorage used throughout. | Swap `loadAchievements/saveAchievements` and `loadRuns/saveRuns` for IDB or server API. |
-| 7 | Test coverage | Zero automated tests exist. | Priority areas: `evaluateCondition`, `buildQuestionPool`, `reducer`, `calculateGrade`, `computeAggregateStats`. |
+| 7 | Test coverage | Initial automated test suites exist and pass 100%. | Add further tests for remaining state transitions, custom mode logic, and edge cases. |
 
 ---
 
@@ -526,3 +527,25 @@ These rules were agreed on during the code review and must be preserved:
 6. **The `ToastLayer` render-prop must remain the outermost wrapper in `GameRunner`** so `useAchievementToast()` is called before any conditional render (Rules of Hooks).
 7. **All new utility functions belonging to the type/data layer go in `lib/mold-types.ts`.** Do not scatter them across component files.
 8. **Never use `DEMO_RUNS` as the achievement evaluation baseline in production.** Always pass the real `runs` prop from `HomeScreen` through `GameRunner` into `onGameComplete`.
+9. **SSR XSS Prevention:** Always use `isomorphic-dompurify` for HTML/question sanitization. Never fallback to raw/unsanitized HTML strings or bypass sanitization on the server-side (`typeof window === 'undefined'`).
+10. **Log PII/Secret Masking Integrity:** All regex-based masking filters in `lib/logger.ts` must use declarative capture-group capture patterns to selectively redact values while preserving structural characters (like quotes, colons, commas) so logs remain valid JSON.
+11. **Accessibility (A11y) First:** Purely decorative icons must have `aria-hidden="true"`. All clickable options and buttons must have clear focus rings (`focus-visible`). Dynamic empty or status text must be wrapped inside live regions (`role="status"` or `aria-live="polite"`).
+12. **Strict Mermaid security Level:** Any rendering configuration for Mermaid diagrams must set `securityLevel: 'strict'` to prevent arbitrary script injections.
+13. **Multi-Tenant isolated Builds:** Next.js build directories (`NEXT_DIST_DIR`) must be fully respected and cleanly separated within Docker container orchestration configs to avoid cross-tenant build collisions in multi-tenant environments.
+14. **Consolidated Test Verification:** The official test execution command is:
+    `node --experimental-strip-types --import ./test-runner.mjs --test lib/accuracy.test.ts lib/crypto-utils.test.ts lib/mold-types.test.ts lib/subject-persistence.test.ts`
+    Run this suite to verify structural and functional integrity before committing changes.
+
+---
+
+## 14. Available Workflows & Skills
+
+Standardized, recurring recipes, workflows, and execution protocols are available for future agents in the `.agent` directory:
+
+1. **[Pull Request Triage, Release Orchestration, and Session Cleanup (Workflow)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/workflows/pr_triage_release_cleanup.md):** 
+   - **Trigger:** Large-scale git branch/PR consolidation, conflicting test-suite resolution, Vercel UI blocks, or remote jules session cleanups.
+   - **Prerequisites:** Administrative push privileges, CLI access to git and jules, Node.js.
+2. **[PR Triage, Release Orchestration, and Session Cleanup (Skill)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/skills/pr-triage-release-cleanup.md):**
+   - **Trigger:** When requested to act as an automated triage, merge, or cleanup agent for git branches, Vercel deployment issues, and jules CLI remote sessions.
+   - **Prerequisites:** Git write permissions, `jules` CLI, Node.js, `test-runner.mjs`.
+
