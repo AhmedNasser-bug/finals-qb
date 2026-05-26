@@ -93,3 +93,7 @@
 ## 2026-05-25 - Adding context to purely stylistic textual buttons
 **Learning:** Buttons with stylised acronyms or very brief text (e.g., 'DUMP_LOGS', 'CONTINUE_CYCLE') often fail to communicate their intent clearly to screen readers compared to visual users who have surrounding context.
 **Action:** Add descriptive `aria-label` attributes to translate stylistic text into clear actions (e.g., `aria-label="Dump logs to return home"`) without compromising the visual design.
+
+## 2026-05-25 - Contextual Titles for Modal Actions
+**Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
+**Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.

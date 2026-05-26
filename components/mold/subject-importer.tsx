@@ -431,6 +431,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
           <button
             onClick={onCancel}
             aria-label="Cancel import"
+            title="Cancel import and close"
             className="text-xs font-mono px-4 py-2 rounded border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             Cancel

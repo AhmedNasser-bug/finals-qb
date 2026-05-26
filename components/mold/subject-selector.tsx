@@ -169,6 +169,7 @@ export function SubjectSelector({
                 {/* Import card */}
                 <button
                   onClick={() => setShowImporter(true)}
+                  title="Import a subject via JSON"
                   className="flex flex-col items-center justify-center gap-3 p-6 border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[140px]"
                 >
                   <PlusIcon aria-hidden="true" />
@@ -217,6 +218,7 @@ export function SubjectSelector({
             <div className="flex justify-center pt-2">
               <button
                 onClick={() => setShowImporter(true)}
+                title="Import a subject via JSON"
                 className="flex items-center gap-3 px-6 py-3 border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-xs font-mono tracking-wider"
               >
                 <PlusIcon aria-hidden="true" />
