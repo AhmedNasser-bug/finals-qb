@@ -177,9 +177,9 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
 
     // Survival: decrease per-question time limit by 1s every 5 questions (min 5s)
     let newPerLimit = state.perQuestionTimeLimit
-    if (state.config.mode === "survival" && state.perQuestionTimeLimit > 5) {
-      const nextIndex = state.currentIndex + 1
-      if (nextIndex % 5 === 0) newPerLimit = Math.max(5, newPerLimit - 1)
+    const nextIndex = state.currentIndex + 1
+    if (state.config.mode === "survival" && state.perQuestionTimeLimit > 5 && nextIndex % 5 === 0) {
+      newPerLimit = Math.max(5, newPerLimit - 1)
     }
 
     return {

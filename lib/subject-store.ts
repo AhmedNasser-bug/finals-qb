@@ -11,13 +11,14 @@ export function deriveCategoriesFromSubject(subject: FullSubjectData): CategoryD
     const existing = map.get(q.category)
     if (existing) {
       existing.count++
-    } else {
-      const name = q.category
-        .split("-")
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" ")
-      map.set(q.category, { name, count: 1 })
+      continue
     }
+
+    const name = q.category
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ")
+    map.set(q.category, { name, count: 1 })
   }
 
   return Array.from(map.entries()).map(([id, { name, count }]) => ({

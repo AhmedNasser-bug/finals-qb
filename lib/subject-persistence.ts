@@ -179,10 +179,14 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
 
     if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
       errors.push(`${prefix}: missing "id".`)
-    } else if (seenIds.has(qObj.id)) {
-      errors.push(`${prefix}: duplicate id "${qObj.id}".`)
-    } else {
-      seenIds.add(qObj.id)
+    }
+
+    if (typeof qObj.id === "string" && qObj.id.trim() !== "") {
+      if (seenIds.has(qObj.id)) {
+        errors.push(`${prefix}: duplicate id "${qObj.id}".`)
+      } else {
+        seenIds.add(qObj.id)
+      }
     }
 
     if (!VALID_TYPES.has(qObj.type as string)) {
@@ -215,14 +219,7 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
       continue
     }
 
-    let labelExists = false;
-    for (let j = 0; j < qObj.options.length; j++) {
-      const opt = qObj.options[j] as Record<string, unknown>;
-      if (opt.label === qObj.answer) {
-        labelExists = true;
-        break;
-      }
-    }
+    const labelExists = (qObj.options as Record<string, unknown>[]).some((opt) => opt.label === qObj.answer)
 
     if (!labelExists) {
       const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
