@@ -76,16 +76,16 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in"
+      ref={overlayRef}
+      tabIndex={-1}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in outline-none"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
       aria-label="Encyclopedia"
     >
       <div
-        ref={overlayRef}
-        tabIndex={-1}
-        className="bg-panel border border-border rounded w-full max-w-3xl mx-4 flex flex-col max-h-[85vh] outline-none animate-slide-up"
+        className="bg-panel border border-border rounded w-full max-w-3xl mx-4 flex flex-col max-h-[85vh] animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
