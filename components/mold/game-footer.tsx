@@ -25,6 +25,7 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
         <button
           onClick={handleHint}
           disabled={!canHint}
+          aria-disabled={!canHint}
           aria-label="Request hint"
           title={!canHint ? "Hint not available" : "Request hint"}
           className={cn(

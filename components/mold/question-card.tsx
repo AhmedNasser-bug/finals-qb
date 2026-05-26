@@ -260,6 +260,7 @@ function OptionButton({
       role="radio"
       aria-checked={isSelected}
       disabled={isRevealed}
+      aria-disabled={isRevealed}
       onClick={onSelect}
       className={cn(
         "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
