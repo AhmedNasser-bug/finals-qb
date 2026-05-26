@@ -1,13 +1,15 @@
 "use client"
 
 import { useGameEngine } from "@/lib/game-engine"
-import { formatTime, calculateGrade, calculateAccuracy } from "@/lib/mold-types"
+import { calculateGrade, calculateAccuracy } from "@/lib/mold-types"
 import * as React from "react"
-import { cn } from "@/lib/utils"
 import {
   StatsGrid,
   SequenceMap,
   ModulePerformance,
+  ResultsHeader,
+  EvaluationSummary,
+  ResultsFooter,
 } from "./results-screen-components"
 
 export interface ResultsScreenProps {
@@ -17,7 +19,7 @@ export interface ResultsScreenProps {
 
 export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps) {
   const { state } = useGameEngine()
-  const { score, questions, bestStreak, elapsedSeconds, mode, config, hintsUsedTotal } = state
+  const { score, questions, bestStreak, elapsedSeconds, mode, config } = state
 
   const total = questions.length
   const answers = state.answers ?? []
@@ -86,79 +88,20 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     <div className="flex-1 bg-[#131313] overflow-y-auto animate-fade-in">
       <div className="max-w-6xl mx-auto p-4 md:p-8 lg:p-12 flex flex-col gap-8 md:gap-12">
 
-        {/* ── Header ── */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#4e4632]/30 pb-8">
-          <div className="flex flex-col gap-2">
-            <span className="font-mono text-xs tracking-[0.3em] text-[#4ae176] uppercase">
-              SESSION_COMPLETE // {mode} // {config.difficulty}
-            </span>
-            <h1 className="font-sans font-black text-4xl md:text-6xl tracking-tighter text-[#e5e2e1] uppercase">
-              DIAGNOSTIC_REPORT
-            </h1>
-          </div>
-          <div className="flex flex-col items-start md:items-end gap-1">
-            <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">FINAL_EVALUATION</span>
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-6xl md:text-7xl font-black leading-none drop-shadow-[0_0_20px_rgba(254,204,23,0.2)]" style={{ color: gradeHex }}>
-                {grade}
-              </span>
-              <div className="flex flex-col">
-                <span className="font-mono text-xl text-[#e5e2e1] font-bold">{accuracyPct}%</span>
-                <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">SYNCHRONIZATION</span>
-              </div>
-            </div>
-          </div>
-        </header>
+        <ResultsHeader
+          mode={mode}
+          difficulty={(config as any)?.difficulty ?? "STANDARD"}
+          gradeHex={gradeHex}
+          grade={grade}
+          accuracyPct={accuracyPct}
+        />
 
-        {/* ── Result header ── */}
-        <section className="flex flex-col items-center gap-6">
-          <span className="font-mono text-[10px] tracking-[0.4em] text-[#fecc17] uppercase">
-            SESSION_COMPLETE // EVALUATION_RESULT
-          </span>
-
-          {/* Grade box */}
-          <div className="relative">
-            <div
-              className="absolute inset-0 blur-3xl opacity-40 pointer-events-none"
-              style={{ backgroundColor: gradeHex }}
-            />
-            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden"
-              style={{ boxShadow: `0 0 40px ${gradeHex}20` }}
-            >
-              <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
-              <span
-                className="font-sans font-black leading-none tracking-tighter z-10 select-none"
-                style={{ fontSize: "clamp(72px, 10vw, 128px)", color: "#ffedc2" }}
-              >
-                {grade}
-              </span>
-            </div>
-          </div>
-
-          {/* Accuracy coefficient + segmented bar */}
-          <div className="w-full max-w-2xl space-y-2">
-            <div className="flex justify-between items-end">
-              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
-                ACCURACY_COEFFICIENT
-              </span>
-              <span className="font-mono text-2xl font-black" style={{ color: gradeHex }}>
-                {accuracyPct}%
-              </span>
-            </div>
-            <div className="flex w-full gap-1 h-4">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 h-full"
-                  style={{
-                    backgroundColor: i < filledSegments ? "#4ae176" : "#353534",
-                    boxShadow: i < filledSegments ? "0 0 8px rgba(74,225,118,0.3)" : "none",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
+        <EvaluationSummary
+          gradeHex={gradeHex}
+          grade={grade}
+          accuracyPct={accuracyPct}
+          filledSegments={filledSegments}
+        />
 
         {/* ── 12-col grid: stat block + sequence map ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -179,38 +122,15 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           />
         </div>
 
-        {/* ── Module performance ── */}
         <ModulePerformance
           modules={modules}
           resolveGradeColor={resolveGradeColor}
         />
 
-        {/* ── Bottom action HUD ── */}
-        <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-[#4e4632]/10">
-          <div className="flex flex-col">
-            <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
-              SYSTEM_ACTION_READY
-            </span>
-            <span className="font-sans text-sm font-medium text-[#e5e2e1]">
-              TERMINATE_OR_REITERATE?
-            </span>
-          </div>
-          <div className="flex gap-3 w-full md:w-auto">
-            <button
-              onClick={onReturnHome}
-              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
-            >
-              DUMP_LOGS
-            </button>
-            <button
-              onClick={onPlayAgain}
-              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
-              style={{ boxShadow: "0 0 25px rgba(254,204,23,0.15)" }}
-            >
-              CONTINUE_CYCLE
-            </button>
-          </div>
-        </footer>
+        <ResultsFooter
+          onReturnHome={onReturnHome}
+          onPlayAgain={onPlayAgain}
+        />
 
       </div>
     </div>
