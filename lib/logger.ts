@@ -20,7 +20,15 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
     // Common secrets
     pattern: /((?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*)(?:(["'])(.*?)\2|([^,\]\}\s]+))/gi,
     replacement: (match: string, p1: string, p2: string, p3: string, p4: string) => {
-      return p1 + (p2 ? p2 + "[REDACTED]" + p2 : '"[REDACTED]"');
+      if (p2) {
+        return p1 + p2 + "[REDACTED]" + p2;
+      } else if (p4) {
+        if (p4.startsWith('[') || p4.startsWith('{')) {
+          return match; // Don't break stringified JSON arrays/objects matched partially. The inner keys should be explicitly targeted if they are secrets, or the object should be parsed and recursively redacted.
+        }
+        return p1 + '"[REDACTED]"';
+      }
+      return match;
     }
   },
   {
@@ -85,7 +93,12 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
 
   const maskedObj: Record<string, any> = {};
   for (const key of Object.keys(data)) {
-    maskedObj[key] = maskData(data[key], seen);
+    const lowerKey = key.toLowerCase();
+    if (['api_key', 'apikey', 'secret', 'token', 'password'].some(k => lowerKey.includes(k))) {
+      maskedObj[key] = '[REDACTED]';
+    } else {
+      maskedObj[key] = maskData(data[key], seen);
+    }
   }
 
   return maskedObj;
