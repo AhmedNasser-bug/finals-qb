@@ -104,6 +104,7 @@ export function checkNewUnlocks(
   // Check "all_unlocked" meta-achievement separately
   let allOthersLocked = true;
   let grandMaster: Achievement | undefined;
+  const newlyUnlockedSet = new Set(newlyUnlocked);
 
   for (let i = 0; i < achievements.length; i++) {
     const a = achievements[i];
@@ -112,7 +113,7 @@ export function checkNewUnlocks(
       continue;
     }
 
-    if (a.unlockedAt === null && !newlyUnlocked.includes(a.id)) {
+    if (a.unlockedAt === null && !newlyUnlockedSet.has(a.id)) {
       allOthersLocked = false;
     }
   }
