@@ -45,6 +45,32 @@ Routing is managed via Next.js App Router. Components utilizing routing hooks (`
 
 ## 2. Component Registry
 
+### `app/actions.ts`
+
+**Module Name:** Actions
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.
+
+---
+
 ### `app/layout.tsx`
 
 **Module Name:** RootLayout
@@ -63,11 +89,11 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-None
+children,
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
@@ -94,6 +120,7 @@ None
 
 **Edge-Case Input Handling & Validation:**
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
@@ -120,6 +147,7 @@ None
 
 **Edge-Case Input Handling & Validation:**
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
@@ -134,18 +162,19 @@ None
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useMemo, useAchievements
+useAchievements, useMemo
 
 **Performance Characteristics:**
 Utilizes memoization: useMemo to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-None
+onClose
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -160,7 +189,7 @@ None
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useCallback, useEffect, useAchievementToast, useState
+useAchievementToast, useCallback, useEffect, useState
 
 **Performance Characteristics:**
 Utilizes memoization: useCallback to prevent unnecessary re-renders.
@@ -172,7 +201,9 @@ toasts: ToastItem[]
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -203,6 +234,7 @@ onInitialize: () => void
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -217,7 +249,7 @@ onInitialize: () => void
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useEffect, useState, useRef
+useEffect, useRef, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -229,7 +261,105 @@ subject: FullSubjectData
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/example-module-card.tsx`
+
+**Module Name:** Example-Module-Card
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useEvent
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+entry: ExampleManifestEntry
+  isLoading: boolean
+  onLoad: (entry: ExampleManifestEntry) => void
+  onShare: (e: React.MouseEvent, entry: ExampleManifestEntry) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/flashcard-components.tsx`
+
+**Module Name:** Flashcard-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+onQuit: () => void
+  progress: number
+  position: string
+  round: number
+  confident: number
+  learning: number
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/flashcard-screen-blocks.tsx`
+
+**Module Name:** Flashcard-Screen-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+round: number;
+  flashcardsLength: number;
+  confident: number;
+  neutral: number;
+  learning: number;
+  hardest: Flashcard | undefined;
+  scores: Record<string, number>;
+  onReturnHome: () => void;
+  onComplete: () => void;
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -244,10 +374,10 @@ subject: FullSubjectData
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useCallback, useMemo, useState, useRef
+useCallback, useMemo, useRef, useState
 
 **Performance Characteristics:**
-Utilizes memoization: useCallback, useMemo to prevent unnecessary re-renders.
+Utilizes memoization: useMemo, useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
@@ -257,7 +387,8 @@ flashcards: Flashcard[]
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -310,7 +441,89 @@ None
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/game-footer.tsx`
+
+**Module Name:** Game-Footer
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useGameEngine, useHint
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+onHintRequest
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/game-header.tsx`
+
+**Module Name:** Game-Header
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useGameEngine
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+onForfeit
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/game-icons.tsx`
+
+**Module Name:** Game-Icons
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+className
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
@@ -325,7 +538,7 @@ None
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useAchievementToast, useState, useRef, useEffect, useAchievements, useGameEngine
+useAchievementToast, useAchievements, useEffect, useGameEngine, useRef, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -344,35 +557,34 @@ config: GameConfig
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
 
 ---
 
-### `components/mold/game-screen.tsx`
+### `components/mold/game-stat-cell.tsx`
 
-**Module Name:** Game-Screen
+**Module Name:** Game-Stat-Cell
 
 **Characteristics:**
-- Client Component: `Yes`
+- Client Component: `No`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useMemo, useHint, useGameEngine
+None
 
 **Performance Characteristics:**
-Utilizes memoization: useMemo to prevent unnecessary re-renders.
+No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onReturnHome: () => void
-  onPlayAgain: () => void
+label, value, accent, className,
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
-- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
@@ -402,6 +614,7 @@ subject: SubjectData
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -434,9 +647,11 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
-- Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
+- Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.
+- Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -451,7 +666,7 @@ No explicit memoization hooks (useMemo/useCallback) used.
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useEffect, useMaxWidth, useState, useRef
+useEffect, useMaxWidth, useRef, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -467,6 +682,8 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
@@ -518,11 +735,13 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onSubjectAdded: (subject: FullSubjectData) => void
+mode: GameMode;
 ```
 
 **Edge-Case Input Handling & Validation:**
 - Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -554,6 +773,100 @@ runs: RunRecord[]
 
 ---
 
+### `components/mold/question-card.tsx`
+
+**Module Name:** Question-Card
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useGameEngine, useMemo
+
+**Performance Characteristics:**
+Utilizes memoization: useMemo to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+idx: number;
+  label: string;
+  text?: string;
+  isSelected: boolean;
+  isRevealed: boolean;
+  isCorrect: boolean;
+  isWrong: boolean;
+  isDimmed: boolean;
+  onSelect: () => void;
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
+- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/results-screen-components.tsx`
+
+**Module Name:** Results-Screen-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+elapsedSeconds: number
+  avgTimeSec: string | null
+  bestStreak: number
+  xpYield: number
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+---
+
+### `components/mold/results-screen.tsx`
+
+**Module Name:** Results-Screen
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useGameEngine
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+onReturnHome: () => void
+  onPlayAgain: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
 ### `components/mold/rich-text.tsx`
 
 **Module Name:** Rich-Text
@@ -578,8 +891,8 @@ content: string
 ```
 
 **Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
-- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 ---
@@ -611,6 +924,7 @@ config: SetupConfig
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -625,19 +939,30 @@ config: SetupConfig
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useCallback, useEffect, useState
+useCallback, useEffect, useRef, useState
 
 **Performance Characteristics:**
 Utilizes memoization: useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-subject: FullSubjectData
-  onClose: () => void
+encoding: boolean;
+  encodeError: string | null;
+  shareUrl: string;
+  shortUrl: string;
+  copyState: CopyState;
+  shortenState: ShortenState;
+  shortenError: string | null;
+  sizeKb: string;
+  isSizeLarge: boolean;
+  onCopy: () => void;
+  onShorten: () => void;
+  onCopyShortUrl: () => void;
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -652,7 +977,7 @@ subject: FullSubjectData
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useEffect, useState
+useEffect, useRef, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -668,7 +993,8 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```
 
 **Edge-Case Input Handling & Validation:**
-- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 ---
 
@@ -701,6 +1027,32 @@ currentStreak: number
 
 ---
 
+### `components/mold/subject-importer-components.tsx`
+
+**Module Name:** Subject-Importer-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+label, value
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+---
+
 ### `components/mold/subject-importer.tsx`
 
 **Module Name:** Subject-Importer
@@ -715,7 +1067,7 @@ currentStreak: number
 useCallback, useMemo, useState
 
 **Performance Characteristics:**
-Utilizes memoization: useCallback, useMemo to prevent unnecessary re-renders.
+Utilizes memoization: useMemo, useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
@@ -726,8 +1078,34 @@ onImport: (subject: FullSubjectData) => void
 
 **Edge-Case Input Handling & Validation:**
 - Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
-- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
-- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/subject-selector-components.tsx`
+
+**Module Name:** Subject-Selector-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+label, count, badge
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
 
@@ -742,7 +1120,7 @@ onImport: (subject: FullSubjectData) => void
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useEffect, useState
+useEffect, useEvent, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -757,5 +1135,145 @@ subjects: FullSubjectData[]
 
 **Edge-Case Input Handling & Validation:**
 - Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/mold/user-subject-card.tsx`
+
+**Module Name:** User-Subject-Card
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+full: FullSubjectData
+  isConfirming: boolean
+  categoryCount: number
+  onSelect: (full: FullSubjectData) => void
+  onShare: (full: FullSubjectData) => void
+  onDeleteConfirm: (id: string) => void
+  onDeleteCancel: () => void
+  onRemoveClick: (id: string) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+---
+
+### `components/theme-provider.tsx`
+
+**Module Name:** Theme-Provider
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+
+---
+
+### `components/ui/button.tsx`
+
+**Module Name:** Button
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+---
+
+### `components/ui/card.tsx`
+
+**Module Name:** Card
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+---
+
+### `components/ui/input.tsx`
+
+**Module Name:** Input
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 ---
