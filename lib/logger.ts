@@ -20,6 +20,9 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
     // Common secrets
     pattern: /((?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*)(?:(["'])(.*?)\2|([^,\]\}\s]+))/gi,
     replacement: (match: string, p1: string, p2: string, p3: string, p4: string) => {
+      if (p4 && (p4.startsWith('[') || p4.startsWith('{'))) {
+        return match;
+      }
       return p1 + (p2 ? p2 + "[REDACTED]" + p2 : '"[REDACTED]"');
     }
   },
@@ -31,6 +34,15 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
 ];
 
 function maskString(str: string): string {
+  try {
+    const parsed = JSON.parse(str);
+    if (parsed && typeof parsed === 'object') {
+      return JSON.stringify(maskData(parsed, new WeakSet()));
+    }
+  } catch {
+    // Fallback to regex if parsing fails
+  }
+
   let masked = str;
   for (const { pattern, replacement } of PII_PATTERNS) {
     masked = masked.replace(pattern, replacement as any);
@@ -83,9 +95,14 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
     return data;
   }
 
+  const SENSITIVE_KEYS = /api_key|apikey|secret|token|password/i;
   const maskedObj: Record<string, any> = {};
   for (const key of Object.keys(data)) {
-    maskedObj[key] = maskData(data[key], seen);
+    if (SENSITIVE_KEYS.test(key)) {
+      maskedObj[key] = '[REDACTED]';
+    } else {
+      maskedObj[key] = maskData(data[key], seen);
+    }
   }
 
   return maskedObj;
