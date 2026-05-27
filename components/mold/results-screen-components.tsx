@@ -52,7 +52,7 @@ export interface SequenceMapProps {
 export function SequenceMap({ pixels, total, pixelCount, score, wrongCountVal, skipCount }: SequenceMapProps) {
   return (
     <div className="lg:col-span-8 bg-[#1c1b1b] p-6 md:p-8 relative overflow-hidden">
-      <div className="scanlines absolute inset-0 pointer-events-none opacity-5" />
+      <div className="scanlines absolute inset-0 pointer-events-none opacity-5" aria-hidden="true" />
       <div className="relative z-10 flex flex-col gap-5">
         <div className="flex justify-between items-center">
           <h3 className="font-sans font-bold text-lg tracking-tight uppercase text-[#e5e2e1]">

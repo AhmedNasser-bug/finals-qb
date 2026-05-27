@@ -7,9 +7,14 @@ echo "=========================================="
 
 echo "=> Checking dependencies..."
 if ! command -v pnpm &> /dev/null; then
-    echo "Error: pnpm is required but not installed."
-    echo "Install pnpm (e.g., npm install -g pnpm) and try again."
-    # skip exit for agent compatibility
+    echo "Warning: pnpm not found. Attempting to enable via corepack..."
+    if command -v corepack &> /dev/null; then
+        corepack enable pnpm || echo "Warning: corepack enable pnpm failed."
+    else
+        echo "Error: pnpm and corepack are missing."
+        echo "Install pnpm (e.g., npm install -g pnpm) and try again."
+        # skip exit for agent compatibility
+    fi
 fi
 
 if ! command -v node &> /dev/null; then
@@ -37,15 +42,28 @@ echo "=> Seeding mock data / workspace prep..."
 # Ensure docs directory exists
 mkdir -p docs
 
+# Create a mock database seed structure as per orchestration requirements
+mkdir -p .data/seeds
+cat <<EOF > .data/seeds/default-tenant.json
+{
+  "tenants": ["tenant-a", "tenant-b"],
+  "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+echo "Mock database seeded."
+
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
-    if command -v docker-compose &> /dev/null; then
-        docker-compose up -d
+    if [ ! -f docker-compose.yml ]; then
+        echo "Error: docker-compose.yml not found."
+    elif command -v docker-compose &> /dev/null; then
+        docker-compose up -d --build
     elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
-        docker compose up -d
+        docker compose up -d --build
     else
         echo "Error: docker-compose or docker compose is required for multi-tenant setup."
     fi
+    echo "Multi-tenant sandbox containers are spinning up..."
 fi
 
 echo "=> Environment bootstrap complete."

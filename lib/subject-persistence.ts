@@ -113,15 +113,17 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
     if (typeof a.condition !== "object" || a.condition === null) {
       a.condition = { type: "runs_gte", value: 1 }
       missingConditions++
-    } else {
-      const cond = { ...(a.condition as Record<string, unknown>) }
-      if (typeof cond.type !== "string" || !VALID_CONDITION_TYPES.has(cond.type)) {
-        cond.type = "runs_gte"
-        cond.value = 1
-        unknownCondTypes++
-      }
-      a.condition = cond
+      newAchievements[i] = a
+      continue
     }
+
+    const cond = { ...(a.condition as Record<string, unknown>) }
+    if (typeof cond.type !== "string" || !VALID_CONDITION_TYPES.has(cond.type)) {
+      cond.type = "runs_gte"
+      cond.value = 1
+      unknownCondTypes++
+    }
+    a.condition = cond
     newAchievements[i] = a
   }
   obj.achievements = newAchievements
@@ -208,23 +210,26 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
     }
 
     // answer label must exist in options
-    if (Array.isArray(qObj.options) && qObj.options.length > 0 && typeof qObj.answer === "string") {
-      let labelExists = false;
-      for (let j = 0; j < qObj.options.length; j++) {
-        const opt = qObj.options[j] as Record<string, unknown>;
-        if (opt.label === qObj.answer) {
-          labelExists = true;
-          break;
-        }
-      }
+    if (!Array.isArray(qObj.options) || qObj.options.length === 0 || typeof qObj.answer !== "string") {
+      if (errors.length >= 8) break
+      continue
+    }
 
-      if (!labelExists) {
-        const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
-        errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
+    let labelExists = false;
+    for (let j = 0; j < qObj.options.length; j++) {
+      const opt = qObj.options[j] as Record<string, unknown>;
+      if (opt.label === qObj.answer) {
+        labelExists = true;
+        break;
       }
-      if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
-        errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`)
-      }
+    }
+
+    if (!labelExists) {
+      const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
+      errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
+    }
+    if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
+      errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`)
     }
 
     // Bail after 8 errors to avoid flooding the UI
@@ -291,6 +296,7 @@ function validateTerminologyDict(obj: Record<string, unknown>, warnings: string[
       const e = entry as Record<string, unknown>
       if (typeof e.term !== "string" || e.term.trim() === "") {
         warnings.push(`terminology["${catKey}"][${i}]: missing "term" — entry skipped.`)
+        continue
       }
       if (typeof e.definition !== "string" || e.definition.trim() === "") {
         warnings.push(`terminology["${catKey}"][${i}]: missing "definition" — entry skipped.`)

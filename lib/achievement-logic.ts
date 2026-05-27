@@ -109,17 +109,16 @@ export function checkNewUnlocks(
     const a = achievements[i];
     if (a.id === "grand-master" || a.id === "grand_master") {
       grandMaster = a;
-    } else {
-      if (a.unlockedAt === null && !newlyUnlocked.includes(a.id)) {
-        allOthersLocked = false;
-      }
+      continue;
+    }
+
+    if (a.unlockedAt === null && !newlyUnlocked.includes(a.id)) {
+      allOthersLocked = false;
     }
   }
 
-  if (allOthersLocked) {
-    if (grandMaster && grandMaster.unlockedAt === null) {
-      newlyUnlocked.push(grandMaster.id)
-    }
+  if (allOthersLocked && grandMaster && grandMaster.unlockedAt === null) {
+    newlyUnlocked.push(grandMaster.id)
   }
 
   return newlyUnlocked

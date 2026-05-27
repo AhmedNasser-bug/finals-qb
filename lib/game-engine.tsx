@@ -51,38 +51,49 @@ function buildInitialState(config: GameConfig, questions: Question[]): GameState
 
 // ─── Question pool builder ─────────────────────────────────────────────────────
 
-function buildQuestionPool(config: GameConfig, allQuestions: Question[]): Question[] {
-  let pool = [...allQuestions]
-
-  if (config.mode === "full-revision") {
+const POOL_BUILDERS: Record<string, (config: GameConfig, allQuestions: Question[]) => Question[]> = {
+  "full-revision": (config, allQuestions) => {
     // Strict sequential — no shuffle
-    return pool
-  }
-
-  if (config.mode === "blitz") {
-    pool = shuffle(pool)
-    return pool.slice(0, config.questionCount > 0 ? config.questionCount : 20)
-  }
-
-  if (config.mode === "hardcore") {
-    // Hard only; fall back to full pool if fewer than 5 hard questions
-    const hard = pool.filter((q) => q.difficulty === "Hard")
-    pool = hard.length >= 5 ? hard : shuffle(pool)
-  } else if (config.mode === "practice") {
-    // Filter by selected category if set
-    if (config.selectedCategory) {
-      pool = pool.filter((q) => q.category === config.selectedCategory)
+    return [...allQuestions];
+  },
+  "blitz": (config, allQuestions) => {
+    const pool = shuffle([...allQuestions]);
+    return pool.slice(0, config.questionCount > 0 ? config.questionCount : 20);
+  },
+  "hardcore": (config, allQuestions) => {
+    let pool = [...allQuestions];
+    const hard = pool.filter((q) => q.difficulty === "Hard");
+    pool = hard.length >= 5 ? hard : shuffle(pool);
+    pool = shuffle(pool);
+    if (config.questionCount > 0) {
+      pool = pool.slice(0, config.questionCount);
     }
-  } else {
-    pool = shuffle(pool)
+    return pool;
+  },
+  "practice": (config, allQuestions) => {
+    let pool = [...allQuestions];
+    if (config.selectedCategory) {
+      pool = pool.filter((q) => q.category === config.selectedCategory);
+    }
+    pool = shuffle(pool);
+    if (config.questionCount > 0) {
+      pool = pool.slice(0, config.questionCount);
+    }
+    return pool;
+  },
+  "default": (config, allQuestions) => {
+    let pool = shuffle([...allQuestions]);
+    pool = shuffle(pool);
+    if (config.questionCount > 0) {
+      pool = pool.slice(0, config.questionCount);
+    }
+    return pool;
   }
+};
 
-  pool = shuffle(pool)
-  if (config.questionCount > 0) {
-    pool = pool.slice(0, config.questionCount)
-  }
-
-  return pool
+function buildQuestionPool(config: GameConfig, allQuestions: Question[]): Question[] {
+  const builder = POOL_BUILDERS[config.mode] || POOL_BUILDERS["default"];
+  return builder(config, allQuestions);
 }
 
 const GLOBAL_TIME_LIMITS: Record<string, number> = {

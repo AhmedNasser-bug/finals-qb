@@ -19,6 +19,7 @@ This document is the single source of truth for any agent (human or AI) working 
 11. [Connecting a Real Subject](#11-connecting-a-real-subject)
 12. [Known Seams and Production TODOs](#12-known-seams-and-production-todos)
 13. [Engineering Constraints](#13-engineering-constraints)
+14. [Available Workflows](#14-available-workflows)
 
 ---
 
@@ -534,4 +535,17 @@ These rules were agreed on during the code review and must be preserved:
 14. **Consolidated Test Verification:** The official test execution command is:
     `node --experimental-strip-types --import ./test-runner.mjs --test lib/accuracy.test.ts lib/crypto-utils.test.ts lib/mold-types.test.ts lib/subject-persistence.test.ts`
     Run this suite to verify structural and functional integrity before committing changes.
+
+---
+
+## 14. Available Workflows & Skills
+
+Standardized, recurring recipes, workflows, and execution protocols are available for future agents in the `.agent` directory:
+
+1. **[Pull Request Triage, Release Orchestration, and Session Cleanup (Workflow)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/workflows/pr_triage_release_cleanup.md):** 
+   - **Trigger:** Large-scale git branch/PR consolidation, conflicting test-suite resolution, Vercel UI blocks, or remote jules session cleanups.
+   - **Prerequisites:** Administrative push privileges, CLI access to git and jules, Node.js.
+2. **[PR Triage, Release Orchestration, and Session Cleanup (Skill)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/skills/pr-triage-release-cleanup.md):**
+   - **Trigger:** When requested to act as an automated triage, merge, or cleanup agent for git branches, Vercel deployment issues, and jules CLI remote sessions.
+   - **Prerequisites:** Git write permissions, `jules` CLI, Node.js, `test-runner.mjs`.
 
