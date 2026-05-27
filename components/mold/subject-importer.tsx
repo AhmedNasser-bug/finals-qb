@@ -3,8 +3,9 @@
 import { useState, useCallback, useMemo, type DragEvent } from "react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
-import type { FullSubjectData } from "@/lib/mold-types"
-import { StatChip, CloseIcon } from "./subject-importer-components"
+import { CloseIcon } from "./subject-importer-components"
+import type { ImporterState, SubjectImporterProps } from "./subject-importer-types"
+import { AIPromptSection, DropZoneSection, ValidationFeedbackSection } from "./subject-importer-blocks"
 
 // ─── AI prompt the user can copy to generate a valid JSON ─────────────────────
 const AI_PROMPT = `You are a pedagogical expert and curriculum designer. Using the PARTS framework (Persona, Act, Recipient, Theme, Structure), generate a complete MOLD V2 subject dataset for: [YOUR TOPIC HERE]
@@ -93,15 +94,15 @@ DIAGRAM RULES (diagram field — NEW ARCHITECTURE):
     RIGHT column (60%): the rendered diagram
 - "diagramPosition" controls layout: "right" (default, side-by-side) or "below" (stacked under question text).
 - The diagram string must be valid Mermaid syntax. Do not wrap it in code fences or quotes — write the raw syntax directly as the field value.
-- Use \\n for line breaks within the diagram string value in JSON.
+- Use \n for line breaks within the diagram string value in JSON.
 - SECURITY: Do not include <script>, javascript:, onerror=, onclick=, onload=, or data:text/html in diagram code.
 - Strongly encouraged for topics involving: state machines, automata, flowcharts, decision trees, class hierarchies, sequence flows, network topologies, data structures, algorithms, circuit diagrams (use flowchart), timelines, and any concept better understood visually.
 
 DIAGRAM EXAMPLE (stateDiagram):
-"diagram": "stateDiagram-v2\\n    [*] --> q0\\n    q0 --> q1 : a\\n    q1 --> q2 : b\\n    q2 --> [*]"
+"diagram": "stateDiagram-v2\n    [*] --> q0\n    q0 --> q1 : a\n    q1 --> q2 : b\n    q2 --> [*]"
 
 DIAGRAM EXAMPLE (flowchart):
-"diagram": "graph TD\\n    A[Start] --> B{Condition?}\\n    B -->|Yes| C[Do X]\\n    B -->|No| D[Do Y]\\n    C --> E[End]\\n    D --> E"
+"diagram": "graph TD\n    A[Start] --> B{Condition?}\n    B -->|Yes| C[Do X]\n    B -->|No| D[Do Y]\n    C --> E[End]\n    D --> E"
 
 ACHIEVEMENT CONDITION TYPES:
 - "runs_gte": { "type": "runs_gte", "value": N } — Complete N runs
@@ -121,16 +122,6 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
 - This will significantly reduce URL length for offline sharing
 
 Output the complete JSON object on a single line (no formatting).`
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type ImporterState = "idle" | "validating" | "valid" | "error" | "pasting"
-
-interface SubjectImporterProps {
-  onImport: (subject: FullSubjectData) => void
-  onCancel: () => void
-  existingIds?: string[]
-}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -189,6 +180,9 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   }, [existingIdsSet])
 
   function handleChange(value: string) {
+    setJson(value)
+    validate(value)
+  }
     setJson(value)
     validate(value)
   }
@@ -268,161 +262,29 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
 
         <div className="flex flex-col gap-4 p-5 overflow-y-auto flex-1 min-h-0">
 
-          {/* AI Prompt section */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-mono text-muted-foreground tracking-wider uppercase">
-                Step 1 — Generate with AI
-              </p>
-              <button
-                onClick={handleCopyPrompt}
-                title="Copy the AI prompt to your clipboard"
-                className={cn(
-                  "text-xs font-mono px-3 py-1.5 rounded border transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
-                  promptCopied
-                    ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-400"
-                    : "border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
-                )}
-              >
-                <span aria-live="polite">
-                  {promptCopied ? "Copied" : "Copy Prompt"}
-                </span>
-              </button>
-            </div>
-            <div className="rounded border border-border bg-background p-3">
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Copy the prompt above and paste it into any AI assistant (ChatGPT, Claude, Gemini).
-                Replace <span className="font-mono text-primary">[YOUR TOPIC HERE]</span> with your
-                subject. Paste the returned JSON below.
-              </p>
-            </div>
-          </div>
+          <AIPromptSection
+            promptCopied={promptCopied}
+            onCopyPrompt={handleCopyPrompt}
+          />
 
-          {/* Drop zone */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-mono text-muted-foreground tracking-wider uppercase">
-                Step 2 — Paste JSON
-              </p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handlePaste}
-                  disabled={state === "pasting"}
-                  aria-disabled={state === "pasting"}
-                  title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
-                  aria-busy={state === "pasting"}
-                  className={cn(
-                    "text-xs font-mono px-3 py-1.5 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
-                    state === "pasting"
-                      ? "border-primary/50 bg-primary/10 text-primary opacity-60 cursor-wait"
-                      : "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
-                  )}
-                >
-                  {state === "pasting" ? "..." : "Paste"}
-                </button>
-              </div>
-            </div>
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={cn(
-                "relative rounded border p-4 min-h-[120px] transition-colors flex flex-col items-center justify-center",
-                isDragging
-                  ? "border-primary/60 bg-primary/5"
-                  : state === "valid"
-                  ? "border-emerald-400/40 bg-emerald-400/5"
-                  : state === "error"
-                  ? "border-destructive/40 bg-destructive/5"
-                  : "border-border bg-background"
-              )}
-            >
-              {json ? (
-                <textarea
-                  value={json}
-                  aria-label="Paste JSON subject data here"
-                  aria-invalid={state === "error"}
-                  onChange={(e) => { setJson(e.target.value); validate(e.target.value) }}
-                  placeholder="JSON pasted here..."
-                  spellCheck={false}
-                  className="w-full bg-transparent font-mono text-xs p-0 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 resize-none h-48"
-                />
-              ) : (
-                <div className="text-center pointer-events-none">
-                  <p className="text-sm text-muted-foreground mb-2">Drop a .json file here or use the Paste button</p>
-                  <p className="text-xs text-muted-foreground/60">Then confirm below</p>
-                </div>
-              )}
-              {isDragging && (
-                <div className="absolute inset-0 flex items-center justify-center rounded border-2 border-dashed border-primary/60 bg-primary/5 pointer-events-none">
-                  <span className="text-sm font-mono text-primary">Drop .json file</span>
-                </div>
-              )}
-            </div>
-          </div>
+          <DropZoneSection
+            state={state}
+            isDragging={isDragging}
+            json={json}
+            onPaste={handlePaste}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onChange={handleChange}
+          />
 
-          {/* Validation feedback */}
-          <div aria-live="polite">
-            {state === "error" && result && (
-              <div className="flex flex-col gap-2 rounded border border-destructive/30 bg-destructive/5 p-3 animate-slide-up">
-                <p className="text-xs font-mono font-semibold text-destructive tracking-wide uppercase">
-                  Validation Failed — {result.errors.length} error{result.errors.length !== 1 ? "s" : ""}
-                </p>
-                <ul className="flex flex-col gap-1">
-                  {result.errors.map((err, i) => (
-                    <li key={i} className="text-xs text-destructive/80 leading-relaxed flex gap-2">
-                      <span className="font-mono shrink-0 text-destructive/50">{i + 1}.</span>
-                      {err}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {result?.warnings && result.warnings.length > 0 && (
-              <div className="flex flex-col gap-1 rounded border border-amber-400/30 bg-amber-400/5 p-3">
-                <p className="text-xs font-mono font-semibold text-amber-400 tracking-wide uppercase">
-                  {result.warnings.length} Warning{result.warnings.length !== 1 ? "s" : ""}
-                </p>
-                {result.warnings.map((w, i) => (
-                  <p key={i} className="text-xs text-amber-400/70 leading-relaxed">{w}</p>
-                ))}
-              </div>
-            )}
-
-            {/* Preview card */}
-            {state === "valid" && preview && (
-              <div className="flex flex-col gap-3 rounded border border-emerald-400/30 bg-emerald-400/5 p-4 animate-slide-up">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-mono text-emerald-400 tracking-widest uppercase mb-1">
-                      Valid — Ready to import
-                    </p>
-                    <p className="text-base font-semibold text-foreground">{preview.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{preview.config.description}</p>
-                  </div>
-                  <span className="shrink-0 font-mono text-xs px-2 py-1 rounded border border-emerald-400/40 text-emerald-400 bg-emerald-400/10">
-                    {preview.id}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <StatChip label="Questions" value={questionCount} />
-                  <StatChip label="Flashcards" value={flashcardCount} />
-                  <StatChip label="Categories" value={categories.length} />
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {categories.map((cat) => (
-                    <span
-                      key={cat}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded-sm border border-border text-muted-foreground"
-                    >
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          <ValidationFeedbackSection
+            state={state}
+            result={result}
+            questionCount={questionCount}
+            flashcardCount={flashcardCount}
+            categories={categories}
+          />
 
         </div>
 
@@ -455,4 +317,3 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
     </div>
   )
 }
-
