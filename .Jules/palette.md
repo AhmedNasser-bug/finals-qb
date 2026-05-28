@@ -97,3 +97,7 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2026-05-25 - Trapping Focus and Enhancing Modal Dialog Accessibility
+**Learning:** React modal overlays often visually cover the screen, but lack the structural attributes required for screen readers to recognize them as dialogs (e.g., `role="dialog"`, `aria-modal="true"`, `aria-label`). Furthermore, without trapping focus on mount (using `tabIndex={-1}` and calling `.focus()`), screen readers and keyboard users may continue to navigate the underlying page behind the modal, leading to confusion and accessibility failures.
+**Action:** Always implement explicit focus trapping on modal overlay mounting using a `useRef` and `useEffect`. Ensure the container includes `role="dialog"`, `aria-modal="true"`, a descriptive `aria-label`, and `outline-none` (to prevent default browser focus rings on the backdrop).
