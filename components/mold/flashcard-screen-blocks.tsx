@@ -74,6 +74,8 @@ export function SessionEndScreen({
           </button>
           <button
             onClick={onComplete}
+            title="Start a new session"
+            aria-label="Start a new flashcard session"
             className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             NEW SESSION
@@ -177,6 +179,8 @@ export function RoundEndScreen({
           </button>
           <button
             onClick={onContinue}
+            title={`Continue to round ${round + 1}`}
+            aria-label={`Continue to round ${round + 1}`}
             className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             CONTINUE — ROUND {round + 1}

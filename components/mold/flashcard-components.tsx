@@ -29,6 +29,8 @@ export function Header({
         </div>
         <button
           onClick={onQuit}
+          title="Quit flashcards session"
+          aria-label="Quit flashcards session"
           className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-transparent hover:border-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           QUIT

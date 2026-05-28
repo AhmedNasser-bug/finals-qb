@@ -202,6 +202,7 @@ function CategoryTile({ name, questionCount, selected, onSelect }: CategoryTileP
   return (
     <button
       onClick={onSelect}
+      title={`Select category: ${name}`}
       aria-pressed={selected}
       className={cn(
         "flex flex-col gap-1 p-3 rounded border text-left transition-all duration-150",

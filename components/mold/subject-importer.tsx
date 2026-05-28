@@ -309,6 +309,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
                   onClick={handlePaste}
                   disabled={state === "pasting"}
                   aria-disabled={state === "pasting"}
+                  aria-label={state === "pasting" ? "Pasting data..." : "Paste JSON"}
                   title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
                   aria-busy={state === "pasting"}
                   className={cn(
