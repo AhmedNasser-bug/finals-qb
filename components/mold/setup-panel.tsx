@@ -169,6 +169,7 @@ function Toggle({
     <button
       role="switch"
       aria-label={ariaLabel}
+      title={ariaLabel}
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={cn(
