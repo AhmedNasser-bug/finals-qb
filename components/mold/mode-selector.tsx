@@ -101,6 +101,8 @@ function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass
     <button
       onClick={() => onSelect(mode.id)}
       aria-pressed={isSelected}
+      title={`Select ${mode.label} mode`}
+      aria-label={`Select ${mode.label} mode`}
       className={cn(
         "group relative flex flex-col gap-2 p-3 rounded border text-left transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
