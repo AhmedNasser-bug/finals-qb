@@ -199,6 +199,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
             <button
               onClick={onReturnHome}
               aria-label="Dump logs to return home"
+              title="Dump logs to return home"
               className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
             >
               DUMP_LOGS
@@ -206,6 +207,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
             <button
               onClick={onPlayAgain}
               aria-label="Continue cycle to play again"
+              title="Continue cycle to play again"
               className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
               style={{ boxShadow: "0 0 25px rgba(254,204,23,0.15)" }}
             >

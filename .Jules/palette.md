@@ -97,3 +97,7 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2024-05-29 - Missing title tooltips on styled action buttons
+**Learning:** Action buttons that use stylized acronyms (e.g., DUMP_LOGS) or generic icons (e.g. standard close 'X' buttons in modals) often have `aria-label`s for screen readers but lack explicit contextual tooltips for mouse users. This forces users to infer the action, which reduces usability, especially on desktop.
+**Action:** When creating or auditing buttons that lack descriptive inline text, always include a explicitly descriptive `title` attribute in addition to an `aria-label`. For example, a "DUMP_LOGS" button should have `title="Dump logs to return home"`, or a close button in a specific overlay should have `title="Close encyclopedia overlay"` to clarify the exact result of the action.
