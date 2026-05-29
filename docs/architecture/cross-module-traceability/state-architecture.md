@@ -1,22 +1,63 @@
 # State Architecture
 
-## Interfaces and Data Pipelines
+## 3. State Architecture
 
-This document maps the interface properties and data pipelines for the MOLD V2 application.
+State is divided into three domains:
 
-### Core Data Models
-Defined heavily in `lib/mold-types.ts`, the principal models dictating the domain boundaries are:
-- `FullSubjectData`: Represents the fully hydrated model of a subject being tested or managed.
-- `Question`: Defines varying structures like MCQ (`MCQOption`) or TrueFalse questions.
-- `GameState`: The current atomic instance of a game run, capturing `GamePhase`, active scores, and timelines.
-- `AchievementCondition`: Logical evaluations determining progression capabilities.
-- `Terminology`: Used for learning modes, detailing specific concepts or terms (`TerminologyEntry`).
+1. **Achievement Engine (`AchievementProvider`)**
+   - Lives at the app root, survives navigation.
+   - Responsible for tracking and evaluating unlocking conditions.
+2. **Global UI/Subject State (`HomeScreen`)**
+   - Owns `view`, `runs`, `selectedMode`, `config`, and `showGallery`.
+   - Passes `runs` to `GameRunner` for accurate achievement history evaluation.
+3. **Game Engine (`GameEngineProvider`)**
+   - Ephemeral. Only mounted during gameplay.
+   - Contains a reducer handling the game cycle, question pooling, score tracking, and time.
 
-### Data Persistence Pipeline
-`lib/subject-persistence.ts` operates as the primary data pipeline bridging active memory and browser storage constraints.
-- `validateSubjectData(raw: unknown)`: Secures inbound JSON parsing constraints, avoiding schema mismatch.
-- `loadSubjects()` and `saveSubjects()`: Interfacing points with Next.js environment mapping directly to local persistence layers.
-- Storage falls back to browser globals but maintains async-ready interfaces for future server-side or IndexedDB expansion.
+## 4. Data Contracts & Interfaces
+All primary data contracts are defined in `lib/mold-types.ts`.
 
-### Game State Reducer Pipeline
-Within `lib/game-engine.tsx`, state mutations operate within a unidirectional data flow. Actions such as answer selections trigger state shifts that are then broadcasted back up to listeners mapped via `useGameEngine`.
+- **FullSubjectData**: The primary external schema for subject definitions.
+  ```typescript
+  interface FullSubjectData {
+    id: string;
+    name: string;
+    config: { title: string; description: string; storageKey?: string; ... };
+    questions: Question[];
+    flashcards: Flashcard[];
+    terminology: Terminology;
+    achievements: RawAchievementDef[];
+  }
+  ```
+
+- **RunRecord**: Represents a completed session.
+  ```typescript
+  interface RunRecord {
+    id: string;
+    date: string;
+    mode: GameModeId;
+    score: number;
+    correctAnswers: number;
+    totalQuestions: number;
+    timeTaken: number;
+    streak: number;
+    grade: LetterGrade;
+  }
+  ```
+
+- **Achievement**: Schema for achievements including dynamic conditions mapped from subject data.
+
+## 5. Persistence Pipeline
+The application currently uses an asynchronous persistence pipeline interfacing with `localStorage`, with an explicit design to support IndexedDB or server-side API swaps.
+
+### Storage Keys (The "Database")
+
+| Key | Type | Storage | Description |
+|---|---|---|---|
+| `mold_v2_subjects` | `FullSubjectData[]` | `localStorage` | Contains imported subject files. |
+| `mold_v2_active_subject` | `string` (ID) | `sessionStorage` | Keeps track of the currently selected subject across lists/home. |
+| `mold_v2_runs` | `RunRecord[]` | `localStorage` | Keeps the history of past completed sessions (capped at 50). |
+| `mold_v2_achievements` | `Achievement[]` | `localStorage` | The user's achievement unlocks merged dynamically with the subject's conditions. |
+
+- **Run History**: Stored under "mold_v2_runs". Managed via `loadRuns()` and `saveRuns()`. Appended by the client after game completion.
+- **Achievements**: Stored under "mold_v2_achievements". Managed via `loadAchievements()` and `saveAchievements()`. Automatically synced by `onGameComplete`.
