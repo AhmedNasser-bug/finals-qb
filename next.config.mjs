@@ -2,6 +2,7 @@ const isCI = process.env.CI === "true" || process.env.VERCEL === "1"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   typescript: {
     ignoreBuildErrors: true,
   },

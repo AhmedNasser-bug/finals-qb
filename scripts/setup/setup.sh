@@ -44,6 +44,7 @@ mkdir -p docs
 
 # Create a mock database seed structure as per orchestration requirements
 mkdir -p .data/seeds
+if [ ! -f .data/seeds/default-tenant.json ]; then
 cat <<EOF > .data/seeds/default-tenant.json
 {
   "tenants": ["tenant-a", "tenant-b"],
@@ -51,6 +52,9 @@ cat <<EOF > .data/seeds/default-tenant.json
 }
 EOF
 echo "Mock database seeded."
+else
+    echo "Mock database already seeded."
+fi
 
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
