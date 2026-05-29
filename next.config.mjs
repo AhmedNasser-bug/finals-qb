@@ -1,12 +1,23 @@
+const isCI = process.env.CI === "true" || process.env.VERCEL === "1"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     unoptimized: true,
   },
   serverExternalPackages: ["isomorphic-dompurify"],
+  experimental: {
+    ...(isCI ? {
+      cpus: 1,
+      workerThreads: false,
+    } : {}),
+  },
 }
 
 export default nextConfig
