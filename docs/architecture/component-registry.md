@@ -814,13 +814,43 @@ content: string
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 
+### `components/mold/setup-panel-blocks.tsx`
+
+**Module Name:** Setup-Panel-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+config: SetupConfig
+  onChange: (patch: Partial<SetupConfig>) => void
+  isUntimed: boolean
+  isFullRevision: boolean
+  isPractice: boolean
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `components/mold/setup-panel.tsx`
 
 **Module Name:** Setup-Panel
 
 **Characteristics:**
 - Client Component: `Yes`
-- Supports Slots (children): `Yes`
+- Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
 
@@ -837,6 +867,43 @@ config: SetupConfig
   selectedMode: GameModeId
   categories: CategoryData[]
   className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/share-modal-blocks.tsx`
+
+**Module Name:** Share-Modal-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+encoding: boolean;
+  encodeError: string | null;
+  shareUrl: string;
+  shortUrl: string;
+  copyState: CopyState;
+  shortenState: ShortenState;
+  shortenError: string | null;
+  sizeKb: string;
+  isSizeLarge: boolean;
+  onCopy: () => void;
+  onShorten: () => void;
+  onCopyShortUrl: () => void;
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -862,18 +929,8 @@ Utilizes memoization: useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-encoding: boolean;
-  encodeError: string | null;
-  shareUrl: string;
-  shortUrl: string;
-  copyState: CopyState;
-  shortenState: ShortenState;
-  shortenError: string | null;
-  sizeKb: string;
-  isSizeLarge: boolean;
-  onCopy: () => void;
-  onShorten: () => void;
-  onCopyShortUrl: () => void;
+subject: FullSubjectData
+  onClose: () => void
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -940,6 +997,33 @@ currentStreak: number
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
+### `components/mold/subject-importer-blocks.tsx`
+
+**Module Name:** Subject-Importer-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+promptCopied: boolean
+  onCopyPrompt: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `components/mold/subject-importer-components.tsx`
 
 **Module Name:** Subject-Importer-Components
@@ -991,6 +1075,39 @@ onImport: (subject: FullSubjectData) => void
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/subject-selector-blocks.tsx`
+
+**Module Name:** Subject-Selector-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useEvent
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+subjects: FullSubjectData[]
+  confirmDeleteId: string | null
+  onSelect: (subject: FullSubjectData) => void
+  onShare: (subject: FullSubjectData) => void
+  onDeleteConfirm: (id: string) => void
+  onDeleteCancel: () => void
+  onRemoveClick: (id: string) => void
+  onShowImporter: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
