@@ -1,0 +1,22 @@
+{
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true,
+    "**/out/**": true,
+    "**/build/**": true,
+    "**/.qodo/**": true,
+    "**/.agents/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/out": true,
+    "**/build": true,
+    "**/.qodo": true,
+    "**/.agents": true
+  }
+}

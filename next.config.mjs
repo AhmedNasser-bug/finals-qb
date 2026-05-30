@@ -1,4 +1,6 @@
 const isCI = process.env.CI === "true" || process.env.VERCEL === "1"
+const maxCPUs = isCI ? 1 : 2
+const useWorkerThreads = !isCI
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -11,10 +13,8 @@ const nextConfig = {
   },
   serverExternalPackages: ["isomorphic-dompurify"],
   experimental: {
-    ...(isCI ? {
-      cpus: 1,
-      workerThreads: false,
-    } : {}),
+    cpus: maxCPUs,
+    workerThreads: useWorkerThreads,
   },
 }
 
