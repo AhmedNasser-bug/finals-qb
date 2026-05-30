@@ -48,7 +48,6 @@ export function GameFooter({ onHintRequest }: { onHintRequest: () => void }) {
           <button
             onClick={revealAnswer}
             disabled={!canSubmit}
-            aria-disabled={!canSubmit}
             aria-label="Submit sequence"
             title={!canSubmit ? "Select an option first" : "Submit sequence"}
             className={cn(

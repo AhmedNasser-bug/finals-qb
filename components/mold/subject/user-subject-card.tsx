@@ -32,34 +32,21 @@ export function UserSubjectCard({
         isConfirming ? "border-destructive/40" : "border-border hover:border-border/80"
       )}
     >
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => {
-          if (!isConfirming) onSelect(full)
-        }}
-        onKeyDown={(e) => {
-          if (isConfirming) return
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault()
-            onSelect(full)
-          }
-        }}
-        aria-disabled={isConfirming}
-        title={isConfirming ? "Confirm deletion first" : undefined}
-        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
-      >
+      {/* Main card body layout (pure presentation, z-0 relative) */}
+      <div className="flex flex-col gap-3 p-4 text-left flex-1 relative z-0">
         <div className="flex items-start justify-between gap-2">
           <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{full.name}</p>
-          <div className="flex items-center gap-1 shrink-0">
-            <button
-              onClick={(e) => { e.stopPropagation(); onShare(full) }}
-              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              aria-label={`Share ${full.name}`}
-              title="Share subject"
-            >
-              <ShareIcon />
-            </button>
+          <div className="flex items-center gap-1 shrink-0 z-10 relative">
+            {!isConfirming && (
+              <button
+                onClick={() => onShare(full)}
+                className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                aria-label={`Share ${full.name}`}
+                title="Share subject"
+              >
+                <ShareIcon />
+              </button>
+            )}
             <span className="text-[10px] font-mono px-1.5 py-0.5 border border-border text-muted-foreground">
               v{full.config.version ?? "1.0"}
             </span>
@@ -75,7 +62,16 @@ export function UserSubjectCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
+      {/* Invisible main button overlay covering the whole card (except z-10 interactive controls) */}
+      {!isConfirming && (
+        <button
+          onClick={() => onSelect(full)}
+          className="absolute inset-0 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring z-0"
+          aria-label={`Select subject ${full.name}`}
+        />
+      )}
+
+      <div className="flex items-center justify-between border-t border-border px-4 py-2.5 z-10 relative">
         <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[120px]">{full.id}</span>
         {isConfirming ? (
           <div className="flex items-center gap-2">

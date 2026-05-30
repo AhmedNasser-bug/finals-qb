@@ -40,16 +40,18 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
             className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             aria-label="Close achievement gallery"
           >
-            <XIcon className="w-4 h-4" aria-hidden="true" />
+            <XIcon className="w-4 h-4" />
           </button>
         </div>
 
         {/* Progress bar */}
         <div className="h-1 bg-secondary">
-          <div
-            className="h-full bg-primary transition-all duration-500"
-            style={{ width: `${achievements.length > 0 ? (unlocked.length / achievements.length) * 100 : 0}%` }}
-          />
+          <style>{`
+            .ach-gallery-progress {
+              width: ${achievements.length > 0 ? (unlocked.length / achievements.length) * 100 : 0}%;
+            }
+          `}</style>
+          <div className="h-full bg-primary transition-all duration-500 ach-gallery-progress" />
         </div>
 
         {/* List */}
@@ -123,8 +125,8 @@ function AchievementRow({
         locked ? "border-border bg-secondary" : "border-primary/30 bg-primary/10"
       )}>
         {locked
-          ? <LockIcon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-          : <TrophyIcon className="w-4 h-4 text-primary" aria-hidden="true" />
+          ? <LockIcon className="w-4 h-4 text-muted-foreground" />
+          : <TrophyIcon className="w-4 h-4 text-primary" />
         }
       </div>
       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
@@ -150,18 +152,18 @@ function AchievementRow({
   )
 }
 
-function XIcon({ className, "aria-hidden": ariaHidden }: { className?: string; "aria-hidden"?: boolean | "true" | "false" }) {
+function XIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   )
 }
 
-function TrophyIcon({ className, "aria-hidden": ariaHidden }: { className?: string; "aria-hidden"?: boolean | "true" | "false" }) {
+function TrophyIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
       <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
       <path d="M4 22h16" />
@@ -172,9 +174,9 @@ function TrophyIcon({ className, "aria-hidden": ariaHidden }: { className?: stri
   )
 }
 
-function LockIcon({ className, "aria-hidden": ariaHidden }: { className?: string; "aria-hidden"?: boolean | "true" | "false" }) {
+function LockIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>

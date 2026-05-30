@@ -88,28 +88,34 @@ export function HeroHeader({ subject, achievements, onTrophyClick, className }: 
               <span className="text-muted-foreground text-base font-normal">/{total}</span>
             </p>
           </div>
-          <div
-            role={onTrophyClick ? "button" : undefined}
-            aria-label={onTrophyClick ? "View achievements gallery" : undefined}
-            tabIndex={onTrophyClick ? 0 : undefined}
-            onClick={onTrophyClick}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault()
-                onTrophyClick?.()
-              }
-            }}
-            className={cn(
-              "w-12 h-12 rounded border flex items-center justify-center text-xl",
-              unlocked === total
-                ? "border-primary/40 bg-primary/10 text-primary"
-                : "border-border bg-secondary text-muted-foreground",
-              onTrophyClick && "cursor-pointer hover:border-primary/60 transition-colors"
-            )}
-            title={`${unlocked} of ${total} achievements unlocked — click to view`}
-          >
-            <TrophyIcon className="w-6 h-6" />
-          </div>
+          {onTrophyClick ? (
+            <button
+              onClick={onTrophyClick}
+              className={cn(
+                "w-12 h-12 rounded border flex items-center justify-center text-xl",
+                unlocked === total
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-border bg-secondary text-muted-foreground",
+                "cursor-pointer hover:border-primary/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              )}
+              title={`${unlocked} of ${total} achievements unlocked — click to view`}
+              aria-label="View achievements gallery"
+            >
+              <TrophyIcon className="w-6 h-6" />
+            </button>
+          ) : (
+            <div
+              className={cn(
+                "w-12 h-12 rounded border flex items-center justify-center text-xl",
+                unlocked === total
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-border bg-secondary text-muted-foreground"
+              )}
+              title={`${unlocked} of ${total} achievements unlocked`}
+            >
+              <TrophyIcon className="w-6 h-6" />
+            </div>
+          )}
         </div>
       </div>
     </header>

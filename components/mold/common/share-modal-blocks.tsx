@@ -89,9 +89,7 @@ export function LinkTabContent({
             <button
               onClick={onShorten}
               disabled={shortenState === "loading"}
-              aria-disabled={shortenState === "loading"}
               title={shortenState === "loading" ? "Currently shortening link..." : undefined}
-              aria-busy={shortenState === "loading"}
               className={cn(
                 "w-full py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                 shortenState === "loading"
@@ -200,33 +198,33 @@ export function FileTabContent({ subject, onDownload }: FileTabContentProps) {
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
-export function CloseIcon({ "aria-hidden": ariaHidden }: { "aria-hidden"?: boolean | "true" | "false" }) {
+export function CloseIcon() {
   return (
-    <svg className="w-4 h-4" aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-4 h-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M18 6 6 18M6 6l12 12" />
     </svg>
   )
 }
 
-export function SpinnerIcon({ "aria-hidden": ariaHidden }: { "aria-hidden"?: boolean | "true" | "false" }) {
+export function SpinnerIcon() {
   return (
-    <svg className="w-3.5 h-3.5 animate-spin" aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg className="w-3.5 h-3.5 animate-spin" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
     </svg>
   )
 }
 
-export function InfoIcon({ "aria-hidden": ariaHidden }: { "aria-hidden"?: boolean | "true" | "false" }) {
+export function InfoIcon() {
   return (
-    <svg className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
     </svg>
   )
 }
 
-export function WarnIcon({ "aria-hidden": ariaHidden }: { "aria-hidden"?: boolean | "true" | "false" }) {
+export function WarnIcon() {
   return (
-    <svg className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4M12 17h.01" />
     </svg>
   )

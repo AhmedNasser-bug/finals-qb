@@ -11,6 +11,10 @@
   .text-pretty {
     text-wrap: pretty;
   }
+
+  .spotlight-primary {
+    background: radial-gradient(ellipse at 50% 45%, hsl(var(--primary) / 0.04) 0%, transparent 70%);
+  }
 }
 
 @layer base {

@@ -97,10 +97,11 @@ interface ModeCardProps {
 }
 
 function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass }: ModeCardProps) {
+  const pressedProps = isSelected ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const };
   return (
     <button
       onClick={() => onSelect(mode.id)}
-      aria-pressed={isSelected}
+      {...pressedProps}
       className={cn(
         "group relative flex flex-col gap-2 p-3 rounded border text-left transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

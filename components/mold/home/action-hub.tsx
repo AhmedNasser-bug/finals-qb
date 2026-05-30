@@ -50,7 +50,6 @@ export function ActionHub({
       <button
         onClick={onInitialize}
         disabled={disabled}
-        aria-disabled={disabled}
         title={disabled ? "Action not available" : undefined}
         aria-label={disabled ? "Action not available" : "Initialize session"}
         className={cn(

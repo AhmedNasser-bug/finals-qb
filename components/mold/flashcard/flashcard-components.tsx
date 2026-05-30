@@ -37,9 +37,13 @@ export function Header({
 
       {/* Progress bar */}
       <div className="h-1 bg-secondary rounded-full overflow-hidden">
+        <style>{`
+          .fc-header-progress {
+            width: ${progress}%;
+          }
+        `}</style>
         <div
-          className="h-full bg-primary transition-all duration-300 rounded-full"
-          style={{ width: `${progress}%` }}
+          className="h-full bg-primary transition-all duration-300 rounded-full fc-header-progress"
         />
       </div>
 
@@ -118,14 +122,19 @@ export function DistributionBar({
 
   return (
     <div className="h-3 rounded-full overflow-hidden flex bg-secondary">
+      <style>{`
+        .fc-dist-conf { width: ${confPct}%; }
+        .fc-dist-neutral { width: ${neutralPct}%; }
+        .fc-dist-learn { width: ${learnPct}%; }
+      `}</style>
       {confPct > 0 && (
-        <div className="bg-emerald-400 transition-all duration-500" style={{ width: `${confPct}%` }} />
+        <div className="bg-emerald-400 transition-all duration-500 fc-dist-conf" />
       )}
       {neutralPct > 0 && (
-        <div className="bg-muted-foreground/30 transition-all duration-500" style={{ width: `${neutralPct}%` }} />
+        <div className="bg-muted-foreground/30 transition-all duration-500 fc-dist-neutral" />
       )}
       {learnPct > 0 && (
-        <div className="bg-red-400 transition-all duration-500" style={{ width: `${learnPct}%` }} />
+        <div className="bg-red-400 transition-all duration-500 fc-dist-learn" />
       )}
     </div>
   )

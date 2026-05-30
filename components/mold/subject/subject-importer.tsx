@@ -306,7 +306,6 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
           <button
             onClick={handleConfirm}
             disabled={state !== "valid"}
-            aria-disabled={state !== "valid"}
             title={state !== "valid" ? "Subject data must be valid to import" : undefined}
             className={cn(
               "text-xs font-mono px-5 py-2 rounded border font-semibold tracking-widest uppercase transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",

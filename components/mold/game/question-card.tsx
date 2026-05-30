@@ -2,7 +2,7 @@
 
 import { useGameEngine } from "@/lib/game-engine"
 import type { Question } from "@/lib/mold-types"
-import { calculateGrade, formatLabel } from "@/lib/mold-types"
+import { calculateGrade, formatLabel, gradeColor } from "@/lib/mold-types"
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import DOMPurify from "isomorphic-dompurify"
@@ -33,11 +33,6 @@ export function QuestionCard({
   const { selectedOption, isRevealed, currentIndex } = state
 
   const grade = calculateGrade(accuracyPct)
-  const gradeColor =
-    grade === "S+" || grade === "S" ? "#fecc17" :
-      grade === "A+" || grade === "A" ? "#4ae176" :
-        grade === "B+" ? "#67d7f0" :
-          grade === "C+" ? "#fb8c00" : "#ffb4ab"
 
   // ── Diagram resolution (priority: dedicated field → inline rich-text) ─────
   // Path A: question.diagram is a direct Mermaid string → split layout, right pane
@@ -131,8 +126,10 @@ export function QuestionCard({
             </span>
             <div className="text-right">
               <span
-                className="font-mono text-4xl font-black tracking-tighter leading-none block"
-                style={{ color: gradeColor }}
+                className={cn(
+                  "font-mono text-4xl font-black tracking-tighter leading-none block",
+                  gradeColor(grade)
+                )}
               >
                 {grade}
               </span>
@@ -255,10 +252,11 @@ function OptionButton({
   isDimmed,
   onSelect,
 }: OptionButtonProps) {
+  const checkedProps = isSelected ? { "aria-checked": "true" as const } : { "aria-checked": "false" as const };
   return (
     <button
       role="radio"
-      aria-checked={isSelected}
+      {...checkedProps}
       disabled={isRevealed}
       onClick={onSelect}
       className={cn(

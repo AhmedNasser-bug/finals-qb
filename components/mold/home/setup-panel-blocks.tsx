@@ -58,12 +58,15 @@ export function ConfigControls({
           description="Number of questions to pull per session"
         >
           <div className="flex flex-wrap items-center gap-1 justify-end">
-            {QUESTION_COUNT_OPTIONS.map((n) => (
-              <button
-                key={n}
-                onClick={() => onChange({ questionCount: n })}
-                aria-pressed={config.questionCount === n}
-                aria-label={`${n} questions`}
+            {QUESTION_COUNT_OPTIONS.map((n) => {
+              const isPressed = config.questionCount === n;
+              const pressedProps = isPressed ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const };
+              return (
+                <button
+                  key={n}
+                  onClick={() => onChange({ questionCount: n })}
+                  {...pressedProps}
+                  aria-label={`${n} questions`}
                 className={cn(
                   "px-2.5 py-1 text-xs font-mono rounded border transition-colors",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -74,7 +77,7 @@ export function ConfigControls({
               >
                 {n === 0 ? "ALL" : n}
               </button>
-            ))}
+            )})}
           </div>
         </ConfigRow>
       )}
@@ -165,11 +168,12 @@ export function Toggle({
   inactiveLabel: string
   ariaLabel?: string
 }) {
+  const checkedProps = checked ? { "aria-checked": "true" as const } : { "aria-checked": "false" as const };
   return (
     <button
       role="switch"
       aria-label={ariaLabel}
-      aria-checked={checked}
+      {...checkedProps}
       onClick={() => onChange(!checked)}
       className={cn(
         "flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-mono transition-all duration-150",
@@ -199,10 +203,11 @@ export interface CategoryTileProps {
 }
 
 export function CategoryTile({ name, questionCount, selected, onSelect }: CategoryTileProps) {
+  const pressedProps = selected ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const };
   return (
     <button
       onClick={onSelect}
-      aria-pressed={selected}
+      {...pressedProps}
       className={cn(
         "flex flex-col gap-1 p-3 rounded border text-left transition-all duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

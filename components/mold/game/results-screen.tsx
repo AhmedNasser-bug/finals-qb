@@ -84,6 +84,20 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
 
   return (
     <div className="flex-1 bg-[#131313] overflow-y-auto animate-fade-in">
+      <style>{`
+        .grade-text-dynamic {
+          color: ${gradeHex};
+        }
+        .grade-spotlight-dynamic {
+          background-color: ${gradeHex};
+        }
+        .grade-glow-dynamic {
+          box-shadow: 0 0 40px ${gradeHex}20;
+        }
+        .grade-letter-dynamic {
+          font-size: clamp(72px, 10vw, 128px);
+        }
+      `}</style>
       <div className="max-w-6xl mx-auto p-4 md:p-8 lg:p-12 flex flex-col gap-8 md:gap-12">
 
         {/* ── Header ── */}
@@ -99,7 +113,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           <div className="flex flex-col items-start md:items-end gap-1">
             <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">FINAL_EVALUATION</span>
             <div className="flex items-center gap-4">
-              <span className="font-mono text-6xl md:text-7xl font-black leading-none drop-shadow-[0_0_20px_rgba(254,204,23,0.2)]" style={{ color: gradeHex }}>
+              <span className="font-mono text-6xl md:text-7xl font-black leading-none drop-shadow-[0_0_20px_rgba(254,204,23,0.2)] grade-text-dynamic">
                 {grade}
               </span>
               <div className="flex flex-col">
@@ -119,16 +133,12 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           {/* Grade box */}
           <div className="relative">
             <div
-              className="absolute inset-0 blur-3xl opacity-40 pointer-events-none"
-              style={{ backgroundColor: gradeHex }}
+              className="absolute inset-0 blur-3xl opacity-40 pointer-events-none grade-spotlight-dynamic"
             />
-            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden"
-              style={{ boxShadow: `0 0 40px ${gradeHex}20` }}
-            >
+            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden grade-glow-dynamic">
               <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
               <span
-                className="font-sans font-black leading-none tracking-tighter z-10 select-none"
-                style={{ fontSize: "clamp(72px, 10vw, 128px)", color: "#ffedc2" }}
+                className="font-sans font-black leading-none tracking-tighter z-10 select-none text-[#ffedc2] grade-letter-dynamic"
               >
                 {grade}
               </span>
@@ -141,7 +151,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
                 ACCURACY_COEFFICIENT
               </span>
-              <span className="font-mono text-2xl font-black" style={{ color: gradeHex }}>
+              <span className="font-mono text-2xl font-black grade-text-dynamic">
                 {accuracyPct}%
               </span>
             </div>
@@ -149,11 +159,12 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               {Array.from({ length: 10 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex-1 h-full"
-                  style={{
-                    backgroundColor: i < filledSegments ? "#4ae176" : "#353534",
-                    boxShadow: i < filledSegments ? "0 0 8px rgba(74,225,118,0.3)" : "none",
-                  }}
+                  className={cn(
+                    "flex-1 h-full transition-all duration-300",
+                    i < filledSegments
+                      ? "bg-[#4ae176] shadow-[0_0_8px_rgba(74,225,118,0.3)]"
+                      : "bg-[#353534]"
+                  )}
                 />
               ))}
             </div>
@@ -208,8 +219,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               onClick={onPlayAgain}
               aria-label="Continue cycle to play again"
               title="Continue cycle to play again"
-              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
-              style={{ boxShadow: "0 0 25px rgba(254,204,23,0.15)" }}
+              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded border-glow"
             >
               CONTINUE_CYCLE
             </button>

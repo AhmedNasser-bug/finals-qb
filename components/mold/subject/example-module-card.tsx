@@ -18,32 +18,14 @@ export function ExampleModuleCard({
     <div
       className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-colors"
     >
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => {
-          if (!isLoading) onLoad(entry)
-        }}
-        onKeyDown={(e) => {
-          if (isLoading) return
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault()
-            onLoad(entry)
-          }
-        }}
-        aria-disabled={isLoading}
-        aria-busy={isLoading}
-        title={isLoading ? "Loading module..." : undefined}
-        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
-      >
+      {/* Main card body layout (pure presentation, z-0 relative) */}
+      <div className="flex flex-col gap-3 p-4 text-left flex-1 relative z-0">
         <div className="flex items-start justify-between gap-2">
           <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{entry.name}</p>
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1 shrink-0 z-10 relative">
             <button
-              onClick={(e) => !isLoading && onShare(e, entry)}
+              onClick={(e) => { e.stopPropagation(); if (!isLoading) onShare(e, entry) }}
               disabled={isLoading}
-              aria-busy={isLoading}
-              aria-disabled={isLoading}
               className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               aria-label={`Share ${entry.name}`}
               title={isLoading ? "Loading module..." : "Share subject"}
@@ -69,7 +51,16 @@ export function ExampleModuleCard({
         </div>
       </div>
 
-      <div className="border-t border-border px-4 py-2.5 flex items-center justify-between">
+      {/* Invisible main button overlay covering the whole card (except z-10 interactive controls) */}
+      {!isLoading && (
+        <button
+          onClick={() => onLoad(entry)}
+          className="absolute inset-0 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring z-0"
+          aria-label={`Load module ${entry.name}`}
+        />
+      )}
+
+      <div className="border-t border-border px-4 py-2.5 flex items-center justify-between z-10 relative">
         <span className="text-[10px] font-mono text-muted-foreground">{entry.id}</span>
         {isLoading ? (
           <div className="flex items-center gap-2 text-[10px] font-mono text-primary">

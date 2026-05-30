@@ -194,14 +194,15 @@ function SurvivalStressBar({
 }) {
   return (
     <div className="h-1.5 bg-secondary w-full overflow-hidden">
+      <style>{`
+        .survival-stress-fill {
+          width: 100%;
+          ${!isRevealed ? `animation: drain ${timeLimit}s linear forwards;` : ""}
+        }
+      `}</style>
       <div
         key={`${timeLimit}-${isRevealed}`}
-        className="h-full bg-red-400"
-        style={
-          isRevealed
-            ? { width: "100%" }
-            : { width: "100%", animation: `drain ${timeLimit}s linear forwards` }
-        }
+        className="h-full bg-red-400 survival-stress-fill"
       />
       <style>{`@keyframes drain { from { width: 100%; } to { width: 0%; } }`}</style>
     </div>

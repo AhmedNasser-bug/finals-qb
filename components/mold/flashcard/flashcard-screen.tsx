@@ -238,12 +238,7 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
           <div className="absolute inset-0 scanlines pointer-events-none z-10" />
 
           {/* Radial spotlight */}
-          <div
-            className="absolute inset-0 pointer-events-none z-0"
-            style={{
-              background: `radial-gradient(ellipse at 50% 45%, hsl(var(--primary) / 0.04) 0%, transparent 70%)`,
-            }}
-          />
+          <div className="absolute inset-0 pointer-events-none z-0 spotlight-primary" />
 
           {/* Animated scanline sweep */}
           <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden opacity-50">

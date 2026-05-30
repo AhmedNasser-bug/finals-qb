@@ -64,21 +64,22 @@ export function SequenceMap({ pixels, total, pixelCount, score, wrongCountVal, s
         </div>
 
         {/* Pixel grid — up to 100 cells, auto-cols to fit container */}
-        <div
-          className="grid gap-[4px]"
-          style={{ gridTemplateColumns: `repeat(${Math.min(pixelCount, 20)}, 1fr)` }}
-        >
+        <style>{`
+          .seq-map-grid {
+            grid-template-columns: repeat(${Math.min(pixelCount, 20)}, 1fr);
+          }
+        `}</style>
+        <div className="grid gap-[4px] seq-map-grid">
           {pixels.map((state, i) => (
             <div
               key={i}
               title={`Q${i + 1}: ${state === "correct" ? "Correct" : state === "wrong" ? "Wrong" : "Skipped"}`}
-              className="aspect-square"
-              style={{
-                backgroundColor:
-                  state === "correct" ? "rgba(74,225,118,0.8)" :
-                    state === "wrong" ? "#93000a" :
-                      "#353534",
-              }}
+              className={cn(
+                "aspect-square",
+                state === "correct" ? "bg-[#4ae176]/80" :
+                  state === "wrong" ? "bg-[#93000a]" :
+                    "bg-[#353534]"
+              )}
             />
           ))}
         </div>
@@ -126,6 +127,17 @@ export function ModulePerformance({ modules, resolveGradeColor }: ModulePerforma
 
   return (
     <section className="flex flex-col gap-4">
+      <style>{`
+        ${modules.map((mod) => `
+          .mod-color-${mod.id} {
+            color: ${resolveGradeColor(mod.grade)};
+          }
+          .mod-bar-fill-${mod.id} {
+            width: ${mod.pct}%;
+            background-color: ${resolveGradeColor(mod.grade)};
+          }
+        `).join("\n")}
+      `}</style>
       <h2 className="font-sans font-bold text-xl tracking-tight uppercase text-[#e5e2e1]">
         MODULE_PERFORMANCE
       </h2>
@@ -141,21 +153,12 @@ export function ModulePerformance({ modules, resolveGradeColor }: ModulePerforma
             <div className="space-y-2">
               <div className="flex justify-between items-end">
                 <span className="font-mono text-[10px] text-zinc-500 uppercase">EFFICIENCY</span>
-                <span
-                  className="font-mono text-base font-black"
-                  style={{ color: resolveGradeColor(mod.grade) }}
-                >
+                <span className={cn("font-mono text-base font-black", `mod-color-${mod.id}`)}>
                   {mod.grade}
                 </span>
               </div>
               <div className="h-[2px] w-full bg-[#353534]">
-                <div
-                  className="h-full transition-all duration-700 ease-out"
-                  style={{
-                    width: `${mod.pct}%`,
-                    backgroundColor: resolveGradeColor(mod.grade),
-                  }}
-                />
+                <div className={cn("h-full transition-all duration-700 ease-out", `mod-bar-fill-${mod.id}`)} />
               </div>
             </div>
           </div>
