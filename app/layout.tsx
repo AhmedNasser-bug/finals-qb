@@ -4,6 +4,8 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ClerkProvider } from "@clerk/nextjs"
+import { shadcn } from "@clerk/ui/themes"
 import { AchievementProvider } from "@/lib/achievement-engine"
 import "./globals.css"
 
@@ -21,9 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="font-sans">
-        <AchievementProvider>
-          {children}
-        </AchievementProvider>
+        <ClerkProvider appearance={{ theme: shadcn }}>
+          <AchievementProvider>
+            {children}
+          </AchievementProvider>
+        </ClerkProvider>
         <Analytics />
         <SpeedInsights />
       </body>

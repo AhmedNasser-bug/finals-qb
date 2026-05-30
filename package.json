@@ -10,6 +10,8 @@
     "test": "node --experimental-strip-types --import ./test-runner.mjs --test $(find . -name '*.test.ts' -not -path '*/node_modules/*')"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.4.2",
+    "@clerk/ui": "^1.14.0",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",

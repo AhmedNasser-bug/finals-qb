@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { HomeScreen } from "@/components/mold/home-screen"
+import { HomeScreen } from "@/components/mold/home/home-screen"
 import { getActiveSubject, clearActiveSubject } from "@/lib/active-subject-store"
 import {
   loadSubjects,

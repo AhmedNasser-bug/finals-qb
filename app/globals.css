@@ -1,3 +1,4 @@
+@import '@clerk/ui/themes/shadcn.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

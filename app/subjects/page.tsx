@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { SubjectSelector } from "@/components/mold/subject-selector"
-import { ShareReceiver } from "@/components/mold/share-receiver"
+import { SubjectSelector } from "@/components/mold/subject/subject-selector"
+import { ShareReceiver } from "@/components/mold/subject/share-receiver"
 import {
   loadSubjects,
   saveSubjects,
