@@ -101,3 +101,6 @@
 ## 2024-05-29 - Missing title tooltips on styled action buttons
 **Learning:** Action buttons that use stylized acronyms (e.g., DUMP_LOGS) or generic icons (e.g. standard close 'X' buttons in modals) often have `aria-label`s for screen readers but lack explicit contextual tooltips for mouse users. This forces users to infer the action, which reduces usability, especially on desktop.
 **Action:** When creating or auditing buttons that lack descriptive inline text, always include a explicitly descriptive `title` attribute in addition to an `aria-label`. For example, a "DUMP_LOGS" button should have `title="Dump logs to return home"`, or a close button in a specific overlay should have `title="Close encyclopedia overlay"` to clarify the exact result of the action.
+## 2024-05-30 - Redundant aria-disabled attributes
+**Learning:** Screen readers automatically announce natively disabled elements, making `aria-disabled` redundant and generally discouraged by W3C when a native `disabled` attribute is present.
+**Action:** Avoid adding `aria-disabled` when native `disabled` exists, unless explicitly replacing the native behavior.

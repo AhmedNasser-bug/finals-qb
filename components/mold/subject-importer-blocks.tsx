@@ -19,6 +19,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
         <button
           onClick={onCopyPrompt}
           title="Copy the AI prompt to your clipboard"
+          aria-label={promptCopied ? "Copied prompt" : "Copy prompt"}
           className={cn(
             "text-xs font-mono px-3 py-1.5 rounded border transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
             promptCopied
