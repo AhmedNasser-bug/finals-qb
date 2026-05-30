@@ -1,0 +1,19 @@
+# Ignore Next.js build and cache output
+.next/
+.next/**
+
+# Ignore third-party dependencies
+node_modules/
+node_modules/**
+
+# Ignore version control and agent configurations
+.git/
+.agent/
+.agents/
+.qodo/
+.Jules/
+
+# Ignore static assets and custom build outputs
+public/
+out/
+build/
