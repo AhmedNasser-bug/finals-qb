@@ -17,6 +17,7 @@
     "**/out": true,
     "**/build": true,
     "**/.qodo": true,
-    "**/.agents": true
+    "**/.agents": true,
+    "**/.agent": true
   }
 }
