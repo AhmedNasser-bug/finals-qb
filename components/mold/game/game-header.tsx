@@ -180,7 +180,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             onClick={onForfeit}
             aria-label="Quit current game session"
             title="Quit current game session"
-            className="md:mt-3 font-mono text-[9px] text-zinc-500 hover:text-[#ffb4ab] uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-500 rounded px-1"
+            className="md:mt-3 font-mono text-[10px] font-semibold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-zinc-400 hover:border-[#930013]/60 hover:bg-[#930013]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#930013] rounded-sm"
           >
             QUIT SESSION
           </button>

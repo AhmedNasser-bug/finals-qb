@@ -169,7 +169,7 @@ export function HomeScreen({
               onClick={() => setShowImporter(true)}
               title="Import a new subject"
               aria-label="Import a new subject"
-              className="text-[10px] font-mono px-2.5 py-1 rounded border border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="text-[10px] font-mono px-3 py-1.5 rounded border border-zinc-800 bg-[#1b1b1f] text-zinc-300 hover:border-primary/60 hover:text-primary transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               Import New
             </button>
@@ -177,7 +177,7 @@ export function HomeScreen({
               onClick={onChangeSubject}
               title="Change active subject"
               aria-label="Change active subject"
-              className="text-[10px] font-mono px-2.5 py-1 rounded border border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="text-[10px] font-mono px-3 py-1.5 rounded border border-zinc-800 bg-[#1b1b1f] text-zinc-300 hover:border-zinc-500 hover:text-white transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Change Subject
             </button>
