@@ -3,6 +3,7 @@
 import type { SubjectData, Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs"
+import { hasClerk } from "@/lib/user-storage"
 
 interface HeroHeaderProps {
   subject: SubjectData
@@ -32,31 +33,35 @@ export function HeroHeader({ subject, achievements, onTrophyClick, className }: 
           <span className="text-xs font-mono text-muted-foreground">
             {subject.categories.length} SECTORS
           </span>
-          <span className="text-border select-none">|</span>
-          <Show when="signed-out">
-            <div className="flex items-center gap-2">
-              <SignInButton mode="modal">
-                <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2 py-0.5 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
-                  SIGN IN
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="text-[10px] font-mono text-foreground border border-border bg-secondary px-2 py-0.5 hover:bg-border transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
-                  SIGN UP
-                </button>
-              </SignUpButton>
-            </div>
-          </Show>
-          <Show when="signed-in">
-            <UserButton 
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: "w-5 h-5 border border-primary/30 rounded-none",
-                  userButtonTrigger: "focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
-                }
-              }} 
-            />
-          </Show>
+          {hasClerk && (
+            <>
+              <span className="text-border select-none">|</span>
+              <Show when="signed-out">
+                <div className="flex items-center gap-2">
+                  <SignInButton mode="modal">
+                    <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2 py-0.5 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                      SIGN IN
+                    </button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <button className="text-[10px] font-mono text-foreground border border-border bg-secondary px-2 py-0.5 hover:bg-border transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                      SIGN UP
+                    </button>
+                  </SignUpButton>
+                </div>
+              </Show>
+              <Show when="signed-in">
+                <UserButton 
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "w-5 h-5 border border-primary/30 rounded-none",
+                      userButtonTrigger: "focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
+                    }
+                  }} 
+                />
+              </Show>
+            </>
+          )}
         </div>
       </div>
 

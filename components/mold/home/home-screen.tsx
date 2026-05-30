@@ -23,8 +23,7 @@ import {
 } from "@/lib/mold-types"
 import type { FullSubjectData } from "@/lib/mold-types"
 
-import { useAuth } from "@clerk/nextjs"
-import { getNamespacedKey, RUNS_STORAGE_KEY } from "@/lib/user-storage"
+import { getNamespacedKey, RUNS_STORAGE_KEY, useSafeAuth } from "@/lib/user-storage"
 
 function loadRuns(userId?: string | null): RunRecord[] {
   try {
@@ -65,7 +64,7 @@ export function HomeScreen({
   onAddSubject,
   onChangeSubject,
 }: HomeScreenProps) {
-  const { userId } = useAuth()
+  const { userId } = useSafeAuth()
   const [view, setView]               = useState<AppView>("home")
   const [activeConfig, setActiveConfig] = useState<GameConfig | null>(null)
   const [showGallery, setShowGallery]       = useState(false)

@@ -9,6 +9,8 @@ import { shadcn } from "@clerk/ui/themes"
 import { AchievementProvider } from "@/lib/achievement-engine"
 import "./globals.css"
 
+import { hasClerk } from "@/lib/user-storage"
+
 export const metadata: Metadata = {
   title: "MOLD V2 — Mastery Protocol",
   description: "High-performance educational quiz and revision system. Master your subjects with Speedrun, Blitz, Hardcore, Survival, Practice, Flashcards, and Full Revision modes.",
@@ -20,14 +22,22 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const content = (
+    <AchievementProvider>
+      {children}
+    </AchievementProvider>
+  )
+
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="font-sans">
-        <ClerkProvider appearance={{ theme: shadcn }}>
-          <AchievementProvider>
-            {children}
-          </AchievementProvider>
-        </ClerkProvider>
+        {hasClerk ? (
+          <ClerkProvider appearance={{ theme: shadcn }}>
+            {content}
+          </ClerkProvider>
+        ) : (
+          content
+        )}
         <Analytics />
         <SpeedInsights />
       </body>

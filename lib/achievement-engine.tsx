@@ -27,8 +27,7 @@ export {
   ACHIEVEMENT_CONDITIONS,
 } from "./achievement-logic"
 
-import { useAuth } from "@clerk/nextjs"
-import { getNamespacedKey, ACHIEVEMENTS_STORAGE_KEY } from "@/lib/user-storage"
+import { getNamespacedKey, ACHIEVEMENTS_STORAGE_KEY, useSafeAuth } from "@/lib/user-storage"
 
 // ─── Persistence helpers (localStorage, namespaced by Clerk User ID) ────
 
@@ -75,7 +74,7 @@ export function useAchievements(): AchievementContextValue {
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function AchievementProvider({ children }: { children: ReactNode }) {
-  const { userId } = useAuth()
+  const { userId } = useSafeAuth()
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [conditions, setConditions]   = useState<Record<string, AchievementCondition>>({})
 
