@@ -98,7 +98,16 @@ interface InnerProps {
 }
 
 function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs, showUnlocks }: InnerProps) {
-  const { state, forfeit, currentQuestion } = useGameEngine()
+  const {
+    state,
+    forfeit,
+    currentQuestion,
+    selectOption,
+    revealAnswer,
+    nextQuestion,
+    useHint,
+    accuracyPct,
+  } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const [showHint, setShowHint] = useState(false)
   const completionProcessedRef = useRef(false)
@@ -115,18 +124,18 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     if (state.phase === "complete" && !completionProcessedRef.current) {
       completionProcessedRef.current = true
 
-      const accuracyPct = calculateAccuracy(state.score, state.wrongAnswers)
+      const accuracyPctValue = calculateAccuracy(state.score, state.wrongAnswers)
       const totalQuestions = state.questions.length
       const run: RunRecord = {
         id: uuid(),
         date: new Date().toISOString(),
         mode: state.mode,
-        score: accuracyPct,
+        score: accuracyPctValue,
         correctAnswers: state.score,
         totalQuestions,
         timeTaken: state.elapsedSeconds,
         streak: state.bestStreak,
-        grade: calculateGrade(accuracyPct),
+        grade: calculateGrade(accuracyPctValue),
       }
 
       onRunSaved?.(run)
@@ -158,6 +167,41 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     )
   }
 
+  const isCorrect = state.isRevealed
+    ? state.selectedOption === currentQuestion.answer
+    : null
+
+  const cardContextValue = {
+    state: {
+      currentQuestion,
+      currentIndex: state.currentIndex,
+      totalQuestions: state.questions.length,
+      selectedOption: state.selectedOption,
+      isRevealed: state.isRevealed,
+      isCorrect,
+      hintUsed: showHint,
+      wrongCount: state.wrongAnswers,
+      globalTimeRemaining: state.globalTimeRemaining,
+      elapsedSeconds: state.elapsedSeconds,
+      livesRemaining: state.livesRemaining,
+    },
+    actions: {
+      selectOption,
+      submitAnswer: revealAnswer,
+      nextQuestion,
+      useHint: () => {
+        useHint()
+        setShowHint(true)
+      },
+      forfeitSession: forfeit,
+    },
+  }
+
+  const CardComponent =
+    config.mode === "practice" ? PracticeQuestionCard :
+    config.mode === "survival" ? SurvivalQuestionCard :
+    StandardQuestionCard
+
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <GameHeader onForfeit={forfeit} />
@@ -175,11 +219,95 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
           ? "max-w-[calc(100vw-2rem)] lg:max-w-[calc(100vw-4rem)] xl:max-w-[1600px]"
           : "max-w-4xl"
       }`}>
-        <QuestionCard question={currentQuestion} showHint={showHint} />
+        <CardComponent
+          value={cardContextValue}
+          accuracyPct={accuracyPct}
+          showHint={showHint}
+        />
       </main>
 
       <GameFooter onHintRequest={() => setShowHint(true)} />
     </div>
+  )
+}
+
+// ─── Composed Screen Card Variants ───────────────────────────────────────────
+
+interface QuestionCardVariantProps {
+  value: import("@/lib/question-card-context").QuestionCardContextValue
+  accuracyPct: number
+  showHint: boolean
+}
+
+function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVariantProps) {
+  return (
+    <QuestionCard.Provider value={value}>
+      <QuestionCard.Frame>
+        <QuestionCard.Header>
+          <QuestionCard.Counter />
+          <QuestionCard.Telemetry showSkills accuracyPct={accuracyPct} />
+        </QuestionCard.Header>
+
+        <QuestionCard.Specimen>
+          <QuestionCard.HtmlContent />
+          <QuestionCard.MermaidDiagram mode="side" />
+        </QuestionCard.Specimen>
+
+        <QuestionCard.MermaidDiagram mode="below" />
+
+        <QuestionCard.Options cols="auto" />
+
+        <QuestionCard.Footer showHint={showHint} />
+      </QuestionCard.Frame>
+    </QuestionCard.Provider>
+  )
+}
+
+function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps, "accuracyPct">) {
+  return (
+    <QuestionCard.Provider value={value}>
+      <QuestionCard.Frame>
+        <QuestionCard.Header>
+          <QuestionCard.Counter />
+          {/* Survival focuses visually on hearts HUD in header, keeping card super clean */}
+        </QuestionCard.Header>
+
+        <QuestionCard.Specimen>
+          <QuestionCard.HtmlContent />
+          <QuestionCard.MermaidDiagram mode="side" />
+        </QuestionCard.Specimen>
+
+        <QuestionCard.MermaidDiagram mode="below" />
+
+        <QuestionCard.Options cols="auto" />
+
+        <QuestionCard.Footer showHint={showHint} />
+      </QuestionCard.Frame>
+    </QuestionCard.Provider>
+  )
+}
+
+function StandardQuestionCard({ value, accuracyPct, showHint }: QuestionCardVariantProps) {
+  return (
+    <QuestionCard.Provider value={value}>
+      <QuestionCard.Frame>
+        <QuestionCard.Header>
+          <QuestionCard.Counter />
+          <QuestionCard.Telemetry accuracyPct={accuracyPct} />
+        </QuestionCard.Header>
+
+        <QuestionCard.Specimen>
+          <QuestionCard.HtmlContent />
+          <QuestionCard.MermaidDiagram mode="side" />
+        </QuestionCard.Specimen>
+
+        <QuestionCard.MermaidDiagram mode="below" />
+
+        <QuestionCard.Options cols="auto" />
+
+        <QuestionCard.Footer showHint={showHint} />
+      </QuestionCard.Frame>
+    </QuestionCard.Provider>
   )
 }
 
