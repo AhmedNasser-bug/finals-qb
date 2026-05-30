@@ -1,5 +1,5 @@
 import type { FullSubjectData, SubjectData, CategoryData } from "./mold-types"
-import { deriveCategoriesFromSubject } from "./subject-store.ts"
+import { deriveCategoriesFromSubject } from "./subject-store"
 
 // ─── Storage key ──────────────────────────────────────────────────────────────
 const SUBJECTS_KEY = "mold_v2_subjects"

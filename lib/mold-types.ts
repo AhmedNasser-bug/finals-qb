@@ -115,6 +115,7 @@ export interface GameConfig {
   questionCount: number           // 0 = all
   selectedCategory: string | null // practice mode only
   subjectId: string
+  difficulty?: string
 }
 
 // ─── Core Types for MOLD V2 ─────────────────────────────────────────────────
