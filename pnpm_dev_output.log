@@ -1,0 +1,71 @@
+
+> my-v0-project@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 530ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+
+○ Compiling /subjects ...
+ GET /subjects 200 in 7.0s (next.js: 5.8s, proxy.ts: 303ms, application-code: 872ms)
+ POST /subjects 200 in 63ms (next.js: 10ms, proxy.ts: 11ms, application-code: 42ms)
+  └─ ƒ getExamplesManifest() in 18ms actions.ts
+ POST /subjects 200 in 40ms (next.js: 5ms, proxy.ts: 8ms, application-code: 27ms)
+  └─ ƒ getExamplesManifest() in 10ms actions.ts
+ GET /subjects 200 in 93ms (next.js: 5ms, proxy.ts: 6ms, application-code: 81ms)
+ POST /subjects 200 in 32ms (next.js: 4ms, proxy.ts: 7ms, application-code: 20ms)
+  └─ ƒ getExamplesManifest() in 9ms actions.ts
+ POST /subjects 200 in 35ms (next.js: 6ms, proxy.ts: 5ms, application-code: 24ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts
+ GET /subjects 200 in 98ms (next.js: 4ms, proxy.ts: 6ms, application-code: 89ms)
+ POST /subjects 200 in 28ms (next.js: 4ms, proxy.ts: 6ms, application-code: 19ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts
+ POST /subjects 200 in 30ms (next.js: 5ms, proxy.ts: 6ms, application-code: 19ms)
+  └─ ƒ getExamplesManifest() in 8ms actions.ts
+○ Compiling / ...
+ GET / 200 in 7.1s (next.js: 5.3s, proxy.ts: 4ms, application-code: 1849ms)
+ GET /subjects 200 in 67ms (next.js: 4ms, proxy.ts: 5ms, application-code: 57ms)
+ POST /subjects 200 in 30ms (next.js: 4ms, proxy.ts: 9ms, application-code: 17ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts
+ POST /subjects 200 in 26ms (next.js: 3ms, proxy.ts: 5ms, application-code: 18ms)
+  └─ ƒ getExamplesManifest() in 9ms actions.ts
+ GET / 200 in 52ms (next.js: 3ms, proxy.ts: 4ms, application-code: 45ms)
+ GET /subjects 200 in 32ms (next.js: 3ms, proxy.ts: 6ms, application-code: 23ms)
+ POST /subjects 200 in 24ms (next.js: 3ms, proxy.ts: 4ms, application-code: 16ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts
+ POST /subjects 200 in 23ms (next.js: 3ms, proxy.ts: 4ms, application-code: 17ms)
+  └─ ƒ getExamplesManifest() in 8ms actions.ts
+ GET / 200 in 81ms (next.js: 5ms, proxy.ts: 5ms, application-code: 71ms)
+ GET /subjects 200 in 37ms (next.js: 3ms, proxy.ts: 5ms, application-code: 29ms)
+ POST /subjects 200 in 24ms (next.js: 3ms, proxy.ts: 4ms, application-code: 16ms)
+  └─ ƒ getExamplesManifest() in 8ms actions.ts
+ POST /subjects 200 in 25ms (next.js: 5ms, proxy.ts: 4ms, application-code: 15ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts
+ GET /subjects 200 in 63ms (next.js: 3ms, proxy.ts: 4ms, application-code: 55ms)
+ POST /subjects 200 in 25ms (next.js: 3ms, proxy.ts: 5ms, application-code: 17ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts
+ POST /subjects 200 in 32ms (next.js: 4ms, proxy.ts: 4ms, application-code: 24ms)
+  └─ ƒ getExamplesManifest() in 8ms actions.ts
+ GET / 200 in 70ms (next.js: 4ms, proxy.ts: 5ms, application-code: 62ms)
+ GET /subjects 200 in 36ms (next.js: 4ms, proxy.ts: 6ms, application-code: 27ms)
+ POST /subjects 200 in 26ms (next.js: 3ms, proxy.ts: 5ms, application-code: 17ms)
+  └─ ƒ getExamplesManifest() in 9ms actions.ts
+ POST /subjects 200 in 30ms (next.js: 3ms, proxy.ts: 5ms, application-code: 22ms)
+  └─ ƒ getExamplesManifest() in 8ms actions.ts
+ GET /subjects 200 in 64ms (next.js: 5ms, proxy.ts: 4ms, application-code: 54ms)
+ POST /subjects 200 in 25ms (next.js: 5ms, proxy.ts: 4ms, application-code: 16ms)
+  └─ ƒ getExamplesManifest() in 8ms actions.ts
+ POST /subjects 200 in 23ms (next.js: 3ms, proxy.ts: 4ms, application-code: 16ms)
+  └─ ƒ getExamplesManifest() in 8ms actions.ts
+ GET / 200 in 96ms (next.js: 8ms, proxy.ts: 8ms, application-code: 79ms)
+ GET /subjects 200 in 66ms (next.js: 8ms, proxy.ts: 5ms, application-code: 53ms)
+ POST /subjects 200 in 32ms (next.js: 3ms, proxy.ts: 8ms, application-code: 21ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts
+ POST /subjects 200 in 22ms (next.js: 3ms, proxy.ts: 4ms, application-code: 15ms)
+  └─ ƒ getExamplesManifest() in 7ms actions.ts

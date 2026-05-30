@@ -32,6 +32,7 @@ export function UserSubjectCard({
         isConfirming ? "border-destructive/40" : "border-border hover:border-border/80"
       )}
     >
+      {/* Absolute positioning for main click target */}
       <div
         role="button"
         tabIndex={0}
@@ -47,57 +48,62 @@ export function UserSubjectCard({
         }}
         aria-disabled={isConfirming}
         title={isConfirming ? "Confirm deletion first" : undefined}
-        className="flex flex-col gap-3 p-4 text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex-1"
-      >
-        <div className="flex items-start justify-between gap-2">
-          <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{full.name}</p>
-          <div className="flex items-center gap-1 shrink-0">
-            <button
-              onClick={(e) => { e.stopPropagation(); onShare(full) }}
-              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              aria-label={`Share ${full.name}`}
-              title="Share subject"
-            >
-              <ShareIcon />
-            </button>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 border border-border text-muted-foreground">
-              v{full.config.version ?? "1.0"}
-            </span>
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-          {full.config.description}
-        </p>
-        <div className="flex flex-wrap gap-1.5">
-          <StatPill label="Q" value={data.totalQuestions} />
-          <StatPill label="FC" value={full.flashcards?.length ?? 0} />
-          <StatPill label="Cat" value={categoryCount} />
-        </div>
-      </div>
+        aria-label={`Select subject: ${full.name}`}
+        className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      />
 
-      <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
-        <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[120px]">{full.id}</span>
-        {isConfirming ? (
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono text-destructive/80">Delete?</span>
-            <button
-              onClick={() => onDeleteConfirm(full.id)}
-              aria-label={`Confirm deletion of ${full.name}`}
-              className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
-            >Yes</button>
-            <button
-              onClick={onDeleteCancel}
-              aria-label={`Cancel deletion of ${full.name}`}
-              className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >No</button>
+      <div className="relative z-10 pointer-events-none flex flex-col flex-1">
+        <div className="flex flex-col gap-3 p-4 text-left flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{full.name}</p>
+            <div className="flex items-center gap-1 shrink-0 pointer-events-auto">
+              <button
+                onClick={(e) => { e.stopPropagation(); onShare(full) }}
+                className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                aria-label={`Share ${full.name}`}
+                title="Share subject"
+              >
+                <ShareIcon />
+              </button>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 border border-border text-muted-foreground">
+                v{full.config.version ?? "1.0"}
+              </span>
+            </div>
           </div>
-        ) : (
-          <button
-            onClick={(e) => { e.stopPropagation(); onRemoveClick(full.id) }}
-            className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
-            aria-label={`Remove ${full.name}`}
-          >Remove</button>
-        )}
+          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+            {full.config.description}
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            <StatPill label="Q" value={data.totalQuestions} />
+            <StatPill label="FC" value={full.flashcards?.length ?? 0} />
+            <StatPill label="Cat" value={categoryCount} />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-border px-4 py-2.5 pointer-events-auto mt-auto">
+          <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[120px]">{full.id}</span>
+          {isConfirming ? (
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono text-destructive/80">Delete?</span>
+              <button
+                onClick={(e) => { e.stopPropagation(); onDeleteConfirm(full.id) }}
+                aria-label={`Confirm deletion of ${full.name}`}
+                className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
+              >Yes</button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onDeleteCancel() }}
+                aria-label={`Cancel deletion of ${full.name}`}
+                className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >No</button>
+            </div>
+          ) : (
+            <button
+              onClick={(e) => { e.stopPropagation(); onRemoveClick(full.id) }}
+              className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
+              aria-label={`Remove ${full.name}`}
+            >Remove</button>
+          )}
+        </div>
       </div>
     </div>
   )
