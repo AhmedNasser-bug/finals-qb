@@ -56,9 +56,12 @@ export async function decodeSubject(
 
     const ds = new DecompressionStream("gzip")
     const writer = ds.writable.getWriter()
-    writer.write(new Uint8Array(compressed))
-    writer.close()
+    // Await the write, but catch any errors to prevent unhandled rejections
+    // if the gzip payload is invalid.
+    writer.write(new Uint8Array(compressed)).catch(() => {})
+    writer.close().catch(() => {})
 
+    // Await the read. If decompression fails (e.g., Z_DATA_ERROR), it will throw here.
     const decompressed = await new Response(ds.readable).arrayBuffer()
     const json = new TextDecoder().decode(decompressed)
     const raw: unknown = JSON.parse(json)
