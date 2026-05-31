@@ -32,17 +32,31 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
   const segments = Array.from({ length: segmentCount }, (_, s) => {
     const startIdx = Math.round(s * bucketSize)
     const endIdx = Math.round((s + 1) * bucketSize)
-    const slice = answers.slice(startIdx, endIdx)
     const hasCurrent = currentIndex >= startIdx && currentIndex < endIdx
 
-    const allAnswered = slice.length > 0 && slice.every((a) => a !== undefined)
-    const anyWrong = slice.some((a) => a === false)
-    const allCorrect = slice.every((a) => a === true)
+    let allAnswered = startIdx < endIdx
+    let anyWrong = false
+    let anyAnswered = false
+    let allCorrect = startIdx < endIdx
+
+    for (let j = startIdx; j < endIdx; j++) {
+      const a = answers[j]
+      if (a === undefined) {
+        allAnswered = false
+        allCorrect = false
+      } else {
+        anyAnswered = true
+        if (a === false) {
+          anyWrong = true
+          allCorrect = false
+        }
+      }
+    }
 
     if (allAnswered && allCorrect) return "correct"
     if (allAnswered && anyWrong) return "wrong"
     if (hasCurrent) return "current"
-    if (slice.some((a) => a !== undefined)) return "partial"
+    if (anyAnswered) return "partial"
     return "unseen"
   })
 

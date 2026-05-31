@@ -29,8 +29,13 @@ function extractInterface(content, componentName) {
   return 'None specified or inline props';
 }
 
-function processComponent(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+async function processComponent(filePath) {
+  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
+  let content = '';
+  for await (const chunk of stream) {
+    content += chunk;
+  }
+
   const fileName = path.basename(filePath);
   const moduleName = fileName.replace('.tsx', '').split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-');
 
@@ -113,12 +118,15 @@ ${edgeCases.map(e => '- ' + e).join('\n')}
 `;
 }
 
-function generateDocs() {
+async function generateDocs() {
   const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
-  const componentDocs = allFiles
-    .filter(f => f.endsWith('.tsx'))
-    .sort()
-    .map(processComponent);
+  const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
+
+  const componentDocs = [];
+  for (const file of tsxFiles) {
+    const doc = await processComponent(file);
+    componentDocs.push(doc);
+  }
 
   const markdown = `# Component Registry
 
