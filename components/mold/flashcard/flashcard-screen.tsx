@@ -7,7 +7,12 @@ import { cn } from "@/lib/utils"
 import { shuffle } from "@/lib/crypto-utils"
 import { RichText } from "@/components/mold/common/rich-text"
 import { Header } from "@/components/mold/flashcard/flashcard-components"
-import { SessionEndScreen, RoundEndScreen } from "@/components/mold/flashcard/flashcard-screen-blocks"
+import {
+  SessionEndScreen,
+  RoundEndScreen,
+  FlashcardDossierCard,
+  FlashcardResponseControls,
+} from "@/components/mold/flashcard/flashcard-screen-blocks"
 
 interface FlashcardScreenProps {
   flashcards: Flashcard[]
@@ -221,162 +226,18 @@ export function FlashcardScreen({ flashcards, onComplete, onReturnHome }: Flashc
 
       {/* ── Centered Dossier Card ─────────────────────────────────── */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-4 relative overflow-hidden">
-        {/* Card outer shell */}
-        <div
-          className={cn(
-            "w-full max-w-2xl min-h-[380px] flex flex-col relative",
-            "border border-border",
-            "bg-surface-container-high",
-            "transition-all duration-200",
-            "hover:border-primary/30",
-            accent.border,
-            "border-t-[3px]",
-            animClass
-          )}
-        >
-          {/* Scanline overlay */}
-          <div className="absolute inset-0 scanlines pointer-events-none z-10" />
-
-          {/* Radial spotlight */}
-          <div className="absolute inset-0 pointer-events-none z-0 spotlight-primary" />
-
-          {/* Animated scanline sweep */}
-          <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden opacity-50">
-            <div className="w-full h-full animate-scanline-sweep bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
-          </div>
-
-          {/* Corner markers */}
-          <span className="absolute top-1 left-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">┌</span>
-          <span className="absolute top-1 right-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">┐</span>
-          <span className="absolute bottom-1 left-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">└</span>
-          <span className="absolute bottom-1 right-2 text-[10px] font-mono text-muted-foreground/30 pointer-events-none z-20 select-none">┘</span>
-
-          {/* ── Card Front (Term) ───────────────────────────────── */}
-          <div
-            className={cn(
-              "flex-1 flex flex-col relative z-10 transition-all duration-300 ease-out",
-              flipped ? "opacity-0 scale-[0.97] pointer-events-none absolute inset-0" : "opacity-100 scale-100"
-            )}
-          >
-            {/* Top meta strip */}
-            <div className="flex items-center justify-between px-5 pt-4 pb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">
-                  TERM
-                </span>
-                <span className={cn("text-[10px] font-mono tracking-wider", accent.color)}>
-                  // {accent.label}
-                </span>
-              </div>
-              <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider animate-pulse-soft">
-                TAP TO FLIP
-              </span>
-            </div>
-
-            {/* Divider */}
-            <div className="mx-5 border-t border-border/40" />
-
-            {/* Term content */}
-            <div className="flex-1 flex flex-col items-center justify-center px-8 py-6">
-              <p className="text-4xl sm:text-5xl font-mono font-bold text-foreground text-center break-words tracking-tight">
-                <RichText content={card.term || ""} id={`term-${card.id}`} />
-              </p>
-            </div>
-
-            {/* Bottom metadata bar */}
-            <div className="mx-5 border-t border-border/40" />
-            <div className="flex items-center justify-between px-5 py-2.5">
-              <span className="text-[10px] font-mono tracking-wider text-muted-foreground/60">
-                MEMORY NODE {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] font-mono tracking-wider text-emerald-400/70">
-                SIGNAL: STABLE
-              </span>
-            </div>
-          </div>
-
-          {/* ── Card Back (Definition) ──────────────────────────── */}
-          <div
-            className={cn(
-              "flex-1 flex flex-col relative z-10 transition-all duration-300 ease-out",
-              flipped ? "opacity-100 scale-100" : "opacity-0 scale-[0.97] pointer-events-none absolute inset-0"
-            )}
-          >
-            {/* Top meta strip */}
-            <div className="flex items-center justify-between px-5 pt-4 pb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">
-                  DEFINITION
-                </span>
-              </div>
-              <span className={cn(
-                "text-[10px] font-mono px-1.5 py-0.5 border tracking-wider",
-                "border-emerald-400/30 bg-emerald-400/10 text-emerald-400"
-              )}>
-                DECODED
-              </span>
-            </div>
-
-            {/* Divider */}
-            <div className="mx-5 border-t border-border/40" />
-
-            {/* Definition content */}
-            <div className="flex-1 flex flex-col justify-center px-8 py-6">
-              <p className="text-sm sm:text-base text-foreground/90 leading-relaxed text-pretty">
-                <RichText content={card.definition || ""} id={`def-${card.id}`} />
-              </p>
-            </div>
-
-            {/* Bottom metadata bar */}
-            <div className="mx-5 border-t border-border/40" />
-            <div className="flex items-center justify-between px-5 py-2.5">
-              <span className={cn("text-[10px] font-mono tracking-wider", accent.color)}>
-                {formatLabel(card.category)}
-              </span>
-              <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider">
-                TAP AGAIN TO REVIEW TERM
-              </span>
-            </div>
-          </div>
-
-          {/* Invisible click zone covering the entire card */}
-          <button
-            onClick={() => setFlipped((f) => !f)}
-            aria-label={flipped ? "Show term" : "Show definition"}
-            className="absolute inset-0 z-20 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          />
-        </div>
+        <FlashcardDossierCard
+          card={card}
+          index={index}
+          flipped={flipped}
+          animClass={animClass}
+          accent={accent}
+          onFlip={() => setFlipped((f) => !f)}
+        />
 
         {/* ── Response controls — only after flip ───────────────── */}
         {flipped && (
-          <div className="flex gap-5 w-full max-w-2xl mt-6 animate-fade-in">
-            <button
-              onClick={() => handleRespond(false)}
-              className={cn(
-                "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider",
-                "border-red-400/40 bg-red-400/5 text-red-400",
-                "hover:bg-red-400/10 hover:border-red-400/50",
-                "transition-all duration-150",
-                "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400",
-                "btn-depress"
-              )}
-            >
-              ✕ &nbsp;STILL LEARNING &nbsp;-1
-            </button>
-            <button
-              onClick={() => handleRespond(true)}
-              className={cn(
-                "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider font-bold",
-                "border-emerald-400/40 bg-emerald-400/5 text-emerald-400",
-                "hover:bg-emerald-400/10 hover:border-emerald-400/50",
-                "transition-all duration-150",
-                "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400",
-                "btn-depress"
-              )}
-            >
-              ✓ &nbsp;GOT IT &nbsp;+1
-            </button>
-          </div>
+          <FlashcardResponseControls onRespond={handleRespond} />
         )}
       </div>
     </div>
