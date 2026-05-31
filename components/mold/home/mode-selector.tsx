@@ -102,40 +102,59 @@ interface ModeCardProps {
 
 function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass }: ModeCardProps) {
   const pressedProps = isSelected ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const };
+  
+  // Custom tag styling based on mode category and ID
+  let tagBg = "bg-zinc-800 text-zinc-400 border-zinc-700"
+  if (mode.id === "practice") {
+    tagBg = "bg-[var(--tw-hex-fecc17)]/10 text-primary border-[var(--tw-hex-fecc17)]/20"
+  } else if (mode.id === "flashcards") {
+    tagBg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+  } else if (mode.category === "challenge") {
+    tagBg = "bg-red-500/10 text-red-400 border-red-500/20"
+  } else {
+    tagBg = "bg-purple-500/10 text-purple-400 border-purple-500/20"
+  }
+
   return (
     <button
       onClick={() => onSelect(mode.id)}
       {...pressedProps}
       className={cn(
-        "group relative flex flex-col gap-2.5 p-4 rounded border text-left transition-all duration-150 focus-ring min-h-[112px] justify-between",
+        "group relative flex flex-col gap-4 p-5 rounded border text-left transition-all duration-200 focus-ring min-h-[160px] justify-between cursor-pointer w-full",
         isSelected
-          ? cn("border-opacity-60", selectedClass)
-          : "border-border bg-panel hover:border-border/80 hover:bg-secondary/60"
+          ? "border-primary bg-[#0f1013] border-glow shadow-[0_0_18px_hsla(var(--primary),0.08)]"
+          : "border-border bg-[#101115] hover:border-zinc-700 hover:bg-[#15161b]"
       )}
     >
-      <div className="flex items-start justify-between gap-2 w-full">
-        <span className={cn("shrink-0", isSelected ? accentClass : "text-muted-foreground group-hover:text-foreground transition-colors")} aria-hidden="true">
+      <div className="flex items-start justify-between gap-2 w-full select-none">
+        <span className={cn("shrink-0 p-1.5 rounded bg-zinc-900 border border-zinc-800/80 group-hover:scale-110 transition-transform duration-200", isSelected ? "text-primary border-primary/20" : "text-muted-foreground")} aria-hidden="true">
           {icon}
         </span>
         <span className={cn(
-          "text-[9px] font-mono px-1.5 py-0.5 rounded-sm border leading-none shrink-0",
-          isSelected
-            ? cn("border-current", accentClass)
-            : "border-border text-muted-foreground"
+          "text-[9px] font-mono px-2 py-0.5 border leading-none shrink-0 font-bold uppercase tracking-wider",
+          tagBg
         )}>
           {mode.tag.toUpperCase()}
         </span>
       </div>
-      <div>
+      
+      <div className="space-y-1.5">
         <p className={cn(
-          "text-sm font-semibold leading-none mb-1 transition-colors font-display tracking-tight",
-          isSelected ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
+          "text-base font-bold leading-tight font-display uppercase tracking-tight",
+          isSelected ? "text-white" : "text-zinc-200 group-hover:text-white transition-colors"
         )}>
           {mode.label}
         </p>
-        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+        <p className="text-xs text-muted-foreground leading-relaxed font-sans font-medium line-clamp-2">
           {mode.description}
         </p>
+      </div>
+
+      <div className={cn(
+        "font-mono text-[9px] uppercase tracking-widest border-t border-zinc-800/60 pt-2.5 w-full transition-colors duration-200 font-bold",
+        isSelected ? "text-primary" : "text-zinc-600 group-hover:text-primary/75"
+      )}>
+        INIT_MODULE &gt;
       </div>
     </button>
   )

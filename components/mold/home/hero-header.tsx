@@ -94,11 +94,11 @@ export function HeroHeader({
 
       {/* Main hero */}
       <div className="px-6 py-6 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 min-w-0 flex-1">
           <p className="text-xs font-mono tracking-widest text-primary uppercase">
-            SUBJECT LOADED
+            SUBJECT_LOADED
           </p>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground text-balance leading-tight font-display">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground text-balance leading-tight font-display break-words break-all">
             {subject.name}
           </h1>
           <p className="text-sm text-muted-foreground text-pretty max-w-xl leading-relaxed">

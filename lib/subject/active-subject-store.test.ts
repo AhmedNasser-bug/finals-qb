@@ -1,7 +1,7 @@
 import { test, describe, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { setActiveSubject, getActiveSubject, clearActiveSubject } from "./active-subject-store.ts";
-import type { FullSubjectData } from "./mold-types.ts";
+import type { FullSubjectData } from "../types/mold-types.ts";
 
 describe("active-subject-store", () => {
   let mockStorage: Record<string, string> = {};

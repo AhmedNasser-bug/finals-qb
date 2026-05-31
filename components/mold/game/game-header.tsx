@@ -66,8 +66,8 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 "h-2 flex-1",
                 seg === "correct" && "bg-[#4ae176]",
                 seg === "wrong" && "bg-[#930013]",
-                seg === "current" && "bg-[#fecc17]/70",
-                seg === "partial" && "bg-[#fecc17]/30",
+                seg === "current" && "bg-[var(--tw-hex-fecc17)]/70",
+                seg === "partial" && "bg-[var(--tw-hex-fecc17)]/30",
                 seg === "unseen" && "bg-[#353534]",
               )}
             />
@@ -130,19 +130,19 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               {/* Pulsing bg glow — only visible in critical state */}
               <div className={cn(
                 "absolute inset-0 blur-xl animate-pulse transition-opacity duration-500",
-                isCritical ? "bg-[#930013]/20 opacity-100" : "opacity-0"
+                isCritical ? "bg-[var(--tw-hex-930013)]/20 opacity-100" : "opacity-0"
               )} />
               <div className={cn(
-                "relative bg-[#0e0e0e] border-x-4 px-10 py-5 text-center",
-                isCritical ? "border-[#930013]" : "border-[#930013]/30"
+                "relative bg-[#0e0e0e] border-x-4 px-4 py-3 sm:px-10 sm:py-5 text-center",
+                isCritical ? "border-[#930013]" : "border-[var(--tw-hex-930013)]/30"
               )}>
                 <p className={cn(
-                  "font-mono text-[10px] tracking-[0.4em] uppercase mb-2",
+                  "font-mono text-[9px] tracking-[0.4em] uppercase mb-1 sm:mb-2",
                   isCritical ? "text-[#930013]" : "text-muted-foreground/80"
                 )}>TIME_REMAINING</p>
                 <p className={cn(
-                  "font-mono text-5xl font-black tabular-nums leading-none",
-                  isCritical ? "text-[#ffb4ab]" : "text-[#ffb4ab]/70",
+                  "font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tabular-nums leading-none",
+                  isCritical ? "text-[#ffb4ab]" : "text-[var(--tw-hex-ffb4ab)]/70",
                   isUrgent && "motion-safe:animate-pulse"
                 )}>
                   {formatTime(globalTimeRemaining)}
@@ -151,9 +151,9 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             </div>
           ) : (
             <div className="relative group">
-              <div className="relative bg-[#0e0e0e] border-x-4 border-[#930013]/20 px-10 py-5 text-center">
-                <p className="font-mono text-[10px] tracking-[0.4em] uppercase mb-2 text-muted-foreground/80">ELAPSED</p>
-                <p className="font-mono text-5xl font-black tabular-nums leading-none text-[#fecc17]">
+              <div className="relative bg-[#0e0e0e] border-x-4 border-[var(--tw-hex-930013)]/20 px-4 py-3 sm:px-10 sm:py-5 text-center">
+                <p className="font-mono text-[9px] tracking-[0.4em] uppercase mb-1 sm:mb-2 text-muted-foreground/80">ELAPSED</p>
+                <p className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tabular-nums leading-none text-[#fecc17]">
                   {formatTime(elapsedSeconds)}
                 </p>
               </div>
@@ -172,15 +172,15 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           {/* Live indicator dots */}
           <div className="mt-4 flex gap-2">
             <div className="w-2 h-2 bg-[#4ae176] animate-pulse" />
-            <div className="w-2 h-2 bg-[#4ae176]/40" />
-            <div className="w-2 h-2 bg-[#4ae176]/40" />
+            <div className="w-2 h-2 bg-[var(--tw-hex-4ae176)]/40" />
+            <div className="w-2 h-2 bg-[var(--tw-hex-4ae176)]/40" />
           </div>
           {/* Quit — recessed, hard to miss-tap. Visible on mobile too. */}
           <button
             onClick={onForfeit}
             aria-label="Quit current game session"
             title="Quit current game session"
-            className="md:mt-3 font-mono text-xs font-bold px-4 py-2.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[#930013]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[44px] shrink-0"
+            className="md:mt-3 font-mono text-xs font-bold px-4 py-2.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[var(--tw-hex-930013)]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[44px] shrink-0"
           >
             QUIT SESSION
           </button>

@@ -8,7 +8,10 @@
     "**/out/**": true,
     "**/build/**": true,
     "**/.qodo/**": true,
-    "**/.agents/**": true
+    "**/.agents/**": true,
+    "**/.agent/**": true,
+    "**/.Jules/**": true,
+    "**/.kiro/**": true
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -18,6 +21,13 @@
     "**/build": true,
     "**/.qodo": true,
     "**/.agents": true,
-    "**/.agent": true
-  }
+    "**/.agent": true,
+    "**/.Jules": true,
+    "**/.kiro": true
+  },
+  "typescript.tsserver.maxTsServerMemory": 2048,
+  "eslint.run": "onSave",
+  "search.followSymlinks": false,
+  "git.autorefresh": false
 }
+

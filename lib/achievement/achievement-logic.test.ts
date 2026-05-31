@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import { evaluateCondition } from "./achievement-logic.ts";
-import type { GameState, RunRecord, AchievementCondition } from "./mold-types.ts";
+import type { GameState, RunRecord, AchievementCondition } from "../types/mold-types.ts";
 
 function createMockState(overrides: Partial<GameState> = {}): GameState {
   return {

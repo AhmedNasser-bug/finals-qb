@@ -1,7 +1,7 @@
 
 import test from "node:test";
 import assert from "node:assert";
-import { calculateAccuracy } from "./mold-types.ts";
+import { calculateAccuracy } from "../types/mold-types.ts";
 
 test("calculateAccuracy uses answeredCount as denominator", () => {
   // If it used total (20), accuracy would be 8/20 = 40%

@@ -13,7 +13,7 @@ export interface StatsGridProps {
 
 export function StatsGrid({ elapsedSeconds, avgTimeSec, bestStreak, xpYield }: StatsGridProps) {
   return (
-    <div className="lg:col-span-4 grid grid-cols-2 gap-[1px] bg-[#4e4632]/10">
+    <div className="lg:col-span-4 grid grid-cols-2 gap-[1px] bg-[var(--tw-hex-4e4632)]/10">
       <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
         <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">TIME_ELAPSED</span>
         <span className="font-mono text-xl text-[#e5e2e1]">
@@ -76,7 +76,7 @@ export function SequenceMap({ pixels, total, pixelCount, score, wrongCountVal, s
               title={`Q${i + 1}: ${state === "correct" ? "Correct" : state === "wrong" ? "Wrong" : "Skipped"}`}
               className={cn(
                 "aspect-square",
-                state === "correct" ? "bg-[#4ae176]/80" :
+                state === "correct" ? "bg-[var(--tw-hex-4ae176)]/80" :
                   state === "wrong" ? "bg-[#93000a]" :
                     "bg-[#353534]"
               )}

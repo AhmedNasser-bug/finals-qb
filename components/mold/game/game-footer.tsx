@@ -47,7 +47,7 @@ export function GameFooter({
   }
 
   return (
-    <footer className="bg-[#1a1d21] border-t border-[#fecc17]/10 px-4 h-24 flex items-center gap-4">
+    <footer className="bg-[#1a1d21] border-t border-[var(--tw-hex-fecc17)]/10 px-4 h-24 flex items-center gap-4">
       {/* Primary CTA and Hint row — full width */}
       <div className="flex-1 flex items-center gap-3 h-12">
         {config.hintsEnabled && (
@@ -59,11 +59,11 @@ export function GameFooter({
             className={cn(
               "h-full px-4 font-mono text-xs font-black tracking-[0.15em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded flex items-center justify-center gap-2 shrink-0 w-28 sm:w-36 transition-all duration-150",
               canHint
-                ? "border-[#fecc17] bg-[#fecc17]/10 text-[#fecc17] hover:bg-[#fecc17]/20 border-glow"
+                ? "border-[#fecc17] bg-[var(--tw-hex-fecc17)]/10 text-[#fecc17] hover:bg-[var(--tw-hex-fecc17)]/20 border-glow"
                 : initialLockRemaining > 0
                 ? "border-zinc-800 bg-zinc-900/60 text-zinc-500 cursor-not-allowed animate-pulse"
                 : showHint
-                ? "border-[#fecc17] bg-[#fecc17]/25 text-[#fecc17] border-glow animate-pulse"
+                ? "border-[#fecc17] bg-[var(--tw-hex-fecc17)]/25 text-[#fecc17] border-glow animate-pulse"
                 : "border-[#2a2a2a] bg-[#1c1b1b] text-zinc-700 cursor-not-allowed"
             )}
           >
@@ -115,7 +115,7 @@ export function GameFooter({
           <button
             onClick={nextQuestion}
             aria-label="Skip question"
-            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[#fecc17]/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[var(--tw-hex-fecc17)]/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >
             <SkipIcon className="w-4 h-4" aria-hidden="true" />
             SKIP

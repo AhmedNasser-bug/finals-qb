@@ -19,6 +19,13 @@
 
 @layer base {
   :root {
+    /* === Extracted Tailwind Custom Tokens === */
+    --tw-hex-4ae176: #4ae176;
+    --tw-hex-4e4632: #4e4632;
+    --tw-hex-930013: #930013;
+    --tw-hex-fecc17: #fecc17;
+    --tw-hex-ffb4ab: #ffb4ab;
+
     /* ── High-Fidelity Terminal — MOLD V2 Design System ────────────────────
      *
      * Surface hierarchy (no-line rule: section boundaries via bg shifts only)
@@ -525,4 +532,4 @@
   scrollbar-width: thin;
   scrollbar-color: #2a2a2a #0e0e0e;
 }
-
+

@@ -180,7 +180,7 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
       <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-zinc-500 select-none shrink-0">
         DIAGRAM_VISUAL
       </span>
-      <div className="bg-[#131313] border border-[#4e4632]/60 p-3 flex-1 overflow-hidden">
+      <div className="bg-[#131313] border border-[var(--tw-hex-4e4632)]/60 p-3 flex-1 overflow-hidden">
         <MermaidDiagram
           chart={chart}
           id={diagId}
@@ -282,8 +282,8 @@ function OptionButton({
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
         !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
         !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
-        isRevealed && isCorrect && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
-        isRevealed && isWrong && "bg-[#930013]/10 border-l-4 border-[#930013]",
+        isRevealed && isCorrect && "bg-[var(--tw-hex-4ae176)]/10 border-l-4 border-[#4ae176]",
+        isRevealed && isWrong && "bg-[var(--tw-hex-930013)]/10 border-l-4 border-[#930013]",
         isDimmed && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
       )}
     >

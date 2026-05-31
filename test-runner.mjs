@@ -5,6 +5,12 @@ register(
   "data:text/javascript," +
     encodeURIComponent(`
   export function resolve(specifier, context, nextResolve) {
+    if (specifier === "@clerk/nextjs") {
+      return {
+        shortCircuit: true,
+        url: "data:text/javascript,export const useAuth = () => ({ userId: null, isSignedIn: false });"
+      };
+    }
     let newSpecifier = specifier;
     if (specifier.startsWith("@/")) {
       newSpecifier = specifier.replace(/^@\\//, "file://" + process.cwd() + "/");
@@ -20,3 +26,4 @@ register(
 `),
   pathToFileURL("./")
 );
+

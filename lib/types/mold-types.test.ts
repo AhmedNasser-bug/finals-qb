@@ -71,6 +71,7 @@ test('computeAggregateStats aggregate stats utility', async (t) => {
     assert.strictEqual(emptyStats.bestScore, 0);
     assert.strictEqual(emptyStats.bestStreak, 0);
     assert.strictEqual(emptyStats.averageScore, 0);
+    assert.strictEqual(emptyStats.averageResponseTimeMs, 0);
   });
 
   const mockRuns = [
@@ -86,6 +87,8 @@ test('computeAggregateStats aggregate stats utility', async (t) => {
     assert.strictEqual(aggregated.bestStreak, 8);
     // Average score: (80 + 90 + 71) / 3 = 80.33 -> round is 80
     assert.strictEqual(aggregated.averageScore, 80);
+    // Average response time: (50+60+70)*1000 / 30 = 6000ms
+    assert.strictEqual(aggregated.averageResponseTimeMs, 6000);
   });
 
   await t.test('handles rounding correct average score boundary values', () => {

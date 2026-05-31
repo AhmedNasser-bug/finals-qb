@@ -101,12 +101,12 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
       <div className="max-w-6xl mx-auto p-4 md:p-8 lg:p-12 flex flex-col gap-8 md:gap-12">
 
         {/* ── Header ── */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#4e4632]/30 pb-8">
-          <div className="flex flex-col gap-2">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--tw-hex-4e4632)]/30 pb-8">
+          <div className="flex flex-col gap-2 min-w-0 flex-1">
             <span className="font-mono text-xs tracking-[0.3em] text-[#4ae176] uppercase">
               SESSION_COMPLETE // {mode} // {config.difficulty}
             </span>
-            <h1 className="font-sans font-black text-4xl md:text-6xl tracking-tighter text-[#e5e2e1] uppercase">
+            <h1 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter text-[#e5e2e1] uppercase break-words break-all">
               DIAGNOSTIC_REPORT
             </h1>
           </div>
@@ -197,7 +197,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
         />
 
         {/* ── Bottom action HUD ── */}
-        <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-[#4e4632]/10">
+        <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-[var(--tw-hex-4e4632)]/10">
           <div className="flex flex-col">
             <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
               SYSTEM_ACTION_READY
