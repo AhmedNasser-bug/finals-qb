@@ -500,4 +500,35 @@
     stroke: #fecc17 !important;
   }
 }
+
+/* ── Custom Scrollbar tailored to MOLD V2 Design System ──────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0e0e0e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border: 1px solid #1c1b1b;
+  border-radius: 0px !important; /* Design system: strictly 0px radius */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #fecc17;
+  box-shadow: 0 0 8px rgba(254, 204, 23, 0.4);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #fecc17;
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2a #0e0e0e;
+}
 

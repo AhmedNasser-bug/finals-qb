@@ -110,6 +110,9 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const [showHint, setShowHint] = useState(false)
+  const [initialLockRemaining, setInitialLockRemaining] = useState(5)
+  const [hintTimeRemaining, setHintTimeRemaining] = useState(10)
+  const [hintUsedThisQuestion, setHintUsedThisQuestion] = useState(false)
   const completionProcessedRef = useRef(false)
 
   // Reset hint visibility when question advances
@@ -117,7 +120,40 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   if (state.currentIndex !== lastIndex) {
     setLastIndex(state.currentIndex)
     setShowHint(false)
+    setInitialLockRemaining(5)
+    setHintTimeRemaining(10)
+    setHintUsedThisQuestion(false)
   }
+
+  // 1. Initial 5s lockout countdown
+  useEffect(() => {
+    if (state.phase !== "playing" || state.isRevealed) return
+
+    const interval = setInterval(() => {
+      setInitialLockRemaining((prev) => {
+        if (prev > 0) return prev - 1
+        return 0
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [state.currentIndex, state.phase, state.isRevealed])
+
+  // 2. Active 10s display countdown
+  useEffect(() => {
+    if (!showHint || state.isRevealed || state.phase !== "playing") return
+
+    const interval = setInterval(() => {
+      setHintTimeRemaining((prev) => {
+        if (prev > 1) return prev - 1
+        // Timer expired: hide hint
+        setShowHint(false)
+        return 0
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [showHint, state.isRevealed, state.phase])
 
   // Build RunRecord and evaluate achievements exactly once when the game transitions to complete.
   useEffect(() => {
@@ -180,6 +216,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       isRevealed: state.isRevealed,
       isCorrect,
       hintUsed: showHint,
+      hintTimeRemaining,
       wrongCount: state.wrongAnswers,
       globalTimeRemaining: state.globalTimeRemaining,
       elapsedSeconds: state.elapsedSeconds,
@@ -190,8 +227,10 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       submitAnswer: revealAnswer,
       nextQuestion,
       useHint: () => {
+        if (initialLockRemaining > 0 || hintUsedThisQuestion) return
         useHint()
         setShowHint(true)
+        setHintUsedThisQuestion(true)
       },
       forfeitSession: forfeit,
     },
@@ -226,7 +265,18 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         />
       </main>
 
-      <GameFooter onHintRequest={() => setShowHint(true)} />
+      <GameFooter
+        onHintRequest={() => {
+          if (initialLockRemaining > 0 || hintUsedThisQuestion) return
+          useHint()
+          setShowHint(true)
+          setHintUsedThisQuestion(true)
+        }}
+        initialLockRemaining={initialLockRemaining}
+        hintTimeRemaining={hintTimeRemaining}
+        hintUsedThisQuestion={hintUsedThisQuestion}
+        showHint={showHint}
+      />
     </div>
   )
 }

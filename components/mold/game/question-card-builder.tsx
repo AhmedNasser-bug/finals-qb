@@ -322,20 +322,29 @@ function OptionButton({
 
 function QuestionCardFooter({ showHint = false }: { showHint?: boolean }) {
   const { state } = useQuestionCard()
-  const { currentQuestion, isRevealed } = state
+  const { currentQuestion, isRevealed, hintTimeRemaining } = state
 
   const hasHint = showHint && !!currentQuestion.hint
   const hasExplanation = isRevealed && !!currentQuestion.explanation
 
   if (!hasHint && !hasExplanation) return null
 
+  const showCountdown = hasHint && !hasExplanation && typeof hintTimeRemaining === "number"
+
   return (
     <div className="bg-[#0e0e0e] px-6 py-4 flex items-start gap-4 animate-fade-in border-t border-[#2a2a2a] shrink-0" aria-live="polite">
       <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
-      <div className="space-y-1">
-        <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
-          {hasExplanation ? "SYSTEM_EXPLANATION" : "SYSTEM_HINT"}
-        </span>
+      <div className="space-y-1 flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-4">
+          <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
+            {hasExplanation ? "SYSTEM_EXPLANATION" : "SYSTEM_HINT"}
+          </span>
+          {showCountdown && (
+            <span className="font-mono text-[9px] text-[#fecc17] font-bold tracking-widest uppercase animate-pulse">
+              EXPIRING IN {hintTimeRemaining}S
+            </span>
+          )}
+        </div>
         <p className="font-sans text-xs text-zinc-400 leading-relaxed italic">
           &quot;{hasExplanation ? currentQuestion.explanation : currentQuestion.hint}&quot;
         </p>

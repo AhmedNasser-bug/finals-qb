@@ -9,6 +9,7 @@ export interface QuestionCardState {
   isRevealed: boolean
   isCorrect: boolean | null
   hintUsed: boolean
+  hintTimeRemaining?: number
   wrongCount: number
   globalTimeRemaining?: number
   elapsedSeconds?: number

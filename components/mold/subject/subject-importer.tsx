@@ -220,9 +220,9 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   }
 
   // ── Copy AI prompt ──────────────────────────────────────────────────────
-  async function handleCopyPrompt() {
+  async function handleCopyPrompt(promptText: string) {
     try {
-      await navigator.clipboard.writeText(AI_PROMPT)
+      await navigator.clipboard.writeText(promptText)
       setPromptCopied(true)
       setTimeout(() => setPromptCopied(false), 2500)
     } catch {

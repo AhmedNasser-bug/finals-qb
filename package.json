@@ -7,7 +7,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "test": "node --experimental-strip-types --import ./test-runner.mjs --test $(find . -name '*.test.ts' -not -path '*/node_modules/*')"
+    "test": "node --experimental-strip-types --import ./test-runner.mjs --test lib/accuracy.test.ts lib/achievement-logic.test.ts lib/active-subject-store.test.ts lib/crypto-utils.test.ts lib/logger.test.ts lib/mold-types.test.ts lib/subject-persistence.test.ts lib/url-shortener.test.ts lib/utils.test.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.4.2",
