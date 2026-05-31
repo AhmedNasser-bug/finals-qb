@@ -11,6 +11,8 @@ export interface PromptBuilderConfig {
   scaffolding: ScaffoldingType[]
   formats: FormatOption[]
   outputs: ResourceOutput[]
+  questionCount: number
+  useReferenceBank: boolean
 }
 
 // ─── Custom Pedagogical Presets ───────────────────────────────────────────────
@@ -27,36 +29,42 @@ export const PEDAGOGICAL_PRESETS: Preset[] = [
     id: "finals_prep",
     name: "Finals Preparation",
     description: "High-rigor focus with cognitive support.",
-    hint: "Optimized for exam prep: curriculum designer persona, metacognitive explanations, cognitive load reduction, and rich HTML tables.",
+    hint: "Optimized for exam prep: curriculum designer persona, minimum 30 questions, Socratic scaffolding, diagrams, and HTML tables.",
     config: {
       persona: "designer",
       scaffolding: ["metacognitive", "cognitive_load"],
-      formats: ["html"],
-      outputs: ["mcq_tf", "terminology"]
+      formats: ["html", "diagrams"],
+      outputs: ["mcq_tf", "terminology"],
+      questionCount: 30,
+      useReferenceBank: true
     }
   },
   {
     id: "concept_journey",
     name: "Concept Journey",
     description: "Deep exploration of complex ideas.",
-    hint: "Optimized for deep conceptual clarity: explorer persona, Socratic hints, visual Mermaid diagrams, and active recall flashcards.",
+    hint: "Optimized for deep conceptual clarity: explorer persona, 20 questions, Socratic hints, visual Mermaid diagrams, and active recall flashcards.",
     config: {
       persona: "explorer",
       scaffolding: ["socratic_nudge", "metacognitive"],
-      formats: ["diagrams"],
-      outputs: ["mcq_tf", "flashcards"]
+      formats: ["html", "diagrams"],
+      outputs: ["mcq_tf", "flashcards"],
+      questionCount: 20,
+      useReferenceBank: true
     }
   },
   {
     id: "quick_drill",
     name: "Quick Drill",
     description: "Rapid active recall and verification.",
-    hint: "Optimized for quick active testing: Socratic tutor, cognitive load management, high True-False density, and glossy glossaries.",
+    hint: "Optimized for quick active testing: Socratic tutor, 10 questions, cognitive load management, HTML layouts, and flashcards.",
     config: {
       persona: "socratic",
       scaffolding: ["socratic_nudge", "cognitive_load"],
-      formats: ["html"],
-      outputs: ["mcq_tf", "flashcards", "terminology"]
+      formats: ["html", "diagrams"],
+      outputs: ["mcq_tf", "flashcards", "terminology"],
+      questionCount: 10,
+      useReferenceBank: true
     }
   }
 ]
@@ -67,8 +75,10 @@ export class SubjectPromptBuilder {
   private topic: string = "[YOUR TOPIC HERE]"
   private persona: PersonaType = "socratic"
   private scaffolding: Set<ScaffoldingType> = new Set(["socratic_nudge"])
-  private formats: Set<FormatOption> = new Set(["html"])
+  private formats: Set<FormatOption> = new Set(["html", "diagrams"])
   private outputs: Set<ResourceOutput> = new Set(["mcq_tf"])
+  private questionCount: number = 30
+  private useReferenceBank: boolean = true
 
   setTopic(topic: string) {
     if (topic.trim()) this.topic = topic.trim()
@@ -77,6 +87,16 @@ export class SubjectPromptBuilder {
 
   setPersona(persona: PersonaType) {
     this.persona = persona
+    return this
+  }
+
+  setQuestionCount(count: number) {
+    if (count > 0) this.questionCount = count
+    return this
+  }
+
+  setUseReferenceBank(use: boolean) {
+    this.useReferenceBank = use
     return this
   }
 
@@ -112,6 +132,8 @@ export class SubjectPromptBuilder {
     this.scaffolding = new Set(preset.scaffolding)
     this.formats = new Set(preset.formats)
     this.outputs = new Set(preset.outputs)
+    this.questionCount = preset.questionCount
+    this.useReferenceBank = preset.useReferenceBank
     return this
   }
 
@@ -182,9 +204,18 @@ export class SubjectPromptBuilder {
     // 6. Formatting Guidelines
     parts.push(this.buildFormattingBlock())
 
-    // 7. General Dataset Constraints
+    // 7. Reference Document constraints
+    if (this.useReferenceBank) {
+      parts.push(
+        `REFERENCE DOCUMENT CONSTRAINTS:\n` +
+        `If the user has attached, pasted, or uploaded an existing question bank, syllabus, course notes, reference textbook pages, or draft database file, you MUST strictly use its key concepts, terminology definitions, structure, difficulty grading, and formatting styles as your primary source of truth. Ensure all generated questions, flashcards, and achievements map perfectly to these source concepts while matching our requested JSON schema rules.`
+      )
+    }
+
+    // 8. General Dataset Constraints
     parts.push(
       `CRITICAL GENERAL REQUIREMENTS:\n` +
+      `- Generate EXACTLY ${this.questionCount} unique, high-quality, comprehensive questions.\n` +
       `- MCQ questions: exactly 4 options (A, B, C, D)\n` +
       `- TrueFalse questions: exactly 2 options (A=True, B=False)\n` +
       `- Include a substantial amount of questions, flashcards, and achievements to provide thorough practice.\n` +
@@ -196,7 +227,7 @@ export class SubjectPromptBuilder {
       `- All questions MUST have both explanation and hint fields populated.`
     )
 
-    // 8. Achievements List
+    // 9. Achievements List
     parts.push(
       `ACHIEVEMENT CONDITION TYPES:\n` +
       `- "runs_gte": { "type": "runs_gte", "value": N } — Complete N runs\n` +
@@ -209,7 +240,7 @@ export class SubjectPromptBuilder {
       `- "all_unlocked": { "type": "all_unlocked" } — Unlock all other achievements`
     )
 
-    // 9. Compactness
+    // 10. Compactness
     parts.push(
       `CRITICAL — OUTPUT COMPACTNESS:\n` +
       `The JSON output will be encoded into shareable URLs. To maximize shareability, generate the JSON with:\n` +

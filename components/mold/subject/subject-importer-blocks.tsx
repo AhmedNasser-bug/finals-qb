@@ -21,7 +21,9 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
   const [selectedPreset, setSelectedPreset] = useState<string>("finals_prep")
   const [persona, setPersona] = useState<PersonaType>("designer")
   const [scaffolding, setScaffolding] = useState<ScaffoldingType[]>(["metacognitive", "cognitive_load"])
-  const [formats, setFormats] = useState<FormatOption[]>(["html"])
+  const [formats, setFormats] = useState<FormatOption[]>(["html", "diagrams"])
+  const [questionCount, setQuestionCount] = useState(30)
+  const [useReferenceBank, setUseReferenceBank] = useState(true)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showRawPrompt, setShowRawPrompt] = useState(false)
 
@@ -35,6 +37,8 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
       setPersona(preset.config.persona)
       setScaffolding(preset.config.scaffolding)
       setFormats(preset.config.formats)
+      setQuestionCount(preset.config.questionCount)
+      setUseReferenceBank(preset.config.useReferenceBank)
     }
   }
 
@@ -63,6 +67,8 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
     const builder = new SubjectPromptBuilder()
     builder.setTopic(topic || "[YOUR TOPIC HERE]")
     builder.setPersona(persona)
+    builder.setQuestionCount(questionCount)
+    builder.setUseReferenceBank(useReferenceBank)
 
     builder.toggleScaffolding("socratic_nudge", scaffolding.includes("socratic_nudge"))
     builder.toggleScaffolding("metacognitive", scaffolding.includes("metacognitive"))
@@ -72,7 +78,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
     builder.toggleFormat("html", formats.includes("html"))
 
     return builder.build()
-  }, [topic, persona, scaffolding, formats])
+  }, [topic, persona, scaffolding, formats, questionCount, useReferenceBank])
 
   // Get active preset's hint message
   const activePresetHint = useMemo(() => {
@@ -94,25 +100,78 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
         </p>
       </div>
 
-      {/* 1. Subject Topic Input */}
-      <div className="flex flex-col gap-1.5 mt-1">
+      {/* 1. Configuration Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1">
+        {/* Subject Topic Input */}
+        <div className="flex flex-col gap-1.5 sm:col-span-2">
+          <label
+            htmlFor="prompt-topic"
+            className="text-[10px] font-mono font-bold tracking-wider text-muted-foreground uppercase flex items-center justify-between"
+          >
+            <span>1. Topic / Domain</span>
+            <span className="text-[9px] text-primary lowercase tracking-normal font-normal">
+              * injects theme automatically
+            </span>
+          </label>
+          <input
+            id="prompt-topic"
+            type="text"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder="E.g., World War II, Data Structures, Human Anatomy..."
+            className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono placeholder:text-muted-foreground/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all"
+          />
+        </div>
+
+        {/* Question Count Input */}
+        <div className="flex flex-col gap-1.5">
+          <label
+            htmlFor="prompt-count"
+            className="text-[10px] font-mono font-bold tracking-wider text-muted-foreground uppercase flex items-center justify-between"
+          >
+            <span>Questions</span>
+            <span className="text-[9px] text-[#fecc17] font-mono lowercase">
+              threshold
+            </span>
+          </label>
+          <input
+            id="prompt-count"
+            type="number"
+            min={1}
+            max={100}
+            value={questionCount}
+            onChange={(e) => {
+              setQuestionCount(Math.max(1, parseInt(e.target.value) || 0))
+              setSelectedPreset("custom")
+            }}
+            className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all"
+          />
+        </div>
+      </div>
+
+      {/* Reference Syllabus Checkbox Toggle */}
+      <div className="bg-background/25 border border-border/40 p-2.5 rounded flex items-start gap-2.5 hover:bg-background/45 transition-colors">
+        <input
+          id="prompt-ref-bank"
+          type="checkbox"
+          checked={useReferenceBank}
+          onChange={(e) => {
+            setUseReferenceBank(e.target.checked)
+            setSelectedPreset("custom")
+          }}
+          className="accent-primary mt-0.5 w-3.5 h-3.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+        />
         <label
-          htmlFor="prompt-topic"
-          className="text-[10px] font-mono font-bold tracking-wider text-muted-foreground uppercase flex items-center justify-between"
+          htmlFor="prompt-ref-bank"
+          className="flex flex-col cursor-pointer text-left"
         >
-          <span>1. Topic / Domain</span>
-          <span className="text-[9px] text-primary lowercase tracking-normal font-normal">
-            * injects theme automatically
+          <span className="text-[10px] font-mono font-bold uppercase text-foreground leading-tight">
+            Align with Attached Question Bank / Syllabus
+          </span>
+          <span className="text-[8px] font-mono text-muted-foreground leading-normal mt-0.5">
+            AI strictly mirrors your attached documents, mapping their unique concepts, structures, and formatting details to our JSON schema.
           </span>
         </label>
-        <input
-          id="prompt-topic"
-          type="text"
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          placeholder="E.g., World War II, Data Structures, Human Anatomy..."
-          className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono placeholder:text-muted-foreground/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all"
-        />
       </div>
 
       {/* 2. Preset Selector */}
