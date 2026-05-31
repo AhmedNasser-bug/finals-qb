@@ -42,7 +42,7 @@ export function YourSubjectsSection({
   return (
     <section className="flex flex-col gap-4">
       <SectionLabel label="YOUR_SUBJECTS" count={subjects.length} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {subjects.map((full) => {
           const data = toSubjectData(full)
           const isConfirming = confirmDeleteId === full.id
@@ -63,11 +63,14 @@ export function YourSubjectsSection({
           )
         })}
 
-        {/* Import card */}
+        {/* Import card — dynamically spans 2 columns if user subjects count is even to balance grid layout */}
         <button
           onClick={onShowImporter}
           title="Import a subject via JSON"
-          className="flex flex-col items-center justify-center gap-3 p-6 border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[140px]"
+          className={cn(
+            "flex flex-col items-center justify-center gap-3 p-6 border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[140px]",
+            subjects.length % 2 === 0 && "sm:col-span-2"
+          )}
         >
           <PlusIcon aria-hidden="true" />
           <span className="text-xs font-mono tracking-wider">Import Subject</span>
@@ -105,23 +108,25 @@ export function ExampleModulesSection({
       )}
 
       {examplesLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[0, 1, 2].map((i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[0, 1, 2, 3].map((i) => (
             <div key={i} className="bg-panel border border-border h-40 animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {examples.map((entry) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {examples.map((entry, idx) => {
             const isLoading = loadingExampleId === entry.id
+            const isLastAndOdd = idx === examples.length - 1 && examples.length % 2 !== 0
             return (
-              <ExampleModuleCard
-                key={entry.id}
-                entry={entry}
-                isLoading={isLoading}
-                onLoad={onExampleLoad}
-                onShare={onExampleShare}
-              />
+              <div key={entry.id} className={cn(isLastAndOdd && "sm:col-span-2")}>
+                <ExampleModuleCard
+                  entry={entry}
+                  isLoading={isLoading}
+                  onLoad={onExampleLoad}
+                  onShare={onExampleShare}
+                />
+              </div>
             )
           })}
         </div>

@@ -221,6 +221,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       globalTimeRemaining: state.globalTimeRemaining,
       elapsedSeconds: state.elapsedSeconds,
       livesRemaining: state.livesRemaining,
+      perQuestionTimeRemaining: state.perQuestionTimeRemaining,
     },
     actions: {
       selectOption,

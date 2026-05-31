@@ -34,85 +34,66 @@
      * ─────────────────────────────────────────────────────────────────── */
 
     /* shadcn semantic tokens — mapped to design system values */
-    --background: 0 0% 7.5%;
-    /* #131313 surface */
-    --foreground: 0 0% 92%;
+    --background: 220 15% 4.5%; /* Deep Space Black */
+    --foreground: 220 10% 92%;
 
-    --card: 0 0% 10%;
-    /* surface-container-low */
-    --card-foreground: 0 0% 92%;
+    --card: 220 10% 8.5%; /* charcoal surface-container-low */
+    --card-foreground: 220 10% 92%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 92%;
+    --popover: 220 10% 8.5%;
+    --popover-foreground: 220 10% 92%;
 
     /* Amber — primary phosphor accent */
-    --primary: 43 96% 56%;
-    /* #fecc17 primary_container */
-    --primary-foreground: 0 0% 5%;
+    --primary: 43 100% 50%; /* High-contrast saturated amber */
+    --primary-foreground: 220 20% 5%;
 
-    --secondary: 0 0% 16%;
-    /* surface-container-high */
-    --secondary-foreground: 0 0% 92%;
+    --secondary: 220 10% 12.5%;
+    --secondary-foreground: 220 10% 92%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 42%;
+    --muted: 220 10% 10%;
+    --muted-foreground: 220 12% 70%; /* High-contrast soft slate grey for accessibility */
 
-    --accent: 43 96% 56%;
-    --accent-foreground: 0 0% 5%;
+    --accent: 43 100% 50%;
+    --accent-foreground: 220 20% 5%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 92%;
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 220 10% 92%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 9%;
-    /* surface-container-lowest */
-    --ring: 43 96% 56%;
+    --border: 220 10% 16%;
+    --input: 220 15% 3.5%;
+    --ring: 43 100% 50%;
 
     /* Zero radius — design system forbids border-radius */
     --radius: 0rem;
 
     /* ── Surface hierarchy tokens ─────────────────────────────────────── */
-    --surface: 0 0% 7.5%;
-    /* #131313 */
-    --surface-container: 0 0% 12.5%;
-    /* #201f1f */
-    --surface-container-low: 0 0% 11%;
-    /* #1c1b1b */
-    --surface-container-high: 0 0% 16.5%;
-    /* #2a2a2a */
-    --surface-container-highest: 0 0% 20.5%;
-    /* #353534 */
-    --surface-container-lowest: 0 0% 5.5%;
-    /* #0e0e0e */
-    --surface-bright: 0 0% 23.5%;
-    /* #3d3c3b */
-    --surface-variant: 0 0% 20.5%;
-    /* #353534 */
-    --outline-variant: 38 45% 24%;
-    /* #4e4632 */
+    --surface: 220 15% 4.5%;
+    --surface-container: 220 10% 9.5%;
+    --surface-container-low: 220 10% 8.5%;
+    --surface-container-high: 220 10% 12.5%;
+    --surface-container-highest: 220 10% 16%;
+    --surface-container-lowest: 220 15% 3.5%;
+    --surface-bright: 220 10% 18%;
+    --surface-variant: 220 10% 16%;
+    --outline-variant: 43 50% 20%;
 
     /* ── MOLD-specific legacy tokens (kept for compatibility) ────────── */
-    --panel: 0 0% 11%;
-    --panel-foreground: 0 0% 92%;
-    --panel-border: 0 0% 18%;
+    --panel: 220 10% 8.5%;
+    --panel-foreground: 220 10% 92%;
+    --panel-border: 220 10% 16%;
 
     /* ── Grade palette (phosphor spectrum) ───────────────────────────── */
-    --grade-s-plus: 43 96% 56%;
-    /* amber  — primary */
-    --grade-s: 43 85% 62%;
-    --grade-a-plus: 142 71% 45%;
-    /* green  */
-    --grade-a: 142 60% 52%;
-    --grade-b: 200 80% 52%;
-    /* cyan   */
-    --grade-c: 25 95% 53%;
-    /* orange */
-    --grade-d: 0 72% 51%;
-    /* red    */
-    --grade-f: 0 50% 40%;
+    --grade-s-plus: 43 100% 50%;
+    --grade-s: 43 90% 58%;
+    --grade-a-plus: 142 75% 42%;
+    --grade-a: 142 65% 48%;
+    --grade-b: 200 85% 48%;
+    --grade-c: 25 100% 50%;
+    --grade-d: 0 85% 55%;
+    --grade-f: 0 60% 35%;
 
-    --mode-challenge: 0 72% 51%;
-    --mode-learning: 142 71% 45%;
+    --mode-challenge: 0 85% 55%;
+    --mode-learning: 142 75% 42%;
   }
 }
 
@@ -120,16 +101,29 @@
   * {
     @apply border-border;
     border-radius: 0 !important;
-    /* Design system: 0px radius everywhere */
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-color: #131313;
+    background-color: hsl(var(--background));
   }
 
   .font-data {
     font-family: var(--font-mono);
+  }
+
+  .font-display {
+    font-family: var(--font-display), var(--font-sans), sans-serif;
+  }
+
+  /* Accessible Focus Rings */
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    outline: 2px solid hsl(var(--primary)) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px hsl(var(--background)), 0 0 15px hsl(var(--primary) / 0.5) !important;
   }
 }
 

@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
+import { Outfit } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from "@clerk/nextjs"
@@ -10,6 +11,11 @@ import { AchievementProvider } from "@/lib/achievement-engine"
 import "./globals.css"
 
 import { hasClerk } from "@/lib/user-storage"
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-display",
+})
 
 export const metadata: Metadata = {
   title: "MOLD V2 — Mastery Protocol",
@@ -29,7 +35,7 @@ export default function RootLayout({
   )
 
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${outfit.variable}`}>
       <body className="font-sans">
         {hasClerk ? (
           <ClerkProvider appearance={{ theme: shadcn }}>

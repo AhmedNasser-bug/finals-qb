@@ -51,7 +51,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
       {/* ── Segmented progress bar ── */}
       <div className="px-6 md:px-10 pt-4 pb-0 space-y-1">
         <div className="flex justify-between items-end">
-          <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
             SYSTEM_PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
           </span>
           <span className="font-mono text-[10px] tracking-[0.2em] text-[#4ae176] uppercase">
@@ -94,7 +94,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
               )} />
               <div>
-                <p className="font-mono text-[9px] text-zinc-500 leading-none mb-1 tracking-widest uppercase">STREAK_MAGNITUDE</p>
+                <p className="font-mono text-[9px] text-muted-foreground leading-none mb-1 tracking-widest uppercase">STREAK_MAGNITUDE</p>
                 <p className={cn(
                   "font-mono text-xl font-black leading-none",
                   streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
@@ -103,13 +103,13 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             </div>
             {/* Accuracy — sibling, not inside badge */}
             <div className="hidden md:flex flex-col">
-              <p className="font-mono text-[9px] text-zinc-500 tracking-widest uppercase mb-1">ACCURACY</p>
+              <p className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase mb-1">ACCURACY</p>
               <p className="font-mono text-sm text-[#4ae176]">{accuracyPct}%</p>
             </div>
           </div>
           {/* Lives — always shown, empty hearts when not survival */}
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[9px] text-zinc-500 uppercase mr-1">VITAL_SIGNS:</span>
+            <span className="font-mono text-[9px] text-muted-foreground uppercase mr-1">VITAL_SIGNS:</span>
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
               return (
@@ -138,7 +138,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               )}>
                 <p className={cn(
                   "font-mono text-[10px] tracking-[0.4em] uppercase mb-2",
-                  isCritical ? "text-[#930013]" : "text-zinc-600"
+                  isCritical ? "text-[#930013]" : "text-muted-foreground/80"
                 )}>TIME_REMAINING</p>
                 <p className={cn(
                   "font-mono text-5xl font-black tabular-nums leading-none",
@@ -152,7 +152,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           ) : (
             <div className="relative group">
               <div className="relative bg-[#0e0e0e] border-x-4 border-[#930013]/20 px-10 py-5 text-center">
-                <p className="font-mono text-[10px] tracking-[0.4em] uppercase mb-2 text-zinc-600">ELAPSED</p>
+                <p className="font-mono text-[10px] tracking-[0.4em] uppercase mb-2 text-muted-foreground/80">ELAPSED</p>
                 <p className="font-mono text-5xl font-black tabular-nums leading-none text-[#fecc17]">
                   {formatTime(elapsedSeconds)}
                 </p>
@@ -163,10 +163,10 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
 
         {/* Right — session metadata + dots */}
         <div className="hidden md:flex flex-col items-end gap-1">
-          <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
             SESSION_ID: {mode.toUpperCase()}-MOLD
           </p>
-          <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
             DIFFICULTY: {state.config?.difficulty?.toUpperCase() ?? "STANDARD"}
           </p>
           {/* Live indicator dots */}
@@ -180,7 +180,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             onClick={onForfeit}
             aria-label="Quit current game session"
             title="Quit current game session"
-            className="md:mt-3 font-mono text-[10px] font-semibold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-zinc-400 hover:border-[#930013]/60 hover:bg-[#930013]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#930013] rounded-sm"
+            className="md:mt-3 font-mono text-xs font-bold px-4 py-2.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[#930013]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[44px] shrink-0"
           >
             QUIT SESSION
           </button>

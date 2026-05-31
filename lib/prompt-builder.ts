@@ -66,6 +66,20 @@ export const PEDAGOGICAL_PRESETS: Preset[] = [
       questionCount: 10,
       useReferenceBank: true
     }
+  },
+  {
+    id: "full_revision",
+    name: "Full Revision",
+    description: "Exhaustive syllabus coverage.",
+    hint: "Optimized for full subject coverage: curriculum designer persona, 120 questions, Metacognitive scaffolding, diagrams, and HTML tables.",
+    config: {
+      persona: "designer",
+      scaffolding: ["metacognitive", "cognitive_load"],
+      formats: ["html", "diagrams"],
+      outputs: ["mcq_tf", "flashcards", "terminology"],
+      questionCount: 120,
+      useReferenceBank: true
+    }
   }
 ]
 

@@ -9,46 +9,73 @@ interface HeroHeaderProps {
   subject: SubjectData
   achievements: Achievement[]
   onTrophyClick?: () => void
+  onChangeSubject?: () => void
+  onImportNew?: () => void
   className?: string
 }
 
-export function HeroHeader({ subject, achievements, onTrophyClick, className }: HeroHeaderProps) {
+export function HeroHeader({
+  subject,
+  achievements,
+  onTrophyClick,
+  onChangeSubject,
+  onImportNew,
+  className,
+}: HeroHeaderProps) {
   const unlocked = achievements.filter((a) => a.unlockedAt !== null).length
   const total = achievements.length
 
   return (
     <header className={cn("border-b border-border bg-panel", className)}>
-      {/* Protocol status bar */}
-      <div className="flex items-center gap-3 px-6 py-2 border-b border-border/50 bg-background/60">
-        <span className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
-          MASTERY PROTOCOL V2
-        </span>
-        <span className="text-border select-none">|</span>
-        <span className="text-xs font-mono text-muted-foreground">SYS READY</span>
-        <div className="ml-auto flex items-center gap-4">
-          <span className="text-xs font-mono text-muted-foreground">
-            {subject.totalQuestions} QUESTIONS
+      {/* Unified Control Center Top Bar */}
+      <div className="flex flex-wrap items-center gap-4 px-6 py-3 border-b border-border/50 bg-[#0d0e11]">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
+          <span className="text-[10px] font-mono tracking-widest text-emerald-400 uppercase font-bold shrink-0">
+            MASTERY_PROTOCOL //
           </span>
-          <span className="text-xs font-mono text-muted-foreground">
-            {subject.categories.length} SECTORS
+          <span className="text-xs font-mono font-bold text-white uppercase truncate max-w-[180px] sm:max-w-[280px]">
+            {subject.name}
           </span>
+        </div>
+
+        <div className="hidden md:flex items-center gap-3 text-[10px] font-mono text-muted-foreground">
+          <span className="text-border select-none opacity-40">|</span>
+          <span>{subject.totalQuestions} QUESTIONS</span>
+          <span>{subject.categories.length} SECTORS</span>
+        </div>
+
+        <div className="ml-auto flex items-center gap-2">
+          {onChangeSubject && (
+            <button
+              onClick={onChangeSubject}
+              title="Change active subject"
+              aria-label="Switch active subject"
+              className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-[#17171a] text-zinc-300 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
+            >
+              SWITCH SUBJECT
+            </button>
+          )}
+          {onImportNew && (
+            <button
+              onClick={onImportNew}
+              title="Import a new subject JSON file"
+              aria-label="Import a new subject"
+              className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-[#17171a] text-zinc-300 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
+            >
+              IMPORT NEW
+            </button>
+          )}
+
           {hasClerk && (
             <>
-              <span className="text-border select-none">|</span>
+              <span className="text-border select-none opacity-40">|</span>
               <Show when="signed-out">
-                <div className="flex items-center gap-2">
-                  <SignInButton mode="modal">
-                    <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2 py-0.5 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
-                      SIGN IN
-                    </button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <button className="text-[10px] font-mono text-foreground border border-border bg-secondary px-2 py-0.5 hover:bg-border transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
-                      SIGN UP
-                    </button>
-                  </SignUpButton>
-                </div>
+                <SignInButton mode="modal">
+                  <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                    SIGN IN
+                  </button>
+                </SignInButton>
               </Show>
               <Show when="signed-in">
                 <UserButton 
@@ -71,7 +98,7 @@ export function HeroHeader({ subject, achievements, onTrophyClick, className }: 
           <p className="text-xs font-mono tracking-widest text-primary uppercase">
             SUBJECT LOADED
           </p>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground text-balance leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground text-balance leading-tight font-display">
             {subject.name}
           </h1>
           <p className="text-sm text-muted-foreground text-pretty max-w-xl leading-relaxed">

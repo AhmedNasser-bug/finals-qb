@@ -115,15 +115,15 @@ export function SubjectSelector({
       <div className="min-h-screen bg-background flex flex-col animate-fade-in">
 
         {/* ── Header ── */}
-        <header className="border-b border-border px-6 py-4 flex items-center justify-between bg-panel">
-          <div className="flex items-center gap-3">
+        <header className="border-b border-border/50 px-6 py-3 flex items-center justify-between bg-[#0d0e11]">
+          <div className="flex items-center gap-2.5">
             <ProtocolIcon />
             <div>
-              <p className="text-xs font-mono font-semibold tracking-widest text-primary uppercase">MOLD V2</p>
-              <p className="text-[10px] font-mono text-muted-foreground tracking-wider">MASTERY PROTOCOL</p>
+              <p className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase leading-none">MOLD V2</p>
+              <p className="text-[9px] font-mono text-muted-foreground tracking-wider leading-none mt-1">MASTERY PROTOCOL</p>
             </div>
           </div>
-          <span className="text-[10px] font-mono text-muted-foreground border border-border px-2 py-1">
+          <span className="text-[10px] font-mono text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 tracking-widest uppercase">
             {subjects.length} SUBJECT{subjects.length !== 1 ? "S" : ""} LOADED
           </span>
         </header>

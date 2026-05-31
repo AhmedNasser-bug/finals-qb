@@ -14,6 +14,7 @@ export interface QuestionCardState {
   globalTimeRemaining?: number
   elapsedSeconds?: number
   livesRemaining?: number
+  perQuestionTimeRemaining?: number
   // Future Codeforces / script runner extensions
   sourceCode?: string
   isRunningTest?: boolean

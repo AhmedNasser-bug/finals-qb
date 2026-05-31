@@ -25,17 +25,16 @@ export function SetupPanel({
 
   return (
     <section className={cn("flex flex-col gap-4", className)}>
-      <h2 className="text-xs font-mono tracking-widest text-muted-foreground uppercase">
+      <h2 className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-semibold">
         Configuration
       </h2>
 
-      <ConfigControls
-        config={config}
-        onChange={onChange}
-        isUntimed={isUntimed}
-        isFullRevision={isFullRevision}
-        isPractice={isPractice}
-      />
+      <ConfigControls config={config} onChange={onChange}>
+        {!isUntimed && !isFullRevision && <ConfigControls.TimeLimit />}
+        <ConfigControls.HintSystem />
+        {!isFullRevision && !isPractice && <ConfigControls.QuestionCount />}
+        {isFullRevision && <ConfigControls.RevisionNote />}
+      </ConfigControls>
 
       {/* Category selector — practice mode only */}
       {isPractice && (

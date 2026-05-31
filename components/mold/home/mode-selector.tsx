@@ -70,18 +70,22 @@ function ModeGroup({ label, modes, selected, onSelect, accent }: ModeGroupProps)
   return (
     <div className="flex flex-col gap-2">
       <p className={cn("text-xs font-mono tracking-wider", accentClass)}>{label}</p>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {modes.map((mode) => (
-          <ModeCard
-            key={mode.id}
-            mode={mode}
-            icon={MODE_ICONS[mode.id]}
-            isSelected={selected === mode.id}
-            onSelect={onSelect}
-            selectedClass={borderSelectedClass}
-            accentClass={accentClass}
-          />
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {modes.map((mode, idx) => {
+          const isLastAndOdd = idx === modes.length - 1 && modes.length % 2 !== 0
+          return (
+            <div key={mode.id} className={cn(isLastAndOdd && "sm:col-span-2")}>
+              <ModeCard
+                mode={mode}
+                icon={MODE_ICONS[mode.id]}
+                isSelected={selected === mode.id}
+                onSelect={onSelect}
+                selectedClass={borderSelectedClass}
+                accentClass={accentClass}
+              />
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -103,29 +107,28 @@ function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass
       onClick={() => onSelect(mode.id)}
       {...pressedProps}
       className={cn(
-        "group relative flex flex-col gap-2 p-3 rounded border text-left transition-all duration-150",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "group relative flex flex-col gap-2.5 p-4 rounded border text-left transition-all duration-150 focus-ring min-h-[112px] justify-between",
         isSelected
           ? cn("border-opacity-60", selectedClass)
           : "border-border bg-panel hover:border-border/80 hover:bg-secondary/60"
       )}
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2 w-full">
         <span className={cn("shrink-0", isSelected ? accentClass : "text-muted-foreground group-hover:text-foreground transition-colors")} aria-hidden="true">
           {icon}
         </span>
         <span className={cn(
-          "text-[10px] font-mono px-1.5 py-0.5 rounded-sm border leading-none",
+          "text-[9px] font-mono px-1.5 py-0.5 rounded-sm border leading-none shrink-0",
           isSelected
             ? cn("border-current", accentClass)
             : "border-border text-muted-foreground"
         )}>
-          {mode.tag}
+          {mode.tag.toUpperCase()}
         </span>
       </div>
       <div>
         <p className={cn(
-          "text-sm font-semibold leading-none mb-1 transition-colors",
+          "text-sm font-semibold leading-none mb-1 transition-colors font-display tracking-tight",
           isSelected ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
         )}>
           {mode.label}

@@ -41,6 +41,7 @@ function buildInitialState(config: GameConfig, questions: Question[]): GameState
     startTime: Date.now(),
     elapsedSeconds: 0,
     perQuestionTimeLimit,
+    perQuestionTimeRemaining: perQuestionTimeLimit,
     globalTimeLimit,
     globalTimeRemaining: globalTimeLimit,
     hintsUsedTotal: 0,
@@ -189,6 +190,7 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
       selectedOption: null,
       isRevealed: false,
       perQuestionTimeLimit: newPerLimit,
+      perQuestionTimeRemaining: newPerLimit,
     }
   },
 
@@ -202,6 +204,40 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
         return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: 0, phase: "complete" }
       }
       return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: newRemaining }
+    }
+
+    // Per-question timer countdown (Survival)
+    if (state.perQuestionTimeLimit > 0 && state.phase === "playing") {
+      const newPerRemaining = state.perQuestionTimeRemaining - 1
+      if (newPerRemaining <= 0) {
+        // Timer ran out! Mark incorrect, lose a life (survival), reveal answer, transition to "reviewing"
+        const newWrongAnswers = state.wrongAnswers + 1
+        const newStreak = 0
+        const livesRemaining =
+          state.config.mode === "survival"
+            ? Math.max(0, state.livesRemaining - 1)
+            : state.livesRemaining
+
+        const newAnswers = [...state.answers]
+        newAnswers[state.currentIndex] = false
+
+        return {
+          ...state,
+          phase: "reviewing",
+          isRevealed: true,
+          elapsedSeconds: newElapsed,
+          perQuestionTimeRemaining: 0,
+          streak: newStreak,
+          wrongAnswers: newWrongAnswers,
+          livesRemaining,
+          answers: newAnswers,
+        }
+      }
+      return {
+        ...state,
+        elapsedSeconds: newElapsed,
+        perQuestionTimeRemaining: newPerRemaining,
+      }
     }
 
     return { ...state, elapsedSeconds: newElapsed }

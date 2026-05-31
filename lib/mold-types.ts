@@ -102,6 +102,7 @@ export interface GameState {
   startTime: number              // Date.now() when session started
   elapsedSeconds: number         // updated by the timer
   perQuestionTimeLimit: number   // 0 = no per-question limit; Survival decreases this
+  perQuestionTimeRemaining: number // counts down from perQuestionTimeLimit
   globalTimeLimit: number        // 0 = no global limit; Speedrun uses this
   globalTimeRemaining: number    // counts down from globalTimeLimit
   hintsUsedTotal: number

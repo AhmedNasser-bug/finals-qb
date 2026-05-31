@@ -138,7 +138,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             id="prompt-count"
             type="number"
             min={1}
-            max={100}
+            max={500}
             value={questionCount}
             onChange={(e) => {
               setQuestionCount(Math.max(1, parseInt(e.target.value) || 0))
@@ -146,6 +146,30 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             }}
             className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all"
           />
+          {/* Question Count presets buttons */}
+          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+            {[20, 40, 80, 120].map((num) => {
+              const isSelected = questionCount === num
+              return (
+                <button
+                  key={num}
+                  type="button"
+                  onClick={() => {
+                    setQuestionCount(num)
+                    setSelectedPreset("custom")
+                  }}
+                  className={cn(
+                    "text-[9px] font-mono px-2 py-0.5 border transition-colors cursor-pointer",
+                    isSelected
+                      ? "border-primary bg-primary/10 text-primary font-bold animate-pulse-soft"
+                      : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground bg-secondary/10"
+                  )}
+                >
+                  {num}
+                </button>
+              )
+            })}
+          </div>
         </div>
       </div>
 
@@ -182,7 +206,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
         <div
           role="radiogroup"
           aria-label="Pedagogical Presets"
-          className="grid grid-cols-1 sm:grid-cols-4 gap-2"
+          className="grid grid-cols-2 sm:grid-cols-5 gap-2"
         >
           {PEDAGOGICAL_PRESETS.map((p) => {
             const isSelected = selectedPreset === p.id
@@ -456,7 +480,7 @@ export function DropZoneSection({
             disabled={state === "pasting"}
             title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
             className={cn(
-              "text-xs font-mono px-3 py-1.5 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+              "text-xs font-mono px-3.5 py-2 rounded border font-semibold tracking-widest uppercase transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring min-h-[44px]",
               state === "pasting"
                 ? "border-primary/50 bg-primary/10 text-primary opacity-60 cursor-wait"
                 : "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
@@ -471,14 +495,14 @@ export function DropZoneSection({
         onDragLeave={onDragLeave}
         onDrop={onDrop}
         className={cn(
-          "relative rounded border p-4 min-h-[120px] transition-colors flex flex-col items-center justify-center",
+          "relative rounded border p-4 min-h-[140px] transition-all duration-200 flex flex-col items-center justify-center bg-[#0e0e0e]",
           isDragging
-            ? "border-primary/60 bg-primary/5"
+            ? "border-primary bg-primary/5 border-glow"
             : state === "valid"
-            ? "border-emerald-400/40 bg-emerald-400/5"
+            ? "border-emerald-500/40 bg-emerald-500/5 border-glow-success"
             : state === "error"
-            ? "border-destructive/40 bg-destructive/5"
-            : "border-border bg-background"
+            ? "border-destructive/40 bg-destructive/5 border-glow-danger"
+            : "border-border hover:border-border/80"
         )}
       >
         {json ? (
@@ -492,14 +516,21 @@ export function DropZoneSection({
             className="w-full bg-transparent font-mono text-xs p-0 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 resize-none h-48"
           />
         ) : (
-          <div className="text-center pointer-events-none">
-            <p className="text-sm text-muted-foreground mb-2">Drop a .json file here or use the Paste button</p>
-            <p className="text-xs text-muted-foreground/60">Then confirm below</p>
+          <div className="text-center pointer-events-none flex flex-col items-center gap-2 py-4">
+            <svg className="w-8 h-8 text-zinc-500 animate-pulse-soft mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+            </svg>
+            <p className="text-xs font-mono text-foreground font-semibold tracking-wider uppercase">
+              DRAG & DROP SUBJECT FILE
+            </p>
+            <p className="text-xs text-muted-foreground max-w-sm leading-relaxed">
+              Drop a subject `.json` file here or click the <span className="text-primary font-bold">PASTE</span> button at the top to load from your clipboard.
+            </p>
           </div>
         )}
         {isDragging && (
-          <div className="absolute inset-0 flex items-center justify-center rounded border-2 border-dashed border-primary/60 bg-primary/5 pointer-events-none">
-            <span className="text-sm font-mono text-primary">Drop .json file</span>
+          <div className="absolute inset-0 flex items-center justify-center rounded border-2 border-dashed border-primary bg-primary/10 pointer-events-none border-glow">
+            <span className="text-sm font-mono text-primary font-bold">DROP FILE TO LOAD</span>
           </div>
         )}
       </div>
