@@ -3,22 +3,22 @@ type RedactReplacement = string | ((match: string, ...args: any[]) => string);
 const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
-    pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+    pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
     replacement: '[REDACTED]'
   },
   {
     // Bearer tokens
-    pattern: /(Bearer\s+)[A-Za-z0-9\-\._~\+\/]+=*/g,
+    pattern: /(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
     replacement: '$1[REDACTED]'
   },
   {
     // Private keys
-    pattern: /-----BEGIN[\s\w]+PRIVATE KEY-----[\s\S]+?-----END[\s\w]+PRIVATE KEY-----/g,
+    pattern: /(-----BEGIN[\s\w]+PRIVATE KEY-----[\s\S]+?-----END[\s\w]+PRIVATE KEY-----)/g,
     replacement: '[REDACTED]'
   },
   {
-    // Common secrets
-    pattern: /((?:api_key|apikey|secret|token|password)["']?\s*[:=]\s*)(?:(["'])(.*?)\2|([^,\]\}\s]+))/gi,
+    // Common secrets and PII
+    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(["'])(.*?)\2|([^,\]\}\s]+))/gi,
     replacement: (match: string, p1: string, p2: string, p3: string, p4: string) => {
       if (p4 && (p4.startsWith('[') || p4.startsWith('{'))) {
         return match;
@@ -28,7 +28,7 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // JWTs
-    pattern: /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g,
+    pattern: /(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
     replacement: '[REDACTED]'
   }
 ];
@@ -96,7 +96,7 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
   }
 
   const maskedObj: Record<string, any> = {};
-  const sensitiveKeys = /api_key|apikey|secret|token|password/i;
+  const sensitiveKeys = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
   for (const key of Object.keys(data)) {
     if (sensitiveKeys.test(key) && (typeof data[key] === 'string' || typeof data[key] === 'number' || typeof data[key] === 'boolean')) {
       maskedObj[key] = '[REDACTED]';
