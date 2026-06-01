@@ -13,17 +13,20 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // Private keys
-    pattern: /(-----BEGIN[\s\w]+PRIVATE KEY-----[\s\S]+?-----END[\s\w]+PRIVATE KEY-----)/g,
-    replacement: '[REDACTED]'
+    pattern: /(-----BEGIN[\s\w]+PRIVATE KEY-----)([\s\S]+?)(-----END[\s\w]+PRIVATE KEY-----)/g,
+    replacement: '$1\n[REDACTED]\n$3'
   },
   {
     // Common secrets and PII
-    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(["'])(.*?)\2|([^,\]\}\s]+))/gi,
-    replacement: (match: string, p1: string, p2: string, p3: string, p4: string) => {
+    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(")([^"]*)(")|(')([^']*)(')|([^,\]\}\s]+))/gi,
+    replacement: (match: string, p1: string, dQuote: string, dVal: string, dQuoteEnd: string, sQuote: string, sVal: string, sQuoteEnd: string, unquoted: string) => {
+      const p4 = unquoted;
       if (p4 && (p4.startsWith('[') || p4.startsWith('{'))) {
         return match;
       }
-      return p1 + (p2 ? p2 + "[REDACTED]" + p2 : '"[REDACTED]"');
+      if (dQuote) return p1 + dQuote + "[REDACTED]" + dQuoteEnd;
+      if (sQuote) return p1 + sQuote + "[REDACTED]" + sQuoteEnd;
+      return p1 + '"[REDACTED]"';
     }
   },
   {
