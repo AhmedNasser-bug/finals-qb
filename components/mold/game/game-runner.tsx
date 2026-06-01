@@ -254,7 +254,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         />
       )}
 
-      <main className={`flex-1 overflow-y-auto px-4 md:px-8 py-6 w-full mx-auto ${
+      <main className={`flex-1 overflow-y-auto px-4 md:px-8 py-6 w-full mx-auto flex flex-col justify-center ${
         currentQuestion?.diagram
           ? "max-w-[calc(100vw-2rem)] lg:max-w-[calc(100vw-4rem)] xl:max-w-[1600px]"
           : "max-w-4xl"

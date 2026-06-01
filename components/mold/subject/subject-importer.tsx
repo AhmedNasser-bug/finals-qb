@@ -39,6 +39,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [promptCopied, setPromptCopied] = useState(false)
+  const [userMaterial, setUserMaterial] = useState("")
 
   // ─── Auto-update question count when preset changes ──────────────────────────
   const handlePresetSelect = (presetId: string) => {
@@ -409,6 +410,8 @@ Output the complete JSON object on a single line (no formatting).`;
               compiledPrompt={compiledPrompt}
               promptCopied={promptCopied}
               onCopyPrompt={handleCopyPrompt}
+              userMaterial={userMaterial}
+              setUserMaterial={setUserMaterial}
             />
           )}
 

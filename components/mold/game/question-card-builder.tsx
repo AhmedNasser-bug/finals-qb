@@ -41,11 +41,30 @@ function QuestionCardProvider({
 }
 
 function QuestionCardFrame({ children }: { children: React.ReactNode }) {
+  const { state } = useQuestionCard()
+  const { currentQuestion } = state
+
+  const hasDedicatedDiagram = !!currentQuestion?.diagram
+  const parts = React.useMemo(() => currentQuestion ? parseRichTextParts(currentQuestion.question) : [], [currentQuestion?.question])
+  const hasInlineDiagram = !hasDedicatedDiagram && parts.some(p => p.type === "mermaid")
+  const hasDiagram = hasDedicatedDiagram || hasInlineDiagram
+  const diagramBelow = hasDedicatedDiagram && currentQuestion.diagramPosition === "below"
+  const needsStretch = hasDiagram && !diagramBelow
+
   return (
-    <div className="flex flex-col flex-1 min-h-0 animate-slide-up">
-      <div className="relative flex-1 bg-[#1c1b1b] flex flex-col min-h-0">
+    <div className={cn(
+      "flex flex-col animate-slide-up w-full",
+      needsStretch ? "flex-1 min-h-0" : "max-w-3xl mx-auto my-auto"
+    )}>
+      <div className={cn(
+        "relative bg-[#1c1b1b] border border-border flex flex-col min-h-0 rounded",
+        needsStretch ? "flex-1" : "shadow-xl border-zinc-800/80"
+      )}>
         <div className="scanlines absolute inset-0 opacity-20 pointer-events-none z-0" />
-        <div className="relative z-10 flex flex-col flex-1 min-h-0 p-4 md:p-6 lg:p-8 gap-4">
+        <div className={cn(
+          "relative z-10 flex flex-col min-h-0 gap-4",
+          needsStretch ? "flex-1 p-4 md:p-6 lg:p-8" : "p-6 md:p-8"
+        )}>
           {children}
         </div>
       </div>

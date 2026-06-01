@@ -75,8 +75,77 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         </div>
       </div>
 
-      {/* ── 3-column HUD ── */}
-      <div className="grid grid-cols-3 gap-4 px-6 md:px-10 py-5 items-center">
+      {/* ── RESPONSIVE HUD PANEL ── */}
+      
+      {/* ── Mobile Layout (under md) ── */}
+      <div className="flex md:hidden items-center justify-between gap-3 px-4 py-3 bg-[#131313] border-b border-zinc-800/80 select-none">
+        
+        {/* Left: Streak & Lives */}
+        <div className="flex items-center gap-2">
+          {/* Compact Streak */}
+          <div className={cn(
+            "px-2 py-1 flex items-center gap-1 border-l-2 bg-[#201f1f]",
+            streak >= 10 ? "border-[#930013]" : streak >= 5 ? "border-orange-500" : "border-[#fecc17]"
+          )}>
+            <BoltIcon className={cn(
+              "w-3.5 h-3.5 shrink-0",
+              streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
+            )} />
+            <span className={cn(
+              "font-mono text-sm font-black leading-none",
+              streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
+            )}>{streak}</span>
+          </div>
+
+          {/* Compact Hearts */}
+          <div className="flex items-center gap-0.5 ml-1">
+            {Array.from({ length: 3 }).map((_, i) => {
+              const alive = isSurvival ? i < livesRemaining : i < 3
+              return (
+                <HeartIcon
+                  key={i}
+                  filled={alive}
+                  className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
+                />
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Center: Compact Timer */}
+        <div className="flex items-center justify-center">
+          <div className={cn(
+            "bg-[#0e0e0e] border-x-2 px-3 py-1 text-center flex items-center gap-1.5",
+            isCritical ? "border-[#930013]" : "border-[var(--tw-hex-930013)]/30"
+          )}>
+            <span className={cn(
+              "font-mono text-[8px] tracking-wider uppercase",
+              isCritical ? "text-[#930013] font-bold animate-pulse" : "text-muted-foreground/60"
+            )}>
+              {isTimedGlobal ? "TIME" : "TIME"}
+            </span>
+            <span className={cn(
+              "font-mono text-sm font-black tabular-nums leading-none",
+              isCritical ? "text-[#ffb4ab]" : "text-[#fecc17]",
+              isUrgent && "motion-safe:animate-pulse"
+            )}>
+              {formatTime(isTimedGlobal ? globalTimeRemaining : elapsedSeconds)}
+            </span>
+          </div>
+        </div>
+
+        {/* Right: Quit Button (Critical for Mobile!) */}
+        <button
+          onClick={onForfeit}
+          aria-label="Quit session"
+          className="px-2.5 py-1.5 border border-red-500/20 bg-red-950/20 text-red-400 font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-red-500 hover:bg-red-500/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
+        >
+          QUIT
+        </button>
+      </div>
+
+      {/* ── Desktop Layout (md and above) ── */}
+      <div className="hidden md:grid grid-cols-3 gap-4 px-6 md:px-10 py-5 items-center">
         {/* Left — streak badge + accuracy + lives */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-4">

@@ -208,7 +208,7 @@ export function HomeScreen({
                     01 // CHOOSE STUDY REGIME
                   </h2>
                 </div>
-                <ModeSelector selected={selectedMode} onSelect={handleModeSelect} />
+                <ModeSelector selected={selectedMode} onSelect={handleModeSelect} onLaunch={handleInitialize} />
               </div>
 
               {/* Configuration panel (Setup Panel) */}

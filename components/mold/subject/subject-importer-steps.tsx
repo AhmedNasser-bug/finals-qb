@@ -305,6 +305,8 @@ interface Step4PromptBuildProps {
   compiledPrompt: string
   promptCopied: boolean
   onCopyPrompt: (promptText: string) => void
+  userMaterial: string
+  setUserMaterial: (val: string) => void
 }
 
 export function Step4PromptBuild({
@@ -312,86 +314,259 @@ export function Step4PromptBuild({
   compiledPrompt,
   promptCopied,
   onCopyPrompt,
+  userMaterial,
+  setUserMaterial,
 }: Step4PromptBuildProps) {
+  const [showManualPrompt, setShowManualPrompt] = React.useState(false)
+  const [dragActive, setDragActive] = React.useState(false)
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true)
+    } else if (e.type === "dragleave") {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0]
+      if (file.name.endsWith(".txt") || file.name.endsWith(".md")) {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          const text = event.target?.result as string
+          setUserMaterial(text)
+        }
+        reader.readAsText(file)
+      } else {
+        alert("Please upload a clean text (.txt) or markdown (.md) file.")
+      }
+    }
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const text = event.target?.result as string
+        setUserMaterial(text)
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const downloadStudyPackage = () => {
+    if (!userMaterial.trim()) return
+    const packageText = `================================================================================
+FINALIST STUDY MATERIAL GENERATION PACKAGE
+================================================================================
+INSTRUCTIONS FOR THE CHATBOT:
+${compiledPrompt}
+
+================================================================================
+SOURCE STUDY MATERIAL TO ANALYZE AND EXTRACT QUESTIONS FROM:
+================================================================================
+${userMaterial}
+`
+    const blob = new Blob([packageText], { type: "text/plain;charset=utf-8" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `TAKE_ME_TO_ANY_CHATBOT.txt`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   return (
-    <div className="space-y-8 animate-slide-up">
+    <div className="space-y-6 animate-slide-up select-none">
       <div className="space-y-1.5">
         <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
-          STEP 04 // GENERATE_PEDAGOGICAL_PROMPT
+          STEP 04 // GENERATE_STUDY_PACKAGE
         </span>
         <h3 className="text-xl font-bold font-display text-white tracking-tight flex items-center">
-          <span>Your customized learnLM prompt is ready!</span>
-          <InfoToolbox content="The copied prompt leverages Google's learning science rules to ensure high-fidelity JSON mapping and fully-populated explanation/hint scaffolding." />
+          <span>Create Your Socratic Study Package</span>
+          <InfoToolbox content="This packages our learning science prompt alongside your study materials so your chatbot can generate the exact structure seamlessly." />
         </h3>
         <p className="text-xs text-[#a4acba] leading-relaxed max-w-2xl font-sans font-medium">
-          Copy the generated Socratic instructions below and paste them into your chosen AI service alongside your study materials.
+          Feed your materials to the Socratic Prompt Builder to create a single-file generation package.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* AI Services Guide */}
-        <div className="p-6 bg-secondary/35 border border-border/80 flex flex-col gap-4 rounded-none">
-          <div>
-            <span className="text-[10px] font-mono text-[#4ae176] tracking-widest uppercase font-bold">TOP RECOMMENDED SERVICE:</span>
-            <h4 className="text-base font-bold text-white mt-1.5">Google NotebookLM (#1 Choice)</h4>
-            <p className="text-xs sm:text-sm text-[#d4dae6] leading-relaxed mt-2 font-sans font-medium">
-              Simply create a notebook, upload your textbook PDFs or notes as sources, copy this custom prompt, and paste it into the chat box. It will parse your sources with outstanding accuracy and format the JSON.
-            </p>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column: Numbered Guide */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="p-5 border border-border bg-[#101115] rounded">
+            <h4 className="text-xs font-mono font-bold tracking-wider text-white uppercase border-b border-border pb-2.5 mb-3.5 select-none">
+              Generation Pipeline
+            </h4>
+            
+            <div className="space-y-4 text-xs font-medium leading-relaxed font-sans text-zinc-300 select-none">
+              <div className="flex gap-3">
+                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">1</span>
+                <div>
+                  <span className="text-white font-bold block">Load Source Material</span>
+                  <span>Paste slides, notes, or drop text notes on the right to bundle them.</span>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">2</span>
+                <div>
+                  <span className="text-white font-bold block">Download Generation Package</span>
+                  <span>Get a single `.txt` file containing the Socratic instructions and your material merged.</span>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">3</span>
+                <div>
+                  <span className="text-white font-bold block">Ask Google Gemini (Recommended)</span>
+                  <span>
+                    Open{" "}
+                    <a
+                      href="https://gemini.google.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline font-bold inline-flex items-center gap-0.5"
+                    >
+                      Google Gemini ➔
+                    </a>{" "}
+                    or Claude, upload the downloaded file, and ask it to run!
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">4</span>
+                <div>
+                  <span className="text-white font-bold block">Paste Chatbot Result</span>
+                  <span>Copy the generated chatbot response code and advance to Step 5 to verify it.</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="border-t border-border/40 pt-4">
-            <span className="text-[9px] font-mono text-zinc-400 tracking-widest uppercase font-semibold">ALTERNATIVE LLMs:</span>
-            <p className="text-xs text-[#a4acba] leading-relaxed mt-2 font-sans font-medium">
-              Claude 3.5 Sonnet, Gemini 1.5 Pro, or ChatGPT (GPT-4o). Excellent for following precise schema rules and formatting clean Mermaid diagrams.
+
+          <div className="p-4 border border-emerald-500/20 bg-emerald-500/5 rounded">
+            <p className="text-xs leading-relaxed text-zinc-300 font-sans font-medium">
+              💡 <span className="text-[#4ae176] font-bold">Why this works:</span> Chatbots are much smarter when they get instructions and notes formatted together in a single text file. It guarantees 100% accurate, error-free results!
             </p>
           </div>
         </div>
 
-        {/* Materials Guide */}
-        <div className="p-6 bg-secondary/35 border border-border/80 flex flex-col gap-4 rounded-none justify-between">
-          <div>
-            <span className="text-[10px] font-mono text-primary tracking-widest uppercase font-bold">MATERIALS TO FEED THE AI:</span>
-            <ul className="space-y-2.5 mt-3 text-xs sm:text-sm text-zinc-200 leading-relaxed list-disc list-inside font-sans font-medium">
-              <li>Course syllabi or draft curriculum outlines</li>
-              <li>Lecture slide PDFs or custom study notes</li>
-              <li>Existing question lists or draft databases</li>
-              <li>Relevant chapters of textbook pages</li>
-            </ul>
-          </div>
-          <div className="bg-[#15171c] p-4 border border-border text-center">
-            <p className="text-xs sm:text-sm font-mono text-zinc-200 font-medium">
-              AI prompt will inject topic <span className="text-primary font-bold">"{topic.toUpperCase()}"</span> automatically.
-            </p>
+        {/* Right Column: Path A material load zone */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="p-6 border border-border bg-[#101115] rounded space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block">
+                [PATH A] Drag Notes or Paste Study Material
+              </span>
+              <span className="text-[10px] font-mono text-zinc-500">TEXT OR MARKDOWN</span>
+            </div>
+
+            <div
+              onDragEnter={handleDrag}
+              onDragOver={handleDrag}
+              onDragLeave={handleDrag}
+              onDrop={handleDrop}
+              className={cn(
+                "border border-dashed p-4 text-center rounded transition-colors flex flex-col justify-center items-center min-h-[90px] relative",
+                dragActive ? "border-primary bg-primary/5" : "border-border hover:border-zinc-700 bg-black/30"
+              )}
+            >
+              <input
+                type="file"
+                id="material-upload"
+                onChange={handleFileChange}
+                accept=".txt,.md"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+              <span className="text-xs text-zinc-400 font-sans font-medium">
+                Drag & Drop `.txt` or `.md` notes here, or{" "}
+                <span className="text-primary hover:underline">browse files</span>
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <label htmlFor="pasted-notes" className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+                Or Paste Custom Lecture Notes / Syllabus / Slide Text
+              </label>
+              <textarea
+                id="pasted-notes"
+                value={userMaterial}
+                onChange={(e) => setUserMaterial(e.target.value)}
+                placeholder="Paste course notes, slides, vocab definitions, syllabus, or raw study text here..."
+                className="w-full bg-[#07080a] border border-border px-3.5 py-2.5 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[140px] resize-y"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={downloadStudyPackage}
+              disabled={!userMaterial.trim()}
+              className={cn(
+                "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2",
+                userMaterial.trim()
+                  ? "border-[#4ae176] bg-[#4ae176]/10 text-[#4ae176] hover:bg-[#4ae176]/15 border-glow-success"
+                  : "border-border text-muted-foreground bg-transparent opacity-40 cursor-not-allowed"
+              )}
+            >
+              📥 DOWNLOAD STUDY BUNDLE (TAKE_ME_TO_ANY_CHATBOT.txt)
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Large copy action well */}
-      <div className="p-8 border border-border bg-[#111215] flex flex-col gap-5 rounded-none">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <span className="text-xs sm:text-sm font-mono text-white tracking-widest uppercase font-bold">PEDAGOGICAL INSTRUCTIONS PROMPT</span>
-          <button
-            type="button"
-            onClick={() => onCopyPrompt(compiledPrompt)}
-            className={cn(
-              "text-xs sm:text-sm font-mono font-bold px-5 py-2.5 border transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[44px] border-glow hover:scale-[1.01]",
-              promptCopied
-                ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
-                : "border-primary bg-primary text-primary-foreground hover:bg-primary/95"
-            )}
-          >
-            <span aria-live="polite">
-              {promptCopied ? "✓ COPIED TO CLIPBOARD" : "COPY CUSTOM PROMPT"}
-            </span>
-          </button>
-        </div>
-        <div className="relative rounded-none border border-border/60 bg-[#07080a] p-4">
-          <textarea
-            readOnly
-            value={compiledPrompt}
-            aria-label="Compiled AI system instructions prompt"
-            className="w-full bg-transparent font-mono text-xs sm:text-sm leading-relaxed p-0 text-zinc-300 focus:outline-none focus:ring-0 resize-none h-56 cursor-default selection:bg-primary/25 selection:text-foreground"
-          />
-        </div>
+      {/* Accordion Path B: Manual Prompt Copy */}
+      <div className="border border-border rounded bg-[#101115] overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setShowManualPrompt(!showManualPrompt)}
+          className="w-full px-5 py-3.5 flex items-center justify-between hover:bg-zinc-800/10 transition-colors text-left"
+        >
+          <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">
+            [PATH B] Expert Mode: Copy raw system prompt instructions directly
+          </span>
+          <span className="text-xs font-mono text-zinc-500 font-bold">
+            {showManualPrompt ? "CLOSE ▲" : "OPEN ▼"}
+          </span>
+        </button>
+
+        {showManualPrompt && (
+          <div className="p-5 border-t border-border bg-black/40 space-y-4 animate-slide-up">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-semibold">
+                SYSTEM PROMPT DIRECTIVES
+              </span>
+              <button
+                type="button"
+                onClick={() => onCopyPrompt(compiledPrompt)}
+                className={cn(
+                  "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer",
+                  promptCopied
+                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
+                    : "border-primary bg-primary/5 text-primary hover:bg-primary/10"
+                )}
+              >
+                {promptCopied ? "✓ COPIED" : "COPY PROMPT"}
+              </button>
+            </div>
+            <textarea
+              readOnly
+              value={compiledPrompt}
+              aria-label="Raw compiled AI system prompt"
+              className="w-full bg-[#07080a] border border-border/80 font-mono text-xs leading-relaxed p-3 text-zinc-400 focus:outline-none resize-none h-44 cursor-default rounded"
+            />
+          </div>
+        )}
       </div>
     </div>
   )

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 interface ModeSelectorProps {
   selected: GameModeId
   onSelect: (id: GameModeId) => void
+  onLaunch?: () => void
   className?: string
 }
 
@@ -19,7 +20,7 @@ const MODE_ICONS: Record<GameModeId, React.ReactNode> = {
   "full-revision": <FullRevisionIcon />,
 }
 
-export function ModeSelector({ selected, onSelect, className }: ModeSelectorProps) {
+export function ModeSelector({ selected, onSelect, onLaunch, className }: ModeSelectorProps) {
   const challengeModes = GAME_MODES.filter((m) => m.category === "challenge")
   const learningModes  = GAME_MODES.filter((m) => m.category === "learning")
 
@@ -38,6 +39,7 @@ export function ModeSelector({ selected, onSelect, className }: ModeSelectorProp
           modes={challengeModes}
           selected={selected}
           onSelect={onSelect}
+          onLaunch={onLaunch}
           accent="danger"
         />
         {/* Learning group */}
@@ -46,6 +48,7 @@ export function ModeSelector({ selected, onSelect, className }: ModeSelectorProp
           modes={learningModes}
           selected={selected}
           onSelect={onSelect}
+          onLaunch={onLaunch}
           accent="success"
         />
       </div>
@@ -58,10 +61,11 @@ interface ModeGroupProps {
   modes: GameMode[]
   selected: GameModeId
   onSelect: (id: GameModeId) => void
+  onLaunch?: () => void
   accent: "danger" | "success"
 }
 
-function ModeGroup({ label, modes, selected, onSelect, accent }: ModeGroupProps) {
+function ModeGroup({ label, modes, selected, onSelect, onLaunch, accent }: ModeGroupProps) {
   const accentClass = accent === "danger" ? "text-red-400" : "text-emerald-400"
   const borderSelectedClass = accent === "danger"
     ? "border-red-400/60 bg-red-400/5"
@@ -80,6 +84,7 @@ function ModeGroup({ label, modes, selected, onSelect, accent }: ModeGroupProps)
                 icon={MODE_ICONS[mode.id]}
                 isSelected={selected === mode.id}
                 onSelect={onSelect}
+                onLaunch={onLaunch}
                 selectedClass={borderSelectedClass}
                 accentClass={accentClass}
               />
@@ -96,11 +101,12 @@ interface ModeCardProps {
   icon: React.ReactNode
   isSelected: boolean
   onSelect: (id: GameModeId) => void
+  onLaunch?: () => void
   selectedClass: string
   accentClass: string
 }
 
-function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass }: ModeCardProps) {
+function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, accentClass }: ModeCardProps) {
   const pressedProps = isSelected ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const };
   
   // Custom tag styling based on mode category and ID
@@ -117,7 +123,17 @@ function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass
 
   return (
     <button
-      onClick={() => onSelect(mode.id)}
+      onClick={() => {
+        if (isSelected && onLaunch) {
+          onLaunch()
+        } else {
+          onSelect(mode.id)
+        }
+      }}
+      onDoubleClick={() => {
+        onSelect(mode.id)
+        if (onLaunch) onLaunch()
+      }}
       {...pressedProps}
       className={cn(
         "group relative flex flex-col gap-4 p-5 rounded border text-left transition-all duration-200 focus-ring min-h-[160px] justify-between cursor-pointer w-full",
@@ -151,10 +167,11 @@ function ModeCard({ mode, icon, isSelected, onSelect, selectedClass, accentClass
       </div>
 
       <div className={cn(
-        "font-mono text-[9px] uppercase tracking-widest border-t border-zinc-800/60 pt-2.5 w-full transition-colors duration-200 font-bold",
-        isSelected ? "text-primary" : "text-zinc-600 group-hover:text-primary/75"
+        "font-mono text-[9px] uppercase tracking-widest border-t border-zinc-800/60 pt-2.5 w-full transition-all duration-200 font-bold flex items-center justify-between",
+        isSelected ? "text-primary animate-pulse" : "text-zinc-500 group-hover:text-zinc-400"
       )}>
-        INIT_MODULE &gt;
+        <span>{isSelected ? "⚡ CLICK AGAIN TO START NOW" : "SELECT REGIME"}</span>
+        <span>➔</span>
       </div>
     </button>
   )

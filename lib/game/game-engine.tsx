@@ -92,9 +92,37 @@ const POOL_BUILDERS: Record<string, (config: GameConfig, allQuestions: Question[
   }
 };
 
+function shuffleQuestionOptions(q: Question): Question {
+  if (q.type !== "MCQ" || !q.options || q.options.length <= 1) {
+    return q
+  }
+
+  const correctOption = q.options.find((o) => o.label === q.answer)
+  if (!correctOption) return q
+
+  const correctText = correctOption.text
+  const shuffledTexts = shuffle(q.options.map((o) => o.text))
+
+  const labels = ["A", "B", "C", "D", "E", "F", "G"].slice(0, q.options.length)
+  const newOptions = shuffledTexts.map((text, idx) => ({
+    label: labels[idx],
+    text: text,
+  }))
+
+  const newCorrectOption = newOptions.find((o) => o.text === correctText)
+  const newAnswerLabel = newCorrectOption ? newCorrectOption.label : q.answer
+
+  return {
+    ...q,
+    options: newOptions,
+    answer: newAnswerLabel,
+  }
+}
+
 function buildQuestionPool(config: GameConfig, allQuestions: Question[]): Question[] {
   const builder = POOL_BUILDERS[config.mode] || POOL_BUILDERS["default"];
-  return builder(config, allQuestions);
+  const pool = builder(config, allQuestions);
+  return pool.map(shuffleQuestionOptions);
 }
 
 const GLOBAL_TIME_LIMITS: Record<string, number> = {
