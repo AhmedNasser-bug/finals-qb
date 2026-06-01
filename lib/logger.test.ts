@@ -1,6 +1,6 @@
 import { test, mock } from 'node:test';
 import assert from 'node:assert';
-import { logger } from './logger.ts';
+import { logger, maskData } from './logger.ts';
 
 test('logger methods use maskData', () => {
   const logMock = mock.method(console, 'log', () => {});
@@ -30,4 +30,19 @@ test('logger methods use maskData', () => {
   assert.ok(loggedErr instanceof Error);
   assert.strictEqual(loggedErr.message, 'some error message password="[REDACTED]"');
   errorMock.mock.restore();
+});
+
+test('preserves structural quotes correctly with new regex', () => {
+  const result = maskData('{"email":"test@example.com","password":"mypassword"}');
+  assert.strictEqual(result, '{"email":"[REDACTED]","password":"[REDACTED]"}');
+});
+
+test('preserves single quotes and masks values properly', () => {
+  const result = maskData("{'email': 'user@example.com'}");
+  assert.strictEqual(result, "{'email': '[REDACTED]'}");
+});
+
+test('handles spaced unquoted values without leaking tokens', () => {
+  const result = maskData("token: 'Bearer 12345'");
+  assert.strictEqual(result, "token: '[REDACTED]'");
 });
