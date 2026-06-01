@@ -16,12 +16,12 @@ export function ExampleModuleCard({
 }: ExampleModuleCardProps) {
   return (
     <div
-      className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-colors"
+      className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#121318]/50 focus-within:ring-2 focus-within:ring-primary/60 focus-within:ring-offset-2 focus-within:ring-offset-background"
     >
       {/* Main card body layout (pure presentation, z-0 relative) */}
-      <div className="flex flex-col gap-3 p-4 text-left flex-1 relative z-0">
-        <div className="flex items-start justify-between gap-2">
-          <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{entry.name}</p>
+      <div className="flex flex-col gap-5 p-6 text-left flex-1 relative z-0">
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-base font-semibold text-foreground tracking-tight leading-snug text-pretty">{entry.name}</p>
           <div className="flex items-center gap-1 shrink-0 z-10 relative">
             <button
               onClick={(e) => { e.stopPropagation(); if (!isLoading) onShare(e, entry) }}
@@ -37,10 +37,10 @@ export function ExampleModuleCard({
             </span>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+        <p className="text-xs text-muted-foreground/90 font-sans leading-relaxed tracking-normal line-clamp-2 mt-1">
           {entry.description}
         </p>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2 mt-1">
           <StatPill label="Q" value={entry.questionCount} />
           <StatPill label="Cat" value={entry.categoryCount} />
           {entry.tags.map((tag) => (
@@ -55,12 +55,12 @@ export function ExampleModuleCard({
       {!isLoading && (
         <button
           onClick={() => onLoad(entry)}
-          className="absolute inset-0 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring z-0"
+          className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none z-0"
           aria-label={`Load module ${entry.name}`}
         />
       )}
 
-      <div className="border-t border-border px-4 py-2.5 flex items-center justify-between z-10 relative">
+      <div className="border-t border-border px-6 py-3.5 flex items-center justify-between z-10 relative">
         <span className="text-[10px] font-mono text-muted-foreground">{entry.id}</span>
         {isLoading ? (
           <div className="flex items-center gap-2 text-[10px] font-mono text-primary">

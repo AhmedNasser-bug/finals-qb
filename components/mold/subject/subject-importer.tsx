@@ -303,10 +303,10 @@ Output the complete JSON object on a single line (no formatting).`;
 
   return (
     <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
-      <div className="w-full max-w-4xl h-[92vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
+      <div className="w-full max-w-6xl h-[92vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
 
         {/* Modal Main Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-panel">
+        <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
             <h2 className="text-sm font-display font-bold tracking-wider uppercase text-white">
               Import Subject Wizard
@@ -325,7 +325,7 @@ Output the complete JSON object on a single line (no formatting).`;
         </div>
 
         {/* Progress Breadcrumbs Bar */}
-        <div className="px-6 py-3 border-b border-border/50 bg-[#0d0e11] flex items-center justify-between">
+        <div className="px-8 py-4 border-b border-border/50 bg-[#0d0e11] flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-5 w-full justify-between sm:justify-start">
             {steps.map((s, idx) => {
               const isActive = step === s.num
@@ -367,7 +367,7 @@ Output the complete JSON object on a single line (no formatting).`;
         </div>
 
         {/* Wizard Main Content Pane */}
-        <div className="flex-1 p-6 overflow-y-auto min-h-0 bg-[#0a0b0d]">
+        <div className="flex-1 px-8 py-6 sm:px-10 sm:py-7 overflow-y-auto min-h-0 bg-[#0a0b0d]">
 
           {/* STEP 1: Select Preset & Topic */}
           {step === 1 && (
@@ -434,7 +434,7 @@ Output the complete JSON object on a single line (no formatting).`;
         </div>
 
         {/* Modal Main Action Footer */}
-        <div className="flex items-center justify-between gap-4 px-6 py-4 border-t border-border bg-panel">
+        <div className="flex items-center justify-between gap-4 px-8 py-5 border-t border-border bg-panel">
           {/* Cancel/Back buttons */}
           {step === 1 ? (
             <button

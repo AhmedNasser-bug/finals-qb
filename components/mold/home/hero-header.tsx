@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import type { SubjectData, Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs"
@@ -31,6 +32,14 @@ export function HeroHeader({
       <div className="flex flex-wrap items-center gap-4 px-6 py-3 border-b border-border/50 bg-[#0d0e11]">
         <div className="flex items-center gap-2.5 min-w-0">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
+          <Image
+            src="/logo.png"
+            alt="Finalist"
+            width={22}
+            height={22}
+            className="shrink-0 drop-shadow-[0_0_5px_hsl(var(--primary)/0.6)]"
+            priority
+          />
           <span className="text-[10px] font-mono tracking-widest text-emerald-400 uppercase font-bold shrink-0">
             MASTERY_PROTOCOL //
           </span>

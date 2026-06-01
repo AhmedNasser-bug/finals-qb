@@ -42,7 +42,7 @@ export function Step1PresetTopic({
       </div>
 
       {/* Topic Input Box */}
-      <div className="flex flex-col gap-2 p-5 border border-border bg-[#111215] rounded-none">
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="wizard-topic"
           className="text-xs font-mono font-bold tracking-wider text-white uppercase flex items-center justify-between"
@@ -56,37 +56,37 @@ export function Step1PresetTopic({
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="E.g., Theory of Computation, Data Structures, Human Anatomy..."
-          className="w-full bg-[#07080a] border border-border rounded-none px-4 py-3 text-sm text-white font-mono placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[44px]"
+          className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
           autoComplete="off"
         />
       </div>
 
       {/* Reference Checkbox */}
-      <div className="bg-[#111215] border border-border p-4 flex items-start gap-3.5 hover:border-zinc-800 transition-colors">
+      <div className="flex items-start gap-3 hover:text-white transition-colors">
         <input
           id="wizard-ref"
           type="checkbox"
           checked={useReferenceBank}
           onChange={(e) => setUseReferenceBank(e.target.checked)}
-          className="accent-primary mt-1 w-4 h-4 cursor-pointer focus-ring"
+          className="accent-primary mt-0.5 w-4 h-4 cursor-pointer focus-ring"
         />
         <label htmlFor="wizard-ref" className="flex flex-col cursor-pointer text-left select-none">
           <span className="text-xs font-mono font-bold uppercase text-white tracking-wide flex items-center">
             <span>Align with Attached Question Bank / Syllabus</span>
             <InfoToolbox content="Instructs the AI to strictly align generated questions and terminology with your custom syllabus materials, lectures, or textbook sources." />
           </span>
-          <span className="text-[11px] text-[#a4acba] leading-relaxed mt-1 font-sans font-medium">
+          <span className="text-[11px] text-[#a4acba] leading-relaxed mt-0.5 font-sans font-medium">
             AI strictly mirrors your attached materials, mapping unique concepts, structures, and difficulties exactly.
           </span>
         </label>
       </div>
 
       {/* Pedagogical Presets Row */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <span className="text-xs font-mono font-bold tracking-wider text-white uppercase">
           Select Pedagogical Study Preset
         </span>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
           {[
             { id: "finals_prep", name: "Finals Prep", desc: "High Rigor Exam prep", hint: "Scenario-focused exam preparation." },
             { id: "concept_journey", name: "Concept Journey", desc: "Deep Conceptual study", hint: "Explains theories via analogies." },
@@ -101,21 +101,21 @@ export function Step1PresetTopic({
                 type="button"
                 onClick={() => onPresetSelect(p.id)}
                 className={cn(
-                  "flex flex-col text-left p-4 border transition-all duration-200 focus-ring cursor-pointer min-h-[140px] justify-between rounded-none",
+                  "flex flex-col text-left p-4 border transition-all duration-300 ease-out focus-ring cursor-pointer min-h-[110px] justify-between rounded-none hover:-translate-y-0.5 hover:bg-zinc-800/20 hover:border-zinc-700/80",
                   isSelected
                     ? "border-primary bg-primary/5 text-foreground border-glow"
-                    : "border-border bg-[#111215] text-[#a4acba] hover:bg-zinc-800/25 hover:text-white"
+                    : "border-border bg-[#101115] text-[#a4acba] hover:text-white"
                 )}
               >
                 <div>
                   <span className={cn("text-xs font-mono font-bold font-display uppercase tracking-wide", isSelected ? "text-primary font-bold" : "text-white font-semibold")}>
                     {p.name}
                   </span>
-                  <span className="text-[10px] leading-snug mt-1.5 block opacity-95 font-sans font-medium text-foreground">
+                  <span className="text-[10px] leading-snug mt-1 block opacity-95 font-sans font-medium text-foreground">
                     {p.desc}
                   </span>
                 </div>
-                <span className="text-[9px] font-mono block opacity-80 mt-2 border-t border-border/40 pt-1.5 uppercase tracking-wider text-muted-foreground font-semibold">
+                <span className="text-[9px] font-mono block opacity-80 mt-2 border-t border-border/40 pt-1 uppercase tracking-wider text-muted-foreground font-semibold">
                   {p.hint}
                 </span>
               </button>
@@ -137,8 +137,8 @@ interface Step2SubjectTypeProps {
 
 export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTypeProps) {
   return (
-    <div className="space-y-6 animate-slide-up">
-      <div className="space-y-1">
+    <div className="space-y-8 animate-slide-up">
+      <div className="space-y-1.5">
         <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
           STEP 02 // COGNITIVE_BIAS_CALIBRATION
         </span>
@@ -151,19 +151,19 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 mt-4">
+      <div className="flex flex-col md:flex-row gap-6 mt-6">
         {/* Theoretical Card */}
         <button
           type="button"
           onClick={() => setSubjectType("theoretical")}
           className={cn(
-            "flex-1 p-6 border text-left flex flex-col justify-between gap-5 transition-all duration-200 focus-ring cursor-pointer rounded-none min-h-[180px]",
+            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-[#121318]/50",
             subjectType === "theoretical"
               ? "border-[#4ae176] bg-[var(--tw-hex-4ae176)]/5 border-glow-success"
-              : "border-border bg-[#111215] text-[#a4acba] hover:bg-zinc-800/25 hover:text-white"
+              : "border-border bg-[#111215] text-[#a4acba] hover:border-zinc-700/80 hover:text-white"
           )}
         >
-          <div className="space-y-2">
+          <div className="space-y-3">
             <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">BIAS_PROFILE: TEXT_DICTIONARY</span>
             <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "theoretical" ? "text-[#4ae176] font-bold" : "text-white font-semibold")}>
               Theoretical & Prose Focused
@@ -182,13 +182,13 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
           type="button"
           onClick={() => setSubjectType("technical")}
           className={cn(
-            "flex-1 p-6 border text-left flex flex-col justify-between gap-5 transition-all duration-200 focus-ring cursor-pointer rounded-none min-h-[180px]",
+            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-[#121318]/50",
             subjectType === "technical"
               ? "border-primary bg-primary/5 border-glow"
-              : "border-border bg-[#111215] text-[#a4acba] hover:bg-zinc-800/25 hover:text-white"
+              : "border-border bg-[#111215] text-[#a4acba] hover:border-zinc-700/80 hover:text-white"
           )}
         >
-          <div className="space-y-2">
+          <div className="space-y-3">
             <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">BIAS_PROFILE: DIAGRAMS_AND_CODE</span>
             <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "technical" ? "text-primary font-bold" : "text-white font-semibold")}>
               Technical & Analytical Focused
@@ -221,7 +221,7 @@ export function Step3QuestionCount({
   onCustomPresetClick,
 }: Step3QuestionCountProps) {
   return (
-    <div className="space-y-6 animate-slide-up">
+    <div className="space-y-5 animate-slide-up">
       <div className="space-y-1">
         <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
           STEP 03 // QUANTITY_THRESHOLD_CALIBRATION
@@ -240,15 +240,15 @@ export function Step3QuestionCount({
         <span className="text-primary font-mono select-none text-sm mt-0.5">ℹ</span>
         <div>
           <p className="text-xs font-mono font-bold text-white uppercase tracking-wider">PRESET JUSTIFICATION</p>
-          <p className="text-xs text-[#a4acba] leading-relaxed mt-1 font-sans font-medium">
+          <p className="text-xs text-[#a4acba] leading-relaxed mt-0.5 font-sans font-medium">
             {presetJustification}
           </p>
         </div>
       </div>
 
       {/* Question count input well */}
-      <div className="p-6 border border-border bg-[#111215] flex flex-col gap-4 rounded-none">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-border/60 bg-[#101115] p-5">
           <div className="flex flex-col">
             <label htmlFor="wizard-count" className="text-xs font-mono font-bold tracking-wider text-white uppercase">
               Total Questions Volume
@@ -266,12 +266,12 @@ export function Step3QuestionCount({
             onChange={(e) => {
               setQuestionCount(Math.max(1, parseInt(e.target.value) || 0))
             }}
-            className="w-full sm:w-36 bg-[#07080a] border border-border rounded-none px-4 py-3 text-center text-xl font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[44px]"
+            className="w-full sm:w-36 bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-center text-xl font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
           />
         </div>
 
         {/* Preset quick buttons */}
-        <div className="border-t border-border/40 pt-4 flex items-center gap-2">
+        <div className="pt-2 flex items-center gap-2">
           <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-semibold">Quick Presets:</span>
           <div className="flex items-center gap-2 flex-wrap">
             {[20, 40, 80, 120].map((num) => {
@@ -282,10 +282,10 @@ export function Step3QuestionCount({
                   type="button"
                   onClick={() => onCustomPresetClick(num)}
                   className={cn(
-                    "text-xs font-mono px-3 py-1.5 border transition-all cursor-pointer rounded-none min-h-[36px]",
+                    "text-xs font-mono px-3.5 py-1.5 border transition-all duration-300 ease-out cursor-pointer rounded-none min-h-[32px] hover:scale-[1.02]",
                     isSelected
                       ? "border-primary bg-primary/10 text-primary font-bold animate-pulse-soft"
-                      : "border-border text-[#a4acba] hover:border-border/80 hover:text-white bg-[#07080a]"
+                      : "border-border text-[#a4acba] hover:border-zinc-700/80 hover:text-white bg-[#07080a]"
                   )}
                 >
                   {num} QS
@@ -314,8 +314,8 @@ export function Step4PromptBuild({
   onCopyPrompt,
 }: Step4PromptBuildProps) {
   return (
-    <div className="space-y-6 animate-slide-up">
-      <div className="space-y-1">
+    <div className="space-y-8 animate-slide-up">
+      <div className="space-y-1.5">
         <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
           STEP 04 // GENERATE_PEDAGOGICAL_PROMPT
         </span>
@@ -328,9 +328,9 @@ export function Step4PromptBuild({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* AI Services Guide */}
-        <div className="p-5 bg-secondary/35 border border-border/80 flex flex-col gap-4 rounded-none">
+        <div className="p-6 bg-secondary/35 border border-border/80 flex flex-col gap-4 rounded-none">
           <div>
             <span className="text-[10px] font-mono text-[#4ae176] tracking-widest uppercase font-bold">TOP RECOMMENDED SERVICE:</span>
             <h4 className="text-base font-bold text-white mt-1.5">Google NotebookLM (#1 Choice)</h4>
@@ -347,7 +347,7 @@ export function Step4PromptBuild({
         </div>
 
         {/* Materials Guide */}
-        <div className="p-5 bg-secondary/35 border border-border/80 flex flex-col gap-4 rounded-none justify-between">
+        <div className="p-6 bg-secondary/35 border border-border/80 flex flex-col gap-4 rounded-none justify-between">
           <div>
             <span className="text-[10px] font-mono text-primary tracking-widest uppercase font-bold">MATERIALS TO FEED THE AI:</span>
             <ul className="space-y-2.5 mt-3 text-xs sm:text-sm text-zinc-200 leading-relaxed list-disc list-inside font-sans font-medium">
@@ -366,14 +366,14 @@ export function Step4PromptBuild({
       </div>
 
       {/* Large copy action well */}
-      <div className="p-6 border border-border bg-[#111215] flex flex-col gap-4 rounded-none">
-        <div className="flex items-center justify-between">
+      <div className="p-8 border border-border bg-[#111215] flex flex-col gap-5 rounded-none">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <span className="text-xs sm:text-sm font-mono text-white tracking-widest uppercase font-bold">PEDAGOGICAL INSTRUCTIONS PROMPT</span>
           <button
             type="button"
             onClick={() => onCopyPrompt(compiledPrompt)}
             className={cn(
-              "text-xs sm:text-sm font-mono font-bold px-5 py-2.5 border transition-all duration-200 focus-ring cursor-pointer rounded-none min-h-[44px] border-glow",
+              "text-xs sm:text-sm font-mono font-bold px-5 py-2.5 border transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[44px] border-glow hover:scale-[1.01]",
               promptCopied
                 ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
                 : "border-primary bg-primary text-primary-foreground hover:bg-primary/95"
@@ -389,7 +389,7 @@ export function Step4PromptBuild({
             readOnly
             value={compiledPrompt}
             aria-label="Compiled AI system instructions prompt"
-            className="w-full bg-transparent font-mono text-xs sm:text-sm leading-relaxed p-0 text-zinc-300 focus:outline-none focus:ring-0 resize-none h-48 cursor-default selection:bg-primary/25 selection:text-foreground"
+            className="w-full bg-transparent font-mono text-xs sm:text-sm leading-relaxed p-0 text-zinc-300 focus:outline-none focus:ring-0 resize-none h-56 cursor-default selection:bg-primary/25 selection:text-foreground"
           />
         </div>
       </div>
@@ -430,8 +430,8 @@ export function Step5LoadData({
   categories,
 }: Step5LoadDataProps) {
   return (
-    <div className="space-y-6 animate-slide-up">
-      <div className="space-y-1">
+    <div className="space-y-8 animate-slide-up">
+      <div className="space-y-1.5">
         <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
           STEP 05 // LOAD_VALIDATED_SUBJECT_JSON
         </span>

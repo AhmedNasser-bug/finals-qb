@@ -28,14 +28,15 @@ export function UserSubjectCard({
   return (
     <div
       className={cn(
-        "group relative flex flex-col bg-panel border transition-colors",
+        "group relative flex flex-col bg-panel border transition-all duration-300 ease-out",
+        "hover:-translate-y-0.5 hover:bg-[#121318]/50 focus-within:ring-2 focus-within:ring-primary/60 focus-within:ring-offset-2 focus-within:ring-offset-background",
         isConfirming ? "border-destructive/40" : "border-border hover:border-border/80"
       )}
     >
       {/* Main card body layout (pure presentation, z-0 relative) */}
-      <div className="flex flex-col gap-3 p-4 text-left flex-1 relative z-0">
-        <div className="flex items-start justify-between gap-2">
-          <p className="text-sm font-semibold text-foreground leading-snug text-pretty">{full.name}</p>
+      <div className="flex flex-col gap-5 p-6 text-left flex-1 relative z-0">
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-base font-semibold text-foreground tracking-tight leading-snug text-pretty">{full.name}</p>
           <div className="flex items-center gap-1 shrink-0 z-10 relative">
             {!isConfirming && (
               <button
@@ -52,10 +53,10 @@ export function UserSubjectCard({
             </span>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+        <p className="text-xs text-muted-foreground/90 font-sans leading-relaxed tracking-normal line-clamp-2 mt-1">
           {full.config.description}
         </p>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2 mt-1">
           <StatPill label="Q" value={data.totalQuestions} />
           <StatPill label="FC" value={full.flashcards?.length ?? 0} />
           <StatPill label="Cat" value={categoryCount} />
@@ -66,12 +67,12 @@ export function UserSubjectCard({
       {!isConfirming && (
         <button
           onClick={() => onSelect(full)}
-          className="absolute inset-0 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring z-0"
+          className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none z-0"
           aria-label={`Select subject ${full.name}`}
         />
       )}
 
-      <div className="flex items-center justify-between border-t border-border px-4 py-2.5 z-10 relative">
+      <div className="flex items-center justify-between border-t border-border px-6 py-3.5 z-10 relative">
         <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[120px]">{full.id}</span>
         {isConfirming ? (
           <div className="flex items-center gap-2">
