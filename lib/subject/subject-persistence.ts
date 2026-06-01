@@ -225,7 +225,11 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
     }
 
     if (!labelExists) {
-      const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
+      const optionsArray = qObj.options as Record<string, unknown>[];
+      const labels = new Array(optionsArray.length);
+      for (let j = 0; j < optionsArray.length; j++) {
+        labels[j] = optionsArray[j].label;
+      }
       errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
     }
     if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {

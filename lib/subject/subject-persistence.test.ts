@@ -147,7 +147,10 @@ describe("validateSubjectData", () => {
   });
 
   test("validates early bailout on 8+ errors", () => {
-    const badQuestions = Array(10).fill({}).map((_, i) => ({ id: `q-${i}` }));
+    const badQuestions = new Array(10);
+    for (let i = 0; i < 10; i++) {
+      badQuestions[i] = { id: `q-${i}` };
+    }
     const manyErrors = {
       ...validBase,
       questions: badQuestions

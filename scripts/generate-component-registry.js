@@ -30,14 +30,22 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  let content = '';
+  const stream = fs.createReadStream(filePath);
+  const chunks = [];
   for await (const chunk of stream) {
-    content += chunk;
+    chunks.push(chunk);
   }
+  const content = Buffer.concat(chunks).toString('utf-8');
 
   const fileName = path.basename(filePath);
-  const moduleName = fileName.replace('.tsx', '').split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-');
+
+  const words = fileName.replace('.tsx', '').split('-');
+  const moduleNameWords = new Array(words.length);
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    moduleNameWords[i] = w.charAt(0).toUpperCase() + w.slice(1);
+  }
+  const moduleName = moduleNameWords.join('-');
 
   const isClient = content.includes('"use client"') || content.includes("'use client'");
   const hasChildren = content.includes('children') || content.includes('ReactNode');
@@ -91,6 +99,11 @@ async function processComponent(filePath) {
     edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
   }
 
+  const formattedEdgeCases = new Array(edgeCases.length);
+  for (let i = 0; i < edgeCases.length; i++) {
+    formattedEdgeCases[i] = '- ' + edgeCases[i];
+  }
+
   return `
 ### \`${filePath.split(path.sep).slice(-3).join('/')}\`
 
@@ -114,7 +127,7 @@ ${propsStr}
 \`\`\`
 
 **Edge-Case Input Handling & Validation:**
-${edgeCases.map(e => '- ' + e).join('\n')}
+${formattedEdgeCases.join('\n')}
 `;
 }
 
