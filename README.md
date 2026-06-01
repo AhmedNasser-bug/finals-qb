@@ -2,7 +2,7 @@
 
 A dark-first, game-like educational quiz platform built with Next.js, TypeScript, Tailwind CSS, and a custom “Mastery Protocol” game system.
 
-Live app: ([HERE](finals-qb.vercel.app))
+Live app: ([HERE](https://finals-qb.vercel.app))
 
 ## Overview
 
