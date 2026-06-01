@@ -11,6 +11,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
   const {
     mode, currentIndex, questions, streak,
     globalTimeRemaining, globalTimeLimit, elapsedSeconds, livesRemaining,
+    streakShieldActive, streakShieldTriggeredThisQuestion,
   } = state
 
   const total = questions.length
@@ -65,9 +66,28 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
       {/* ── Segmented progress bar ── */}
       <div className="px-6 md:px-10 pt-2.5 pb-0 space-y-0.5">
         <div className="flex justify-between items-end">
-          <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
-            SYSTEM_PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
-          </span>
+          <div className="flex items-center">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+              SYSTEM_PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
+            </span>
+            {streak > 0 && (
+              <span className={cn(
+                "ml-3 px-2 py-0.5 rounded font-mono text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 transition-all duration-300",
+                streak >= 12 
+                  ? "bg-grade-a/20 text-grade-a border border-grade-a/40 shadow-[0_0_15px_rgba(74,225,118,0.4)] animate-pulse"
+                  : streak >= 8
+                    ? "bg-destructive/20 text-destructive border border-destructive/40 shadow-[0_0_12px_rgba(239,68,68,0.4)] animate-bounce"
+                    : streak >= 5
+                      ? "bg-orange-500/20 text-orange-400 border border-orange-500/40 shadow-[0_0_10px_rgba(249,115,22,0.3)]"
+                      : streak >= 3
+                        ? "bg-primary/20 text-primary border border-primary/40 shadow-[0_0_8px_rgba(254,204,23,0.2)]"
+                        : "bg-[#201f1f] text-zinc-400 border border-zinc-800"
+              )}>
+                <span className="text-[10px] animate-pulse">🔥</span>
+                <span>STREAK ×{streak}</span>
+              </span>
+            )}
+          </div>
           <span className="font-mono text-[10px] tracking-[0.2em] text-[#4ae176] uppercase">
             SYNC_STATUS: {accuracyPct >= 80 ? "OPTIMAL" : accuracyPct >= 50 ? "DEGRADED" : "CRITICAL"}
           </span>
@@ -124,6 +144,14 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               )
             })}
           </div>
+
+          {/* Streak Shield (Mobile) */}
+          {streakShieldActive && (
+            <span className="text-[12px] animate-pulse ml-1 text-cyan-400 select-none" title="Streak Shield Active">🛡️</span>
+          )}
+          {streakShieldTriggeredThisQuestion && (
+            <span className="text-[12px] animate-bounce ml-1 text-red-500 select-none animate-pulse" title="Shield Shattered!">💥</span>
+          )}
         </div>
 
         {/* Center: Compact Timer */}
@@ -204,6 +232,24 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               )
             })}
           </div>
+
+          {/* Streak Shield Indicator (Desktop) */}
+          {(streakShieldActive || streakShieldTriggeredThisQuestion) && (
+            <div className="flex items-center gap-2 mt-1 select-none">
+              {streakShieldActive && (
+                <div className="flex items-center gap-1.5 px-2.5 py-1 border border-cyan-500/30 bg-cyan-950/20 text-cyan-400 font-mono text-[9px] font-black tracking-widest uppercase rounded shadow-[0_0_12px_rgba(34,211,238,0.3)] animate-pulse">
+                  <span className="text-[10px]">🛡️</span>
+                  <span>STREAK SHIELD ACTIVE</span>
+                </div>
+              )}
+              {streakShieldTriggeredThisQuestion && (
+                <div className="flex items-center gap-1.5 px-2.5 py-1 border border-red-500 bg-red-950/50 text-red-400 font-mono text-[9px] font-bold tracking-widest uppercase rounded shadow-[0_0_15px_rgba(239,68,68,0.4)] animate-bounce">
+                  <span className="text-[10px]">💥</span>
+                  <span>SHIELD SHATTERED / BRACED</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Center — timer */}

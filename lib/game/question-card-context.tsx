@@ -15,6 +15,9 @@ export interface QuestionCardState {
   elapsedSeconds?: number
   livesRemaining?: number
   perQuestionTimeRemaining?: number
+  streakShieldActive?: boolean
+  streakShieldTriggeredThisQuestion?: boolean
+  streak?: number
   // Future Codeforces / script runner extensions
   sourceCode?: string
   isRunningTest?: boolean

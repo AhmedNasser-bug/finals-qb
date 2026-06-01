@@ -4,8 +4,9 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import DOMPurify from "isomorphic-dompurify"
 import { useQuestionCard, QuestionCardContext } from "@/lib/question-card-context"
-import { calculateGrade, formatLabel, gradeColor } from "@/lib/mold-types"
+import { calculateGrade, formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import { parseRichTextParts } from "@/components/mold/common/rich-text"
+import { renderMath } from "@/lib/utils/math-renderer"
 import { MermaidDiagram } from "@/components/mold/common/mermaid-diagram"
 import { CheckCircleIcon, RadioIcon, LightbulbIcon, XIcon } from "@/components/mold/game/game-icons"
 
@@ -41,9 +42,28 @@ function QuestionCardProvider({
 }
 
 function QuestionCardFrame({ children }: { children: React.ReactNode }) {
+  const { state } = useQuestionCard()
+  const streak = state.streak ?? 0
+
+  // Dynamic glow classes based on streak milestones
+  const isSupercharged = streak >= 10
+  const isCombustion = streak >= 5 && streak < 10
+
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-slide-up w-full h-full">
-      <div className="relative bg-[#1c1b1b] border border-border flex flex-col flex-1 min-h-0 rounded shadow-xl border-zinc-800/80">
+      <div 
+        className={cn(
+          "relative bg-[#1c1b1b] border flex flex-col flex-1 min-h-0 rounded shadow-xl transition-all duration-300",
+          isSupercharged
+            ? "border-red-500 shadow-[0_0_35px_rgba(239,68,68,0.25)] ring-1 ring-red-500/30"
+            : isCombustion
+              ? "border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.15)] ring-1 ring-orange-500/20"
+              : "border-zinc-800/80 border-border"
+        )}
+      >
+        {isSupercharged && (
+          <div className="absolute inset-0 bg-red-950/5 opacity-[0.03] pointer-events-none z-0 mix-blend-color-dodge animate-pulse" />
+        )}
         <div className="scanlines absolute inset-0 opacity-20 pointer-events-none z-0" />
         <div className="relative z-10 flex flex-col flex-1 min-h-0 p-4 md:p-6 lg:p-8 gap-4">
           {children}
@@ -164,37 +184,82 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
   const hasInlineDiagram = !hasDedicatedDiagram && parts.some(p => p.type === "mermaid")
   const hasDiagram = hasDedicatedDiagram || hasInlineDiagram
 
-  if (!hasDiagram) return null
+  const hasVisualLatex = !!currentQuestion.visualLatex
+  const hasVisualHtml = !!currentQuestion.visualHtml
+  const hasVisualActive = hasDiagram || hasVisualLatex || hasVisualHtml
+
+  if (!hasVisualActive) return null
 
   let chart = currentQuestion.diagram
   if (!chart && hasInlineDiagram) {
     const mermaidPart = parts.find(p => p.type === "mermaid")
     chart = mermaidPart?.content
   }
-  if (!chart) return null
 
   const diagId = `q-diag-${currentQuestion.id}-${mode}`
 
   const inner = (
-    <div className="flex flex-col gap-2 h-full">
+    <div className="flex flex-col gap-2 h-full min-h-0 w-full">
       <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-zinc-500 select-none shrink-0">
-        DIAGRAM_VISUAL
+        VISUAL_SPECIMEN_PANEL
       </span>
-      <div className="bg-[#131313] border border-[var(--tw-hex-4e4632)]/60 p-3 flex-1 overflow-hidden">
-        <MermaidDiagram
-          chart={chart}
-          id={diagId}
-          className="w-full h-full"
-        />
+      <div className="flex-1 flex flex-col gap-4 overflow-y-auto max-h-[450px] md:max-h-[600px] pr-2 custom-scrollbar min-h-0 w-full">
+        {/* Section 1: Diagram (scroll-protected height to avoid squishing) */}
+        {chart && (
+          <div className="flex flex-col gap-1.5 shrink-0 min-h-[280px] h-[280px] w-full">
+            <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
+              [VISUAL_1: MERMAID_DIAGRAM]
+            </span>
+            <div className="bg-[#131313] border border-zinc-800 p-3 flex-1 overflow-hidden rounded relative">
+              <MermaidDiagram
+                chart={chart}
+                id={diagId}
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Section 2: LaTeX (centered KaTeX display block) */}
+        {hasVisualLatex && (
+          <div className="flex flex-col gap-1.5 shrink-0 w-full">
+            <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
+              [VISUAL_2: LATEX_FORMULA]
+            </span>
+            <div 
+              className="bg-[#131313] border border-zinc-800 p-4 text-center rounded overflow-x-auto text-[#e5e2e1]"
+              dangerouslySetInnerHTML={{
+                __html: renderMath(`$$${currentQuestion.visualLatex}$$`)
+              }}
+            />
+          </div>
+        )}
+
+        {/* Section 3: HTML Block */}
+        {hasVisualHtml && (
+          <div className="flex flex-col gap-1.5 shrink-0 w-full">
+            <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
+              [VISUAL_3: SPECIMEN_HTML]
+            </span>
+            <div 
+              className="bg-[#131313] border border-zinc-800 p-4 rounded text-left text-sm text-[#e5e2e1] overflow-x-auto font-sans"
+              dangerouslySetInnerHTML={{
+                // 100% secure: sanitized prior to LaTeX rendering!
+                __html: renderMath(DOMPurify.sanitize(currentQuestion.visualHtml ?? ""))
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
 
   if (mode === "side") {
-    return <div className="hidden md:flex flex-col min-h-0 h-full">{inner}</div>
+    return <div className="hidden md:flex flex-col min-h-0 h-full w-full">{inner}</div>
   }
 
-  return <div className="md:hidden w-full h-48 sm:h-56 shrink-0">{inner}</div>
+  // Mobile stacked view: uses scroll container with standard margin
+  return <div className="md:hidden w-full shrink-0 mb-4">{inner}</div>
 }
 
 // ─── Interactive Inputs ────────────────────────────────────────────────────────
@@ -270,7 +335,16 @@ function OptionButton({
   isDimmed,
   onSelect,
 }: OptionButtonProps) {
+  const { state: cardState } = useQuestionCard()
+  const streak = cardState.streak ?? 0
   const checkedProps = isSelected ? { "aria-checked": "true" as const } : { "aria-checked": "false" as const }
+
+  const getFloatText = () => {
+    if (streak >= 10) return `OVERDRIVE ×${streak}! ⚡`
+    if (streak >= 5) return `COMBO ×${streak}! 🔥`
+    return `+1 STREAK! 📈`
+  }
+
   return (
     <button
       role="radio"
@@ -297,16 +371,19 @@ function OptionButton({
         )}>
           OPTION_{String(idx + 1).padStart(2, "0")}
         </span>
-        <span className={cn(
-          "font-mono text-sm font-bold leading-snug",
-          !isRevealed && isSelected ? "text-[#fecc17]" :
-            isRevealed && isCorrect ? "text-[#4ae176]" :
-              isRevealed && isWrong ? "text-[#ffb4ab]" :
-                isDimmed ? "text-zinc-600" :
-                  "text-[#e5e2e1]"
-        )}>
-          {text ?? label}
-        </span>
+        <span
+          className={cn(
+            "font-sans text-sm font-bold leading-snug",
+            !isRevealed && isSelected ? "text-[#fecc17]" :
+              isRevealed && isCorrect ? "text-[#4ae176]" :
+                isRevealed && isWrong ? "text-[#ffb4ab]" :
+                  isDimmed ? "text-zinc-600" :
+                    "text-[#e5e2e1]"
+          )}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(renderMath(text ?? label))
+          }}
+        />
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
         {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
@@ -314,15 +391,37 @@ function OptionButton({
         {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
         {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
       </div>
+      {isRevealed && isCorrect && isSelected && (
+        <>
+          <style>{`
+            @keyframes floatUp {
+              0% { transform: translateY(4px); opacity: 0; }
+              15% { transform: translateY(-2px); opacity: 1; }
+              85% { transform: translateY(-12px); opacity: 1; }
+              100% { transform: translateY(-20px); opacity: 0; }
+            }
+            .animate-float-up {
+              animation: floatUp 1.8s ease-in-out forwards;
+            }
+          `}</style>
+          <span className="absolute -top-4 right-10 bg-[#fecc17] text-black font-mono text-[9px] font-black px-2 py-0.5 rounded shadow-[0_0_12px_rgba(254,204,23,0.6)] animate-float-up pointer-events-none select-none z-30 uppercase tracking-wider">
+            {getFloatText()}
+          </span>
+        </>
+      )}
     </button>
   )
 }
+
+import { useGameEngine } from "@/lib/game-engine"
 
 // ─── Footer Explanation & Hints ─────────────────────────────────────────────────
 
 function QuestionCardFooter({ showHint = false }: { showHint?: boolean }) {
   const { state } = useQuestionCard()
+  const { state: gameState } = useGameEngine()
   const { currentQuestion, isRevealed, hintTimeRemaining } = state
+  const streak = gameState.streak
 
   const hasHint = showHint && !!currentQuestion.hint
   const hasExplanation = isRevealed && !!currentQuestion.explanation
@@ -336,18 +435,37 @@ function QuestionCardFooter({ showHint = false }: { showHint?: boolean }) {
       <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
       <div className="space-y-1 flex-1 min-w-0">
         <div className="flex items-center justify-between gap-4">
-          <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
-            {hasExplanation ? "SYSTEM_EXPLANATION" : "SYSTEM_HINT"}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
+              {hasExplanation ? "SYSTEM_EXPLANATION" : "SYSTEM_HINT"}
+            </span>
+            {streak >= 3 && (
+              <span className={cn(
+                "font-mono text-[9px] font-bold uppercase tracking-wider animate-pulse ml-2",
+                streak >= 12 ? "text-grade-a" : streak >= 8 ? "text-destructive" : streak >= 5 ? "text-orange-400" : "text-primary"
+              )}>
+                {streak >= 12 
+                  ? `⚡ MASTERY ACTIVE ×${streak}` 
+                  : streak >= 8 
+                    ? `⚡ OVERCLOCK MODE ×${streak}` 
+                    : streak >= 5 
+                      ? `🔥 PRECISION BURST ×${streak}` 
+                      : `🔥 LOCKED IN ×${streak}`}
+              </span>
+            )}
+          </div>
           {showCountdown && (
             <span className="font-mono text-[9px] text-[#fecc17] font-bold tracking-widest uppercase animate-pulse">
               EXPIRING IN {hintTimeRemaining}S
             </span>
           )}
         </div>
-        <p className="font-sans text-xs text-zinc-400 leading-relaxed italic">
-          &quot;{hasExplanation ? currentQuestion.explanation : currentQuestion.hint}&quot;
-        </p>
+        <p
+          className="font-sans text-xs text-[#b8b5b4] leading-relaxed italic"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(renderMath(hasExplanation ? currentQuestion.explanation ?? "" : currentQuestion.hint ?? ""))
+          }}
+        />
       </div>
     </div>
   )

@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 import DOMPurify from "isomorphic-dompurify"
 import { MermaidDiagram } from "./mermaid-diagram"
+import { renderMath } from "@/lib/utils/math-renderer"
 
 interface RichTextProps {
   content: string
@@ -98,8 +99,8 @@ export function RichText({ content, className, id = "q" }: RichTextProps) {
           )
         }
 
-        // Use DOMPurify for HTML content
-        const cleanHtml = DOMPurify.sanitize(part.content)
+        // Use DOMPurify and render Math
+        const cleanHtml = renderMath(DOMPurify.sanitize(part.content))
 
         return (
           <span

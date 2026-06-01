@@ -5,11 +5,17 @@ import {
   BookOpen, 
   Trophy, 
   RotateCcw, 
-  Plus 
+  Plus,
+  BarChart3
 } from "lucide-react"
+
+import { cn } from "@/lib/utils"
 
 interface SideNavBarProps {
   subjectId: string
+  activeView: "home" | "stats"
+  onShowDashboard: () => void
+  onShowStats: () => void
   onShowEncyclopedia: () => void
   onShowGallery: () => void
   onChangeSubject: () => void
@@ -19,6 +25,9 @@ interface SideNavBarProps {
 
 export function SideNavBar({
   subjectId,
+  activeView,
+  onShowDashboard,
+  onShowStats,
   onShowEncyclopedia,
   onShowGallery,
   onChangeSubject,
@@ -42,15 +51,37 @@ export function SideNavBar({
       </div>
 
       <nav className="flex flex-col gap-1.5">
-        <button className="flex items-center gap-3 bg-[#fecc17] text-black font-bold p-3 border-glow font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer">
+        <button 
+          onClick={onShowDashboard}
+          className={cn(
+            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
+            activeView === "home" 
+              ? "bg-[#fecc17] text-black font-bold border-glow" 
+              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
+          )}
+        >
           <TerminalIcon className="w-3.5 h-3.5" /> <span>Dashboard</span>
         </button>
+
+        <button 
+          onClick={onShowStats}
+          className={cn(
+            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
+            activeView === "stats" 
+              ? "bg-[#fecc17] text-black font-bold border-glow" 
+              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
+          )}
+        >
+          <BarChart3 className="w-3.5 h-3.5" /> <span>Statistics</span>
+        </button>
+
         <button 
           onClick={onShowEncyclopedia}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
           <BookOpen className="w-3.5 h-3.5" /> <span>Encyclopedia</span>
         </button>
+
         <button 
           onClick={onShowGallery}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"

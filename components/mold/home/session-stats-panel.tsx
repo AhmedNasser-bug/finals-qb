@@ -2,18 +2,11 @@
 
 import React from "react"
 import { Clock } from "lucide-react"
+import { useStats } from "@/lib/game/stats-context"
 
-interface SessionStatsPanelProps {
-  runCount: number
-  bestStreak: number
-  averageScore: number
-}
+export function SessionStatsPanel() {
+  const { dayStreak, stats } = useStats()
 
-export function SessionStatsPanel({
-  runCount,
-  bestStreak,
-  averageScore,
-}: SessionStatsPanelProps) {
   return (
     <div className="bg-[#101115] border border-border p-6 rounded-md space-y-4 select-none">
       <div className="flex items-center gap-2 mb-2">
@@ -26,16 +19,16 @@ export function SessionStatsPanel({
       <div className="flex flex-col gap-3 font-mono text-[10px]">
         <div className="flex justify-between border-b border-zinc-800/80 pb-2">
           <span className="text-muted-foreground uppercase">TOTAL_SESSIONS</span>
-          <span className="font-bold text-white">{runCount}</span>
+          <span className="font-bold text-white">{stats.totalRuns}</span>
         </div>
         <div className="flex justify-between border-b border-zinc-800/80 pb-2">
-          <span className="text-muted-foreground uppercase">PEAK_STREAK</span>
-          <span className="font-bold text-[#fecc17]">{bestStreak} DAYS</span>
+          <span className="text-muted-foreground uppercase">DAY_STREAK</span>
+          <span className="font-bold text-[#fecc17]">{dayStreak} DAYS</span>
         </div>
         <div className="flex justify-between border-b border-zinc-800/80 pb-2">
           <span className="text-muted-foreground uppercase">AVG_ACCURACY</span>
           <span className="font-bold text-[#4ae176]">
-            {averageScore ? `${Math.round(averageScore)}%` : "—"}
+            {stats.averageScore ? `${Math.round(stats.averageScore)}%` : "—"}
           </span>
         </div>
       </div>

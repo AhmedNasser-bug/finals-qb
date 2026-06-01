@@ -8,7 +8,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from "@clerk/nextjs"
 import { shadcn } from "@clerk/ui/themes"
 import { AchievementProvider } from "@/lib/achievement-engine"
+import { StatsProvider } from "@/lib/game/stats-context"
 import "./globals.css"
+import "katex/dist/katex.min.css"
 
 import { hasClerk } from "@/lib/user-storage"
 
@@ -29,9 +31,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const content = (
-    <AchievementProvider>
-      {children}
-    </AchievementProvider>
+    <StatsProvider>
+      <AchievementProvider>
+        {children}
+      </AchievementProvider>
+    </StatsProvider>
   )
 
   return (

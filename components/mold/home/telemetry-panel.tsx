@@ -2,13 +2,13 @@
 
 import { useMemo } from "react"
 import { cn } from "@/lib/utils"
+import { useStats } from "@/lib/game/stats-context"
 
-interface TelemetryPanelProps {
-  accuracyPct: number
-  averageResponseTimeMs: number
-}
-
-export function TelemetryPanel({ accuracyPct, averageResponseTimeMs }: TelemetryPanelProps) {
+export function TelemetryPanel() {
+  const { stats } = useStats()
+  const accuracyPct = stats.averageScore || 0
+  const averageResponseTimeMs = stats.averageResponseTimeMs || 0
+  
   const roundedAccuracy = Math.round(accuracyPct)
 
   // 10 segments filled if under 1000ms. 1 segment if over 5000ms. Linear interpolation.

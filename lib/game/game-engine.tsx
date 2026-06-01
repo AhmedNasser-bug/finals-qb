@@ -17,10 +17,11 @@ import type {
   GameModeId,
 } from "@/lib/mold-types"
 import { shuffle } from "@/lib/crypto-utils"
+import { evaluateStreakAndShield } from "./streak-shield-logic"
 
 // ─── Initial state factory ────────────────────────────────────────────────────
 
-function buildInitialState(config: GameConfig, questions: Question[]): GameState {
+export function buildInitialState(config: GameConfig, questions: Question[]): GameState {
   const pool = buildQuestionPool(config, questions)
 
   const globalTimeLimit = getGlobalTimeLimit(config)
@@ -46,6 +47,8 @@ function buildInitialState(config: GameConfig, questions: Question[]): GameState
     globalTimeRemaining: globalTimeLimit,
     hintsUsedTotal: 0,
     wrongAnswers: 0,
+    streakShieldActive: false,
+    streakShieldTriggeredThisQuestion: false,
     config,
   }
 }
@@ -148,7 +151,7 @@ function getPerQuestionTimeLimit(config: GameConfig): number {
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
 
-type Action =
+export type Action =
   | { type: "SELECT_OPTION"; option: string }
   | { type: "REVEAL_ANSWER" }
   | { type: "NEXT_QUESTION" }
@@ -169,7 +172,13 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
     const isCorrect = state.selectedOption === current.answer
 
     const newScore = isCorrect ? state.score + 1 : state.score
-    const newStreak = isCorrect ? state.streak + 1 : 0
+    
+    const {
+      streak: newStreak,
+      streakShieldActive,
+      streakShieldTriggeredThisQuestion,
+    } = evaluateStreakAndShield(isCorrect, state.streak, state.streakShieldActive)
+
     const newBestStreak = Math.max(state.bestStreak, newStreak)
     const newWrongAnswers = isCorrect ? state.wrongAnswers : state.wrongAnswers + 1
 
@@ -192,6 +201,8 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
       bestStreak: newBestStreak,
       wrongAnswers: newWrongAnswers,
       livesRemaining,
+      streakShieldActive,
+      streakShieldTriggeredThisQuestion,
       answers: newAnswers,
     }
   },
@@ -217,6 +228,7 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
       currentIndex: state.currentIndex + 1,
       selectedOption: null,
       isRevealed: false,
+      streakShieldTriggeredThisQuestion: false,
       perQuestionTimeLimit: newPerLimit,
       perQuestionTimeRemaining: newPerLimit,
     }
@@ -240,7 +252,13 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
       if (newPerRemaining <= 0) {
         // Timer ran out! Mark incorrect, lose a life (survival), reveal answer, transition to "reviewing"
         const newWrongAnswers = state.wrongAnswers + 1
-        const newStreak = 0
+        
+        const {
+          streak: newStreak,
+          streakShieldActive,
+          streakShieldTriggeredThisQuestion,
+        } = evaluateStreakAndShield(false, state.streak, state.streakShieldActive)
+
         const livesRemaining =
           state.config.mode === "survival"
             ? Math.max(0, state.livesRemaining - 1)
@@ -258,6 +276,8 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
           streak: newStreak,
           wrongAnswers: newWrongAnswers,
           livesRemaining,
+          streakShieldActive,
+          streakShieldTriggeredThisQuestion,
           answers: newAnswers,
         }
       }
@@ -288,7 +308,7 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
   },
 }
 
-function reducer(state: GameState, action: Action): GameState {
+export function reducer(state: GameState, action: Action): GameState {
   const handler = ACTION_HANDLERS[action.type]
   if (handler) {
     return handler(state, action)
@@ -319,6 +339,8 @@ export function useGameEngine(): GameEngineContextValue {
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
+import { useStreak } from "./streak-context"
+
 interface GameEngineProviderProps {
   config: GameConfig
   questions: Question[]
@@ -326,12 +348,29 @@ interface GameEngineProviderProps {
 }
 
 export function GameEngineProvider({ config, questions, children }: GameEngineProviderProps) {
+  const { updateQuestionStreak } = useStreak()
   const stableConfig = useRef(config).current
   const stableQuestions = useRef(questions).current
 
   const [state, dispatch] = useReducer(reducer, undefined, () =>
     buildInitialState(stableConfig, stableQuestions)
   )
+
+  // Sync correctness scoring to global streak store reactively
+  const prevScoreRef = useRef(0)
+  const prevWrongRef = useRef(0)
+
+  useEffect(() => {
+    if (state.phase === "playing" || state.phase === "reviewing") {
+      if (state.score > prevScoreRef.current) {
+        updateQuestionStreak(true)
+      } else if (state.wrongAnswers > prevWrongRef.current) {
+        updateQuestionStreak(false)
+      }
+    }
+    prevScoreRef.current = state.score
+    prevWrongRef.current = state.wrongAnswers
+  }, [state.score, state.wrongAnswers, state.phase, updateQuestionStreak])
 
   // Global tick (every second) — only while playing
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null)

@@ -8,7 +8,8 @@ import {
   RotateCcw, 
   Plus, 
   Play, 
-  Clock 
+  Clock,
+  BarChart3
 } from "lucide-react"
 
 import { ModeSelector } from "@/components/mold/home/mode-selector"
@@ -29,19 +30,20 @@ import { TopNavBar } from "@/components/mold/home/top-nav-bar"
 import { SideNavBar } from "@/components/mold/home/side-nav-bar"
 import { HeaderWell } from "@/components/mold/home/header-well"
 import { TelemetryPanel } from "@/components/mold/home/telemetry-panel"
+import { StatsScreen } from "@/components/mold/home/stats-screen"
+import { useStats } from "@/lib/game/stats-context"
 
 import {
   type GameModeId,
   type SetupConfig,
   type GameConfig,
   type RunRecord,
-  computeAggregateStats,
 } from "@/lib/mold-types"
 import type { FullSubjectData } from "@/lib/mold-types"
 
-import { useSafeAuth, loadRuns, saveRuns } from "@/lib/user-storage"
+import { useSafeAuth } from "@/lib/user-storage"
 
-type AppView = "home" | "game"
+type AppView = "home" | "game" | "stats"
 
 interface HomeScreenProps {
   /** The currently active FullSubjectData, chosen by the root orchestrator. */
@@ -66,8 +68,8 @@ export function HomeScreen({
   const [showGallery, setShowGallery]       = useState(false)
   const [showEncyclopedia, setShowEncyclopedia] = useState(false)
   const [showImporter, setShowImporter]     = useState(false)
-  const [runs, setRuns] = useState<RunRecord[]>([])
 
+  const { runs, stats, recordSession } = useStats()
   const { achievements, syncSubjectAchievements } = useAchievements()
 
   // Seed achievement definitions from the active subject on mount.
@@ -77,11 +79,6 @@ export function HomeScreen({
   
   const subjectData = toSubjectData(activeSubject)
 
-  // Hydrate runs from localStorage whenever Clerk user session changes (log in / out / switch)
-  useEffect(() => {
-    setRuns(loadRuns(userId))
-  }, [userId])
-
   const [selectedMode, setSelectedMode] = useState<GameModeId>("speedrun")
   const [config, setConfig] = useState<SetupConfig>({
     timeLimitEnabled: true,
@@ -89,8 +86,6 @@ export function HomeScreen({
     questionCount: 20,
     selectedCategory: null,
   })
-
-  const stats = computeAggregateStats(runs)
 
   // Memoize top achievements for high-contrast lock display
   const topAchievements = useMemo(() => {
@@ -128,15 +123,12 @@ export function HomeScreen({
   }
 
   function handleRunSaved(run: RunRecord) {
-    const updated = [...runs, run].slice(-50)
-    saveRuns(updated, userId)
-    setRuns(updated)
+    recordSession(run)
   }
 
   function handleReturnHome() {
     setView("home")
     setActiveConfig(null)
-    setRuns(loadRuns(userId))
   }
 
   function handleImport(subject: FullSubjectData) {
@@ -172,6 +164,9 @@ export function HomeScreen({
         {/* ─── SIDEBAR BAR (DESKTOP ONLY) ──────────────────────────────────────── */}
         <SideNavBar
           subjectId={activeSubject.id}
+          activeView={view === "stats" ? "stats" : "home"}
+          onShowDashboard={() => setView("home")}
+          onShowStats={() => setView("stats")}
           onShowEncyclopedia={() => setShowEncyclopedia(true)}
           onShowGallery={() => setShowGallery(true)}
           onChangeSubject={onChangeSubject}
@@ -182,111 +177,124 @@ export function HomeScreen({
         {/* ─── MAIN CANVAS AREA ────────────────────────────────────────────── */}
         <main className="md:ml-64 pt-24 pb-20 px-4 sm:px-6 lg:px-12 min-h-screen flex-1">
           
-          {/* Header Well */}
-          <HeaderWell
-            subjectName={activeSubject.name}
-            description={activeSubject.config.description}
-            runCount={runs.length}
-            visualAccuracyPct={visualAccuracyPct}
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            {/* Left Column: Telemetry, Modes, Setup, CTA */}
-            <div className="lg:col-span-8 space-y-8">
-              
-              {/* Performance Telemetry panel */}
-              <TelemetryPanel
-                accuracyPct={visualAccuracyPct}
-                averageResponseTimeMs={stats.averageResponseTimeMs || 0}
-              />
-
-              {/* Modes Selection Grid */}
-              <div className="space-y-4">
-                <div className="border-b border-zinc-800/80 pb-2 select-none">
-                  <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-                    01 // CHOOSE STUDY REGIME
-                  </h2>
-                </div>
-                <ModeSelector selected={selectedMode} onSelect={handleModeSelect} onLaunch={handleInitialize} />
-              </div>
-
-              {/* Configuration panel (Setup Panel) */}
-              <div className="space-y-4">
-                <div className="border-b border-zinc-800/80 pb-2 select-none">
-                  <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-                    02 // SPECIFY WORKLOAD PARAMETERS
-                  </h2>
-                </div>
-                <div className="p-6 border border-border bg-[#101115] rounded">
-                  <SetupPanel
-                    config={config}
-                    onChange={handleConfigChange}
-                    selectedMode={selectedMode}
-                    categories={subjectData.categories}
-                  />
-                </div>
-              </div>
-
-              {/* Action initialize CTA */}
-              <button 
-                onClick={handleInitialize}
-                className="w-full h-16 bg-primary text-[#0a0b0d] font-headline font-black text-xl tracking-[0.25em] border-none flex items-center justify-center gap-4 shadow-[0_0_20px_hsla(var(--primary),0.1)] hover:shadow-[0_0_30px_hsla(var(--primary),0.25)] hover:-translate-y-0.5 transition-all active:translate-y-0.5 cursor-pointer uppercase select-none rounded focus-ring"
-              >
-                <span>INITIALIZE SESSION</span>
-                <Play className="w-5 h-5 fill-current shrink-0" />
-              </button>
-
-            </div>
-
-            {/* Right Column: Achievements, Subject Image, Session Stats */}
-            <div className="lg:col-span-4 space-y-8 select-none">
-              
-              {/* Achievements panel */}
-              <AchievementsPanel
-                unlockedCount={unlockedCount}
-                totalAchievementsCount={totalAchievementsCount}
-                topAchievements={topAchievements}
-                hasMoreAchievements={achievements.length > 3}
-                totalCount={achievements.length}
-                onShowGallery={() => setShowGallery(true)}
-              />
-
-              {/* Session stats block */}
-              <SessionStatsPanel
+          {view === "stats" ? (
+            <StatsScreen onReturnHome={() => setView("home")} />
+          ) : (
+            <>
+              {/* Header Well */}
+              <HeaderWell
+                subjectName={activeSubject.name}
+                description={activeSubject.config.description}
                 runCount={runs.length}
-                bestStreak={stats.bestStreak}
-                averageScore={stats.averageScore}
+                visualAccuracyPct={visualAccuracyPct}
               />
 
-            </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                {/* Left Column: Telemetry, Modes, Setup, CTA */}
+                <div className="lg:col-span-8 space-y-8">
+                  
+                  {/* Performance Telemetry panel */}
+                  <TelemetryPanel />
 
-          </div>
+                  {/* Modes Selection Grid */}
+                  <div className="space-y-4">
+                    <div className="border-b border-zinc-800/80 pb-2 select-none">
+                      <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
+                        01 // CHOOSE STUDY REGIME
+                      </h2>
+                    </div>
+                    <ModeSelector selected={selectedMode} onSelect={handleModeSelect} onLaunch={handleInitialize} />
+                  </div>
 
-          {/* Performance runs table list below the main grid split */}
-          <div className="flex items-center gap-4 py-8 select-none">
-            <div className="flex-1 h-px bg-zinc-800" />
-            <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase font-bold">
-              HISTORICAL_RUNS_LOG
-            </span>
-            <div className="flex-1 h-px bg-zinc-800" />
-          </div>
+                  {/* Configuration panel (Setup Panel) */}
+                  <div className="space-y-4">
+                    <div className="border-b border-zinc-800/80 pb-2 select-none">
+                      <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
+                        02 // SPECIFY WORKLOAD PARAMETERS
+                      </h2>
+                    </div>
+                    <div className="p-6 border border-border bg-[#101115] rounded">
+                      <SetupPanel
+                        config={config}
+                        onChange={handleConfigChange}
+                        selectedMode={selectedMode}
+                        categories={subjectData.categories}
+                      />
+                    </div>
+                  </div>
 
-          <PerformanceTable runs={runs} stats={stats} />
+                  {/* Action initialize CTA */}
+                  <button 
+                    onClick={handleInitialize}
+                    className="w-full h-16 bg-primary text-[#0a0b0d] font-headline font-black text-xl tracking-[0.25em] border-none flex items-center justify-center gap-4 shadow-[0_0_20px_hsla(var(--primary),0.1)] hover:shadow-[0_0_30px_hsla(var(--primary),0.25)] hover:-translate-y-0.5 transition-all active:translate-y-0.5 cursor-pointer uppercase select-none rounded focus-ring"
+                  >
+                    <span>INITIALIZE SESSION</span>
+                    <Play className="w-5 h-5 fill-current shrink-0" />
+                  </button>
+
+                </div>
+
+                {/* Right Column: Achievements, Subject Image, Session Stats */}
+                <div className="lg:col-span-4 space-y-8 select-none">
+                  
+                  {/* Achievements panel */}
+                  <AchievementsPanel
+                    unlockedCount={unlockedCount}
+                    totalAchievementsCount={totalAchievementsCount}
+                    topAchievements={topAchievements}
+                    hasMoreAchievements={achievements.length > 3}
+                    totalCount={achievements.length}
+                    onShowGallery={() => setShowGallery(true)}
+                  />
+
+                  {/* Session stats block */}
+                  <SessionStatsPanel />
+
+                </div>
+
+              </div>
+
+              {/* Performance runs table list below the main grid split */}
+              <div className="flex items-center gap-4 py-8 select-none">
+                <div className="flex-1 h-px bg-zinc-800" />
+                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase font-bold">
+                  HISTORICAL_RUNS_LOG
+                </span>
+                <div className="flex-1 h-px bg-zinc-800" />
+              </div>
+
+              <PerformanceTable runs={runs} stats={stats} />
+            </>
+          )}
 
         </main>
 
         {/* ─── BOTTOM NAVIGATION BAR (MOBILE ONLY) ────────────────────────────────── */}
         <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
           <button 
-            onClick={() => handleModeSelect("speedrun")}
+            onClick={() => {
+              setView("home")
+              handleModeSelect("speedrun")
+            }}
             className={cn(
               "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
-              selectedMode === "speedrun" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
+              view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
             )}
           >
             <TerminalIcon className="w-4 h-4" />
             <span className="font-mono text-[8px] font-bold">CORE</span>
+          </button>
+
+          <button 
+            onClick={() => setView("stats")}
+            className={cn(
+              "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
+              view === "stats" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
+            )}
+          >
+            <BarChart3 className="w-4 h-4" />
+            <span className="font-mono text-[8px] font-bold">STATS</span>
           </button>
           
           <button 

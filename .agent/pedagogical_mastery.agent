@@ -52,6 +52,9 @@ The system prompt is compiled programmatically by selecting modular blocks based
 * **HTML Rich Text Formatting:**
   > "Leverage HTML tags (`<b>`, `<code>`, `<pre>`, tables, or custom inline CSS colors) within the question text to highlight syntactic structures, organize comparative data, and improve general readability."
 
+* **LaTeX Math Rendering:**
+  > "All questions, option texts, explanations, and hints support LaTeX math notation using KaTeX. Use standard `$...$` for inline math equations (e.g. `$O(n \log n)$`, `$\theta$`) and `$$...$$` for block display equations to display mathematical, logical, and formal notation cleanly."
+
 ---
 
 ### D. Output Structure (MOLD V2 JSON Contract)
@@ -71,15 +74,15 @@ The system prompt is compiled programmatically by selecting modular blocks based
       "type": "MCQ" | "TrueFalse",
       "difficulty": "Easy" | "Medium" | "Hard",
       "category": "category-slug",
-      "question": "Question prose (supports HTML)",
+      "question": "Question prose (supports HTML & LaTeX math)",
       "diagram": "Mermaid syntax string (optional)",
       "diagramPosition": "right" | "below",
       "options": [
-        { "label": "A", "text": "Option A" }
+        { "label": "A", "text": "Option A (supports HTML & LaTeX math)" }
       ],
       "answer": "Correct label",
-      "explanation": "LearnLM-aligned explanation.",
-      "hint": "Socratic nudge."
+      "explanation": "LearnLM-aligned explanation (supports LaTeX math).",
+      "hint": "Socratic nudge (supports LaTeX math)."
     }
   ],
   "flashcards": [],

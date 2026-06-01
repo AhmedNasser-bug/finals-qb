@@ -19,13 +19,17 @@ export interface Question {
   explanation?: string
   hint?: string
 
-  // ── Diagram fields (opt-in, backwards-compatible) ──────────────────────
-  /** Mermaid diagram source code. If present, QuestionCard enters split-layout mode. */
+  // ── Diagram & Visual Specimen fields (opt-in, backwards-compatible) ──
+  /** Mermaid diagram source code. */
   diagram?: string
   /** Layout hint: side-by-side (default) or stacked below question text. */
   diagramPosition?: "right" | "below"
   /** Width percentage for the diagram column in the split layout. Default 50. */
   diagramWidth?: number
+  /** LaTeX block display math to render visually in the specimen column. */
+  visualLatex?: string
+  /** HTML block or rich code formatting to render visually in the specimen column. */
+  visualHtml?: string
 }
 
 export interface Flashcard {
@@ -106,6 +110,8 @@ export interface GameState {
   globalTimeLimit: number        // 0 = no global limit; Speedrun uses this
   globalTimeRemaining: number    // counts down from globalTimeLimit
   hintsUsedTotal: number
+  streakShieldActive: boolean
+  streakShieldTriggeredThisQuestion?: boolean
   config: GameConfig
 }
 
@@ -401,4 +407,13 @@ export function getStreakTierProgress(streak: number): { current: number, total:
     current: streak - min,
     total: nextThreshold - min
   }
+}
+
+/**
+ * Encapsulated check to determine if a question has any active visual specimens.
+ * Prevents chaining of individual visual asset OR checks across layouts.
+ */
+export function hasVisual(q?: Question): boolean {
+  if (!q) return false
+  return !!(q.diagram || q.visualLatex || q.visualHtml)
 }

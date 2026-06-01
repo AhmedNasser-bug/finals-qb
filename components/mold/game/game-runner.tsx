@@ -2,17 +2,17 @@
 
 import { useState, useEffect, useRef } from "react"
 import { GameEngineProvider, useGameEngine } from "@/lib/game-engine"
+import { useStreak } from "@/lib/game/streak-context"
 import { useAchievements } from "@/lib/achievement-engine"
 import { useAchievementToast, AchievementToastContainer } from "@/components/mold/achievement/achievement-toast"
 import { GameErrorBoundary } from "@/components/mold/game/game-error-boundary"
 import type { Achievement, GameConfig, RunRecord, FullSubjectData } from "@/lib/mold-types"
-import { calculateGrade } from "@/lib/mold-types"
+import { calculateGrade, calculateAccuracy, hasVisual } from "@/lib/mold-types"
 import { GameHeader } from "@/components/mold/game/game-header"
 import { QuestionCard } from "@/components/mold/game/question-card"
 import { GameFooter } from "@/components/mold/game/game-footer"
 import { ResultsScreen } from "@/components/mold/game/results-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard/flashcard-screen"
-import { calculateAccuracy } from "@/lib/mold-types"
 import { uuid } from "@/lib/crypto-utils"
 import { cn } from "@/lib/utils"
 
@@ -110,6 +110,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     accuracyPct,
   } = useGameEngine()
   const { onGameComplete } = useAchievements()
+  const { recordSession } = useStreak()
   const [showHint, setShowHint] = useState(false)
   const [initialLockRemaining, setInitialLockRemaining] = useState(5)
   const [hintTimeRemaining, setHintTimeRemaining] = useState(10)
@@ -176,6 +177,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       }
 
       onRunSaved?.(run)
+      recordSession(run)
 
       // Evaluate achievements using full history (including the current run)
       onGameComplete(state, [...runs, run]).then((unlocked) => {
@@ -223,6 +225,9 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       elapsedSeconds: state.elapsedSeconds,
       livesRemaining: state.livesRemaining,
       perQuestionTimeRemaining: state.perQuestionTimeRemaining,
+      streakShieldActive: state.streakShieldActive,
+      streakShieldTriggeredThisQuestion: state.streakShieldTriggeredThisQuestion,
+      streak: state.streak,
     },
     actions: {
       selectOption,
@@ -256,7 +261,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       )}
 
       <main className={`flex-1 flex flex-col min-h-0 w-full mx-auto px-4 md:px-8 py-2 ${
-        currentQuestion?.diagram
+        hasVisual(currentQuestion)
           ? "max-w-[calc(100vw-2rem)] lg:max-w-[calc(100vw-4rem)] xl:max-w-[1600px]"
           : "max-w-4xl"
       }`}>
@@ -292,7 +297,7 @@ interface QuestionCardVariantProps {
 }
 
 function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVariantProps) {
-  const hasDiagram = !!value.state.currentQuestion?.diagram
+  const hasVisualActive = hasVisual(value.state.currentQuestion)
   return (
     <QuestionCard.Provider value={value}>
       <QuestionCard.Frame>
@@ -303,15 +308,15 @@ function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
 
         <div className={cn(
           "flex-1 min-h-0 grid gap-6",
-          hasDiagram ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
+          hasVisualActive ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
         )}>
           <div className="flex flex-col flex-1 min-h-0 gap-4 justify-start">
             <QuestionCard.HtmlContent />
-            {hasDiagram && <QuestionCard.MermaidDiagram mode="below" />}
-            <QuestionCard.Options cols={hasDiagram ? "single" : "auto"} />
+            {hasVisualActive && <QuestionCard.MermaidDiagram mode="below" />}
+            <QuestionCard.Options cols={hasVisualActive ? "single" : "auto"} />
           </div>
 
-          {hasDiagram && (
+          {hasVisualActive && (
             <div className="flex flex-col min-h-0 h-full">
               <QuestionCard.MermaidDiagram mode="side" />
             </div>
@@ -325,7 +330,7 @@ function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
 }
 
 function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps, "accuracyPct">) {
-  const hasDiagram = !!value.state.currentQuestion?.diagram
+  const hasVisualActive = hasVisual(value.state.currentQuestion)
   return (
     <QuestionCard.Provider value={value}>
       <QuestionCard.Frame>
@@ -335,15 +340,15 @@ function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps
 
         <div className={cn(
           "flex-1 min-h-0 grid gap-6",
-          hasDiagram ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
+          hasVisualActive ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
         )}>
           <div className="flex flex-col flex-1 min-h-0 gap-4 justify-start">
             <QuestionCard.HtmlContent />
-            {hasDiagram && <QuestionCard.MermaidDiagram mode="below" />}
-            <QuestionCard.Options cols={hasDiagram ? "single" : "auto"} />
+            {hasVisualActive && <QuestionCard.MermaidDiagram mode="below" />}
+            <QuestionCard.Options cols={hasVisualActive ? "single" : "auto"} />
           </div>
 
-          {hasDiagram && (
+          {hasVisualActive && (
             <div className="flex flex-col min-h-0 h-full">
               <QuestionCard.MermaidDiagram mode="side" />
             </div>
@@ -357,7 +362,7 @@ function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps
 }
 
 function StandardQuestionCard({ value, accuracyPct, showHint }: QuestionCardVariantProps) {
-  const hasDiagram = !!value.state.currentQuestion?.diagram
+  const hasVisualActive = hasVisual(value.state.currentQuestion)
   return (
     <QuestionCard.Provider value={value}>
       <QuestionCard.Frame>
@@ -368,15 +373,15 @@ function StandardQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
 
         <div className={cn(
           "flex-1 min-h-0 grid gap-6",
-          hasDiagram ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
+          hasVisualActive ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
         )}>
           <div className="flex flex-col flex-1 min-h-0 gap-4 justify-start">
             <QuestionCard.HtmlContent />
-            {hasDiagram && <QuestionCard.MermaidDiagram mode="below" />}
-            <QuestionCard.Options cols={hasDiagram ? "single" : "auto"} />
+            {hasVisualActive && <QuestionCard.MermaidDiagram mode="below" />}
+            <QuestionCard.Options cols={hasVisualActive ? "single" : "auto"} />
           </div>
 
-          {hasDiagram && (
+          {hasVisualActive && (
             <div className="flex flex-col min-h-0 h-full">
               <QuestionCard.MermaidDiagram mode="side" />
             </div>
