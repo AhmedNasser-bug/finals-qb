@@ -33,10 +33,9 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
 
         // Calculate categories
         const categories = new Set<string>()
-        if (data.questions && Array.isArray(data.questions)) {
-          for (const q of data.questions) {
-            if (q.category) categories.add(q.category)
-          }
+        const questions = Array.isArray(data.questions) ? data.questions : []
+        for (const q of questions) {
+          if (q.category) categories.add(q.category)
         }
 
         const tags: string[] = []
