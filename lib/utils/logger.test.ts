@@ -28,3 +28,49 @@ test('conditionally wraps unquoted primitive replacements in quotes to ensure va
   const result = maskData('api_key=12345');
   assert.strictEqual(result, 'api_key="[REDACTED]"');
 });
+
+test('handles primitive values', () => {
+  assert.strictEqual(maskData(42), 42);
+  assert.strictEqual(maskData(true), true);
+  assert.strictEqual(maskData(null), null);
+  assert.strictEqual(maskData(undefined), undefined);
+});
+
+test('handles circular references', () => {
+  const obj: any = { name: 'test' };
+  obj.self = obj;
+  const result = maskData(obj);
+  assert.strictEqual(result.name, 'test');
+  assert.strictEqual(result.self, '[Circular]');
+});
+
+test('handles Error instances', () => {
+  const error = new Error('Secret password=password123');
+  (error as any).api_key = '12345';
+  (error as any).safe_prop = 'safe';
+
+  const result = maskData(error);
+  assert.ok(result instanceof Error);
+  assert.strictEqual(result.message.includes('password123'), false);
+  assert.strictEqual(result.message.includes('[REDACTED]'), true);
+  assert.strictEqual((result as any).api_key, '12345');
+  assert.strictEqual((result as any).safe_prop, 'safe');
+});
+
+test('handles arrays', () => {
+  const result = maskData(['safe', { api_key: '12345' }, 42]);
+  assert.ok(Array.isArray(result));
+  assert.strictEqual(result[0], 'safe');
+  assert.strictEqual(result[1].api_key, '[REDACTED]');
+  assert.strictEqual(result[2], 42);
+});
+
+test('handles non-plain objects', () => {
+  const date = new Date();
+  const map = new Map();
+  const set = new Set();
+
+  assert.strictEqual(maskData(date), date);
+  assert.strictEqual(maskData(map), map);
+  assert.strictEqual(maskData(set), set);
+});
