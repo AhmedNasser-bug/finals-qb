@@ -14,6 +14,7 @@ import { ResultsScreen } from "@/components/mold/game/results-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard/flashcard-screen"
 import { calculateAccuracy } from "@/lib/mold-types"
 import { uuid } from "@/lib/crypto-utils"
+import { cn } from "@/lib/utils"
 
 // ─── Props ─────────────────────────────────────────────────────────────
 
@@ -254,7 +255,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         />
       )}
 
-      <main className={`flex-1 overflow-y-auto px-4 md:px-8 py-6 w-full mx-auto flex flex-col justify-center ${
+      <main className={`flex-1 flex flex-col min-h-0 w-full mx-auto px-4 md:px-8 py-2 ${
         currentQuestion?.diagram
           ? "max-w-[calc(100vw-2rem)] lg:max-w-[calc(100vw-4rem)] xl:max-w-[1600px]"
           : "max-w-4xl"
@@ -291,6 +292,7 @@ interface QuestionCardVariantProps {
 }
 
 function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVariantProps) {
+  const hasDiagram = !!value.state.currentQuestion?.diagram
   return (
     <QuestionCard.Provider value={value}>
       <QuestionCard.Frame>
@@ -299,14 +301,22 @@ function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
           <QuestionCard.Telemetry showSkills accuracyPct={accuracyPct} />
         </QuestionCard.Header>
 
-        <QuestionCard.Specimen>
-          <QuestionCard.HtmlContent />
-          <QuestionCard.MermaidDiagram mode="side" />
-        </QuestionCard.Specimen>
+        <div className={cn(
+          "flex-1 min-h-0 grid gap-6",
+          hasDiagram ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
+        )}>
+          <div className="flex flex-col flex-1 min-h-0 gap-4 justify-start">
+            <QuestionCard.HtmlContent />
+            {hasDiagram && <QuestionCard.MermaidDiagram mode="below" />}
+            <QuestionCard.Options cols={hasDiagram ? "single" : "auto"} />
+          </div>
 
-        <QuestionCard.MermaidDiagram mode="below" />
-
-        <QuestionCard.Options cols="auto" />
+          {hasDiagram && (
+            <div className="flex flex-col min-h-0 h-full">
+              <QuestionCard.MermaidDiagram mode="side" />
+            </div>
+          )}
+        </div>
 
         <QuestionCard.Footer showHint={showHint} />
       </QuestionCard.Frame>
@@ -315,22 +325,30 @@ function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
 }
 
 function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps, "accuracyPct">) {
+  const hasDiagram = !!value.state.currentQuestion?.diagram
   return (
     <QuestionCard.Provider value={value}>
       <QuestionCard.Frame>
         <QuestionCard.Header>
           <QuestionCard.Counter />
-          {/* Survival focuses visually on hearts HUD in header, keeping card super clean */}
         </QuestionCard.Header>
 
-        <QuestionCard.Specimen>
-          <QuestionCard.HtmlContent />
-          <QuestionCard.MermaidDiagram mode="side" />
-        </QuestionCard.Specimen>
+        <div className={cn(
+          "flex-1 min-h-0 grid gap-6",
+          hasDiagram ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
+        )}>
+          <div className="flex flex-col flex-1 min-h-0 gap-4 justify-start">
+            <QuestionCard.HtmlContent />
+            {hasDiagram && <QuestionCard.MermaidDiagram mode="below" />}
+            <QuestionCard.Options cols={hasDiagram ? "single" : "auto"} />
+          </div>
 
-        <QuestionCard.MermaidDiagram mode="below" />
-
-        <QuestionCard.Options cols="auto" />
+          {hasDiagram && (
+            <div className="flex flex-col min-h-0 h-full">
+              <QuestionCard.MermaidDiagram mode="side" />
+            </div>
+          )}
+        </div>
 
         <QuestionCard.Footer showHint={showHint} />
       </QuestionCard.Frame>
@@ -339,6 +357,7 @@ function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps
 }
 
 function StandardQuestionCard({ value, accuracyPct, showHint }: QuestionCardVariantProps) {
+  const hasDiagram = !!value.state.currentQuestion?.diagram
   return (
     <QuestionCard.Provider value={value}>
       <QuestionCard.Frame>
@@ -347,14 +366,22 @@ function StandardQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
           <QuestionCard.Telemetry accuracyPct={accuracyPct} />
         </QuestionCard.Header>
 
-        <QuestionCard.Specimen>
-          <QuestionCard.HtmlContent />
-          <QuestionCard.MermaidDiagram mode="side" />
-        </QuestionCard.Specimen>
+        <div className={cn(
+          "flex-1 min-h-0 grid gap-6",
+          hasDiagram ? "grid-cols-1 md:grid-cols-[1.2fr_0.8fr]" : "grid-cols-1"
+        )}>
+          <div className="flex flex-col flex-1 min-h-0 gap-4 justify-start">
+            <QuestionCard.HtmlContent />
+            {hasDiagram && <QuestionCard.MermaidDiagram mode="below" />}
+            <QuestionCard.Options cols={hasDiagram ? "single" : "auto"} />
+          </div>
 
-        <QuestionCard.MermaidDiagram mode="below" />
-
-        <QuestionCard.Options cols="auto" />
+          {hasDiagram && (
+            <div className="flex flex-col min-h-0 h-full">
+              <QuestionCard.MermaidDiagram mode="side" />
+            </div>
+          )}
+        </div>
 
         <QuestionCard.Footer showHint={showHint} />
       </QuestionCard.Frame>

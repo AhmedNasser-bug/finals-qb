@@ -41,30 +41,11 @@ function QuestionCardProvider({
 }
 
 function QuestionCardFrame({ children }: { children: React.ReactNode }) {
-  const { state } = useQuestionCard()
-  const { currentQuestion } = state
-
-  const hasDedicatedDiagram = !!currentQuestion?.diagram
-  const parts = React.useMemo(() => currentQuestion ? parseRichTextParts(currentQuestion.question) : [], [currentQuestion?.question])
-  const hasInlineDiagram = !hasDedicatedDiagram && parts.some(p => p.type === "mermaid")
-  const hasDiagram = hasDedicatedDiagram || hasInlineDiagram
-  const diagramBelow = hasDedicatedDiagram && currentQuestion.diagramPosition === "below"
-  const needsStretch = hasDiagram && !diagramBelow
-
   return (
-    <div className={cn(
-      "flex flex-col animate-slide-up w-full",
-      needsStretch ? "flex-1 min-h-0" : "max-w-3xl mx-auto my-auto"
-    )}>
-      <div className={cn(
-        "relative bg-[#1c1b1b] border border-border flex flex-col min-h-0 rounded",
-        needsStretch ? "flex-1" : "shadow-xl border-zinc-800/80"
-      )}>
+    <div className="flex flex-col flex-1 min-h-0 animate-slide-up w-full h-full">
+      <div className="relative bg-[#1c1b1b] border border-border flex flex-col flex-1 min-h-0 rounded shadow-xl border-zinc-800/80">
         <div className="scanlines absolute inset-0 opacity-20 pointer-events-none z-0" />
-        <div className={cn(
-          "relative z-10 flex flex-col min-h-0 gap-4",
-          needsStretch ? "flex-1 p-4 md:p-6 lg:p-8" : "p-6 md:p-8"
-        )}>
+        <div className="relative z-10 flex flex-col flex-1 min-h-0 p-4 md:p-6 lg:p-8 gap-4">
           {children}
         </div>
       </div>
@@ -210,10 +191,10 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
   )
 
   if (mode === "side") {
-    return <div className="hidden lg:flex flex-col min-h-0 h-full">{inner}</div>
+    return <div className="hidden md:flex flex-col min-h-0 h-full">{inner}</div>
   }
 
-  return <div className="lg:hidden w-full">{inner}</div>
+  return <div className="md:hidden w-full h-48 sm:h-56 shrink-0">{inner}</div>
 }
 
 // ─── Interactive Inputs ────────────────────────────────────────────────────────
@@ -235,7 +216,7 @@ function QuestionCardOptions({ cols = "single" }: { cols?: "single" | "split" | 
   return (
     <div
       className={cn(
-        "grid gap-3 flex-1 overflow-y-auto min-h-0",
+        "grid gap-3 flex-1 overflow-y-auto min-h-0 content-start",
         computedCols === "split" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
       )}
       role="radiogroup"

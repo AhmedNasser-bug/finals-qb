@@ -49,7 +49,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
   return (
     <header className="bg-[#131313] flex flex-col">
       {/* ── Segmented progress bar ── */}
-      <div className="px-6 md:px-10 pt-4 pb-0 space-y-1">
+      <div className="px-6 md:px-10 pt-2.5 pb-0 space-y-0.5">
         <div className="flex justify-between items-end">
           <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
             SYSTEM_PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
@@ -63,7 +63,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             <div
               key={i}
               className={cn(
-                "h-2 flex-1",
+                "h-1.5 flex-1",
                 seg === "correct" && "bg-[#4ae176]",
                 seg === "wrong" && "bg-[#930013]",
                 seg === "current" && "bg-[var(--tw-hex-fecc17)]/70",
@@ -145,13 +145,13 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
       </div>
 
       {/* ── Desktop Layout (md and above) ── */}
-      <div className="hidden md:grid grid-cols-3 gap-4 px-6 md:px-10 py-5 items-center">
+      <div className="hidden md:grid grid-cols-3 gap-4 px-6 md:px-10 py-2.5 items-center">
         {/* Left — streak badge + accuracy + lives */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-4">
             {/* Streak badge */}
             <div className={cn(
-              "bg-[#201f1f] px-4 py-2 flex items-center gap-3 border-l-2",
+              "bg-[#201f1f] px-2.5 py-1 flex items-center gap-2 border-l-2",
               streak >= 10
                 ? "border-[#930013] shadow-[0px_0px_20px_rgba(147,0,10,0.3)]"
                 : streak >= 5
@@ -159,33 +159,33 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                   : "border-[#fecc17] shadow-[0px_0px_15px_rgba(254,204,23,0.15)]"
             )}>
               <BoltIcon className={cn(
-                "w-4 h-4 shrink-0",
+                "w-3.5 h-3.5 shrink-0",
                 streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
               )} />
               <div>
-                <p className="font-mono text-[9px] text-muted-foreground leading-none mb-1 tracking-widest uppercase">STREAK_MAGNITUDE</p>
+                <p className="font-mono text-[8px] text-muted-foreground leading-none mb-0.5 tracking-widest uppercase">STREAK_MAGNITUDE</p>
                 <p className={cn(
-                  "font-mono text-xl font-black leading-none",
+                  "font-mono text-base font-black leading-none",
                   streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
                 )}>{streak}</p>
               </div>
             </div>
             {/* Accuracy — sibling, not inside badge */}
             <div className="hidden md:flex flex-col">
-              <p className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase mb-1">ACCURACY</p>
-              <p className="font-mono text-sm text-[#4ae176]">{accuracyPct}%</p>
+              <p className="font-mono text-[8px] text-muted-foreground tracking-widest uppercase mb-0.5">ACCURACY</p>
+              <p className="font-mono text-xs text-[#4ae176]">{accuracyPct}%</p>
             </div>
           </div>
           {/* Lives — always shown, empty hearts when not survival */}
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[9px] text-muted-foreground uppercase mr-1">VITAL_SIGNS:</span>
+            <span className="font-mono text-[8px] text-muted-foreground uppercase mr-1">VITAL_SIGNS:</span>
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
               return (
                 <HeartIcon
                   key={i}
                   filled={alive}
-                  className={cn("w-4 h-4", alive ? "text-[#930013]" : "text-zinc-800")}
+                  className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
                 />
               )
             })}
@@ -202,15 +202,15 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 isCritical ? "bg-[var(--tw-hex-930013)]/20 opacity-100" : "opacity-0"
               )} />
               <div className={cn(
-                "relative bg-[#0e0e0e] border-x-4 px-4 py-3 sm:px-10 sm:py-5 text-center",
+                "relative bg-[#0e0e0e] border-x-4 px-3 py-1 sm:px-5 sm:py-2 text-center",
                 isCritical ? "border-[#930013]" : "border-[var(--tw-hex-930013)]/30"
               )}>
                 <p className={cn(
-                  "font-mono text-[9px] tracking-[0.4em] uppercase mb-1 sm:mb-2",
+                  "font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1",
                   isCritical ? "text-[#930013]" : "text-muted-foreground/80"
                 )}>TIME_REMAINING</p>
                 <p className={cn(
-                  "font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tabular-nums leading-none",
+                  "font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none",
                   isCritical ? "text-[#ffb4ab]" : "text-[var(--tw-hex-ffb4ab)]/70",
                   isUrgent && "motion-safe:animate-pulse"
                 )}>
@@ -220,9 +220,9 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             </div>
           ) : (
             <div className="relative group">
-              <div className="relative bg-[#0e0e0e] border-x-4 border-[var(--tw-hex-930013)]/20 px-4 py-3 sm:px-10 sm:py-5 text-center">
-                <p className="font-mono text-[9px] tracking-[0.4em] uppercase mb-1 sm:mb-2 text-muted-foreground/80">ELAPSED</p>
-                <p className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tabular-nums leading-none text-[#fecc17]">
+              <div className="relative bg-[#0e0e0e] border-x-4 border-[var(--tw-hex-930013)]/20 px-3 py-1 sm:px-5 sm:py-2 text-center">
+                <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1 text-muted-foreground/80">ELAPSED</p>
+                <p className="font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none text-[#fecc17]">
                   {formatTime(elapsedSeconds)}
                 </p>
               </div>
@@ -231,25 +231,25 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         </div>
 
         {/* Right — session metadata + dots */}
-        <div className="hidden md:flex flex-col items-end gap-1">
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+        <div className="hidden md:flex flex-col items-end gap-0.5">
+          <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest">
             SESSION_ID: {mode.toUpperCase()}-MOLD
           </p>
-          <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+          <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest">
             DIFFICULTY: {state.config?.difficulty?.toUpperCase() ?? "STANDARD"}
           </p>
           {/* Live indicator dots */}
-          <div className="mt-4 flex gap-2">
-            <div className="w-2 h-2 bg-[#4ae176] animate-pulse" />
-            <div className="w-2 h-2 bg-[var(--tw-hex-4ae176)]/40" />
-            <div className="w-2 h-2 bg-[var(--tw-hex-4ae176)]/40" />
+          <div className="mt-1.5 flex gap-1.5">
+            <div className="w-1.5 h-1.5 bg-[#4ae176] animate-pulse" />
+            <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
+            <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
           </div>
           {/* Quit — recessed, hard to miss-tap. Visible on mobile too. */}
           <button
             onClick={onForfeit}
             aria-label="Quit current game session"
             title="Quit current game session"
-            className="md:mt-3 font-mono text-xs font-bold px-4 py-2.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[var(--tw-hex-930013)]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[44px] shrink-0"
+            className="md:mt-1.5 font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[var(--tw-hex-930013)]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0"
           >
             QUIT SESSION
           </button>
