@@ -7,7 +7,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "test": "node --experimental-strip-types --import ./test-runner.mjs --test lib/utils/accuracy.test.ts lib/achievement/achievement-logic.test.ts lib/subject/active-subject-store.test.ts lib/utils/crypto-utils.test.ts lib/utils/logger.test.ts lib/types/mold-types.test.ts lib/subject/subject-persistence.test.ts lib/utils/url-shortener.test.ts lib/utils/utils.test.ts lib/utils/user-storage.test.ts"
+    "test": "node --experimental-strip-types --import ./test-runner.mjs --test lib/utils/accuracy.test.ts lib/achievement/achievement-logic.test.ts lib/subject/active-subject-store.test.ts lib/subject-store.test.ts lib/utils/crypto-utils.test.ts lib/utils/logger.test.ts lib/types/mold-types.test.ts lib/subject/subject-persistence.test.ts lib/utils/url-shortener.test.ts lib/utils/utils.test.ts lib/utils/user-storage.test.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.4.2",
