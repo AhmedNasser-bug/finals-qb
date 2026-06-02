@@ -545,6 +545,8 @@ interface ValidationFeedbackSectionProps {
   questionCount: number
   flashcardCount: number
   categories: string[]
+  json: string
+  onChange: (value: string) => void
 }
 
 export function ValidationFeedbackSection({
@@ -554,15 +556,129 @@ export function ValidationFeedbackSection({
   questionCount,
   flashcardCount,
   categories,
+  json,
+  onChange,
 }: ValidationFeedbackSectionProps) {
+  const [copiedPrompt, setCopiedPrompt] = useState(false)
+
+  // 1. Position-based parsing error extractor
+  const parseErrorInfo = useMemo(() => {
+    if (!result || result.valid || result.errors.length === 0) return null
+    const firstErr = result.errors[0]
+    if (!firstErr.includes("JSON parse error")) return null
+
+    // Extract position
+    const posMatch = firstErr.match(/at position (\d+)/)
+    if (!posMatch) return { message: firstErr, position: -1, snippet: "", arrow: "" }
+
+    const pos = parseInt(posMatch[1])
+    if (isNaN(pos) || pos < 0 || pos > json.length) {
+      return { message: firstErr, position: -1, snippet: "", arrow: "" }
+    }
+
+    const start = Math.max(0, pos - 40)
+    const end = Math.min(json.length, pos + 40)
+    const snippet = json.slice(start, end)
+    const arrow = " ".repeat(pos - start) + "▲ ERROR LOCATION"
+
+    return { message: firstErr, position: pos, snippet, arrow }
+  }, [result, json])
+
+  // 2. Automated Socratic quick fixes
+  const quickFixes = useMemo(() => {
+    if (!result || result.valid || result.errors.length === 0 || !json) return []
+    const fixes: { label: string; action: () => void; description: string }[] = []
+
+    result.errors.forEach((err) => {
+      // Option A: Answer mismatched with option labels
+      const answerMismatchMatch = err.match(/questions\[(\d+)\]:\s*answer\s*"([^"]+)"\s*does not match any option label\s*\(([^)]+)\)/)
+      if (answerMismatchMatch) {
+        const qIndex = parseInt(answerMismatchMatch[1])
+        const wrongAnswer = answerMismatchMatch[2]
+        const optionsStr = answerMismatchMatch[3]
+        const options = optionsStr.split(",").map(o => o.trim())
+
+        options.forEach((opt) => {
+          fixes.push({
+            label: `Map Question ${qIndex + 1} Answer to option "${opt}"`,
+            description: `Updates the answer label from "${wrongAnswer}" to "${opt}" to match the defined option keys in question #${qIndex + 1}.`,
+            action: () => {
+              try {
+                const obj = JSON.parse(json)
+                if (obj.questions && obj.questions[qIndex]) {
+                  obj.questions[qIndex].answer = opt
+                  onChange(JSON.stringify(obj))
+                }
+              } catch (e) {
+                // ignore
+              }
+            }
+          })
+        })
+      }
+
+      // Option B: Duplicate Question IDs
+      const duplicateIdMatch = err.match(/questions\[(\d+)\]:\s*duplicate id\s*"([^"]+)"/)
+      if (duplicateIdMatch) {
+        const qIndex = parseInt(duplicateIdMatch[1])
+        const dupId = duplicateIdMatch[2]
+        fixes.push({
+          label: `Rename duplicate ID to "${dupId}-${qIndex}"`,
+          description: `Automatically updates the question ID at index ${qIndex} to prevent key collisions in active runs.`,
+          action: () => {
+            try {
+              const obj = JSON.parse(json)
+              if (obj.questions && obj.questions[qIndex]) {
+                obj.questions[qIndex].id = `${dupId}-${qIndex}`
+                onChange(JSON.stringify(obj))
+              }
+            } catch (e) {}
+          }
+        })
+      }
+    })
+
+    return fixes
+  }, [result, json, onChange])
+
+  // 3. Socratic chatbot prompt generator
+  const repairPromptText = useMemo(() => {
+    if (!result || result.valid || result.errors.length === 0) return ""
+    const firstErr = result.errors[0]
+    let contextStr = ""
+    if (parseErrorInfo && parseErrorInfo.snippet) {
+      contextStr = `\nBroken JSON Context:\n...\n${parseErrorInfo.snippet}\n...\n`
+    }
+
+    return `I am generating a JSON study dataset for MOLD V2 and got a validation error:
+"${firstErr}"
+${contextStr}
+Please output ONLY the corrected JSON block to resolve this error. Do not output the entire dataset, just the fixed JSON portion.`
+  }, [result, parseErrorInfo])
+
+  const handleCopyRepairPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(repairPromptText)
+      setCopiedPrompt(true)
+      setTimeout(() => setCopiedPrompt(false), 2500)
+    } catch {}
+  }
+
   return (
     <div aria-live="polite">
       {state === "error" && result && (
-        <div className="flex flex-col gap-2 rounded border border-destructive/30 bg-destructive/5 p-3 animate-slide-up">
-          <p className="text-xs font-mono font-semibold text-destructive tracking-wide uppercase">
-            Validation Failed — {result.errors.length} error{result.errors.length !== 1 ? "s" : ""}
-          </p>
-          <ul className="flex flex-col gap-1">
+        <div className="flex flex-col gap-4 rounded border border-destructive/30 bg-destructive/5 p-4 animate-slide-up">
+          <div className="space-y-1">
+            <p className="text-xs font-mono font-semibold text-destructive tracking-wide uppercase">
+              Validation Failed — {result.errors.length} error{result.errors.length !== 1 ? "s" : ""}
+            </p>
+            <p className="text-[11px] text-[#a4acba] leading-normal font-sans">
+              Review Socratic diagnostics below to repair the schema without regenerating the entire wall of text.
+            </p>
+          </div>
+
+          {/* Standard Errors List */}
+          <ul className="flex flex-col gap-1.5 border-b border-border/40 pb-3">
             {result.errors.map((err, i) => (
               <li key={i} className="text-xs text-destructive/80 leading-relaxed flex gap-2">
                 <span className="font-mono shrink-0 text-destructive/50">{i + 1}.</span>
@@ -570,6 +686,80 @@ export function ValidationFeedbackSection({
               </li>
             ))}
           </ul>
+
+          {/* Socratic Diagnostics & Snippet Extractor */}
+          {parseErrorInfo && parseErrorInfo.snippet && (
+            <div className="space-y-2 border-b border-border/40 pb-3">
+              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-bold block">
+                Error Context Specimen (around position {parseErrorInfo.position}):
+              </span>
+              <pre className="p-3 bg-[#07080a] border border-border text-[11px] font-mono text-zinc-300 rounded overflow-x-auto whitespace-pre selection:bg-primary/20">
+                <code>
+                  {parseErrorInfo.snippet}
+                  {"\n"}
+                  <span className="text-destructive font-bold">{parseErrorInfo.arrow}</span>
+                </code>
+              </pre>
+            </div>
+          )}
+
+          {/* Dynamic quick fixes selection */}
+          {quickFixes.length > 0 && (
+            <div className="space-y-2 border-b border-border/40 pb-3">
+              <span className="text-[10px] font-mono text-[#fecc17] uppercase tracking-widest font-bold block">
+                Resolve Ambiguities via Socratic Quick-Fix Options:
+              </span>
+              <p className="text-[11px] text-[#a4acba] leading-normal font-sans">
+                Select one of the structural resolution pathways below to dynamically correct the JSON in your browser:
+              </p>
+              <div className="flex flex-col gap-2">
+                {quickFixes.map((fix, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={fix.action}
+                    className="w-full text-left p-3 border border-border bg-[#101115] hover:border-primary/50 hover:bg-[#121318] transition-all cursor-pointer flex flex-col gap-1 focus-ring"
+                  >
+                    <span className="text-xs font-mono font-bold text-primary">
+                      ➔ {fix.label}
+                    </span>
+                    <span className="text-[10px] text-[#a4acba] font-sans leading-relaxed">
+                      {fix.description}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Socratic Chatbot Prompt Repair Section */}
+          {repairPromptText && (
+            <div className="space-y-2.5">
+              <span className="text-[10px] font-mono text-primary uppercase tracking-widest font-bold block">
+                Socratic Chatbot Repair Assistant Prompt:
+              </span>
+              <p className="text-[11px] text-[#a4acba] leading-normal font-sans">
+                If the error is too complex to fix manually, copy this prompt and send it to your chatbot. It instructs the AI to return *only* the repaired block:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2 items-stretch">
+                <textarea
+                  readOnly
+                  value={repairPromptText}
+                  aria-label="Socratic chatbot repair instructions prompt"
+                  className="flex-1 bg-[#07080a] border border-border px-3 py-2 font-mono text-[10px] text-zinc-400 h-16 rounded focus-visible:outline-none resize-none leading-relaxed"
+                />
+                <button
+                  type="button"
+                  onClick={handleCopyRepairPrompt}
+                  className="px-4 border border-primary bg-primary/10 text-primary font-mono text-xs uppercase font-bold hover:bg-primary/20 cursor-pointer shrink-0 transition-colors flex items-center justify-center min-h-[44px]"
+                >
+                  <span aria-live="polite">
+                    {copiedPrompt ? "✓ Copied" : "Copy Prompt"}
+                  </span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

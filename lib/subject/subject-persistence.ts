@@ -360,15 +360,119 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   }
 }
 
+function balanceJsonStack(str: string): string {
+  const stack: ("{" | "[")[] = []
+  let inString = false
+  let escaped = false
+  
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (char === '"') {
+      inString = !inString
+      continue
+    }
+    if (!inString) {
+      if (char === '{') {
+        stack.push('{')
+      } else if (char === '[') {
+        stack.push('[')
+      } else if (char === '}') {
+        if (stack[stack.length - 1] === '{') {
+          stack.pop()
+        } else {
+          const idx = stack.lastIndexOf('{')
+          if (idx !== -1) stack.splice(idx)
+        }
+      } else if (char === ']') {
+        if (stack[stack.length - 1] === '[') {
+          stack.pop()
+        } else {
+          const idx = stack.lastIndexOf('[')
+          if (idx !== -1) stack.splice(idx)
+        }
+      }
+    }
+  }
+  
+  let balanced = str.trim()
+  if (inString) balanced += '"'
+  
+  if (balanced.endsWith(",")) {
+    balanced = balanced.slice(0, -1)
+  }
+  
+  while (stack.length > 0) {
+    const top = stack.pop()
+    if (top === '{') balanced += '}'
+    else if (top === '[') balanced += ']'
+  }
+  
+  return balanced
+}
+
+export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
+  const fixedIssues: string[] = []
+  let str = raw.trim()
+  
+  // Issue 1: Remove markdown block comments if LLM wrapped it
+  if (str.startsWith("```")) {
+    const match = str.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i)
+    if (match) {
+      str = match[1].trim()
+      fixedIssues.push('Removed surrounding markdown code block fences (```json ... ```).')
+    }
+  }
+  
+  // Issue 2: Smart quotes
+  const hasSmartQuotes = /[\u201C\u201D\u201E\u201F\u2033\u2036\u2018\u2019\u201A\u201B\u2032\u2035]/.test(str)
+  if (hasSmartQuotes) {
+    str = str
+      .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
+      .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
+    fixedIssues.push("Normalized smart/curly quotes (“ ” ‘ ’) to standard straight quotes.")
+  }
+  
+  // Issue 3: Trailing commas
+  const hasTrailingCommas = /,\s*([\]}])/.test(str)
+  if (hasTrailingCommas) {
+    str = str.replace(/,\s*([\]}])/g, '$1')
+    fixedIssues.push("Removed trailing commas inside arrays or objects.")
+  }
+  
+  // Issue 4: Balance truncated braces/brackets
+  const balanced = balanceJsonStack(str)
+  if (balanced !== str) {
+    str = balanced
+    fixedIssues.push("Balanced and auto-closed truncated brackets or braces at the end of the JSON.")
+  }
+  
+  return { repaired: str, fixedIssues }
+}
+
 /**
  * Safely parse a raw JSON string. Returns { data } on success or { parseError } on failure.
+ * Incorporates automated JSON repairs for common syntax errors.
  */
-export function parseSubjectJson(raw: string): { data: unknown; parseError?: never } | { data?: never; parseError: string } {
+export function parseSubjectJson(raw: string): { data: unknown; parseError?: never; fixedWarnings?: string[] } | { data?: never; parseError: string; fixedWarnings?: never } {
   try {
     return { data: JSON.parse(raw) }
   } catch (e) {
-    const msg = e instanceof SyntaxError ? e.message : "Invalid JSON."
-    return { parseError: `JSON parse error: ${msg}` }
+    const { repaired, fixedIssues } = repairJson(raw)
+    try {
+      const parsed = JSON.parse(repaired)
+      return { data: parsed, fixedWarnings: fixedIssues }
+    } catch (err) {
+      const msg = e instanceof SyntaxError ? e.message : "Invalid JSON."
+      return { parseError: `JSON parse error: ${msg}` }
+    }
   }
 }
 

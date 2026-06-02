@@ -40,6 +40,7 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   const [isDragging, setIsDragging] = useState(false)
   const [promptCopied, setPromptCopied] = useState(false)
   const [userMaterial, setUserMaterial] = useState("")
+  const [convertedMaterial, setConvertedMaterial] = useState("")
 
   // ─── Auto-update question count when preset changes ──────────────────────────
   const handlePresetSelect = (presetId: string) => {
@@ -97,6 +98,11 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
         return
       }
       const validation = validateSubjectData(parsed.data)
+
+      // Inject auto-repair warnings
+      if (parsed.fixedWarnings && parsed.fixedWarnings.length > 0) {
+        validation.warnings.push(...parsed.fixedWarnings)
+      }
 
       // Duplicate id check
       if (validation.valid && validation.subject && existingIdsSet.has(validation.subject.id)) {
@@ -277,7 +283,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
 - NO extra whitespace or indentation — output single-line, no spaces between tokens
 - NO unnecessary fields or null values
 - Short but descriptive strings (concise terminology definitions, brief hints)
-Output the complete JSON object on a single line (no formatting).`;
+- Output the complete JSON object on a single line (no formatting).`;
   }, [topic, selectedPreset, subjectType, questionCount, useReferenceBank])
 
   // ─── Preview details ────────────────────────────────────────────────────────
@@ -412,6 +418,8 @@ Output the complete JSON object on a single line (no formatting).`;
               onCopyPrompt={handleCopyPrompt}
               userMaterial={userMaterial}
               setUserMaterial={setUserMaterial}
+              convertedMaterial={convertedMaterial}
+              setConvertedMaterial={setConvertedMaterial}
             />
           )}
 

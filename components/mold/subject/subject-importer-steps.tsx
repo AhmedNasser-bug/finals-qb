@@ -307,6 +307,8 @@ interface Step4PromptBuildProps {
   onCopyPrompt: (promptText: string) => void
   userMaterial: string
   setUserMaterial: (val: string) => void
+  convertedMaterial: string
+  setConvertedMaterial: React.Dispatch<React.SetStateAction<string>>
 }
 
 export function Step4PromptBuild({
@@ -316,6 +318,8 @@ export function Step4PromptBuild({
   onCopyPrompt,
   userMaterial,
   setUserMaterial,
+  convertedMaterial,
+  setConvertedMaterial,
 }: Step4PromptBuildProps) {
   const [showManualPrompt, setShowManualPrompt] = React.useState(false)
   const [dragActive, setDragActive] = React.useState(false)
@@ -344,7 +348,7 @@ export function Step4PromptBuild({
             const reader = new FileReader()
             reader.onload = (event) => {
               const text = event.target?.result as string
-              setUserMaterial((prev) => {
+              setConvertedMaterial((prev) => {
                 const trimmed = prev.trim()
                 return trimmed ? `${trimmed}\n\n${text}` : text
               })
@@ -370,7 +374,7 @@ export function Step4PromptBuild({
           const data = await response.json()
           const convertedText = data.markdown
           
-          setUserMaterial((prev) => {
+          setConvertedMaterial((prev) => {
             const trimmed = prev.trim()
             return trimmed ? `${trimmed}\n\n${convertedText}` : convertedText
           })
@@ -382,7 +386,7 @@ export function Step4PromptBuild({
     } finally {
       setIsConverting(false)
     }
-  }, [setUserMaterial])
+  }, [setConvertedMaterial])
 
   const handleDrop = React.useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -401,7 +405,16 @@ export function Step4PromptBuild({
   }, [processUploadedFiles])
 
   const downloadStudyPackage = () => {
-    if (!userMaterial.trim()) return
+    if (!userMaterial.trim() && !convertedMaterial.trim()) return
+    
+    let bundledSourceMaterial = ""
+    if (convertedMaterial.trim()) {
+      bundledSourceMaterial += `--- DETECTED SOURCE MATERIAL (PARSED VIA MICROSOFT MARKITDOWN) ---\n${convertedMaterial.trim()}\n\n`
+    }
+    if (userMaterial.trim()) {
+      bundledSourceMaterial += `--- EXPLICIT USER INSTRUCTIONS & STUDY NOTES ---\n${userMaterial.trim()}\n`
+    }
+
     const packageText = `================================================================================
 FINALIST STUDY MATERIAL GENERATION PACKAGE
 ================================================================================
@@ -409,9 +422,9 @@ INSTRUCTIONS FOR THE CHATBOT:
 ${compiledPrompt}
 
 ================================================================================
-SOURCE STUDY MATERIAL TO ANALYZE AND EXTRACT QUESTIONS FROM:
+SOURCE STUDY MATERIAL & EXPLICIT NOTES:
 ================================================================================
-${userMaterial}
+${bundledSourceMaterial}
 `
     const blob = new Blob([packageText], { type: "text/plain;charset=utf-8" })
     const url = URL.createObjectURL(blob)
@@ -423,6 +436,8 @@ ${userMaterial}
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   }
+
+  const hasMaterial = userMaterial.trim().length > 0 || convertedMaterial.trim().length > 0
 
   return (
     <div className="space-y-6 animate-slide-up select-none">
@@ -452,42 +467,42 @@ ${userMaterial}
                 <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">1</span>
                 <div>
                   <span className="text-white font-bold block">Load Source Material</span>
-                  <span>Paste slides, notes, or drop text notes on the right to bundle them.</span>
+                  <span>Drag files (.pdf, .docx, .pptx) into the box on the right. We parse them securely behind the scenes.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
                 <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">2</span>
                 <div>
-                  <span className="text-white font-bold block">Download Generation Package</span>
-                  <span>Get a single `.txt` file containing the Socratic instructions and your material merged.</span>
+                  <span className="text-white font-bold block">Add Explicit Instructions</span>
+                  <span>Type custom guidelines, syllabus directions, or explicit prompts in the text box below.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
                 <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">3</span>
                 <div>
-                  <span className="text-white font-bold block">Ask Google Gemini (Recommended)</span>
-                  <span>
-                    Open{" "}
-                    <a
-                      href="https://gemini.google.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline font-bold inline-flex items-center gap-0.5"
-                    >
-                      Google Gemini ➔
-                    </a>{" "}
-                    or Claude, upload the downloaded file, and ask it to run!
-                  </span>
+                  <span className="text-white font-bold block">Download Generation Package</span>
+                  <span>Download a single `.txt` file containing your parsed materials and custom instructions.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
                 <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">4</span>
                 <div>
-                  <span className="text-white font-bold block">Paste Chatbot Result</span>
-                  <span>Copy the generated chatbot response code and advance to Step 5 to verify it.</span>
+                  <span className="text-white font-bold block">Generate in Gemini / Claude</span>
+                  <span>
+                    Upload the `.txt` file to{" "}
+                    <a
+                      href="https://gemini.google.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline font-bold inline-flex items-center gap-0.5"
+                    >
+                      Gemini ➔
+                    </a>{" "}
+                    to generate your verified JSON structure!
+                  </span>
                 </div>
               </div>
             </div>
@@ -495,7 +510,7 @@ ${userMaterial}
 
           <div className="p-4 border border-emerald-500/20 bg-emerald-500/5 rounded">
             <p className="text-xs leading-relaxed text-zinc-300 font-sans font-medium">
-              💡 <span className="text-[#4ae176] font-bold">Why this works:</span> Chatbots are much smarter when they get instructions and notes formatted together in a single text file. It guarantees 100% accurate, error-free results!
+              💡 <span className="text-[#4ae176] font-bold">Safe & Clean UX:</span> Your heavy converted PDF/Word files are stored efficiently in the wizard memory buffer, keeping the text box clear for your custom guidelines!
             </p>
           </div>
         </div>
@@ -507,7 +522,21 @@ ${userMaterial}
               <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block">
                 [PATH A] Drag Notes or Paste Study Material
               </span>
-              <span className="text-[10px] font-mono text-zinc-500">ANY FORMAT via MARKITDOWN</span>
+              <a
+                href="https://github.com/microsoft/markitdown"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5 focus-ring"
+                title="Powered by Microsoft MarkItDown"
+              >
+                <svg viewBox="0 0 23 23" className="w-3 h-3 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="0" y="0" width="10.5" height="10.5" fill="#F25022"/>
+                  <rect x="11.5" y="0" width="10.5" height="10.5" fill="#7FBA00"/>
+                  <rect x="0" y="11.5" width="10.5" height="10.5" fill="#00A4EF"/>
+                  <rect x="11.5" y="11.5" width="10.5" height="10.5" fill="#FFB900"/>
+                </svg>
+                <span>ANY FORMAT via MARKITDOWN</span>
+              </a>
             </div>
 
             <div
@@ -546,15 +575,33 @@ ${userMaterial}
               )}
             </div>
 
+            {/* Buffered files HUD display */}
+            {convertedMaterial.trim() && (
+              <div className="flex items-center justify-between px-3 py-2 border border-primary/20 bg-primary/5 text-xs text-primary font-mono rounded">
+                <span className="flex items-center gap-1.5 select-none">
+                  <span>📂</span>
+                  <span>MEM-BUFFER: {new Blob([convertedMaterial]).size.toLocaleString()} bytes loaded via MarkItDown</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setConvertedMaterial("")}
+                  className="text-zinc-500 hover:text-red-400 font-bold transition-colors text-[9px] uppercase cursor-pointer"
+                  title="Clear all converted files"
+                >
+                  Clear Buffer [X]
+                </button>
+              </div>
+            )}
+
             <div className="space-y-1.5">
               <label htmlFor="pasted-notes" className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
-                Or Paste Custom Lecture Notes / Syllabus / Slide Text
+                Add Explicit Study Guidelines, Reference Rules, or Custom Instructions
               </label>
               <textarea
                 id="pasted-notes"
                 value={userMaterial}
                 onChange={(e) => setUserMaterial(e.target.value)}
-                placeholder="Paste course notes, slides, vocab definitions, syllabus, or raw study text here..."
+                placeholder="Enter specific instructions for the Socratic AI (e.g., 'Prioritize Chapter 4 terminology', 'Avoid code blocks in Section B', or paste additional explicit guidelines)..."
                 className="w-full bg-[#07080a] border border-border px-3.5 py-2.5 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[140px] resize-y"
               />
             </div>
@@ -562,10 +609,10 @@ ${userMaterial}
             <button
               type="button"
               onClick={downloadStudyPackage}
-              disabled={!userMaterial.trim()}
+              disabled={!hasMaterial}
               className={cn(
                 "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2",
-                userMaterial.trim()
+                hasMaterial
                   ? "border-[#4ae176] bg-[#4ae176]/10 text-[#4ae176] hover:bg-[#4ae176]/15 border-glow-success"
                   : "border-border text-muted-foreground bg-transparent opacity-40 cursor-not-allowed"
               )}
@@ -688,6 +735,8 @@ export function Step5LoadData({
         questionCount={questionCount}
         flashcardCount={flashcardCount}
         categories={categories}
+        json={json}
+        onChange={onChange}
       />
     </div>
   )
