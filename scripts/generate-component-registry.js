@@ -20,9 +20,9 @@ function scanDirectory(dir, fileList = []) {
 }
 
 function extractInterface(content, componentName) {
-  // A naive regex to grab props interface
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\}/);
+  // Fix interface regex extraction to handle brackets
+  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
+                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
   if (interfaceMatch) {
     return interfaceMatch[1].trim();
   }
@@ -30,11 +30,12 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  let content = '';
+  const stream = fs.createReadStream(filePath);
+  const chunks = [];
   for await (const chunk of stream) {
-    content += chunk;
+    chunks.push(chunk);
   }
+  const content = Buffer.concat(chunks).toString('utf-8');
 
   const fileName = path.basename(filePath);
   const moduleName = fileName.replace('.tsx', '').split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-');

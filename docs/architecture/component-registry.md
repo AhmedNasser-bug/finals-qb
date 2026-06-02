@@ -203,6 +203,33 @@ rightText?: string
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
+### `mold/common/guide-overlay.tsx`
+
+**Module Name:** Guide-Overlay
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useEffect, useRef, useState
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+open: boolean
+  onClose: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `mold/common/mermaid-diagram.tsx`
 
 **Module Name:** Mermaid-Diagram
@@ -400,15 +427,12 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-round: number;
-  flashcardsLength: number;
-  confident: number;
-  neutral: number;
-  learning: number;
-  hardest: Flashcard | undefined;
-  scores: Record<string, number>;
-  onReturnHome: () => void;
-  onComplete: () => void;
+card: Flashcard;
+  index: number;
+  flipped: boolean;
+  animClass: string;
+  accent: { color: string; border: string; label: string };
+  onFlip: () => void;
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -441,7 +465,6 @@ flashcards: Flashcard[]
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
-- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
 ### `mold/game/game-error-boundary.tsx`
@@ -564,7 +587,7 @@ None specified or inline props
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useAchievementToast, useAchievements, useEffect, useGameEngine, useHint, useRef, useState
+useAchievementToast, useAchievements, useEffect, useGameEngine, useHint, useRef, useState, useStreak
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -612,6 +635,33 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
+### `mold/game/question-card-blocks.tsx`
+
+**Module Name:** Question-Card-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
+- Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
+
+
 ### `mold/game/question-card-builder.tsx`
 
 **Module Name:** Question-Card-Builder
@@ -623,7 +673,7 @@ None specified or inline props
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useQuestionCard
+useGameEngine, useQuestionCard
 
 **Performance Characteristics:**
 Utilizes memoization: useMemo to prevent unnecessary re-renders.
@@ -646,6 +696,32 @@ idx: number
 - Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
+
+
+### `mold/game/question-card-components.tsx`
+
+**Module Name:** Question-Card-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
 ### `mold/game/question-card.tsx`
@@ -728,6 +804,35 @@ onReturnHome: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
+### `mold/home/achievements-panel.tsx`
+
+**Module Name:** Achievements-Panel
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+id: string
+  title: string
+  description: string
+  unlockedAt: string | null
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `mold/home/action-hub.tsx`
 
 **Module Name:** Action-Hub
@@ -747,7 +852,6 @@ No explicit memoization hooks (useMemo/useCallback) used.
 **Properties & Slots (Interface):**
 ```typescript
 onInitialize: () => void
-  onEncyclopedia: () => void
   selectedMode: GameModeId
   disabled?: boolean
   className?: string
@@ -756,6 +860,34 @@ onInitialize: () => void
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `mold/home/header-well.tsx`
+
+**Module Name:** Header-Well
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+subjectName: string
+  description: string
+  runCount: number
+  visualAccuracyPct: number
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
 ### `mold/home/hero-header.tsx`
@@ -779,6 +911,8 @@ No explicit memoization hooks (useMemo/useCallback) used.
 subject: SubjectData
   achievements: Achievement[]
   onTrophyClick?: () => void
+  onChangeSubject?: () => void
+  onImportNew?: () => void
   className?: string
 ```
 
@@ -798,10 +932,10 @@ subject: SubjectData
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useAchievements, useEffect, useSafeAuth, useState
+useAchievements, useEffect, useSafeAuth, useState, useStats
 
 **Performance Characteristics:**
-No explicit memoization hooks (useMemo/useCallback) used.
+Utilizes memoization: useMemo to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
@@ -818,8 +952,6 @@ No explicit memoization hooks (useMemo/useCallback) used.
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.
-- Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.
-- Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
@@ -843,6 +975,7 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```typescript
 selected: GameModeId
   onSelect: (id: GameModeId) => void
+  onLaunch?: () => void
   className?: string
 ```
 
@@ -878,18 +1011,43 @@ runs: RunRecord[]
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
+### `mold/home/session-stats-panel.tsx`
+
+**Module Name:** Session-Stats-Panel
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useStats
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
 ### `mold/home/setup-panel-blocks.tsx`
 
 **Module Name:** Setup-Panel-Blocks
 
 **Characteristics:**
-- Client Component: `No`
+- Client Component: `Yes`
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-None
+useConfigControls, useContext
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -898,9 +1056,6 @@ No explicit memoization hooks (useMemo/useCallback) used.
 ```typescript
 config: SetupConfig
   onChange: (patch: Partial<SetupConfig>) => void
-  isUntimed: boolean
-  isFullRevision: boolean
-  isPractice: boolean
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -938,6 +1093,66 @@ config: SetupConfig
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
+### `mold/home/side-nav-bar.tsx`
+
+**Module Name:** Side-Nav-Bar
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+subjectId: string
+  activeView: "home" | "stats"
+  onShowDashboard: () => void
+  onShowStats: () => void
+  onShowEncyclopedia: () => void
+  onShowGallery: () => void
+  onChangeSubject: () => void
+  onImportNew: () => void
+  onInitialize: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `mold/home/stats-screen.tsx`
+
+**Module Name:** Stats-Screen
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useState, useStats
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+onReturnHome: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `mold/home/streak-ascent.tsx`
 
 **Module Name:** Streak-Ascent
@@ -964,6 +1179,87 @@ currentStreak: number
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
+### `mold/home/subject-visual-card.tsx`
+
+**Module Name:** Subject-Visual-Card
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+subjectId: string
+  subjectName: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
+### `mold/home/telemetry-panel.tsx`
+
+**Module Name:** Telemetry-Panel
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useStats
+
+**Performance Characteristics:**
+Utilizes memoization: useMemo to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
+### `mold/home/top-nav-bar.tsx`
+
+**Module Name:** Top-Nav-Bar
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useEffect, useState
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+activeSubjectName?: string
+  loadedSubjectsCount?: number
+  onShowEncyclopedia?: () => void
+  onShowGallery?: () => void
+  onImportNew?: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
 ### `mold/subject/example-module-card.tsx`
@@ -1058,13 +1354,13 @@ promptCopied: boolean
 **Module Name:** Subject-Importer-Components
 
 **Characteristics:**
-- Client Component: `No`
+- Client Component: `Yes`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-None
+useEnter, useLeave, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -1076,6 +1372,38 @@ None specified or inline props
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `mold/subject/subject-importer-steps.tsx`
+
+**Module Name:** Subject-Importer-Steps
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useReferenceBank, useState
+
+**Performance Characteristics:**
+Utilizes memoization: useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+topic: string
+  setTopic: (val: string) => void
+  useReferenceBank: boolean
+  setUseReferenceBank: (val: boolean) => void
+  selectedPreset: string
+  onPresetSelect: (presetId: string) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
 ### `mold/subject/subject-importer.tsx`
@@ -1089,7 +1417,7 @@ None specified or inline props
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useState
+useReferenceBank, useState
 
 **Performance Characteristics:**
 Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.
