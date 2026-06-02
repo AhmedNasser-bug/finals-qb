@@ -87,7 +87,11 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
   }
 
   if (Array.isArray(data)) {
-    return data.map(item => maskData(item, seen));
+    const result = new Array(data.length);
+    for (let i = 0; i < data.length; i++) {
+      result[i] = maskData(data[i], seen);
+    }
+    return result;
   }
 
   // Bypass non-plain objects (e.g. Date, Set, Map)
@@ -109,8 +113,32 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
 }
 
 export const logger = {
-  log: (...args: any[]) => console.log(...args.map(arg => maskData(arg, new WeakSet()))),
-  info: (...args: any[]) => console.info(...args.map(arg => maskData(arg, new WeakSet()))),
-  warn: (...args: any[]) => console.warn(...args.map(arg => maskData(arg, new WeakSet()))),
-  error: (...args: any[]) => console.error(...args.map(arg => maskData(arg, new WeakSet())))
+  log: (...args: any[]) => {
+    const maskedArgs = new Array(args.length);
+    for (let i = 0; i < args.length; i++) {
+      maskedArgs[i] = maskData(args[i], new WeakSet());
+    }
+    console.log(...maskedArgs);
+  },
+  info: (...args: any[]) => {
+    const maskedArgs = new Array(args.length);
+    for (let i = 0; i < args.length; i++) {
+      maskedArgs[i] = maskData(args[i], new WeakSet());
+    }
+    console.info(...maskedArgs);
+  },
+  warn: (...args: any[]) => {
+    const maskedArgs = new Array(args.length);
+    for (let i = 0; i < args.length; i++) {
+      maskedArgs[i] = maskData(args[i], new WeakSet());
+    }
+    console.warn(...maskedArgs);
+  },
+  error: (...args: any[]) => {
+    const maskedArgs = new Array(args.length);
+    for (let i = 0; i < args.length; i++) {
+      maskedArgs[i] = maskData(args[i], new WeakSet());
+    }
+    console.error(...maskedArgs);
+  }
 };

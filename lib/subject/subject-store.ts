@@ -12,17 +12,21 @@ export function deriveCategoriesFromSubject(subject: FullSubjectData): CategoryD
     if (existing) {
       existing.count++
     } else {
-      const name = q.category
-        .split("-")
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" ")
+      const parts = q.category.split("-")
+      const formattedParts = new Array(parts.length)
+      for (let i = 0; i < parts.length; i++) {
+        formattedParts[i] = parts[i].charAt(0).toUpperCase() + parts[i].slice(1)
+      }
+      const name = formattedParts.join(" ")
       map.set(q.category, { name, count: 1 })
     }
   }
 
-  return Array.from(map.entries()).map(([id, { name, count }]) => ({
-    id,
-    name,
-    questionCount: count,
-  }))
+  const entries = Array.from(map.entries())
+  const result = new Array(entries.length)
+  for (let i = 0; i < entries.length; i++) {
+    const [id, { name, count }] = entries[i]
+    result[i] = { id, name, questionCount: count }
+  }
+  return result
 }

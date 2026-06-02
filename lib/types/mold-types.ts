@@ -305,12 +305,22 @@ export function computeAggregateStats(runs: RunRecord[]): AggregateStats {
     ? Math.round((totalTimeSec * 1000) / totalQuestionsAnswered)
     : 0
 
+  let bestScore = 0
+  let bestStreak = 0
+  let sumScore = 0
+  for (let i = 0; i < runs.length; i++) {
+    const r = runs[i]
+    if (r.score > bestScore) bestScore = r.score
+    if (r.streak > bestStreak) bestStreak = r.streak
+    sumScore += r.score
+  }
+
   return {
     totalRuns: runs.length,
-    bestScore: Math.max(...runs.map((r) => r.score)),
-    bestStreak: Math.max(...runs.map((r) => r.streak)),
+    bestScore,
+    bestStreak,
     currentStreak: runs[runs.length - 1].streak,
-    averageScore: Math.round(runs.reduce((sum, r) => sum + r.score, 0) / runs.length),
+    averageScore: Math.round(sumScore / runs.length),
     averageResponseTimeMs,
   }
 }
@@ -345,7 +355,12 @@ export function modeLabel(id: GameModeId): string {
  * Single source of truth — use this instead of inline .split("-").map(...).join(" ").
  */
 export function formatLabel(slug: string): string {
-  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+  const parts = slug.split("-")
+  const result = new Array(parts.length)
+  for (let i = 0; i < parts.length; i++) {
+    result[i] = parts[i].charAt(0).toUpperCase() + parts[i].slice(1)
+  }
+  return result.join(" ")
 }
 
 /**

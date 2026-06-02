@@ -1,6 +1,7 @@
 "use server"
 
-import fs from "fs/promises"
+import fsPromises from "fs/promises"
+import fs from "fs"
 import path from "path"
 import { logger } from "@/lib/logger"
 
@@ -19,7 +20,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
   const examplesDir = path.join(process.cwd(), "public", "examples")
 
   try {
-    const files = await fs.readdir(examplesDir)
+    const files = await fsPromises.readdir(examplesDir)
     const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
     const manifestResults: ExampleManifestEntry[] = []
@@ -28,7 +29,12 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
       const filePath = path.join(examplesDir, file)
       const fileStem = file.replace(/\.json$/i, "")
       try {
-        const content = await fs.readFile(filePath, "utf-8")
+        const stream = fs.createReadStream(filePath)
+        const chunks: Buffer[] = []
+        for await (const chunk of stream) {
+          chunks.push(chunk)
+        }
+        const content = Buffer.concat(chunks).toString("utf-8")
         const data = JSON.parse(content)
 
         // Calculate categories
