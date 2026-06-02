@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import { StatChip } from "@/components/mold/subject/subject-importer-components"
 import type { FullSubjectData } from "@/lib/mold-types"
 import type { ValidationResult } from "@/lib/subject-persistence"
+import { findDeformedBlockRange, applyBlockPatch } from "@/lib/utils/json-patcher"
 import {
   SubjectPromptBuilder,
   PEDAGOGICAL_PRESETS,
@@ -560,6 +561,20 @@ export function ValidationFeedbackSection({
   onChange,
 }: ValidationFeedbackSectionProps) {
   const [copiedPrompt, setCopiedPrompt] = useState(false)
+  const [patchText, setPatchText] = useState("")
+  const [patchError, setPatchError] = useState<string | null>(null)
+
+  const handleApplyPatch = () => {
+    if (!patchText.trim() || !parseErrorInfo) return
+    setPatchError(null)
+    try {
+      const patchedJson = applyBlockPatch(json, patchText, parseErrorInfo.position)
+      onChange(patchedJson)
+      setPatchText("")
+    } catch (err: any) {
+      setPatchError(err.message || "Failed to splice block. Please verify the patch structure.")
+    }
+  }
 
   // 1. Position-based parsing error extractor
   const parseErrorInfo = useMemo(() => {
@@ -757,6 +772,44 @@ Please output ONLY the corrected JSON block to resolve this error. Do not output
                     {copiedPrompt ? "✓ Copied" : "Copy Prompt"}
                   </span>
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Socratic Patch Box */}
+          {parseErrorInfo && (
+            <div className="space-y-2.5 border-t border-border/40 pt-4 mt-2">
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest font-bold block">
+                Socratic Splicer / Patch Box:
+              </span>
+              <p className="text-[11px] text-[#a4acba] leading-normal font-sans">
+                Paste the corrected block or array snippet returned by the Socratic AI below to splice it directly back into the dataset in-place:
+              </p>
+              <div className="flex flex-col gap-2.5">
+                <textarea
+                  value={patchText}
+                  onChange={(e) => {
+                    setPatchText(e.target.value)
+                    setPatchError(null)
+                  }}
+                  placeholder="Paste the fixed block here (e.g. { ... } or [ ... ])"
+                  className="w-full bg-[#07080a] border border-border px-3.5 py-2.5 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500/50 transition-all min-h-[90px] resize-y"
+                />
+                {patchError && (
+                  <p className="text-xs font-mono text-destructive">{patchError}</p>
+                )}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <span className="text-[9px] font-mono text-zinc-500 uppercase">
+                    Boundary targeted: [{findDeformedBlockRange(json, parseErrorInfo.position).join(", ")}]
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleApplyPatch}
+                    className="px-5 py-2 border border-emerald-500 bg-emerald-500/10 text-emerald-400 font-mono text-xs uppercase font-bold hover:bg-emerald-500 hover:text-white transition-all cursor-pointer min-h-[40px] border-glow-success"
+                  >
+                    Apply Socratic Patch
+                  </button>
+                </div>
               </div>
             </div>
           )}
