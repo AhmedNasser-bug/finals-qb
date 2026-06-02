@@ -221,3 +221,306 @@ describe("parseSubjectJson", () => {
     assert.ok(result.parseError.startsWith("JSON parse error:"));
   });
 });
+
+describe("Auto-Fix & Graceful Degradation Suite", () => {
+  test("recovers missing name and auto-generates id slug", () => {
+    const raw = {
+      questions: [
+        {
+          id: "q-1",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q?",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" }
+          ],
+          answer: "A"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.name, "Imported Subject");
+    assert.strictEqual(data.id, "imported-subject");
+    assert.ok(result.fixedWarnings?.some(w => w.includes('"name" was missing')));
+    assert.ok(result.fixedWarnings?.some(w => w.includes('"id" was missing')));
+  });
+
+  test("auto-generates id slug from custom subject name", () => {
+    const raw = {
+      name: "Theory of Computation Spec",
+      questions: [
+        {
+          id: "q-1",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q?",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" }
+          ],
+          answer: "A"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.id, "theory-of-computation-spec");
+  });
+
+  test("recovers missing config block and populates title/description", () => {
+    const raw = {
+      name: "Config Test",
+      questions: [
+        {
+          id: "q-1",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q?",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" }
+          ],
+          answer: "A"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.ok(data.config);
+    assert.strictEqual(data.config.title, "Config Test");
+    assert.ok(data.config.description.includes("Config Test"));
+    assert.ok(result.fixedWarnings?.some(w => w.includes('"config" block was missing')));
+  });
+
+  test("recovers partial config block missing title or description", () => {
+    const raw = {
+      name: "Partial Config Test",
+      config: {
+        title: ""
+      },
+      questions: [
+        {
+          id: "q-1",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q?",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" }
+          ],
+          answer: "A"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.config.title, "Partial Config Test");
+    assert.ok(data.config.description.includes("Partial Config Test"));
+  });
+
+  test("recovers missing or empty questions array with placeholder question", () => {
+    const raw = {
+      name: "Questions Test",
+      questions: []
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.questions.length, 1);
+    assert.strictEqual(data.questions[0].id, "q-default-1");
+    assert.ok(data.questions[0].question.includes("placeholder question"));
+    assert.ok(result.fixedWarnings?.some(w => w.includes('"questions" array was empty')));
+  });
+
+  test("automatically renames duplicate question IDs", () => {
+    const raw = {
+      name: "Duplicate ID Test",
+      questions: [
+        {
+          id: "q-same",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q1",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" }
+          ],
+          answer: "A"
+        },
+        {
+          id: "q-same",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q2",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" }
+          ],
+          answer: "B"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.questions[0].id, "q-same");
+    assert.strictEqual(data.questions[1].id, "q-same-1");
+    assert.ok(result.fixedWarnings?.some(w => w.includes('Duplicate ID "q-same"')));
+  });
+
+  test("calibrates invalid types and converts TrueFalse with bad option count to MCQ", () => {
+    const raw = {
+      name: "Type Calibration Test",
+      questions: [
+        {
+          id: "q-1",
+          type: "INVALID_TYPE",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q1",
+          options: [
+            { label: "A", text: "True" },
+            { label: "B", text: "False" }
+          ],
+          answer: "A"
+        },
+        {
+          id: "q-2",
+          type: "TrueFalse",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q2",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" },
+            { label: "C", text: "Option C" }
+          ],
+          answer: "A"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.questions[0].type, "TrueFalse");
+    assert.strictEqual(data.questions[1].type, "MCQ");
+    assert.ok(result.fixedWarnings?.some(w => w.includes('converted to MCQ')));
+  });
+
+  test("remaps answer text and boolean values to matching option labels", () => {
+    const raw = {
+      name: "Answer Remap Test",
+      questions: [
+        {
+          id: "q-1",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q1",
+          options: [
+            { label: "A", text: "Paris" },
+            { label: "B", text: "London" }
+          ],
+          answer: "Paris"
+        },
+        {
+          id: "q-2",
+          type: "TrueFalse",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q2",
+          options: [
+            { label: "A", text: "True" },
+            { label: "B", text: "False" }
+          ],
+          answer: "1"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.questions[0].answer, "A");
+    assert.strictEqual(data.questions[1].answer, "A");
+    assert.ok(result.fixedWarnings?.some(w => w.includes('remapped to label "A"')));
+    assert.ok(result.fixedWarnings?.some(w => w.includes('Boolean answer "1" automatically mapped')));
+  });
+
+  test("recovers missing question fields (difficulty, category, options, explanation, hint)", () => {
+    const raw = {
+      name: "Field Recovery Test",
+      questions: [
+        {
+          id: "q-1",
+          question: "",
+          answer: "Z"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.questions[0].difficulty, "Medium");
+    assert.strictEqual(data.questions[0].category, "general");
+    assert.strictEqual(data.questions[0].question, "No question text provided.");
+    assert.strictEqual(data.questions[0].options.length, 4);
+    assert.strictEqual(data.questions[0].answer, "A"); // reset to A because Z doesn't exist
+    assert.ok(data.questions[0].explanation.includes("correct"));
+    assert.ok(data.questions[0].hint.includes("terminology"));
+  });
+
+  test("recovers missing flashcards, achievements, and terminology containers", () => {
+    const raw = {
+      name: "Container Test",
+      questions: [
+        {
+          id: "q-1",
+          type: "MCQ",
+          difficulty: "Easy",
+          category: "Cat",
+          question: "Q?",
+          options: [
+            { label: "A", text: "Option A" },
+            { label: "B", text: "Option B" }
+          ],
+          answer: "A"
+        }
+      ]
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.ok(Array.isArray(data.flashcards));
+    assert.ok(Array.isArray(data.achievements));
+    assert.ok(data.terminology);
+    assert.ok(Array.isArray(data.terminology.Cat));
+  });
+
+  test("ignores generic JSON inputs from auto-fixes", () => {
+    const raw = {
+      id: "generic-doc",
+      version: 1,
+      payload: {
+        someValue: true
+      }
+    };
+    const result = parseSubjectJson(JSON.stringify(raw));
+    assert.ok(!("parseError" in result));
+    const data = result.data as any;
+    assert.strictEqual(data.name, undefined);
+    assert.strictEqual(data.questions, undefined);
+    assert.strictEqual(data.flashcards, undefined);
+  });
+});
