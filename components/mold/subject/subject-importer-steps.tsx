@@ -319,6 +319,7 @@ export function Step4PromptBuild({
 }: Step4PromptBuildProps) {
   const [showManualPrompt, setShowManualPrompt] = React.useState(false)
   const [dragActive, setDragActive] = React.useState(false)
+  const [isConverting, setIsConverting] = React.useState(false)
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
@@ -330,37 +331,65 @@ export function Step4PromptBuild({
     }
   }
 
-  const handleDrop = (e: React.DragEvent) => {
+  const processUploadedFile = React.useCallback(async (file: File) => {
+    if (file.name.endsWith(".txt") || file.name.endsWith(".md")) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const text = event.target?.result as string
+        setUserMaterial((prev) => {
+          const trimmed = prev.trim()
+          return trimmed ? `${trimmed}\n\n${text}` : text
+        })
+      }
+      reader.readAsText(file)
+    } else {
+      // Upload and convert via Microsoft MarkItDown API
+      setIsConverting(true)
+      try {
+        const formData = new FormData()
+        formData.append("file", file)
+        
+        const response = await fetch("/api/convert", {
+          method: "POST",
+          body: formData,
+        })
+        
+        if (!response.ok) {
+          const errData = await response.json()
+          throw new Error(errData.error || "Failed to convert file.")
+        }
+        
+        const data = await response.json()
+        const convertedText = data.markdown
+        
+        setUserMaterial((prev) => {
+          const trimmed = prev.trim()
+          return trimmed ? `${trimmed}\n\n${convertedText}` : convertedText
+        })
+      } catch (err: any) {
+        console.error("Error converting file:", err)
+        alert(`Conversion Failed: ${err.message || "An unknown error occurred during conversion."}`)
+      } finally {
+        setIsConverting(false)
+      }
+    }
+  }, [setUserMaterial])
+
+  const handleDrop = React.useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0]
-      if (file.name.endsWith(".txt") || file.name.endsWith(".md")) {
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          const text = event.target?.result as string
-          setUserMaterial(text)
-        }
-        reader.readAsText(file)
-      } else {
-        alert("Please upload a clean text (.txt) or markdown (.md) file.")
-      }
+      processUploadedFile(e.dataTransfer.files[0])
     }
-  }
+  }, [processUploadedFile])
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const text = event.target?.result as string
-        setUserMaterial(text)
-      }
-      reader.readAsText(file)
+      processUploadedFile(e.target.files[0])
     }
-  }
+  }, [processUploadedFile])
 
   const downloadStudyPackage = () => {
     if (!userMaterial.trim()) return
@@ -469,7 +498,7 @@ ${userMaterial}
               <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block">
                 [PATH A] Drag Notes or Paste Study Material
               </span>
-              <span className="text-[10px] font-mono text-zinc-500">TEXT OR MARKDOWN</span>
+              <span className="text-[10px] font-mono text-zinc-500">ANY FORMAT via MARKITDOWN</span>
             </div>
 
             <div
@@ -479,20 +508,32 @@ ${userMaterial}
               onDrop={handleDrop}
               className={cn(
                 "border border-dashed p-4 text-center rounded transition-colors flex flex-col justify-center items-center min-h-[90px] relative",
-                dragActive ? "border-primary bg-primary/5" : "border-border hover:border-zinc-700 bg-black/30"
+                dragActive ? "border-primary bg-primary/5" : "border-border hover:border-zinc-700 bg-black/30",
+                isConverting && "border-primary/50 bg-primary/5 animate-pulse-glow"
               )}
             >
-              <input
-                type="file"
-                id="material-upload"
-                onChange={handleFileChange}
-                accept=".txt,.md"
-                className="absolute inset-0 opacity-0 cursor-pointer"
-              />
-              <span className="text-xs text-zinc-400 font-sans font-medium">
-                Drag & Drop `.txt` or `.md` notes here, or{" "}
-                <span className="text-primary hover:underline">browse files</span>
-              </span>
+              {isConverting ? (
+                <div className="flex items-center gap-3 py-1">
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <span className="text-xs text-primary font-mono tracking-wider font-bold uppercase animate-pulse">
+                    Converting via Microsoft MarkItDown...
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    id="material-upload"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    disabled={isConverting}
+                  />
+                  <span className="text-xs text-zinc-400 font-sans font-medium">
+                    Drag & Drop any notes file (.pdf, .docx, .pptx, .xlsx, .md, .txt) here, or{" "}
+                    <span className="text-primary hover:underline">browse files</span>
+                  </span>
+                </>
+              )}
             </div>
 
             <div className="space-y-1.5">

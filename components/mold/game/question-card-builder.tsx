@@ -203,10 +203,16 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
       <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-zinc-500 select-none shrink-0">
         VISUAL_SPECIMEN_PANEL
       </span>
-      <div className="flex-1 flex flex-col gap-4 overflow-y-auto max-h-[450px] md:max-h-[600px] pr-2 custom-scrollbar min-h-0 w-full">
+      <div className={cn(
+        "flex-1 flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar min-h-0 w-full",
+        mode === "below" ? "max-h-[220px]" : "max-h-[450px] md:max-h-[600px]"
+      )}>
         {/* Section 1: Diagram (scroll-protected height to avoid squishing) */}
         {chart && (
-          <div className="flex flex-col gap-1.5 shrink-0 min-h-[280px] h-[280px] w-full">
+          <div className={cn(
+            "flex flex-col gap-1.5 shrink-0 w-full",
+            mode === "below" ? "min-h-[180px] h-[180px]" : "min-h-[280px] h-[280px]"
+          )}>
             <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
               [VISUAL_1: MERMAID_DIAGRAM]
             </span>
@@ -281,7 +287,7 @@ function QuestionCardOptions({ cols = "single" }: { cols?: "single" | "split" | 
   return (
     <div
       className={cn(
-        "grid gap-3 flex-1 overflow-y-auto min-h-0 content-start",
+        "grid gap-3 flex-1 overflow-y-auto min-h-[180px] md:min-h-0 content-start",
         computedCols === "split" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
       )}
       role="radiogroup"
