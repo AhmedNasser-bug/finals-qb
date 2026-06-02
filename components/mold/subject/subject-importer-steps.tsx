@@ -331,47 +331,56 @@ export function Step4PromptBuild({
     }
   }
 
-  const processUploadedFile = React.useCallback(async (file: File) => {
-    if (file.name.endsWith(".txt") || file.name.endsWith(".md")) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const text = event.target?.result as string
-        setUserMaterial((prev) => {
-          const trimmed = prev.trim()
-          return trimmed ? `${trimmed}\n\n${text}` : text
-        })
-      }
-      reader.readAsText(file)
-    } else {
-      // Upload and convert via Microsoft MarkItDown API
-      setIsConverting(true)
-      try {
-        const formData = new FormData()
-        formData.append("file", file)
-        
-        const response = await fetch("/api/convert", {
-          method: "POST",
-          body: formData,
-        })
-        
-        if (!response.ok) {
-          const errData = await response.json()
-          throw new Error(errData.error || "Failed to convert file.")
+  const processUploadedFiles = React.useCallback(async (files: FileList | File[] | null) => {
+    if (!files || files.length === 0) return
+
+    setIsConverting(true)
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        if (file.name.endsWith(".txt") || file.name.endsWith(".md")) {
+          // Read client-side
+          await new Promise<void>((resolve) => {
+            const reader = new FileReader()
+            reader.onload = (event) => {
+              const text = event.target?.result as string
+              setUserMaterial((prev) => {
+                const trimmed = prev.trim()
+                return trimmed ? `${trimmed}\n\n${text}` : text
+              })
+              resolve()
+            }
+            reader.readAsText(file)
+          })
+        } else {
+          // Upload and convert via Microsoft MarkItDown API
+          const formData = new FormData()
+          formData.append("file", file)
+          
+          const response = await fetch("/api/convert", {
+            method: "POST",
+            body: formData,
+          })
+          
+          if (!response.ok) {
+            const errData = await response.json()
+            throw new Error(errData.error || `Failed to convert ${file.name}.`)
+          }
+          
+          const data = await response.json()
+          const convertedText = data.markdown
+          
+          setUserMaterial((prev) => {
+            const trimmed = prev.trim()
+            return trimmed ? `${trimmed}\n\n${convertedText}` : convertedText
+          })
         }
-        
-        const data = await response.json()
-        const convertedText = data.markdown
-        
-        setUserMaterial((prev) => {
-          const trimmed = prev.trim()
-          return trimmed ? `${trimmed}\n\n${convertedText}` : convertedText
-        })
-      } catch (err: any) {
-        console.error("Error converting file:", err)
-        alert(`Conversion Failed: ${err.message || "An unknown error occurred during conversion."}`)
-      } finally {
-        setIsConverting(false)
       }
+    } catch (err: any) {
+      console.error("Error converting files:", err)
+      alert(`Conversion Failed: ${err.message || "An unknown error occurred during conversion."}`)
+    } finally {
+      setIsConverting(false)
     }
   }, [setUserMaterial])
 
@@ -380,16 +389,16 @@ export function Step4PromptBuild({
     e.stopPropagation()
     setDragActive(false)
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      processUploadedFile(e.dataTransfer.files[0])
+    if (e.dataTransfer.files) {
+      processUploadedFiles(e.dataTransfer.files)
     }
-  }, [processUploadedFile])
+  }, [processUploadedFiles])
 
   const handleFileChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      processUploadedFile(e.target.files[0])
+    if (e.target.files) {
+      processUploadedFiles(e.target.files)
     }
-  }, [processUploadedFile])
+  }, [processUploadedFiles])
 
   const downloadStudyPackage = () => {
     if (!userMaterial.trim()) return
@@ -527,9 +536,10 @@ ${userMaterial}
                     onChange={handleFileChange}
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     disabled={isConverting}
+                    multiple
                   />
                   <span className="text-xs text-zinc-400 font-sans font-medium">
-                    Drag & Drop any notes file (.pdf, .docx, .pptx, .xlsx, .md, .txt) here, or{" "}
+                    Drag & Drop any notes files (.pdf, .docx, .pptx, .xlsx, .md, .txt) here, or{" "}
                     <span className="text-primary hover:underline">browse files</span>
                   </span>
                 </>
