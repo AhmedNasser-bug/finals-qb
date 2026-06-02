@@ -63,26 +63,45 @@ function normalizeFlashcards(obj: Record<string, unknown>, warnings: string[]) {
 }
 
 function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) {
+  if (obj.terminology === undefined) return;
+
   if (
     typeof obj.terminology !== "object" ||
     obj.terminology === null ||
     Array.isArray(obj.terminology)
-  ) return;
+  ) {
+    obj.terminology = {}
+  }
 
   const termObj = obj.terminology as Record<string, unknown>
-  const firstVal = Object.values(termObj)[0]
-  if (typeof firstVal === "string") {
-    // Entire map is flat strings — lift into a single _general bucket
-    const entries = Object.entries(termObj)
-    const lifted = new Array(entries.length)
-    for (let i = 0; i < entries.length; i++) {
-      lifted[i] = {
-        term: entries[i][0],
-        definition: entries[i][1] as string,
+  if (Object.keys(termObj).length > 0) {
+    const firstVal = Object.values(termObj)[0]
+    if (typeof firstVal === "string") {
+      // Entire map is flat strings — lift into a single _general bucket
+      const entries = Object.entries(termObj)
+      const lifted = new Array(entries.length)
+      for (let i = 0; i < entries.length; i++) {
+        lifted[i] = {
+          term: entries[i][0],
+          definition: entries[i][1] as string,
+        }
       }
+      obj.terminology = { _general: lifted }
+      warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
     }
-    obj.terminology = { _general: lifted }
-    warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
+  }
+
+  // Auto-generate empty terminology keys for any categories used by questions
+  if (Array.isArray(obj.questions)) {
+    const termDict = obj.terminology as Record<string, unknown>
+    obj.questions.forEach((q: any) => {
+      if (q && typeof q.category === "string" && q.category.trim() !== "") {
+        const cat = q.category.trim()
+        if (!Array.isArray(termDict[cat])) {
+          termDict[cat] = []
+        }
+      }
+    })
   }
 }
 
@@ -136,6 +155,268 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
   if (unknownCondTypes > 0) {
     warnings.push(`achievements: ${unknownCondTypes} entr${unknownCondTypes === 1 ? "y" : "ies"} had unknown condition type — defaulted to runs_gte:1.`)
   }
+}
+
+function autoFixQuestions(obj: Record<string, unknown>, warnings: string[]) {
+  if (!Array.isArray(obj.questions)) return;
+
+  const VALID_DIFFICULTIES = new Set(["Easy", "Medium", "Hard"])
+  const VALID_TYPES = new Set(["MCQ", "TrueFalse"])
+  const seenIds = new Set<string>()
+
+  const newQuestions = []
+  let fixedQuestionsCount = 0
+
+  for (let i = 0; i < obj.questions.length; i++) {
+    const q = obj.questions[i]
+    if (typeof q !== "object" || q === null) {
+      continue
+    }
+
+    const qObj = { ...(q as Record<string, unknown>) }
+    let qFixed = false
+
+    // 1. Auto-Fix ID
+    if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
+      qObj.id = `q-gen-${i + 1}`
+      qFixed = true
+    } else if (seenIds.has(qObj.id)) {
+      const oldId = qObj.id
+      qObj.id = `${oldId}-${i}`
+      seenIds.add(qObj.id)
+      warnings.push(`questions[${i}]: Duplicate ID "${oldId}" automatically renamed to "${qObj.id}".`)
+      qFixed = true
+    } else {
+      seenIds.add(qObj.id)
+    }
+
+    // 2. Auto-Fix Type
+    if (typeof qObj.type !== "string" || !VALID_TYPES.has(qObj.type)) {
+      const originalType = qObj.type
+      qObj.type = Array.isArray(qObj.options) && qObj.options.length === 2 ? "TrueFalse" : "MCQ"
+      warnings.push(`questions[${i}]: Invalid type "${originalType}" automatically set to "${qObj.type}".`)
+      qFixed = true
+    }
+
+    if (qObj.type === "TrueFalse" && Array.isArray(qObj.options) && qObj.options.length !== 2) {
+      qObj.type = "MCQ"
+      warnings.push(`questions[${i}]: TrueFalse question had ${qObj.options.length} options; converted to MCQ.`)
+      qFixed = true
+    }
+
+    // 3. Auto-Fix Difficulty
+    if (typeof qObj.difficulty !== "string" || !VALID_DIFFICULTIES.has(qObj.difficulty)) {
+      qObj.difficulty = "Medium"
+      qFixed = true
+    }
+
+    // 4. Auto-Fix Category
+    if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
+      qObj.category = "general"
+      qFixed = true
+    }
+
+    // 5. Auto-Fix Question Text
+    if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
+      qObj.question = "No question text provided."
+      qFixed = true
+    }
+
+    // 6. Auto-Fix Options
+    if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
+      if (qObj.type === "TrueFalse") {
+        qObj.options = [{ label: "A", text: "True" }, { label: "B", text: "False" }]
+      } else {
+        qObj.options = [
+          { label: "A", text: "Option A" },
+          { label: "B", text: "Option B" },
+          { label: "C", text: "Option C" },
+          { label: "D", text: "Option D" }
+        ]
+      }
+      warnings.push(`questions[${i}]: Missing options — generated default choices.`)
+      qFixed = true
+    }
+
+    const labels = ["A", "B", "C", "D", "E", "F"]
+    const normalizedOptions = qObj.options.map((opt: any, optIdx: number) => {
+      if (typeof opt !== "object" || opt === null) {
+        return { label: labels[optIdx] || "X", text: "Option Option" }
+      }
+      const label = typeof opt.label === "string" && opt.label.trim() !== "" ? opt.label.toUpperCase() : (labels[optIdx] || "X")
+      const text = typeof opt.text === "string" && opt.text.trim() !== "" ? opt.text : `Option ${label}`
+      return { label, text }
+    })
+    qObj.options = normalizedOptions
+
+    // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
+    if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+      qObj.answer = "A"
+      qFixed = true
+    } else {
+      qObj.answer = qObj.answer.toUpperCase().trim()
+      let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer)
+      if (!hasLabel) {
+        const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer)
+        if (matchedOpt) {
+          const oldAnswer = qObj.answer
+          qObj.answer = matchedOpt.label
+          warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`)
+          qFixed = true
+          hasLabel = true
+        } else {
+          // Check for "True" / "False" maps to A / B
+          if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+            const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer)
+            const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer)
+            if (isTrueMatch || isFalseMatch) {
+              const oldAnswer = qObj.answer
+              qObj.answer = isTrueMatch ? "A" : "B"
+              warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`)
+              qFixed = true
+              hasLabel = true
+            }
+          }
+          if (!hasLabel) {
+            const oldAnswer = qObj.answer
+            qObj.answer = normalizedOptions[0].label
+            warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`)
+            qFixed = true
+          }
+        }
+      }
+    }
+
+    // 8. Auto-Fix Explanation and Hint
+    if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
+      qObj.explanation = `Option ${qObj.answer} is correct.`
+      qFixed = true
+    }
+    if (typeof qObj.hint !== "string" || qObj.hint.trim() === "") {
+      qObj.hint = "Focus on the key terminology and relationships described."
+      qFixed = true
+    }
+
+    newQuestions.push(qObj)
+    if (qFixed) fixedQuestionsCount++
+  }
+
+  obj.questions = newQuestions
+}
+
+function autoFixTerminology(obj: Record<string, unknown>, warnings: string[]) {
+  if (
+    typeof obj.terminology !== "object" ||
+    obj.terminology === null ||
+    Array.isArray(obj.terminology)
+  ) {
+    obj.terminology = {}
+  }
+
+  const termDict = obj.terminology as Record<string, unknown>
+
+  // Auto-generate empty terminology keys for any categories used by questions
+  if (Array.isArray(obj.questions)) {
+    obj.questions.forEach((q: any) => {
+      if (q && typeof q.category === "string" && q.category.trim() !== "") {
+        const cat = q.category.trim()
+        if (!Array.isArray(termDict[cat])) {
+          termDict[cat] = []
+        }
+      }
+    })
+  }
+}
+
+function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
+  // Only treat as a subject and auto-fix if it has at least one subject signature key
+  const hasSignature = 
+    Array.isArray(obj.questions) || 
+    Array.isArray(obj.flashcards) || 
+    (typeof obj.terminology === "object" && obj.terminology !== null && !Array.isArray(obj.terminology)) ||
+    typeof obj.name === "string" ||
+    (typeof obj.config === "object" && obj.config !== null && !Array.isArray(obj.config))
+
+  if (!hasSignature) return;
+
+  // 1. Recover Name and ID
+  if (typeof obj.name !== "string" || obj.name.trim() === "") {
+    obj.name = "Imported Subject"
+    warnings.push(`"name" was missing or invalid; defaulted to "Imported Subject".`)
+  }
+  
+  if (typeof obj.id !== "string" || obj.id.trim() === "") {
+    const slug = (obj.name as string).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+    obj.id = slug || "imported-subject"
+    warnings.push(`"id" was missing or invalid; automatically generated "${obj.id}" based on subject name.`)
+  }
+
+  // 2. Recover Config Block
+  if (typeof obj.config !== "object" || obj.config === null || Array.isArray(obj.config)) {
+    obj.config = {
+      title: obj.name,
+      description: `Pedagogical study subject generated for ${obj.name}.`
+    }
+    warnings.push(`"config" block was missing or invalid; generated default config block.`)
+  } else {
+    const config = obj.config as Record<string, unknown>
+    if (typeof config.title !== "string" || config.title.trim() === "") {
+      config.title = obj.name
+      warnings.push(`"config.title" was missing; defaulted to subject name.`)
+    }
+    if (typeof config.description !== "string" || config.description.trim() === "") {
+      config.description = `Study subject generated for ${obj.name}.`
+      warnings.push(`"config.description" was missing; generated placeholder description.`)
+    }
+  }
+
+  // 3. Recover Questions Array
+  if (!Array.isArray(obj.questions)) {
+    obj.questions = []
+    warnings.push(`"questions" array was missing or invalid; initialized as empty array.`)
+  }
+  
+  if (obj.questions.length === 0) {
+    obj.questions = [
+      {
+        id: "q-default-1",
+        type: "MCQ",
+        difficulty: "Medium",
+        category: "general",
+        question: `Welcome to ${obj.name}! This is a placeholder question generated during recovery.`,
+        options: [
+          { label: "A", text: "Ready to start" },
+          { label: "B", text: "Ready to learn" }
+        ],
+        answer: "A",
+        explanation: "Placeholder question generated during import validation recovery.",
+        hint: "Select option A to proceed."
+      }
+    ]
+    warnings.push(`"questions" array was empty; seeded a default placeholder question to ensure subject remains playable.`)
+  }
+
+  // 4. Recover Flashcards Array
+  if (!Array.isArray(obj.flashcards)) {
+    obj.flashcards = []
+    warnings.push(`"flashcards" array was missing or invalid; initialized as empty array.`)
+  }
+
+  // 5. Recover Terminology Object
+  if (typeof obj.terminology !== "object" || obj.terminology === null || Array.isArray(obj.terminology)) {
+    obj.terminology = {}
+    warnings.push(`"terminology" dictionary was missing or invalid; initialized as empty object.`)
+  }
+
+  // 6. Recover Achievements Array
+  if (!Array.isArray(obj.achievements)) {
+    obj.achievements = []
+    warnings.push(`"achievements" array was missing or invalid; initialized as empty array.`)
+  }
+
+  // 7. Invoke deeply nested corrections
+  autoFixQuestions(obj, warnings)
+  autoFixTerminology(obj, warnings)
 }
 
 function validateConfigBlock(obj: Record<string, unknown>, errors: string[]) {
@@ -462,13 +743,22 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
  * Incorporates automated JSON repairs for common syntax errors.
  */
 export function parseSubjectJson(raw: string): { data: unknown; parseError?: never; fixedWarnings?: string[] } | { data?: never; parseError: string; fixedWarnings?: never } {
+  const fixedWarnings: string[] = []
   try {
-    return { data: JSON.parse(raw) }
+    const parsed = JSON.parse(raw)
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      autoFixSubjectData(parsed, fixedWarnings)
+    }
+    return { data: parsed, fixedWarnings }
   } catch (e) {
     const { repaired, fixedIssues } = repairJson(raw)
+    fixedWarnings.push(...fixedIssues)
     try {
       const parsed = JSON.parse(repaired)
-      return { data: parsed, fixedWarnings: fixedIssues }
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        autoFixSubjectData(parsed, fixedWarnings)
+      }
+      return { data: parsed, fixedWarnings }
     } catch (err) {
       const msg = e instanceof SyntaxError ? e.message : "Invalid JSON."
       return { parseError: `JSON parse error: ${msg}` }
