@@ -544,6 +544,9 @@ These rules were agreed on during the code review and must be preserved:
 21. **Decoupled Auto-Fix Architecture:** The automated JSON parser recovery engine (`autoFixSubjectData`) must remain strictly decoupled from the core validation logic (`validateSubjectData`). Validation checks must verify raw schemas strictly without mutations to preserve unit-testing assertion integrity. All auto-fixes must reside exclusively in the import/parse layer.
 22. **Graceful Parse Degradation:** Automated fixes should silently map option-answer mismatches, normalize true/false boolean text to label indicators (`"A"`/`"B"`), resolve duplicate question IDs with indexing, and seed default collections and config elements. An orange warnings log must detail all recovery adjustments in the importer diagnostics screen.
 23. **Generic JSON Bypass**: Ensure that any parsing recovery scripts inspect raw objects for specific subject keys (`hasSignature`) before applying recovery changes, preventing side effects on generic configuration payloads or sharing metadata.
+24. **Package Manager Selection (PNPM Only)**: Under no circumstances should `npm` or `yarn` be invoked for managing dependencies, executing scripts, or building the project. Always use `pnpm` exclusively (e.g., `pnpm install`, `pnpm test`, `pnpm build`, `pnpm dev`).
+25. **Terminal Command Chaining (Semicolon Rule)**: To ensure cross-platform safety (especially when running scripts on Windows hosts under PowerShell/CMD), never chain terminal shell commands with double-ampersands (`&&`). Always use semicolons (`;`) to separate commands or run them as independent process executions.
+
 
 
 ---
