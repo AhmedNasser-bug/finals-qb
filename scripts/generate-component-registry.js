@@ -91,8 +91,10 @@ async function processComponent(filePath) {
     edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
   }
 
+  const relativePath = path.relative(path.join(__dirname, '..'), filePath).replace(/\\/g, '/');
+
   return `
-### \`${filePath.split(path.sep).slice(-3).join('/')}\`
+### \`${relativePath}\`
 
 **Module Name:** ${moduleName}
 
