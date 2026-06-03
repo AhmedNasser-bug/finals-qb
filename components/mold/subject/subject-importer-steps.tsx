@@ -610,6 +610,7 @@ ${bundledSourceMaterial}
               type="button"
               onClick={downloadStudyPackage}
               disabled={!hasMaterial}
+              aria-disabled={!hasMaterial}
               className={cn(
                 "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2",
                 hasMaterial
@@ -646,6 +647,7 @@ ${bundledSourceMaterial}
               </span>
               <button
                 type="button"
+                aria-label={promptCopied ? "Prompt copied to clipboard" : "Copy prompt to clipboard"}
                 onClick={() => onCopyPrompt(compiledPrompt)}
                 className={cn(
                   "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer",

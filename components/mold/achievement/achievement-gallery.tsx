@@ -77,6 +77,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
           <button
             onClick={reset}
             title="Reset all achievements"
+            aria-label="Reset all achievements"
             className="text-xs font-mono text-muted-foreground hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
           >
             RESET ALL
