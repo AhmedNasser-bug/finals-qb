@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { spawn } from "child_process"
-import { writeFile, unlink } from "fs/promises"
-import { join } from "path"
-import { tmpdir } from "os"
-import { existsSync } from "fs"
 
 export async function POST(req: NextRequest) {
-  let tempFilePath = ""
   try {
     const formData = await req.formData()
     const file = formData.get("file") as File | null
@@ -14,83 +8,48 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file uploaded." }, { status: 400 })
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer())
-    tempFilePath = join(tmpdir(), `upload-${Date.now()}-${file.name}`)
-    await writeFile(tempFilePath, buffer)
+    const SERVICE_URL = process.env.MARKITDOWN_SERVICE_URL
+    const SERVICE_KEY = process.env.MARKITDOWN_API_KEY
 
-    // Detect Python virtual environment (.venv) or fallback to system python
-    const localVenvWin = join(process.cwd(), ".venv", "Scripts", "python.exe")
-    const localVenvUnix = join(process.cwd(), ".venv", "bin", "python")
-    
-    let pythonExecutable = "python"
-    if (existsSync(localVenvWin)) {
-      pythonExecutable = localVenvWin
-    } else if (existsSync(localVenvUnix)) {
-      pythonExecutable = localVenvUnix
-    } else if (process.platform !== "win32") {
-      pythonExecutable = "python3"
-    }
-
-    // Spawn python to convert
-    const scriptPath = join(process.cwd(), "scripts", "convert_material.py")
-    const pythonProcess = spawn(pythonExecutable, [scriptPath, tempFilePath])
-
-    let stdoutData = ""
-    let stderrData = ""
-
-    pythonProcess.stdout.on("data", (data) => {
-      stdoutData += data.toString("utf-8")
-    })
-
-    pythonProcess.stderr.on("data", (data) => {
-      stderrData += data.toString("utf-8")
-    })
-
-    const exitCode = await new Promise<number>((resolve, reject) => {
-      pythonProcess.on("error", (err) => {
-        reject(err)
-      })
-      pythonProcess.on("close", (code) => {
-        resolve(code ?? 0)
-      })
-    })
-
-    // Clean up temp file
-    try {
-      await unlink(tempFilePath)
-      tempFilePath = ""
-    } catch (e) {
-      console.error("Error unlinking temp file:", e)
-    }
-
-    if (exitCode !== 0) {
-      return NextResponse.json(
-        { error: `Python converter failed with code ${exitCode}: ${stderrData}` },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({ markdown: stdoutData })
-  } catch (error: any) {
-    // Clean up temp file if it was created and not yet unlinked
-    if (tempFilePath) {
-      try {
-        await unlink(tempFilePath)
-      } catch (e) {
-        // ignore cleanup error in catch block
-      }
-    }
-
-    if (error.code === "ENOENT") {
+    if (!SERVICE_URL) {
       return NextResponse.json(
         {
-          error: "Microsoft MarkItDown file conversion is only supported in a local environment with Python. " +
-                 "To convert multi-format study guides (PDFs, Word docs, Excel sheets, PowerPoint slides), " +
-                 "please run MOLD V2 locally ('pnpm dev') with a Python virtual environment (.venv) configured!"
+          error: "Microsoft MarkItDown file conversion is only supported via a deployed microservice. " +
+                 "Please configure the 'MARKITDOWN_SERVICE_URL' and 'MARKITDOWN_API_KEY' environment variables!"
         },
         { status: 503 }
       )
     }
+
+    const apiFormData = new FormData()
+    apiFormData.append("file", file)
+
+    const response = await fetch(`${SERVICE_URL.replace(/\/$/, "")}/convert`, {
+      method: "POST",
+      headers: {
+        "X-API-Key": SERVICE_KEY || "",
+      },
+      body: apiFormData,
+    })
+
+    if (!response.ok) {
+      const errText = await response.text()
+      let errMsg = "Service conversion failed."
+      try {
+        const errJson = JSON.parse(errText)
+        errMsg = errJson.error || errMsg
+      } catch (e) {
+        errMsg = errText || errMsg
+      }
+      return NextResponse.json(
+        { error: `Microservice conversion failed with status ${response.status}: ${errMsg}` },
+        { status: response.status }
+      )
+    }
+
+    const data = await response.json()
+    return NextResponse.json({ markdown: data.markdown })
+  } catch (error: any) {
     return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
   }
 }
