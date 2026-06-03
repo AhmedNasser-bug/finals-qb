@@ -506,7 +506,11 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
     }
 
     if (!labelExists) {
-      const labels = (qObj.options as Record<string, unknown>[]).map((opt) => opt.label)
+      const options = qObj.options as Record<string, unknown>[];
+      const labels = new Array(options.length);
+      for (let k = 0; k < options.length; k++) {
+        labels[k] = options[k].label;
+      }
       errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
     }
     if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
@@ -684,6 +688,7 @@ function balanceJsonStack(str: string): string {
   }
   
   let balanced = str.trim()
+  const suffixes: string[] = []
   if (inString) balanced += '"'
   
   if (balanced.endsWith(",")) {
@@ -692,11 +697,11 @@ function balanceJsonStack(str: string): string {
   
   while (stack.length > 0) {
     const top = stack.pop()
-    if (top === '{') balanced += '}'
-    else if (top === '[') balanced += ']'
+    if (top === '{') suffixes.push('}')
+    else if (top === '[') suffixes.push(']')
   }
   
-  return balanced
+  return balanced + suffixes.join('')
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {

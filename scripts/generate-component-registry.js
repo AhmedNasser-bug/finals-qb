@@ -31,13 +31,20 @@ function extractInterface(content, componentName) {
 
 async function processComponent(filePath) {
   const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  let content = '';
+  const chunks = [];
   for await (const chunk of stream) {
-    content += chunk;
+    chunks.push(chunk);
   }
+  const content = chunks.join('');
 
   const fileName = path.basename(filePath);
-  const moduleName = fileName.replace('.tsx', '').split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-');
+  const nameParts = fileName.replace('.tsx', '').split('-');
+  const capitalizedParts = new Array(nameParts.length);
+  for (let i = 0; i < nameParts.length; i++) {
+    const w = nameParts[i];
+    capitalizedParts[i] = w.charAt(0).toUpperCase() + w.slice(1);
+  }
+  const moduleName = capitalizedParts.join('-');
 
   const isClient = content.includes('"use client"') || content.includes("'use client'");
   const hasChildren = content.includes('children') || content.includes('ReactNode');
