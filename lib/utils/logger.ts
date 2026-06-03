@@ -13,17 +13,19 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // Private keys
-    pattern: /(-----BEGIN[\s\w]+PRIVATE KEY-----[\s\S]+?-----END[\s\w]+PRIVATE KEY-----)/g,
-    replacement: '[REDACTED]'
+    pattern: /(-----BEGIN[A-Z0-9-\s]+PRIVATE KEY-----)([\s\S]+?)(-----END[A-Z0-9-\s]+PRIVATE KEY-----)/g,
+    replacement: '$1\n[REDACTED]\n$3'
   },
   {
     // Common secrets and PII
-    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(["'])(.*?)\2|([^,\]\}\s]+))/gi,
-    replacement: (match: string, p1: string, p2: string, p3: string, p4: string) => {
-      if (p4 && (p4.startsWith('[') || p4.startsWith('{'))) {
+    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(")([^"]*)(")|(')([^']*)(')|([^,\]\}\s]+))/gi,
+    replacement: (match: string, p1: string, p2: string, p3: string, p4: string, p5: string, p6: string, p7: string, p8: string) => {
+      if (p8 && (p8.startsWith('[') || p8.startsWith('{'))) {
         return match;
       }
-      return p1 + (p2 ? p2 + "[REDACTED]" + p2 : '"[REDACTED]"');
+      if (p2) return p1 + p2 + "[REDACTED]" + p4;
+      if (p5) return p1 + p5 + "[REDACTED]" + p7;
+      return p1 + '"[REDACTED]"';
     }
   },
   {
