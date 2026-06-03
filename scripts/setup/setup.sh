@@ -45,12 +45,12 @@ mkdir -p docs
 # Create a mock database seed structure as per orchestration requirements
 mkdir -p .data/seeds
 if [ ! -f .data/seeds/default-tenant.json ]; then
-cat <<EOF2 > .data/seeds/default-tenant.json
+cat <<EOF3 > .data/seeds/default-tenant.json
 {
   "tenants": ["tenant-a", "tenant-b"],
   "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
-EOF2
+EOF3
 echo "Mock database seeded."
 else
     echo "Mock database already seeded."

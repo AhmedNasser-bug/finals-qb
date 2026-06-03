@@ -1,37 +1,18 @@
 # Developer Onboarding Playbook
 
-## 1. Workspace Setup & Initialization
+## **1. Workspace Setup & Initialization**
+To configure your workspace, execute the multi-tenant sandbox orchestration script:
+- Run **`./scripts/setup/setup.sh --multi-tenant`** to spin up isolated multi-tenant containers via Docker Compose.
+- This automates dependency installation via `pnpm`, seeds `.data/seeds/default-tenant.json` idempotently, and starts Next.js for each tenant.
 
-Follow these steps to initialize your local workspace and start the multi-tenant development sandbox:
-
-1. **Enable Package Manager:**
-   Run the following command to enable `pnpm` safely using Corepack:
-   ```bash
-   corepack enable pnpm
-   ```
-
-2. **Bootstrap the Environment:**
-   Run the idempotent setup script to seed mock data and spin up Docker containers for multi-tenant setups:
-   ```bash
-   ./scripts/setup/setup.sh --multi-tenant
-   ```
-   **Note:** This script automatically creates `.data/seeds/default-tenant.json` idempotently and mounts isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) dynamically via `NEXT_DIST_DIR`.
-
-## 2. Testing Workflows
-
+## **2. Testing Workflows**
 The repository uses the native `node:test` runner.
+- Run **`pnpm test`** to execute all relevant localized unit tests.
+- This uses `--experimental-strip-types` to seamlessly interpret TypeScript. Do not use Jest or Vitest.
+- For frontend visual testing, run the dev server via **`pnpm dev`** and visually verify components.
 
-1. **Execute All Tests:**
-   Run the following command to execute all relevant tests.
-   ```bash
-   pnpm test
-   ```
-   **Note:** The test execution command uses `--experimental-strip-types` and `--import ./test-runner.mjs` to seamlessly interpret TypeScript and path aliases within the local environment.
-
-## 3. Pull Request Validation Rules
-
-Before creating a Pull Request, ensure that the following requirements are met:
-
-- **Pre-commit Steps:** Always execute unit tests (`pnpm test`) immediately before the pre-commit phase to comply with the Completeness Rule.
-- **Architectural Traceability:** Any logic modified must align with `docs/architecture/cross-module-traceability/`.
-- **Idempotency:** Any new initialization processes introduced must remain idempotent (e.g. check for existing seeds before creating).
+## **3. PR Validation Rules**
+Before submitting a PR, ensure that the following requirements are met:
+- **Test Coverage:** All logic changes must be covered, and **`pnpm test`** must yield a 100% success rate.
+- **Pre-commit Steps:** Execute unit tests and perform visual verification of any UI changes prior to the pre-commit phase using Playwright scripts.
+- **Architectural Traceability:** Any logic modified must align with granular documents in `docs/architecture/cross-module-traceability/`.

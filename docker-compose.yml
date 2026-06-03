@@ -1,5 +1,6 @@
 services:
   tenant-a:
+    # Managed by setup.sh orchestration
     image: node:alpine
     working_dir: /app
     volumes:
