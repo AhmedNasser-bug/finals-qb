@@ -546,8 +546,7 @@ These rules were agreed on during the code review and must be preserved:
 23. **Generic JSON Bypass**: Ensure that any parsing recovery scripts inspect raw objects for specific subject keys (`hasSignature`) before applying recovery changes, preventing side effects on generic configuration payloads or sharing metadata.
 24. **Package Manager Selection (PNPM Only)**: Under no circumstances should `npm` or `yarn` be invoked for managing dependencies, executing scripts, or building the project. Always use `pnpm` exclusively (e.g., `pnpm install`, `pnpm test`, `pnpm build`, `pnpm dev`).
 25. **Terminal Command Chaining (Semicolon Rule)**: To ensure cross-platform safety (especially when running scripts on Windows hosts under PowerShell/CMD), never chain terminal shell commands with double-ampersands (`&&`). Always use semicolons (`;`) to separate commands or run them as independent process executions.
-
-
+26. **Automated Documentation Self-Annealing Rule**: To keep project documentation and constraints unified, accurate, and completely synchronized, agents MUST auto-invoke the [Self-Annealing Workflow (self_annealing)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/workflows/self_annealing.md) every five turns. This ensures constraints are matched with code and obsolete rules are automatically pruned.
 
 ---
 
@@ -561,4 +560,6 @@ Standardized, recurring recipes, workflows, and execution protocols are availabl
 2. **[PR Triage, Release Orchestration, and Session Cleanup (Skill)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/skills/pr-triage-release-cleanup.md):**
    - **Trigger:** When requested to act as an automated triage, merge, or cleanup agent for git branches, Vercel deployment issues, and jules CLI remote sessions.
    - **Prerequisites:** Git write permissions, `jules` CLI, Node.js, `test-runner.mjs`.
-
+3. **[Self-Annealing Documentation and Rules (Workflow)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/workflows/self_annealing.md):**
+   - **Trigger:** Required automatically every five conversation turns (Rule 26) to scan, reconcile, and sync codebase configuration rules and constraint documentation.
+   - **Prerequisites:** Codebase access to `AGENTS.md`, `pnpm` package manager.
