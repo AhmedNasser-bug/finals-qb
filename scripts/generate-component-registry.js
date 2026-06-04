@@ -31,13 +31,21 @@ function extractInterface(content, componentName) {
 
 async function processComponent(filePath) {
   const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  let content = '';
+  const chunks = [];
   for await (const chunk of stream) {
-    content += chunk;
+    chunks.push(chunk);
   }
+  const content = chunks.join('');
 
   const fileName = path.basename(filePath);
-  const moduleName = fileName.replace('.tsx', '').split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-');
+  const parts = fileName.replace('.tsx', '').split('-');
+  const length = parts.length;
+  const words = new Array(length);
+  for (let i = 0; i < length; i++) {
+    const w = parts[i];
+    words[i] = w.charAt(0).toUpperCase() + w.slice(1);
+  }
+  const moduleName = words.join('-');
 
   const isClient = content.includes('"use client"') || content.includes("'use client'");
   const hasChildren = content.includes('children') || content.includes('ReactNode');
@@ -91,8 +99,10 @@ async function processComponent(filePath) {
     edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
   }
 
+  const relativePath = path.relative(path.join(__dirname, '..'), filePath);
+
   return `
-### \`${filePath.split(path.sep).slice(-3).join('/')}\`
+### \`${relativePath}\`
 
 **Module Name:** ${moduleName}
 

@@ -19,7 +19,7 @@ This registry outlines the exact properties, slots, state dependencies, and perf
 
 ## Component Definitions
 
-### `finals-qb/app/layout.tsx`
+### `app/layout.tsx`
 
 **Module Name:** Layout
 
@@ -44,7 +44,7 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `finals-qb/app/page.tsx`
+### `app/page.tsx`
 
 **Module Name:** Page
 
@@ -97,7 +97,7 @@ None specified or inline props
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 
 
-### `mold/achievement/achievement-gallery.tsx`
+### `components/mold/achievement/achievement-gallery.tsx`
 
 **Module Name:** Achievement-Gallery
 
@@ -123,7 +123,7 @@ None specified or inline props
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/achievement/achievement-toast.tsx`
+### `components/mold/achievement/achievement-toast.tsx`
 
 **Module Name:** Achievement-Toast
 
@@ -150,7 +150,7 @@ id: string
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/common/encyclopedia-overlay.tsx`
+### `components/mold/common/encyclopedia-overlay.tsx`
 
 **Module Name:** Encyclopedia-Overlay
 
@@ -177,7 +177,7 @@ subject: FullSubjectData
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/common/footer.tsx`
+### `components/mold/common/footer.tsx`
 
 **Module Name:** Footer
 
@@ -203,7 +203,7 @@ rightText?: string
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/common/guide-overlay.tsx`
+### `components/mold/common/guide-overlay.tsx`
 
 **Module Name:** Guide-Overlay
 
@@ -230,7 +230,7 @@ open: boolean
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/common/mermaid-diagram.tsx`
+### `components/mold/common/mermaid-diagram.tsx`
 
 **Module Name:** Mermaid-Diagram
 
@@ -258,7 +258,7 @@ code: DiagramErrorCode
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 
-### `mold/common/onboarding-screen.tsx`
+### `components/mold/common/onboarding-screen.tsx`
 
 **Module Name:** Onboarding-Screen
 
@@ -285,7 +285,7 @@ mode: GameMode;
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/common/rich-text.tsx`
+### `components/mold/common/rich-text.tsx`
 
 **Module Name:** Rich-Text
 
@@ -314,7 +314,7 @@ content: string
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 
-### `mold/common/share-modal-blocks.tsx`
+### `components/mold/common/share-modal-blocks.tsx`
 
 **Module Name:** Share-Modal-Blocks
 
@@ -351,7 +351,7 @@ encoding: boolean;
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/common/share-modal.tsx`
+### `components/mold/common/share-modal.tsx`
 
 **Module Name:** Share-Modal
 
@@ -378,7 +378,7 @@ subject: FullSubjectData
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/flashcard/flashcard-components.tsx`
+### `components/mold/flashcard/flashcard-components.tsx`
 
 **Module Name:** Flashcard-Components
 
@@ -409,7 +409,7 @@ onQuit: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/flashcard/flashcard-screen-blocks.tsx`
+### `components/mold/flashcard/flashcard-screen-blocks.tsx`
 
 **Module Name:** Flashcard-Screen-Blocks
 
@@ -439,7 +439,7 @@ card: Flashcard;
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/flashcard/flashcard-screen.tsx`
+### `components/mold/flashcard/flashcard-screen.tsx`
 
 **Module Name:** Flashcard-Screen
 
@@ -466,7 +466,7 @@ flashcards: Flashcard[]
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/game/game-error-boundary.tsx`
+### `components/mold/game/game-error-boundary.tsx`
 
 **Module Name:** Game-Error-Boundary
 
@@ -494,7 +494,7 @@ onReturnHome: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/game/game-footer.tsx`
+### `components/mold/game/game-footer.tsx`
 
 **Module Name:** Game-Footer
 
@@ -524,7 +524,7 @@ onHintRequest: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/game/game-header.tsx`
+### `components/mold/game/game-header.tsx`
 
 **Module Name:** Game-Header
 
@@ -550,7 +550,7 @@ None specified or inline props
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/game/game-icons.tsx`
+### `components/mold/game/game-icons.tsx`
 
 **Module Name:** Game-Icons
 
@@ -575,7 +575,7 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/game/game-runner.tsx`
+### `components/mold/game/game-runner.tsx`
 
 **Module Name:** Game-Runner
 
@@ -609,7 +609,7 @@ config: GameConfig
 - Implements explicit fallback UIs for critical asynchronous or failing boundaries.
 
 
-### `mold/game/game-stat-cell.tsx`
+### `components/mold/game/game-stat-cell.tsx`
 
 **Module Name:** Game-Stat-Cell
 
@@ -634,7 +634,7 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/game/question-card-blocks.tsx`
+### `components/mold/game/question-card-blocks.tsx`
 
 **Module Name:** Question-Card-Blocks
 
@@ -661,7 +661,7 @@ None specified or inline props
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 
-### `mold/game/question-card-builder.tsx`
+### `components/mold/game/question-card-builder.tsx`
 
 **Module Name:** Question-Card-Builder
 
@@ -697,7 +697,7 @@ idx: number
 - Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.
 
 
-### `mold/game/question-card-components.tsx`
+### `components/mold/game/question-card-components.tsx`
 
 **Module Name:** Question-Card-Components
 
@@ -723,7 +723,7 @@ None specified or inline props
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/game/question-card.tsx`
+### `components/mold/game/question-card.tsx`
 
 **Module Name:** Question-Card
 
@@ -748,7 +748,7 @@ None specified or inline props
 - Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 
-### `mold/game/results-screen-components.tsx`
+### `components/mold/game/results-screen-components.tsx`
 
 **Module Name:** Results-Screen-Components
 
@@ -776,7 +776,7 @@ elapsedSeconds: number
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/game/results-screen.tsx`
+### `components/mold/game/results-screen.tsx`
 
 **Module Name:** Results-Screen
 
@@ -803,7 +803,7 @@ onReturnHome: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/achievements-panel.tsx`
+### `components/mold/home/achievements-panel.tsx`
 
 **Module Name:** Achievements-Panel
 
@@ -832,7 +832,7 @@ id: string
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/action-hub.tsx`
+### `components/mold/home/action-hub.tsx`
 
 **Module Name:** Action-Hub
 
@@ -861,7 +861,7 @@ onInitialize: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/header-well.tsx`
+### `components/mold/home/header-well.tsx`
 
 **Module Name:** Header-Well
 
@@ -889,7 +889,7 @@ subjectName: string
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/home/hero-header.tsx`
+### `components/mold/home/hero-header.tsx`
 
 **Module Name:** Hero-Header
 
@@ -920,7 +920,7 @@ subject: SubjectData
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/home-screen.tsx`
+### `components/mold/home/home-screen.tsx`
 
 **Module Name:** Home-Screen
 
@@ -954,7 +954,7 @@ Utilizes memoization: useMemo to prevent unnecessary re-renders.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/mode-selector.tsx`
+### `components/mold/home/mode-selector.tsx`
 
 **Module Name:** Mode-Selector
 
@@ -983,7 +983,7 @@ selected: GameModeId
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/performance-table.tsx`
+### `components/mold/home/performance-table.tsx`
 
 **Module Name:** Performance-Table
 
@@ -1010,7 +1010,7 @@ runs: RunRecord[]
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/home/session-stats-panel.tsx`
+### `components/mold/home/session-stats-panel.tsx`
 
 **Module Name:** Session-Stats-Panel
 
@@ -1035,7 +1035,7 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/home/setup-panel-blocks.tsx`
+### `components/mold/home/setup-panel-blocks.tsx`
 
 **Module Name:** Setup-Panel-Blocks
 
@@ -1062,7 +1062,7 @@ config: SetupConfig
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/setup-panel.tsx`
+### `components/mold/home/setup-panel.tsx`
 
 **Module Name:** Setup-Panel
 
@@ -1092,7 +1092,7 @@ config: SetupConfig
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/side-nav-bar.tsx`
+### `components/mold/home/side-nav-bar.tsx`
 
 **Module Name:** Side-Nav-Bar
 
@@ -1126,7 +1126,7 @@ subjectId: string
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/stats-screen.tsx`
+### `components/mold/home/stats-screen.tsx`
 
 **Module Name:** Stats-Screen
 
@@ -1152,7 +1152,7 @@ onReturnHome: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/home/streak-ascent.tsx`
+### `components/mold/home/streak-ascent.tsx`
 
 **Module Name:** Streak-Ascent
 
@@ -1180,7 +1180,7 @@ currentStreak: number
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/home/subject-visual-card.tsx`
+### `components/mold/home/subject-visual-card.tsx`
 
 **Module Name:** Subject-Visual-Card
 
@@ -1206,7 +1206,7 @@ subjectId: string
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/home/telemetry-panel.tsx`
+### `components/mold/home/telemetry-panel.tsx`
 
 **Module Name:** Telemetry-Panel
 
@@ -1231,7 +1231,7 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/home/top-nav-bar.tsx`
+### `components/mold/home/top-nav-bar.tsx`
 
 **Module Name:** Top-Nav-Bar
 
@@ -1261,7 +1261,7 @@ activeSubjectName?: string
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/example-module-card.tsx`
+### `components/mold/subject/example-module-card.tsx`
 
 **Module Name:** Example-Module-Card
 
@@ -1290,7 +1290,7 @@ entry: ExampleManifestEntry
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/share-receiver.tsx`
+### `components/mold/subject/share-receiver.tsx`
 
 **Module Name:** Share-Receiver
 
@@ -1321,7 +1321,7 @@ No explicit memoization hooks (useMemo/useCallback) used.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/subject-importer-blocks.tsx`
+### `components/mold/subject/subject-importer-blocks.tsx`
 
 **Module Name:** Subject-Importer-Blocks
 
@@ -1348,7 +1348,7 @@ promptCopied: boolean
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/subject-importer-components.tsx`
+### `components/mold/subject/subject-importer-components.tsx`
 
 **Module Name:** Subject-Importer-Components
 
@@ -1374,7 +1374,7 @@ None specified or inline props
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/subject-importer-steps.tsx`
+### `components/mold/subject/subject-importer-steps.tsx`
 
 **Module Name:** Subject-Importer-Steps
 
@@ -1405,7 +1405,7 @@ topic: string
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/subject-importer.tsx`
+### `components/mold/subject/subject-importer.tsx`
 
 **Module Name:** Subject-Importer
 
@@ -1434,7 +1434,7 @@ onImport: (subject: FullSubjectData) => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/subject-selector-blocks.tsx`
+### `components/mold/subject/subject-selector-blocks.tsx`
 
 **Module Name:** Subject-Selector-Blocks
 
@@ -1467,7 +1467,7 @@ subjects: FullSubjectData[]
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/subject-selector-components.tsx`
+### `components/mold/subject/subject-selector-components.tsx`
 
 **Module Name:** Subject-Selector-Components
 
@@ -1492,7 +1492,7 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
-### `mold/subject/subject-selector.tsx`
+### `components/mold/subject/subject-selector.tsx`
 
 **Module Name:** Subject-Selector
 
@@ -1522,7 +1522,7 @@ subjects: FullSubjectData[]
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `mold/subject/user-subject-card.tsx`
+### `components/mold/subject/user-subject-card.tsx`
 
 **Module Name:** User-Subject-Card
 
@@ -1555,7 +1555,7 @@ full: FullSubjectData
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
-### `finals-qb/components/theme-provider.tsx`
+### `components/theme-provider.tsx`
 
 **Module Name:** Theme-Provider
 
