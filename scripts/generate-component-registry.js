@@ -31,10 +31,11 @@ function extractInterface(content, componentName) {
 
 async function processComponent(filePath) {
   const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  let content = '';
+  let chunks = [];
   for await (const chunk of stream) {
-    content += chunk;
+    chunks.push(chunk);
   }
+  const content = chunks.join('');
 
   const fileName = path.basename(filePath);
   const moduleName = fileName.replace('.tsx', '').split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-');
@@ -92,7 +93,7 @@ async function processComponent(filePath) {
   }
 
   return `
-### \`${filePath.split(path.sep).slice(-3).join('/')}\`
+### \`${path.relative(path.join(__dirname, '..'), filePath)}\`
 
 **Module Name:** ${moduleName}
 
