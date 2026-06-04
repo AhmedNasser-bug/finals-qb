@@ -18,7 +18,10 @@ export function OptionButton({
     <button
       role="radio"
       aria-checked={isSelected}
+      aria-disabled={isRevealed}
       disabled={isRevealed}
+      aria-label={`Select Option ${label}`}
+      title={`Select Option ${label}`}
       onClick={onSelect}
       className={cn(
         "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
