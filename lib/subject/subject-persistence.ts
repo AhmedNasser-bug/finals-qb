@@ -710,80 +710,89 @@ function balanceJsonStack(str: string): string {
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   let repaired = ""
   let inString = false
-  let inMathMode = false
   let fixed = false
+
+  // Set of LaTeX/MathEx command words that start with valid JSON escape chars (b, f, n, r, t, u)
+  const LATEX_WORDS = new Set([
+    // t-words
+    "theta", "times", "tan", "tau", "tilde", "text", "tfrac", "top", "triangle", "to", "translate", "transpose", "trace", "textbf", "textit", "texttt",
+    // b-words
+    "beta", "bar", "begin", "binom", "bold", "boldsymbol", "box", "bullet", "bmatrix", "mathbf", "mathbb",
+    // f-words
+    "frac", "forall", "flat", "frame",
+    // n-words
+    "nabla", "neg", "neq", "new", "node", "norm", "not", "nu", "nearrow", "nexists", "nobreak", "normalsize",
+    // r-words
+    "rho", "right", "real", "ref", "ring", "rightarrow", "mathrm", "ran",
+    // u-words
+    "uparrow", "underbar", "usebox", "underbrace", "under", "Uparrow"
+  ])
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (char === '"' && str[i - 1] !== '\\') {
       repaired += '"'
       inString = !inString
-      if (!inString) inMathMode = false // Reset math mode on string exit
       continue
     }
 
-    if (inString) {
-      // Toggle math mode when encountering an unescaped dollar sign
-      if (char === '$' && str[i - 1] !== '\\') {
-        inMathMode = !inMathMode
-        repaired += '$'
+    if (inString && char === '\\') {
+      const nextChar = str[i + 1]
+
+      if (nextChar === undefined) {
+        repaired += '\\\\'
+        fixed = true
         continue
       }
 
-      if (char === '\\') {
-        const nextChar = str[i + 1]
+      // Check if it's a LaTeX command starting with b, f, n, r, t, u
+      if (/[bfnrtu]/i.test(nextChar)) {
+        // Extract the alphabetical word starting at nextChar
+        let word = ""
+        let j = i + 1
+        while (j < str.length && /[a-zA-Z]/.test(str[j])) {
+          word += str[j]
+          j++
+        }
 
-        if (nextChar === undefined) {
+        // If the extracted word is a known LaTeX command, double escape the backslash!
+        if (LATEX_WORDS.has(word.toLowerCase())) {
           repaired += '\\\\'
           fixed = true
           continue
         }
+      }
 
-        // If in math mode, force double-escape any single backslash
-        if (inMathMode) {
-          if (nextChar === '\\') {
-            repaired += '\\\\'
-            i++ // Skip the second backslash as it is already escaped
-          } else {
-            repaired += '\\\\'
-            fixed = true
-          }
-          continue
-        }
-
-        // Standard JSON escape validation
+      // Standard JSON escape validation
+      if (
+        nextChar === '"' ||
+        nextChar === '\\' ||
+        nextChar === '/' ||
+        nextChar === 'b' ||
+        nextChar === 'f' ||
+        nextChar === 'n' ||
+        nextChar === 'r' ||
+        nextChar === 't'
+      ) {
+        repaired += '\\' + nextChar
+        i++
+      } else if (nextChar === 'u') {
+        const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
         if (
-          nextChar === '"' ||
-          nextChar === '\\' ||
-          nextChar === '/' ||
-          nextChar === 'b' ||
-          nextChar === 'f' ||
-          nextChar === 'n' ||
-          nextChar === 'r' ||
-          nextChar === 't'
+          isHex(str[i + 2]) &&
+          isHex(str[i + 3]) &&
+          isHex(str[i + 4]) &&
+          isHex(str[i + 5])
         ) {
-          repaired += '\\' + nextChar
-          i++
-        } else if (nextChar === 'u') {
-          const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
-          if (
-            isHex(str[i + 2]) &&
-            isHex(str[i + 3]) &&
-            isHex(str[i + 4]) &&
-            isHex(str[i + 5])
-          ) {
-            repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
-            i += 5
-          } else {
-            repaired += '\\\\'
-            fixed = true
-          }
+          repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
+          i += 5
         } else {
           repaired += '\\\\'
           fixed = true
         }
       } else {
-        repaired += char
+        repaired += '\\\\'
+        fixed = true
       }
     } else {
       repaired += char
@@ -845,14 +854,10 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
  */
 export function parseSubjectJson(raw: string): { data: unknown; parseError?: never; fixedWarnings?: string[] } | { data?: never; parseError: string; fixedWarnings?: never } {
   const fixedWarnings: string[] = []
-  let jsonToParse = raw
-
-  if (raw.includes("$")) {
-    const { repaired, fixed } = repairBadEscapes(raw)
-    if (fixed) {
-      jsonToParse = repaired
-      fixedWarnings.push("Repaired invalid escape characters inside string literals (e.g. backslashes not followed by valid escape codes).")
-    }
+  const { repaired, fixed } = repairBadEscapes(raw)
+  let jsonToParse = repaired
+  if (fixed) {
+    fixedWarnings.push("Repaired invalid escape characters inside string literals (e.g. backslashes not followed by valid escape codes).")
   }
 
   try {

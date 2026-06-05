@@ -184,16 +184,16 @@ export class SubjectPromptBuilder {
       `      "type": "MCQ" or "TrueFalse",\n` +
       `      "difficulty": "Easy" or "Medium" or "Hard",\n` +
       `      "category": "category-slug",\n` +
-      `      "question": "The question text (HTML and LaTeX math supported — see FORMATTING RULES).",\n` +
+      `      "question": "The question text (HTML supported — see FORMATTING RULES).",\n` +
       (this.formats.has("diagrams")
         ? `      "diagram": "Optional. Raw Mermaid diagram source code string (see DIAGRAM RULES). Omit field entirely if no diagram.",\n` +
           `      "diagramPosition": "right",\n`
         : "") +
       `      "options": [\n` +
-      `        { "label": "A", "text": "Option A (HTML and LaTeX math supported)" },\n` +
-      `        { "label": "B", "text": "Option B (HTML and LaTeX math supported)" },\n` +
-      `        { "label": "C", "text": "Option C (HTML and LaTeX math supported)" },\n` +
-      `        { "label": "D", "text": "Option D (HTML and LaTeX math supported)" }\n` +
+      `        { "label": "A", "text": "Option A (HTML supported)" },\n` +
+      `        { "label": "B", "text": "Option B (HTML supported)" },\n` +
+      `        { "label": "C", "text": "Option C (HTML supported)" },\n` +
+      `        { "label": "D", "text": "Option D (HTML supported)" }\n` +
       `      ],\n` +
       `      "answer": "A",\n` +
       `      "explanation": "Why correct. (See pedagogical instructions below)",\n` +
@@ -326,10 +326,7 @@ export class SubjectPromptBuilder {
     }
 
     formatting.push(
-      `- LaTeX Math Rendering: Question text ("question"), option texts ("options" -> "text"), explanations ("explanation"), and hints ("hint") all support LaTeX/MatheX math notation.\n` +
-      `  - Use single dollar signs ($...$) for inline equations/math (e.g. $O(n \\log n)$, $\\theta$, $f(x) = x^2$).\n` +
-      `  - Use double dollar signs ($$...$$) for display block equations (e.g. $$\\sum_{i=1}^n i = \\frac{n(n+1)}{2}$$).\n` +
-      `  - You are highly encouraged to use standard LaTeX math symbols and expressions to format all mathematical, logical, and formal notation, especially in option choices, explanations, and questions.`
+      `- NO LaTeX Math Rendering: Do NOT use LaTeX, MatheX, KaTeX, or dollar sign delimiters ($...$ or $$...$$) under any circumstances. Format all mathematical, logical, chemical, or formal notation using plain text or standard HTML formatting tags (e.g. <sup> for superscript, <sub> for subscript, or HTML symbol entities like &theta; for theta, &beta; for beta).`
     )
 
     if (this.formats.has("diagrams")) {

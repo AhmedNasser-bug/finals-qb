@@ -52,8 +52,8 @@ The system prompt is compiled programmatically by selecting modular blocks based
 * **HTML Rich Text Formatting:**
   > "Leverage HTML tags (`<b>`, `<code>`, `<pre>`, tables, or custom inline CSS colors) within the question text to highlight syntactic structures, organize comparative data, and improve general readability."
 
-* **LaTeX Math Rendering:**
-  > "All questions, option texts, explanations, and hints support LaTeX math notation using KaTeX. Use standard `$...$` for inline math equations (e.g. `$O(n \log n)$`, `$\theta$`) and `$$...$$` for block display equations to display mathematical, logical, and formal notation cleanly."
+* **NO LaTeX Math Rendering:**
+  > "Do NOT use LaTeX, MatheX, KaTeX, or dollar sign delimiters ($...$ or $$...$$) under any circumstances. Format all mathematical, logical, chemical, or formal notation using plain text or standard HTML formatting tags (e.g. <sup> for superscript, <sub> for subscript, or HTML symbol entities like &theta; for theta, &beta; for beta)."
 
 ---
 
@@ -74,15 +74,15 @@ The system prompt is compiled programmatically by selecting modular blocks based
       "type": "MCQ" | "TrueFalse",
       "difficulty": "Easy" | "Medium" | "Hard",
       "category": "category-slug",
-      "question": "Question prose (supports HTML & LaTeX math)",
+      "question": "Question prose (supports HTML, NO LaTeX)",
       "diagram": "Mermaid syntax string (optional)",
       "diagramPosition": "right" | "below",
       "options": [
-        { "label": "A", "text": "Option A (supports HTML & LaTeX math)" }
+        { "label": "A", "text": "Option A (supports HTML, NO LaTeX)" }
       ],
       "answer": "Correct label",
-      "explanation": "LearnLM-aligned explanation (supports LaTeX math).",
-      "hint": "Socratic nudge (supports LaTeX math)."
+      "explanation": "LearnLM-aligned explanation (supports HTML, NO LaTeX).",
+      "hint": "Socratic nudge (supports HTML, NO LaTeX)."
     }
   ],
   "flashcards": [],

@@ -1,5 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import { validateSubjectData, parseSubjectJson } from "./subject-persistence.ts";
 
 describe("validateSubjectData", () => {
@@ -254,6 +256,35 @@ describe("parseSubjectJson", () => {
       id: "math-test-single",
       question: "Solve for $\\theta + \\beta$ and $\\frac{a}{b}$"
     });
+  });
+
+  test("auto-fixes and preserves complex equations with mixed escapes (user reported case)", () => {
+    const jsonStr = '{"id":"math-user-case","question":"$y = L_1\\\\sin(\\\\theta_1) + L_2\\\\sin(\\\\theta_1 + \\\\theta_2)$"}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, {
+      id: "math-user-case",
+      question: "$y = L_1\\sin(\\theta_1) + L_2\\sin(\\theta_1 + \\theta_2)$"
+    });
+  });
+
+  test("auto-fixes and preserves complex equations with single escapes in raw JSON", () => {
+    const jsonStr = '{"id":"math-user-case-single","question":"$y = L_1\\sin(\\theta_1) + L_2\\sin(\\theta_1 + \\theta_2)$"}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, {
+      id: "math-user-case-single",
+      question: "$y = L_1\\sin(\\theta_1) + L_2\\sin(\\theta_1 + \\theta_2)$"
+    });
+  });
+
+  test("successfully parses and validates the newly merged subject file", () => {
+    const filePath = path.join(process.cwd(), "public/examples/Merge-these-into-one-subject/MergedSubject.json");
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, "utf8");
+      const result = parseSubjectJson(raw);
+      assert.strictEqual(result.parseError, undefined);
+      const validation = validateSubjectData(result.data);
+      assert.strictEqual(validation.valid, true);
+    }
   });
 });
 
