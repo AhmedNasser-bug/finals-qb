@@ -116,6 +116,7 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
 }
 
 export const logger = {
+  log: (...args: any[]) => {
     const length = args.length;
     const maskedArgs = new Array(length);
     for (let i = 0; i < length; i++) {
@@ -123,6 +124,7 @@ export const logger = {
     }
     console.log(...maskedArgs);
   },
+  info: (...args: any[]) => {
     const length = args.length;
     const maskedArgs = new Array(length);
     for (let i = 0; i < length; i++) {
@@ -130,6 +132,7 @@ export const logger = {
     }
     console.info(...maskedArgs);
   },
+  warn: (...args: any[]) => {
     const length = args.length;
     const maskedArgs = new Array(length);
     for (let i = 0; i < length; i++) {
@@ -137,6 +140,7 @@ export const logger = {
     }
     console.warn(...maskedArgs);
   },
+  error: (...args: any[]) => {
     const length = args.length;
     const maskedArgs = new Array(length);
     for (let i = 0; i < length; i++) {
