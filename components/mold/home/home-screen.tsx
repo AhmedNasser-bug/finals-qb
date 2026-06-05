@@ -1,22 +1,8 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { 
-  Terminal as TerminalIcon, 
-  BookOpen, 
-  Trophy, 
-  RotateCcw, 
-  Plus, 
-  Play, 
-  Clock,
-  BarChart3
-} from "lucide-react"
 
-import { ModeSelector } from "@/components/mold/home/mode-selector"
-import { SetupPanel } from "@/components/mold/home/setup-panel"
 import { PerformanceTable } from "@/components/mold/home/performance-table"
-import { AchievementsPanel } from "@/components/mold/home/achievements-panel"
-import { SessionStatsPanel } from "@/components/mold/home/session-stats-panel"
 import { GameRunner } from "@/components/mold/game/game-runner"
 import { AchievementGallery } from "@/components/mold/achievement/achievement-gallery"
 import { EncyclopediaOverlay } from "@/components/mold/common/encyclopedia-overlay"
@@ -24,15 +10,16 @@ import { SubjectImporter } from "@/components/mold/subject/subject-importer"
 import { Footer } from "@/components/mold/common/footer"
 import { useAchievements } from "@/lib/achievement-engine"
 import { toSubjectData } from "@/lib/subject-persistence"
-import { cn } from "@/lib/utils"
 
 import { TopNavBar } from "@/components/mold/home/top-nav-bar"
 import { SideNavBar } from "@/components/mold/home/side-nav-bar"
 import { BottomMobileNav } from "@/components/mold/home/bottom-mobile-nav"
 import { HeaderWell } from "@/components/mold/home/header-well"
-import { TelemetryPanel } from "@/components/mold/home/telemetry-panel"
 import { StatsScreen } from "@/components/mold/home/stats-screen"
 import { useStats } from "@/lib/game/stats-context"
+import { MobileBottomNavBar } from "@/components/mold/home/home-screen-components"
+import { MainContentGrid } from "@/components/mold/home/home-screen-blocks"
+import type { AppView } from "@/components/mold/home/home-screen-types"
 
 import {
   type GameModeId,
@@ -43,8 +30,6 @@ import {
 import type { FullSubjectData } from "@/lib/mold-types"
 
 import { useSafeAuth } from "@/lib/user-storage"
-
-type AppView = "home" | "game" | "stats"
 
 interface HomeScreenProps {
   /** The currently active FullSubjectData, chosen by the root orchestrator. */
@@ -190,71 +175,19 @@ export function HomeScreen({
                 visualAccuracyPct={visualAccuracyPct}
               />
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                {/* Left Column: Telemetry, Modes, Setup, CTA */}
-                <div className="lg:col-span-8 space-y-8">
-                  
-                  {/* Performance Telemetry panel */}
-                  <TelemetryPanel />
-
-                  {/* Modes Selection Grid */}
-                  <div className="space-y-4">
-                    <div className="border-b border-zinc-800/80 pb-2 select-none">
-                      <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-                        01 // CHOOSE STUDY REGIME
-                      </h2>
-                    </div>
-                    <ModeSelector selected={selectedMode} onSelect={handleModeSelect} onLaunch={handleInitialize} />
-                  </div>
-
-                  {/* Configuration panel (Setup Panel) */}
-                  <div className="space-y-4">
-                    <div className="border-b border-zinc-800/80 pb-2 select-none">
-                      <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-                        02 // SPECIFY WORKLOAD PARAMETERS
-                      </h2>
-                    </div>
-                    <div className="p-6 border border-border bg-[#101115] rounded">
-                      <SetupPanel
-                        config={config}
-                        onChange={handleConfigChange}
-                        selectedMode={selectedMode}
-                        categories={subjectData.categories}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Action initialize CTA */}
-                  <button 
-                    onClick={handleInitialize}
-                    className="w-full h-16 bg-primary text-[#0a0b0d] font-headline font-black text-xl tracking-[0.25em] border-none flex items-center justify-center gap-4 shadow-[0_0_20px_hsla(var(--primary),0.1)] hover:shadow-[0_0_30px_hsla(var(--primary),0.25)] hover:-translate-y-0.5 transition-all active:translate-y-0.5 cursor-pointer uppercase select-none rounded focus-ring"
-                  >
-                    <span>INITIALIZE SESSION</span>
-                    <Play className="w-5 h-5 fill-current shrink-0" />
-                  </button>
-
-                </div>
-
-                {/* Right Column: Achievements, Subject Image, Session Stats */}
-                <div className="lg:col-span-4 space-y-8 select-none">
-                  
-                  {/* Achievements panel */}
-                  <AchievementsPanel
-                    unlockedCount={unlockedCount}
-                    totalAchievementsCount={totalAchievementsCount}
-                    topAchievements={topAchievements}
-                    hasMoreAchievements={achievements.length > 3}
-                    totalCount={achievements.length}
-                    onShowGallery={() => setShowGallery(true)}
-                  />
-
-                  {/* Session stats block */}
-                  <SessionStatsPanel />
-
-                </div>
-
-              </div>
+              <MainContentGrid
+                selectedMode={selectedMode}
+                handleModeSelect={handleModeSelect}
+                handleInitialize={handleInitialize}
+                config={config}
+                handleConfigChange={handleConfigChange}
+                categories={subjectData.categories}
+                unlockedCount={unlockedCount}
+                totalAchievementsCount={totalAchievementsCount}
+                topAchievements={topAchievements}
+                achievements={achievements}
+                setShowGallery={setShowGallery}
+              />
 
               {/* Performance runs table list below the main grid split */}
               <div className="flex items-center gap-4 py-8 select-none">
