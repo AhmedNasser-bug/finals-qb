@@ -23,18 +23,11 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
     const files = await fsPromises.readdir(examplesDir)
     const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
-    const manifestResults: ExampleManifestEntry[] = []
-
-    for (const file of jsonFiles) {
+    const manifestResultsPromises = jsonFiles.map(async (file) => {
       const filePath = path.join(examplesDir, file)
       const fileStem = file.replace(/\.json$/i, "")
       try {
-        const stream = fs.createReadStream(filePath)
-        const chunks: Buffer[] = []
-        for await (const chunk of stream) {
-          chunks.push(chunk)
-        }
-        const content = Buffer.concat(chunks).toString("utf-8")
+        const content = await fsPromises.readFile(filePath, "utf-8")
         const data = JSON.parse(content)
 
         // Calculate categories
@@ -49,7 +42,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
           tags.push(data.config.difficulty)
         }
 
-        manifestResults.push({
+        return {
           id: data.id || fileStem,
           filename: fileStem,   // always the actual file name, not the subject id
           name: data.name || fileStem,
@@ -57,13 +50,15 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
           questionCount: data.questions?.length || 0,
           categoryCount: categories.size,
           tags: data.tags || tags
-        })
+        } as ExampleManifestEntry
       } catch (err) {
         logger.error(`Failed to parse Example Example: ${file}`, err)
+        return null
       }
-    }
+    })
 
-    return manifestResults
+    const results = await Promise.all(manifestResultsPromises)
+    return results.filter((r): r is ExampleManifestEntry => r !== null)
   } catch (err) {
     logger.error("Failed to read examples directory", err)
     return []
