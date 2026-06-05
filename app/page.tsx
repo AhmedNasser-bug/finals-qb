@@ -8,6 +8,7 @@ import {
   loadSubjects,
   saveSubjects,
   addSubject,
+  validateSubjectData,
 } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
 
@@ -16,8 +17,9 @@ import type { FullSubjectData } from "@/lib/mold-types"
  *
  * Resolution order (first match wins):
  *   1. URL param `?subject=<id>`  → look up by ID from localStorage
- *   2. sessionStorage              → legacy / in-game change-subject path
- *   3. Neither found              → redirect to /subjects
+ *   2. URL param `?subject=<id>` (fallback) → check if it's an example and fetch dynamically
+ *   3. sessionStorage              → legacy / in-game change-subject path
+ *   4. Neither found              → redirect to /subjects
  *
  * Using URL params makes active sessions bookmarkable and deep-linkable.
  */
@@ -38,29 +40,58 @@ function HomeContent() {
     const allSubjects = loadSubjects()
     setSubjects(allSubjects)
 
-    // 1. URL param ?subject=<id> — bookmarkable / deep-link path
     const subjectId = searchParams.get("subject")
     if (subjectId) {
-      const found = allSubjects.find((s) => s.id === decodeURIComponent(subjectId))
+      const decodedId = decodeURIComponent(subjectId)
+      const found = allSubjects.find((s) => s.id === decodedId)
       if (found) {
         setActiveSubjectState(found)
         setReady(true)
         return
       }
-      // Unknown ID — fall through to sessionStorage check or redirect
+
+      // Try fetching from examples directory since it might be a predefined example module
+      let active = true
+      const fetchExample = async () => {
+        try {
+          const res = await fetch(`/examples/${decodedId}.json`)
+          if (res.ok) {
+            const raw = await res.json()
+            const result = validateSubjectData(raw)
+            if (result.valid && result.subject && active) {
+              setActiveSubjectState(result.subject)
+              setReady(true)
+              return
+            }
+          }
+        } catch {
+          // ignore fetch/validation error, fall through to fallback
+        }
+        if (active) {
+          fallbackToSessionOrRedirect()
+        }
+      }
+      fetchExample()
+      return () => {
+        active = false
+      }
+    } else {
+      fallbackToSessionOrRedirect()
     }
 
-    // 2. sessionStorage — legacy path (in-game subject changes, etc.)
-    const sessionSubject = getActiveSubject()
-    if (sessionSubject) {
-      clearActiveSubject()
-      setActiveSubjectState(sessionSubject)
-      setReady(true)
-      return
-    }
+    function fallbackToSessionOrRedirect() {
+      // 2. sessionStorage — legacy path (in-game subject changes, etc.)
+      const sessionSubject = getActiveSubject()
+      if (sessionSubject) {
+        clearActiveSubject()
+        setActiveSubjectState(sessionSubject)
+        setReady(true)
+        return
+      }
 
-    // 3. Nothing found — send to subject picker
-    router.replace("/subjects")
+      // 3. Nothing found — send to subject picker
+      router.replace("/subjects")
+    }
   }, [router, searchParams])
 
   // ── Handlers ──────────────────────────────────────────────────────────────
