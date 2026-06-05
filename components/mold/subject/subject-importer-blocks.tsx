@@ -538,7 +538,7 @@ export function DropZoneSection({
   )
 }
 
-iexport function ValidationFeedbackSection({
+export function ValidationFeedbackSection({
   state,
   result,
   preview,
