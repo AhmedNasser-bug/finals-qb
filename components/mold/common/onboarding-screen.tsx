@@ -3,9 +3,14 @@
 import { useState } from "react"
 import { GAME_MODES } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
-import { SubjectImporter } from "@/components/mold/subject/subject-importer"
+import dynamic from "next/dynamic"
 import { Footer } from "@/components/mold/common/footer"
 import type { FullSubjectData, GameMode } from "@/lib/mold-types"
+
+const SubjectImporter = dynamic(
+  () => import("@/components/mold/subject/subject-importer").then((mod) => mod.SubjectImporter),
+  { ssr: false }
+)
 
 interface ModeCardProps {
   mode: GameMode;

@@ -357,22 +357,18 @@ export function Step4PromptBuild({
             reader.readAsText(file)
           })
         } else {
-          // Upload and convert via Microsoft MarkItDown API
-          const formData = new FormData()
-          formData.append("file", file)
+          // Convert client-side using markitdown-ts
+          const arrayBuffer = await file.arrayBuffer()
+          const { Buffer } = await import("buffer")
+          const { MarkItDown } = await import("markitdown-ts")
           
-          const response = await fetch("/api/convert", {
-            method: "POST",
-            body: formData,
+          const markitdown = new MarkItDown()
+          const ext = file.name.substring(file.name.lastIndexOf("."))
+          const result = await markitdown.convertBuffer(Buffer.from(arrayBuffer), {
+            file_extension: ext,
           })
           
-          if (!response.ok) {
-            const errData = await response.json()
-            throw new Error(errData.error || `Failed to convert ${file.name}.`)
-          }
-          
-          const data = await response.json()
-          const convertedText = data.markdown
+          const convertedText = result?.markdown || ""
           
           setConvertedMaterial((prev) => {
             const trimmed = prev.trim()

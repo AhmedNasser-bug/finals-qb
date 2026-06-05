@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { SubjectImporter } from "@/components/mold/subject/subject-importer"
+import dynamic from "next/dynamic"
 import { ShareModal } from "@/components/mold/common/share-modal"
 import { Footer } from "@/components/mold/common/footer"
 import { toSubjectData } from "@/lib/subject-persistence"
+
+const SubjectImporter = dynamic(
+  () => import("@/components/mold/subject/subject-importer").then((mod) => mod.SubjectImporter),
+  { ssr: false }
+)
 import type { FullSubjectData } from "@/lib/mold-types"
 import { PlusIcon } from "@/components/mold/subject/subject-selector-components"
 import { WelcomeBanner, YourSubjectsSection, ExampleModulesSection } from "@/components/mold/subject/subject-selector-blocks"

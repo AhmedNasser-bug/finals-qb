@@ -6,10 +6,15 @@ import { PerformanceTable } from "@/components/mold/home/performance-table"
 import { GameRunner } from "@/components/mold/game/game-runner"
 import { AchievementGallery } from "@/components/mold/achievement/achievement-gallery"
 import { EncyclopediaOverlay } from "@/components/mold/common/encyclopedia-overlay"
-import { SubjectImporter } from "@/components/mold/subject/subject-importer"
+import dynamic from "next/dynamic"
 import { Footer } from "@/components/mold/common/footer"
 import { useAchievements } from "@/lib/achievement-engine"
 import { toSubjectData } from "@/lib/subject-persistence"
+
+const SubjectImporter = dynamic(
+  () => import("@/components/mold/subject/subject-importer").then((mod) => mod.SubjectImporter),
+  { ssr: false }
+)
 
 import { TopNavBar } from "@/components/mold/home/top-nav-bar"
 import { SideNavBar } from "@/components/mold/home/side-nav-bar"
