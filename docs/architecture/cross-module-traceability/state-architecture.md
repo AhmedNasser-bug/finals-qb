@@ -12,6 +12,10 @@ Defined heavily in `lib/types/mold-types.ts`, the principal models dictating the
 - `AchievementCondition`: Logical evaluations determining progression capabilities.
 - `Terminology`: Used for learning modes, detailing specific concepts or terms (`TerminologyEntry`).
 
+### Interface Properties
+- **Subject Validation Interface (`SubjectSchema`)**: Validates inbound JSON to ensure the structure strictly conforms to the `FullSubjectData` type, guaranteeing stability across the persistence layer.
+- **Game Engine Dispatch Interface**: Component interactions dispatch structured objects (e.g. `{ type: 'ANSWER', payload: ... }`) ensuring predictability within the reducer pipeline.
+
 ### Data Persistence Pipeline
 `lib/subject/subject-persistence.ts` operates as the primary data pipeline bridging active memory and browser storage constraints.
 - `validateSubjectData(raw: unknown)`: Secures inbound JSON parsing constraints, avoiding schema mismatch.
