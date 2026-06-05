@@ -710,54 +710,80 @@ function balanceJsonStack(str: string): string {
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   let repaired = ""
   let inString = false
+  let inMathMode = false
   let fixed = false
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
-    if (char === '"') {
+    if (char === '"' && str[i - 1] !== '\\') {
       repaired += '"'
       inString = !inString
+      if (!inString) inMathMode = false // Reset math mode on string exit
       continue
     }
 
-    if (inString && char === '\\') {
-      const nextChar = str[i + 1]
-
-      if (nextChar === undefined) {
-        repaired += '\\\\'
-        fixed = true
+    if (inString) {
+      // Toggle math mode when encountering an unescaped dollar sign
+      if (char === '$' && str[i - 1] !== '\\') {
+        inMathMode = !inMathMode
+        repaired += '$'
         continue
       }
 
-      if (
-        nextChar === '"' ||
-        nextChar === '\\' ||
-        nextChar === '/' ||
-        nextChar === 'b' ||
-        nextChar === 'f' ||
-        nextChar === 'n' ||
-        nextChar === 'r' ||
-        nextChar === 't'
-      ) {
-        repaired += '\\' + nextChar
-        i++
-      } else if (nextChar === 'u') {
-        const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
+      if (char === '\\') {
+        const nextChar = str[i + 1]
+
+        if (nextChar === undefined) {
+          repaired += '\\\\'
+          fixed = true
+          continue
+        }
+
+        // If in math mode, force double-escape any single backslash
+        if (inMathMode) {
+          if (nextChar === '\\') {
+            repaired += '\\\\'
+            i++ // Skip the second backslash as it is already escaped
+          } else {
+            repaired += '\\\\'
+            fixed = true
+          }
+          continue
+        }
+
+        // Standard JSON escape validation
         if (
-          isHex(str[i + 2]) &&
-          isHex(str[i + 3]) &&
-          isHex(str[i + 4]) &&
-          isHex(str[i + 5])
+          nextChar === '"' ||
+          nextChar === '\\' ||
+          nextChar === '/' ||
+          nextChar === 'b' ||
+          nextChar === 'f' ||
+          nextChar === 'n' ||
+          nextChar === 'r' ||
+          nextChar === 't'
         ) {
-          repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
-          i += 5
+          repaired += '\\' + nextChar
+          i++
+        } else if (nextChar === 'u') {
+          const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
+          if (
+            isHex(str[i + 2]) &&
+            isHex(str[i + 3]) &&
+            isHex(str[i + 4]) &&
+            isHex(str[i + 5])
+          ) {
+            repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
+            i += 5
+          } else {
+            repaired += '\\\\'
+            fixed = true
+          }
         } else {
           repaired += '\\\\'
           fixed = true
         }
       } else {
-        repaired += '\\\\'
-        fixed = true
+        repaired += char
       }
     } else {
       repaired += char
@@ -819,15 +845,29 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
  */
 export function parseSubjectJson(raw: string): { data: unknown; parseError?: never; fixedWarnings?: string[] } | { data?: never; parseError: string; fixedWarnings?: never } {
   const fixedWarnings: string[] = []
+  let jsonToParse = raw
+
+  if (raw.includes("$")) {
+    const { repaired, fixed } = repairBadEscapes(raw)
+    if (fixed) {
+      jsonToParse = repaired
+      fixedWarnings.push("Repaired invalid escape characters inside string literals (e.g. backslashes not followed by valid escape codes).")
+    }
+  }
+
   try {
-    const parsed = JSON.parse(raw)
+    const parsed = JSON.parse(jsonToParse)
     if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
       autoFixSubjectData(parsed, fixedWarnings)
     }
     return { data: parsed, fixedWarnings }
   } catch (e) {
-    const { repaired, fixedIssues } = repairJson(raw)
-    fixedWarnings.push(...fixedIssues)
+    const { repaired, fixedIssues } = repairJson(jsonToParse)
+    for (const issue of fixedIssues) {
+      if (!fixedWarnings.includes(issue)) {
+        fixedWarnings.push(issue)
+      }
+    }
     try {
       const parsed = JSON.parse(repaired)
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {

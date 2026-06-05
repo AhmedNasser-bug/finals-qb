@@ -237,6 +237,24 @@ describe("parseSubjectJson", () => {
     assert.deepEqual(result.data, { id: "test", text: 'Some bad escape\\ here, stray\\a, and end\\' });
     assert.ok(result.fixedWarnings?.some(w => w.includes("Repaired invalid escape characters")));
   });
+
+  test("auto-fixes and preserves LaTeX math expressions inside math mode blocks", () => {
+    const jsonStr = '{"id":"math-test","question":"Calculate $\\\\theta + \\\\alpha$ and $\\\\beta$ and $\\\\frac{1}{2}$"}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, {
+      id: "math-test",
+      question: "Calculate $\\theta + \\alpha$ and $\\beta$ and $\\frac{1}{2}$"
+    });
+  });
+
+  test("auto-fixes single-escaped LaTeX math commands (which normally trigger tab/backspace JSON control code issues)", () => {
+    const jsonStr = '{"id":"math-test-single","question":"Solve for $\\theta + \\beta$ and $\\frac{a}{b}$"}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, {
+      id: "math-test-single",
+      question: "Solve for $\\theta + \\beta$ and $\\frac{a}{b}$"
+    });
+  });
 });
 
 describe("Auto-Fix & Graceful Degradation Suite", () => {
