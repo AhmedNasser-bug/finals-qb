@@ -239,14 +239,17 @@ function autoFixQuestions(obj: Record<string, unknown>, warnings: string[]) {
     }
 
     const labels = ["A", "B", "C", "D", "E", "F"]
-    const normalizedOptions = qObj.options.map((opt: any, optIdx: number) => {
+    const normalizedOptions = new Array(qObj.options.length)
+    for (let optIdx = 0; optIdx < qObj.options.length; optIdx++) {
+      const opt = qObj.options[optIdx]
       if (typeof opt !== "object" || opt === null) {
-        return { label: labels[optIdx] || "X", text: "Option Option" }
+        normalizedOptions[optIdx] = { label: labels[optIdx] || "X", text: "Option Option" }
+      } else {
+        const label = typeof opt.label === "string" && opt.label.trim() !== "" ? opt.label.toUpperCase() : (labels[optIdx] || "X")
+        const text = typeof opt.text === "string" && opt.text.trim() !== "" ? opt.text : `Option ${label}`
+        normalizedOptions[optIdx] = { label, text }
       }
-      const label = typeof opt.label === "string" && opt.label.trim() !== "" ? opt.label.toUpperCase() : (labels[optIdx] || "X")
-      const text = typeof opt.text === "string" && opt.text.trim() !== "" ? opt.text : `Option ${label}`
-      return { label, text }
-    })
+    }
     qObj.options = normalizedOptions
 
     // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
@@ -506,10 +509,10 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
     }
 
     if (!labelExists) {
-      const optionsArray = qObj.options as Record<string, unknown>[];
-      const labels = new Array(optionsArray.length);
-      for (let j = 0; j < optionsArray.length; j++) {
-        labels[j] = optionsArray[j].label;
+      const options = qObj.options as Record<string, unknown>[]
+      const labels = new Array(options.length)
+      for (let j = 0; j < options.length; j++) {
+        labels[j] = options[j].label
       }
       errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
     }

@@ -1,4 +1,4 @@
-import type { FullSubjectData, CategoryData } from "@/lib/mold-types"
+import { formatLabel, type FullSubjectData, type CategoryData } from "../types/mold-types"
 
 /**
  * Derive CategoryData[] from a FullSubjectData by counting questions per category.
@@ -12,13 +12,7 @@ export function deriveCategoriesFromSubject(subject: FullSubjectData): CategoryD
     if (existing) {
       existing.count++
     } else {
-      const words = q.category.split("-");
-      const nameWords = new Array(words.length);
-      for (let i = 0; i < words.length; i++) {
-        const w = words[i];
-        nameWords[i] = w.charAt(0).toUpperCase() + w.slice(1);
-      }
-      const name = nameWords.join(" ");
+      const name = formatLabel(q.category)
       map.set(q.category, { name, count: 1 })
     }
   }
