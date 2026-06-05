@@ -345,7 +345,13 @@ export function modeLabel(id: GameModeId): string {
  * Single source of truth — use this instead of inline .split("-").map(...).join(" ").
  */
 export function formatLabel(slug: string): string {
-  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+  const words = slug.split("-")
+  const result = new Array(words.length)
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i]
+    result[i] = w.charAt(0).toUpperCase() + w.slice(1)
+  }
+  return result.join(" ")
 }
 
 /**

@@ -99,7 +99,14 @@ async function processComponent(filePath) {
     edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
   }
 
+<<<<<<< HEAD
   const relativePath = path.relative(path.join(__dirname, '..'), filePath).replace(/\\/g, '/');
+=======
+  const formattedEdgeCases = new Array(edgeCases.length);
+  for (let i = 0; i < edgeCases.length; i++) {
+    formattedEdgeCases[i] = '- ' + edgeCases[i];
+  }
+>>>>>>> origin/refactor-linear-fs-read-loops-5142814129326145807
 
   return `
 ### \`${relativePath}\`
@@ -124,7 +131,7 @@ ${propsStr}
 \`\`\`
 
 **Edge-Case Input Handling & Validation:**
-${edgeCases.map(e => '- ' + e).join('\n')}
+${formattedEdgeCases.join('\n')}
 `;
 }
 
