@@ -20,9 +20,9 @@ function scanDirectory(dir, fileList = []) {
 }
 
 function extractInterface(content, componentName) {
-  // A naive regex to grab props interface
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\}/);
+  // Fix interface regex extraction to handle brackets
+  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
+                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
   if (interfaceMatch) {
     return interfaceMatch[1].trim();
   }
