@@ -41,7 +41,8 @@ export function ActionHub({
       <button
         onClick={onInitialize}
         disabled={disabled}
-        title={disabled ? "Action not available" : undefined}
+        aria-disabled={disabled}
+        title={disabled ? "Action not available" : `Launch ${selectedMode} session`}
         aria-label={disabled ? "Action not available" : `Launch ${selectedMode} session`}
         className={cn(
           "relative w-full flex flex-col sm:flex-row items-center justify-between p-5 rounded border transition-all duration-200 focus-ring group min-h-[72px] text-left",

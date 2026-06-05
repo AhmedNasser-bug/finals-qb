@@ -180,6 +180,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         <button
           onClick={onForfeit}
           aria-label="Quit session"
+          title="Quit session"
           className="px-2.5 py-1.5 border border-red-500/20 bg-red-950/20 text-red-400 font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-red-500 hover:bg-red-500/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
         >
           QUIT

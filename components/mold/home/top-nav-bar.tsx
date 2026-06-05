@@ -59,10 +59,12 @@ export function TopNavBar({
         {/* Center: guide feed + pulsating GUIDE button */}
         <div className="hidden md:flex items-center gap-2 flex-1 max-w-md lg:max-w-2xl xl:max-w-[900px] mx-4">
           {/* Feed bar — clickable to cycle tips */}
-          <div
+          <button
             onClick={() => setTipIndex((prev) => (prev + 1) % GUIDANCE_TIPS.length)}
             title="Click to cycle next study tip"
-            className="flex items-center gap-3 bg-black/90 border border-[#fecc17]/35 hover:border-[#fecc17]/60 px-3.5 py-2 flex-1 min-w-0 cursor-pointer select-none group transition-all duration-300 shadow-[0_0_12px_rgba(254,204,23,0.03)] hover:shadow-[0_0_20px_rgba(254,204,23,0.12)] border-glow"
+            aria-label="Cycle next study tip"
+            type="button"
+            className="flex items-center text-left gap-3 bg-black/90 border border-[#fecc17]/35 hover:border-[#fecc17]/60 px-3.5 py-2 flex-1 min-w-0 cursor-pointer select-none group transition-all duration-300 shadow-[0_0_12px_rgba(254,204,23,0.03)] hover:shadow-[0_0_20px_rgba(254,204,23,0.12)] border-glow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
           >
             <div className="flex items-center gap-2 shrink-0">
               <span className="w-2 h-2 bg-[#fecc17] rounded-full animate-pulse shadow-[0_0_8px_rgba(254,204,23,0.4)]" />
@@ -73,7 +75,7 @@ export function TopNavBar({
             <p className="font-mono text-[10px] lg:text-xs text-[#e5e2e1] group-hover:text-[#fecc17] font-semibold tracking-wide transition-colors leading-relaxed truncate">
               {GUIDANCE_TIPS[tipIndex]}
             </p>
-          </div>
+          </button>
 
           {/* Pulsating GUIDE button */}
           <button

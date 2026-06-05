@@ -53,6 +53,8 @@ export function SideNavBar({
       <nav className="flex flex-col gap-1.5">
         <button 
           onClick={onShowDashboard}
+          title="Dashboard"
+          aria-label="Dashboard"
           className={cn(
             "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
             activeView === "home" 
