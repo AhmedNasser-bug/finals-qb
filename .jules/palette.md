@@ -18,6 +18,10 @@
 **Learning:** Action buttons that use stylized acronyms (e.g., DUMP_LOGS) or generic icons (e.g. standard close 'X' buttons in modals) often have `aria-label`s for screen readers but lack explicit contextual tooltips for mouse users. This forces users to infer the action, which reduces usability, especially on desktop.
 **Action:** When creating or auditing buttons that lack descriptive inline text, always include a explicitly descriptive `title` attribute in addition to an `aria-label`. For example, a "DUMP_LOGS" button should have `title="Dump logs to return home"`, or a close button in a specific overlay should have `title="Close encyclopedia overlay"` to clarify the exact result of the action.
 
+## 2024-06-03 - Enhanced Screen Reader Support for Interactive Components
+**Learning:** Found multiple action buttons where text may not be sufficiently descriptive when read aloud by screen readers out of sequence, or where buttons visually indicate disabled states through CSS but lack explicit ARIA tags. Also observed that some text inputs were lacking explicit `aria-label` or `aria-describedby` when context is inferred mostly via surrounding text nodes rather than traditional associated labels.
+**Action:** Always proactively append explicit `aria-label` or dynamic `aria-label` tags to buttons (e.g., Reset, Confirm, Cancel), and ensure `aria-disabled` is used in tandem with the native `disabled` attribute to maintain strict compliance with WCAG principles. When testing multi-step UX paths with Playwright, script programmatic interactions directly through the preceding steps to expose elements, as nested components are not immediately loaded into the active DOM.
+
 ## 2024-06-04 - Semantic Buttons Ensure Keyboard Access
 **Learning:** Replaced an interactive `div` with an `onClick` handler in the navigation bar with a semantic `<button>` tag to ensure the element receives keyboard focus and works with screen readers, demonstrating that native elements are superior to adding multiple `aria` attributes to non-interactive tags.
 **Action:** Always default to `<button>` for click actions rather than patching `<div onClick={...}>` with roles.
