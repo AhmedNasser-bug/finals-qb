@@ -69,3 +69,7 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2024-06-05 - Missing aria-disabled on conditionally disabled UI buttons
+**Learning:** We observed that conditionally disabled buttons (like "CONTINUE →" or "ADD SUBJECT" in the Subject Importer wizard, and the "Paste" button) rely purely on the native `disabled` attribute to signal unavailability. While technically valid, explicitly adding `aria-disabled` matching the disabled state makes the intention clearer and provides slightly better semantic hints for accessibility tools, especially for heavily styled dynamic single-page applications. The `title` attribute was also already providing the contextual feedback on hover.
+**Action:** Always map the native `disabled` attribute directly to the `aria-disabled` attribute as a unified pair when making elements contextually inactive.

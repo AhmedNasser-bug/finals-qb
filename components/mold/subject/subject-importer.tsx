@@ -472,6 +472,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             <button
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
+              aria-disabled={isNextDisabled}
               title={isNextDisabled ? "Please fill required fields to continue" : "Proceed to next step"}
               className={cn(
                 "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded-none",
@@ -486,6 +487,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             <button
               onClick={handleConfirm}
               disabled={isNextDisabled}
+              aria-disabled={isNextDisabled}
               title={isNextDisabled ? "Subject data must be completely valid to import" : "Load verified subject data"}
               className={cn(
                 "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded-none",
