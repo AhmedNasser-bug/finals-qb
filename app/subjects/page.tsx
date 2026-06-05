@@ -10,7 +10,6 @@ import {
   removeSubject,
 } from "@/lib/subject-persistence"
 import { detectShareHash } from "@/lib/subject-sharing"
-import { setActiveSubject } from "@/lib/active-subject-store"
 import type { FullSubjectData } from "@/lib/mold-types"
 
 type SubjectsView = "loading" | "receiving" | "selecting"
@@ -38,20 +37,19 @@ export default function SubjectsPage() {
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   function handleSubjectSelected(subject: FullSubjectData) {
-    setActiveSubject(subject)
-    // Full navigation ensures sessionStorage is available on the target page
-    // and prevents the root page's useEffect from redirecting back here
-    window.location.href = "/"
+    // Use URL param so the session is bookmarkable/shareable
+    window.location.href = `/?subject=${encodeURIComponent(subject.id)}`
   }
+
 
   function handleSubjectAdded(incoming: FullSubjectData) {
     const updated = addSubject(subjects, incoming)
     saveSubjects(updated)
     setSubjects(updated)
-    // Immediately start studying the newly imported subject
-    setActiveSubject(incoming)
-    window.location.href = "/"
+    // Navigate via URL param (subject is now persisted in localStorage)
+    window.location.href = `/?subject=${encodeURIComponent(incoming.id)}`
   }
+
 
   function handleSubjectRemoved(id: string) {
     const updated = removeSubject(subjects, id)
