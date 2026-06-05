@@ -6,7 +6,8 @@ import {
   getStreakTierProgress,
   formatTime,
   computeAggregateStats,
-  formatLabel
+  formatLabel,
+  calculateGrade
 } from "./mold-types.ts"
 
 test("getStreakTier", () => {
@@ -108,4 +109,24 @@ test("formatLabel converts kebab-case to Title Case", () => {
   assert.strictEqual(formatLabel(""), "");
   assert.strictEqual(formatLabel("a-b-c"), "A B C");
   assert.strictEqual(formatLabel("a"), "A");
+});
+
+test("calculateGrade returns correct letter grade for score thresholds", () => {
+  assert.strictEqual(calculateGrade(100), "S+");
+  assert.strictEqual(calculateGrade(97), "S+");
+  assert.strictEqual(calculateGrade(96), "S");
+  assert.strictEqual(calculateGrade(93), "S");
+  assert.strictEqual(calculateGrade(92), "A+");
+  assert.strictEqual(calculateGrade(90), "A+");
+  assert.strictEqual(calculateGrade(89), "A");
+  assert.strictEqual(calculateGrade(87), "A");
+  assert.strictEqual(calculateGrade(86), "B+");
+  assert.strictEqual(calculateGrade(80), "B+");
+  assert.strictEqual(calculateGrade(79), "C+");
+  assert.strictEqual(calculateGrade(70), "C+");
+  assert.strictEqual(calculateGrade(69), "D+");
+  assert.strictEqual(calculateGrade(60), "D+");
+  assert.strictEqual(calculateGrade(59), "F");
+  assert.strictEqual(calculateGrade(0), "F");
+  assert.strictEqual(calculateGrade(-10), "F");
 });
