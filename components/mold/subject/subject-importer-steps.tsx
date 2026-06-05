@@ -311,6 +311,26 @@ interface Step4PromptBuildProps {
   setConvertedMaterial: React.Dispatch<React.SetStateAction<string>>
 }
 
+const loadScript = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (typeof window === "undefined") {
+      resolve()
+      return
+    }
+    const existing = document.querySelector(`script[src="${src}"]`)
+    if (existing) {
+      resolve()
+      return
+    }
+    const script = document.createElement("script")
+    script.src = src
+    script.async = true
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error(`Failed to load script: ${src}`))
+    document.head.appendChild(script)
+  })
+}
+
 export function Step4PromptBuild({
   topic,
   compiledPrompt,
@@ -342,7 +362,9 @@ export function Step4PromptBuild({
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
-        if (file.name.endsWith(".txt") || file.name.endsWith(".md")) {
+        const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase()
+
+        if (ext === ".txt" || ext === ".md") {
           // Read client-side
           await new Promise<void>((resolve) => {
             const reader = new FileReader()
@@ -356,24 +378,57 @@ export function Step4PromptBuild({
             }
             reader.readAsText(file)
           })
-        } else {
-          // Convert client-side using markitdown-ts
+        } else if (ext === ".pdf") {
           const arrayBuffer = await file.arrayBuffer()
-          const { Buffer } = await import("buffer")
-          const { MarkItDown } = await import("markitdown-ts")
-          
-          const markitdown = new MarkItDown()
-          const ext = file.name.substring(file.name.lastIndexOf("."))
-          const result = await markitdown.convertBuffer(Buffer.from(arrayBuffer), {
-            file_extension: ext,
+          await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js")
+          const pdfjsLib = (window as any).pdfjsLib
+          if (!pdfjsLib) {
+            throw new Error("PDF.js library failed to load.")
+          }
+          pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js"
+
+          const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) })
+          const pdf = await loadingTask.promise
+          let fullText = ""
+
+          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            const page = await pdf.getPage(pageNum)
+            const textContent = await page.getTextContent()
+            let lastY = -1
+            let pageText = ""
+
+            for (const item of textContent.items as any[]) {
+              if (lastY !== -1 && Math.abs(item.transform[5] - lastY) > 5) {
+                pageText += "\n"
+              } else if (pageText.length > 0) {
+                pageText += " "
+              }
+              pageText += item.str
+              lastY = item.transform[5]
+            }
+            fullText += pageText + "\n"
+          }
+
+          setConvertedMaterial((prev) => {
+            const trimmed = prev.trim()
+            return trimmed ? `${trimmed}\n\n${fullText}` : fullText
           })
-          
-          const convertedText = result?.markdown || ""
-          
+        } else if (ext === ".docx") {
+          const arrayBuffer = await file.arrayBuffer()
+          await loadScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js")
+          const mammoth = (window as any).mammoth
+          if (!mammoth) {
+            throw new Error("Mammoth library failed to load.")
+          }
+          const result = await mammoth.extractRawText({ arrayBuffer })
+          const convertedText = result?.value || ""
+
           setConvertedMaterial((prev) => {
             const trimmed = prev.trim()
             return trimmed ? `${trimmed}\n\n${convertedText}` : convertedText
           })
+        } else {
+          alert(`Unsupported file format "${ext}". Please upload PDF, DOCX, MD, or TXT.`)
         }
       }
     } catch (err: any) {
@@ -405,7 +460,7 @@ export function Step4PromptBuild({
     
     let bundledSourceMaterial = ""
     if (convertedMaterial.trim()) {
-      bundledSourceMaterial += `--- DETECTED SOURCE MATERIAL (PARSED VIA MICROSOFT MARKITDOWN) ---\n${convertedMaterial.trim()}\n\n`
+      bundledSourceMaterial += `--- DETECTED SOURCE MATERIAL (PARSED CLIENT-SIDE) ---\n${convertedMaterial.trim()}\n\n`
     }
     if (userMaterial.trim()) {
       bundledSourceMaterial += `--- EXPLICIT USER INSTRUCTIONS & STUDY NOTES ---\n${userMaterial.trim()}\n`
@@ -463,7 +518,7 @@ ${bundledSourceMaterial}
                 <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">1</span>
                 <div>
                   <span className="text-white font-bold block">Load Source Material</span>
-                  <span>Drag files (.pdf, .docx, .pptx) into the box on the right. We parse them securely behind the scenes.</span>
+                  <span>Drag files (.pdf, .docx) into the box on the right. We parse them securely client-side.</span>
                 </div>
               </div>
 
@@ -518,21 +573,10 @@ ${bundledSourceMaterial}
               <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block">
                 [PATH A] Drag Notes or Paste Study Material
               </span>
-              <a
-                href="https://github.com/microsoft/markitdown"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5 focus-ring"
-                title="Powered by Microsoft MarkItDown"
-              >
-                <svg viewBox="0 0 23 23" className="w-3 h-3 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <rect x="0" y="0" width="10.5" height="10.5" fill="#F25022"/>
-                  <rect x="11.5" y="0" width="10.5" height="10.5" fill="#7FBA00"/>
-                  <rect x="0" y="11.5" width="10.5" height="10.5" fill="#00A4EF"/>
-                  <rect x="11.5" y="11.5" width="10.5" height="10.5" fill="#FFB900"/>
-                </svg>
-                <span>ANY FORMAT via MARKITDOWN</span>
-              </a>
+              <span className="text-[10px] font-mono text-zinc-500 flex items-center gap-1.5 select-none">
+                <span>📂</span>
+                <span>CLIENT-SIDE PARSING ACTIVE</span>
+              </span>
             </div>
 
             <div
@@ -550,7 +594,7 @@ ${bundledSourceMaterial}
                 <div className="flex items-center gap-3 py-1">
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   <span className="text-xs text-primary font-mono tracking-wider font-bold uppercase animate-pulse">
-                    Converting via Microsoft MarkItDown...
+                    Converting study materials...
                   </span>
                 </div>
               ) : (
@@ -564,7 +608,7 @@ ${bundledSourceMaterial}
                     multiple
                   />
                   <span className="text-xs text-zinc-400 font-sans font-medium">
-                    Drag & Drop any notes files (.pdf, .docx, .pptx, .xlsx, .md, .txt) here, or{" "}
+                    Drag & Drop any notes files (.pdf, .docx, .md, .txt) here, or{" "}
                     <span className="text-primary hover:underline">browse files</span>
                   </span>
                 </>
@@ -576,7 +620,7 @@ ${bundledSourceMaterial}
               <div className="flex items-center justify-between px-3 py-2 border border-primary/20 bg-primary/5 text-xs text-primary font-mono rounded">
                 <span className="flex items-center gap-1.5 select-none">
                   <span>📂</span>
-                  <span>MEM-BUFFER: {new Blob([convertedMaterial]).size.toLocaleString()} bytes loaded via MarkItDown</span>
+                  <span>MEM-BUFFER: {new Blob([convertedMaterial]).size.toLocaleString()} bytes loaded</span>
                 </span>
                 <button
                   type="button"

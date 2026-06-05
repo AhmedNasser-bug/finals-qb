@@ -5,9 +5,11 @@ import { formatTime } from "@/lib/mold-types"
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { BoltIcon, HeartIcon } from "@/components/mold/game/game-icons"
+import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 
 export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
   const { state, accuracyPct } = useGameEngine()
+  const { toggleCheatSheet } = useCheatSheet()
   const {
     mode, currentIndex, questions, streak,
     globalTimeRemaining, globalTimeLimit, elapsedSeconds, livesRemaining,
@@ -176,15 +178,25 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           </div>
         </div>
 
-        {/* Right: Quit Button (Critical for Mobile!) */}
-        <button
-          onClick={onForfeit}
-          aria-label="Quit session"
-          title="Quit session"
-          className="px-2.5 py-1.5 border border-red-500/20 bg-red-950/20 text-red-400 font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-red-500 hover:bg-red-500/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
-        >
-          QUIT
-        </button>
+        {/* Right: Quit & Terminal Buttons (Compact for Mobile) */}
+        <div className="flex gap-2">
+          <button
+            onClick={toggleCheatSheet}
+            aria-label="Open terminal"
+            title="Open terminal"
+            className="px-2 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-[#fecc17]/40 hover:bg-[#fecc17]/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
+          >
+            {"[>_]"}
+          </button>
+          <button
+            onClick={onForfeit}
+            aria-label="Quit session"
+            title="Quit session"
+            className="px-2.5 py-1.5 border border-red-500/20 bg-red-950/20 text-red-400 font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-red-500 hover:bg-red-500/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
+          >
+            QUIT
+          </button>
+        </div>
       </div>
 
       {/* ── Desktop Layout (md and above) ── */}
@@ -305,15 +317,23 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
             <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
           </div>
-          {/* Quit — recessed, hard to miss-tap. Visible on mobile too. */}
-          <button
-            onClick={onForfeit}
-            aria-label="Quit current game session"
-            title="Quit current game session"
-            className="md:mt-1.5 font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[var(--tw-hex-930013)]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0"
-          >
-            QUIT SESSION
-          </button>
+          {/* Terminal & Quit Buttons */}
+          <div className="md:mt-1.5 flex gap-2">
+            <button
+              onClick={toggleCheatSheet}
+              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] hover:border-[#fecc17]/50 hover:bg-[#fecc17]/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0 cursor-pointer"
+            >
+              {"[>_ TERMINAL]"}
+            </button>
+            <button
+              onClick={onForfeit}
+              aria-label="Quit current game session"
+              title="Quit current game session"
+              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[var(--tw-hex-930013)]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0 cursor-pointer"
+            >
+              QUIT SESSION
+            </button>
+          </div>
         </div>
       </div>
     </header>

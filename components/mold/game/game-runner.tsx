@@ -13,6 +13,8 @@ import { QuestionCard } from "@/components/mold/game/question-card"
 import { GameFooter } from "@/components/mold/game/game-footer"
 import { ResultsScreen } from "@/components/mold/game/results-screen"
 import { FlashcardScreen } from "@/components/mold/flashcard/flashcard-screen"
+import { CheatSheetProvider, useCheatSheet } from "@/lib/game/cheat-sheet-context"
+import { CheatSheetTerminal } from "@/components/mold/game/cheat-sheet-terminal"
 import { uuid } from "@/lib/crypto-utils"
 import { cn } from "@/lib/utils"
 
@@ -69,14 +71,17 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete,
                 config={config}
                 questions={subject.questions}
               >
-                <GameRunnerInner
-                  onReturnHome={onReturnHome}
-                  onRunComplete={onRunComplete}
-                  onRunSaved={onRunSaved}
-                  config={config}
-                  runs={runs}
-                  showUnlocks={showUnlocks}
-                />
+                <CheatSheetProvider subjectId={subject.id}>
+                  <GameRunnerInner
+                    onReturnHome={onReturnHome}
+                    onRunComplete={onRunComplete}
+                    onRunSaved={onRunSaved}
+                    config={config}
+                    runs={runs}
+                    showUnlocks={showUnlocks}
+                    subject={subject}
+                  />
+                </CheatSheetProvider>
               </GameEngineProvider>
             )}
           </GameErrorBoundary>
@@ -96,9 +101,10 @@ interface InnerProps {
   /** Real persisted run history for achievement evaluation. */
   runs: RunRecord[]
   showUnlocks: (unlocked: Achievement[]) => void
+  subject: FullSubjectData
 }
 
-function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs, showUnlocks }: InnerProps) {
+function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs, showUnlocks, subject }: InnerProps) {
   const {
     state,
     forfeit,
@@ -111,6 +117,9 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const { recordSession } = useStreak()
+  const { addEntry, toggleCheatSheet } = useCheatSheet()
+  
+  const processedQuestionsRef = useRef<Record<number, boolean>>({})
   const [showHint, setShowHint] = useState(false)
   const [initialLockRemaining, setInitialLockRemaining] = useState(5)
   const [hintTimeRemaining, setHintTimeRemaining] = useState(10)
@@ -156,6 +165,28 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
 
     return () => clearInterval(interval)
   }, [showHint, state.isRevealed, state.phase])
+
+  // Capture wrong or hinted questions into cheat sheet upon answer reveal
+  useEffect(() => {
+    if (!currentQuestion || !state.isRevealed) return
+    if (processedQuestionsRef.current[state.currentIndex]) return
+
+    const isCorrect = state.selectedOption === currentQuestion.answer
+    const gotWrong = !isCorrect
+    const hintUsed = hintUsedThisQuestion
+
+    if (gotWrong || hintUsed) {
+      processedQuestionsRef.current[state.currentIndex] = true
+      addEntry(currentQuestion, { gotWrong, hintUsed })
+    }
+  }, [state.isRevealed, state.currentIndex, state.selectedOption, hintUsedThisQuestion, currentQuestion, addEntry])
+
+  // Reset processed questions when game starts or resets
+  useEffect(() => {
+    if (state.currentIndex === 0 && !state.isRevealed) {
+      processedQuestionsRef.current = {}
+    }
+  }, [state.currentIndex, state.isRevealed])
 
   // Build RunRecord and evaluate achievements exactly once when the game transitions to complete.
   useEffect(() => {
@@ -249,41 +280,56 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     StandardQuestionCard
 
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <GameHeader onForfeit={forfeit} />
+    <div className="flex flex-1 overflow-hidden relative w-full h-full">
+      <div className="flex flex-col flex-1 overflow-hidden min-w-0">
+        <GameHeader onForfeit={forfeit} />
 
-      {/* Survival per-question stress bar */}
-      {config.mode === "survival" && state.perQuestionTimeLimit > 0 && (
-        <SurvivalStressBar
-          timeLimit={state.perQuestionTimeLimit}
-          isRevealed={state.isRevealed}
-        />
-      )}
+        {/* Survival per-question stress bar */}
+        {config.mode === "survival" && state.perQuestionTimeLimit > 0 && (
+          <SurvivalStressBar
+            timeLimit={state.perQuestionTimeLimit}
+            isRevealed={state.isRevealed}
+          />
+        )}
 
-      <main className={`flex-1 flex flex-col min-h-0 w-full mx-auto px-4 md:px-8 py-2 ${
-        hasVisual(currentQuestion)
-          ? "max-w-[calc(100vw-2rem)] lg:max-w-[calc(100vw-4rem)] xl:max-w-[1600px]"
-          : "max-w-4xl"
-      }`}>
-        <CardComponent
-          value={cardContextValue}
-          accuracyPct={accuracyPct}
+        <main className={`flex-1 flex flex-col min-h-0 w-full mx-auto px-4 md:px-8 py-2 ${
+          hasVisual(currentQuestion)
+            ? "max-w-[calc(100vw-2rem)] lg:max-w-[calc(100vw-4rem)] xl:max-w-[1600px]"
+            : "max-w-4xl"
+        }`}>
+          <CardComponent
+            value={cardContextValue}
+            accuracyPct={accuracyPct}
+            showHint={showHint}
+          />
+        </main>
+
+        <GameFooter
+          onHintRequest={() => {
+            if (initialLockRemaining > 0 || hintUsedThisQuestion) return
+            useHint()
+            setShowHint(true)
+            setHintUsedThisQuestion(true)
+          }}
+          initialLockRemaining={initialLockRemaining}
+          hintTimeRemaining={hintTimeRemaining}
+          hintUsedThisQuestion={hintUsedThisQuestion}
           showHint={showHint}
         />
-      </main>
+      </div>
 
-      <GameFooter
-        onHintRequest={() => {
-          if (initialLockRemaining > 0 || hintUsedThisQuestion) return
-          useHint()
-          setShowHint(true)
-          setHintUsedThisQuestion(true)
-        }}
-        initialLockRemaining={initialLockRemaining}
-        hintTimeRemaining={hintTimeRemaining}
-        hintUsedThisQuestion={hintUsedThisQuestion}
-        showHint={showHint}
-      />
+      {/* Floating terminal toggle button on the right edge */}
+      <button
+        onClick={toggleCheatSheet}
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#121212] hover:bg-[#1c1b1b] border-y border-l border-zinc-800 hover:border-[#fecc17]/50 text-[#fecc17] font-mono text-[10px] font-bold py-3 px-2 rounded-l shadow-lg transition-all flex flex-col items-center gap-1.5 focus-ring uppercase tracking-widest cursor-pointer group"
+        title="Open System Terminal (Ctrl + `)"
+      >
+        <span className="text-[12px] group-hover:scale-110 transition-transform">💻</span>
+        <span className="[writing-mode:vertical-lr] tracking-widest text-[9px]">TERMINAL</span>
+      </button>
+
+      {/* Side Terminal Drawer */}
+      <CheatSheetTerminal subjectId={subject.id} />
     </div>
   )
 }

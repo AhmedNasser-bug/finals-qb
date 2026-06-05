@@ -433,3 +433,10 @@ export function hasVisual(q?: Question): boolean {
   if (!q) return false
   return !!(q.diagram || q.visualLatex || q.visualHtml)
 }
+
+export interface CheatSheetQuestion extends Question {
+  hintUsed: boolean
+  gotWrong: boolean
+  timestamp: number
+}
+
