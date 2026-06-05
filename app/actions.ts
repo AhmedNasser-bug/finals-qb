@@ -16,7 +16,13 @@ export interface ExampleManifestEntry {
   tags: string[]
 }
 
+let manifestCache: ExampleManifestEntry[] | null = null
+
 export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
+  if (manifestCache) {
+    return manifestCache
+  }
+
   const examplesDir = path.join(process.cwd(), "public", "examples")
 
   try {
@@ -63,6 +69,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
       }
     }
 
+    manifestCache = manifestResults
     return manifestResults
   } catch (err) {
     logger.error("Failed to read examples directory", err)

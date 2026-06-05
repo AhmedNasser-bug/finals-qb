@@ -106,14 +106,19 @@ function shuffleQuestionOptions(q: Question): Question {
   const correctText = correctOption.text
   const shuffledTexts = shuffle(q.options.map((o) => o.text))
 
-  const labels = ["A", "B", "C", "D", "E", "F", "G"].slice(0, q.options.length)
-  const newOptions = shuffledTexts.map((text, idx) => ({
-    label: labels[idx],
-    text: text,
-  }))
+  const labels = ["A", "B", "C", "D", "E", "F", "G"]
+  let newAnswerLabel = q.answer
 
-  const newCorrectOption = newOptions.find((o) => o.text === correctText)
-  const newAnswerLabel = newCorrectOption ? newCorrectOption.label : q.answer
+  const newOptions = shuffledTexts.map((text, idx) => {
+    const label = labels[idx]
+    if (text === correctText) {
+      newAnswerLabel = label
+    }
+    return {
+      label,
+      text,
+    }
+  })
 
   return {
     ...q,

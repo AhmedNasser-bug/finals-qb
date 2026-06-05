@@ -1,53 +1,68 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { deriveCategoriesFromSubject } from "./subject-store.ts";
-import type { FullSubjectData } from "../types/mold-types.ts";
+import type { FullSubjectData, Question } from "../types/mold-types.ts";
 
-describe("deriveCategoriesFromSubject", () => {
-  const baseSubject: Omit<FullSubjectData, "questions"> = {
-    id: "sub-1",
-    name: "Test Subject",
-    config: {
-      title: "Test",
-      description: "Test",
-    },
-  };
+describe("subject-store", () => {
+  describe("deriveCategoriesFromSubject", () => {
+    test("handles empty questions array", () => {
+      const subject: FullSubjectData = {
+        id: "test",
+        name: "Test",
+        config: { title: "Test", description: "Desc" },
+        questions: []
+      };
 
-  test("returns empty array when questions are empty", () => {
-    const subject: FullSubjectData = { ...baseSubject, questions: [] };
-    const result = deriveCategoriesFromSubject(subject);
-    assert.deepEqual(result, []);
-  });
+      const categories = deriveCategoriesFromSubject(subject);
+      assert.deepEqual(categories, []);
+    });
 
-  test("groups questions by category and formats names correctly", () => {
-    const subject: FullSubjectData = {
-      ...baseSubject,
-      questions: [
-        { id: "q1", category: "math", type: "MCQ", difficulty: "Easy", question: "q1", options: [], answer: "A" },
-        { id: "q2", category: "math", type: "MCQ", difficulty: "Easy", question: "q2", options: [], answer: "A" },
-        { id: "q3", category: "science", type: "MCQ", difficulty: "Easy", question: "q3", options: [], answer: "A" },
-        { id: "q4", category: "computer-science-basics", type: "MCQ", difficulty: "Easy", question: "q4", options: [], answer: "A" },
-      ]
-    };
-    const result = deriveCategoriesFromSubject(subject);
-    assert.strictEqual(result.length, 3);
+    test("counts single category correctly and formats name", () => {
+      const subject: FullSubjectData = {
+        id: "test",
+        name: "Test",
+        config: { title: "Test", description: "Desc" },
+        questions: [
+          { category: "finite-automata" } as Question,
+          { category: "finite-automata" } as Question,
+          { category: "finite-automata" } as Question
+        ]
+      };
 
-    // Check Math category
-    const mathCat = result.find(c => c.id === "math");
-    assert.ok(mathCat);
-    assert.strictEqual(mathCat.name, "Math");
-    assert.strictEqual(mathCat.questionCount, 2);
+      const categories = deriveCategoriesFromSubject(subject);
+      assert.strictEqual(categories.length, 1);
+      assert.deepEqual(categories[0], {
+        id: "finite-automata",
+        name: "Finite Automata",
+        questionCount: 3
+      });
+    });
 
-    // Check Science category
-    const scienceCat = result.find(c => c.id === "science");
-    assert.ok(scienceCat);
-    assert.strictEqual(scienceCat.name, "Science");
-    assert.strictEqual(scienceCat.questionCount, 1);
+    test("counts multiple categories correctly", () => {
+      const subject: FullSubjectData = {
+        id: "test",
+        name: "Test",
+        config: { title: "Test", description: "Desc" },
+        questions: [
+          { category: "cat-one" } as Question,
+          { category: "cat-two" } as Question,
+          { category: "cat-one" } as Question,
+          { category: "cat-three" } as Question
+        ]
+      };
 
-    // Check Computer Science Basics category
-    const csCat = result.find(c => c.id === "computer-science-basics");
-    assert.ok(csCat);
-    assert.strictEqual(csCat.name, "Computer Science Basics");
-    assert.strictEqual(csCat.questionCount, 1);
+      const categories = deriveCategoriesFromSubject(subject);
+      assert.strictEqual(categories.length, 3);
+
+      const catOne = categories.find(c => c.id === "cat-one");
+      assert.strictEqual(catOne?.questionCount, 2);
+      assert.strictEqual(catOne?.name, "Cat One");
+
+      const catTwo = categories.find(c => c.id === "cat-two");
+      assert.strictEqual(catTwo?.questionCount, 1);
+
+      const catThree = categories.find(c => c.id === "cat-three");
+      assert.strictEqual(catThree?.questionCount, 1);
+    });
   });
 });
