@@ -952,6 +952,78 @@ subject: SubjectData
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
+### `components/mold/home/home-screen-blocks.tsx`
+
+**Module Name:** Home-Screen-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+// Mode Selection
+  selectedMode: GameModeId
+  handleModeSelect: (id: GameModeId) => void
+  handleInitialize: () => void
+
+  // Configuration
+  config: SetupConfig
+  handleConfigChange: (patch: Partial<SetupConfig>) => void
+  categories: CategoryData[]
+
+  // Achievements
+  unlockedCount: number
+  totalAchievementsCount: number
+  topAchievements: Achievement[]
+  achievements: Achievement[]
+  setShowGallery: (show: boolean) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/home/home-screen-components.tsx`
+
+**Module Name:** Home-Screen-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+view: AppView
+  setView: (view: AppView) => void
+  handleModeSelect: (id: GameModeId) => void
+  setShowEncyclopedia: (show: boolean) => void
+  setShowGallery: (show: boolean) => void
+  onChangeSubject: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `components/mold/home/home-screen.tsx`
 
 **Module Name:** Home-Screen

@@ -30,21 +30,11 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await fs.promises.readFile(filePath, { encoding: 'utf-8' });
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
-  const length = parts.length;
-  const words = new Array(length);
-  for (let i = 0; i < length; i++) {
-    const w = parts[i];
-    words[i] = w.charAt(0).toUpperCase() + w.slice(1);
-  }
+  const words = parts.map(w => w.charAt(0).toUpperCase() + w.slice(1));
   const moduleName = words.join('-');
 
   const isClient = content.includes('"use client"') || content.includes("'use client'");
@@ -100,10 +90,7 @@ async function processComponent(filePath) {
   }
 
   const relativePath = path.relative(path.join(__dirname, '..'), filePath).replace(/\\/g, '/');
-  const formattedEdgeCases = new Array(edgeCases.length);
-  for (let i = 0; i < edgeCases.length; i++) {
-    formattedEdgeCases[i] = '- ' + edgeCases[i];
-  }
+  const formattedEdgeCases = edgeCases.map(ec => '- ' + ec);
 
   return `
 ### \`${relativePath}\`
@@ -136,11 +123,7 @@ async function generateDocs() {
   const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
   const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
 
-  const componentDocs = [];
-  for (const file of tsxFiles) {
-    const doc = await processComponent(file);
-    componentDocs.push(doc);
-  }
+  const componentDocs = await Promise.all(tsxFiles.map(file => processComponent(file)));
 
   const markdown = `# Component Registry
 
