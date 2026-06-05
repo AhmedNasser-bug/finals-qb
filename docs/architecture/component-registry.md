@@ -431,7 +431,8 @@ card: Flashcard;
   index: number;
   flipped: boolean;
   animClass: string;
-  accent: { color: string; border: string; label: string
+  accent: { color: string; border: string; label: string };
+  onFlip: () => void;
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -854,6 +855,37 @@ onInitialize: () => void
   selectedMode: GameModeId
   disabled?: boolean
   className?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/home/bottom-mobile-nav.tsx`
+
+**Module Name:** Bottom-Mobile-Nav
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+view: AppView
+  setView: (view: AppView) => void
+  handleModeSelect: (id: GameModeId) => void
+  setShowEncyclopedia: (show: boolean) => void
+  setShowGallery: (show: boolean) => void
+  onChangeSubject: () => void
 ```
 
 **Edge-Case Input Handling & Validation:**
