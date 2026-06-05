@@ -707,6 +707,66 @@ function balanceJsonStack(str: string): string {
   return balanced
 }
 
+function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
+  let repaired = ""
+  let inString = false
+  let fixed = false
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i]
+    if (char === '"') {
+      repaired += '"'
+      inString = !inString
+      continue
+    }
+
+    if (inString && char === '\\') {
+      const nextChar = str[i + 1]
+
+      if (nextChar === undefined) {
+        repaired += '\\\\'
+        fixed = true
+        continue
+      }
+
+      if (
+        nextChar === '"' ||
+        nextChar === '\\' ||
+        nextChar === '/' ||
+        nextChar === 'b' ||
+        nextChar === 'f' ||
+        nextChar === 'n' ||
+        nextChar === 'r' ||
+        nextChar === 't'
+      ) {
+        repaired += '\\' + nextChar
+        i++
+      } else if (nextChar === 'u') {
+        const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
+        if (
+          isHex(str[i + 2]) &&
+          isHex(str[i + 3]) &&
+          isHex(str[i + 4]) &&
+          isHex(str[i + 5])
+        ) {
+          repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
+          i += 5
+        } else {
+          repaired += '\\\\'
+          fixed = true
+        }
+      } else {
+        repaired += '\\\\'
+        fixed = true
+      }
+    } else {
+      repaired += char
+    }
+  }
+
+  return { repaired, fixed }
+}
+
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
   const fixedIssues: string[] = []
   let str = raw.trim()
@@ -727,6 +787,13 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
       .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
       .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
     fixedIssues.push("Normalized smart/curly quotes (“ ” ‘ ’) to standard straight quotes.")
+  }
+
+  // Issue 2.5: Bad escape characters (e.g. \ )
+  const { repaired: escapeRepaired, fixed: escapesFixed } = repairBadEscapes(str)
+  if (escapesFixed) {
+    str = escapeRepaired
+    fixedIssues.push("Repaired invalid escape characters inside string literals (e.g. backslashes not followed by valid escape codes).")
   }
   
   // Issue 3: Trailing commas

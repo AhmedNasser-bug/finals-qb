@@ -223,6 +223,20 @@ describe("parseSubjectJson", () => {
     assert.ok(typeof result.parseError === "string");
     assert.ok(result.parseError.startsWith("JSON parse error:"));
   });
+
+  test("successfully parses valid JSON with valid escapes preserved", () => {
+    const jsonStr = '{"id":"test","text":"Line 1\\nLine 2 with \\\\ backslash, \\"quote\\", and \\u0020space"}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, { id: "test", text: 'Line 1\nLine 2 with \\ backslash, "quote", and  space' });
+    assert.strictEqual(result.parseError, undefined);
+  });
+
+  test("auto-fixes bad escape characters in strings", () => {
+    const jsonStr = '{"id":"test","text":"Some bad escape\\ here, stray\\a, and end\\\\"}';
+    const result = parseSubjectJson(jsonStr);
+    assert.deepEqual(result.data, { id: "test", text: 'Some bad escape\\ here, stray\\a, and end\\' });
+    assert.ok(result.fixedWarnings?.some(w => w.includes("Repaired invalid escape characters")));
+  });
 });
 
 describe("Auto-Fix & Graceful Degradation Suite", () => {

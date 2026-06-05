@@ -9,3 +9,5 @@ This directory contains orchestration workflows intended for **Multi-Agent Syste
 
 ## Structure
 - `workflows/`: Orchestration pipelines that connect multiple specialized workflows or agents to accomplish a large-scale goal.
+- [pnpm-rules.md](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agents/pnpm-rules.md): Rule document dictating the use of pnpm in all executions.
+
