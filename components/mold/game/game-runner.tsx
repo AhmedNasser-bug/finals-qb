@@ -117,7 +117,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const { recordSession } = useStreak()
-  const { addEntry, toggleCheatSheet } = useCheatSheet()
+  const { addEntry, toggleCheatSheet, clearEntries } = useCheatSheet()
   
   const processedQuestionsRef = useRef<Record<number, boolean>>({})
   const [showHint, setShowHint] = useState(false)
@@ -135,6 +135,11 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     setHintTimeRemaining(10)
     setHintUsedThisQuestion(false)
   }
+
+  // Clear/reset the review deck (cheat sheet) when starting a new run
+  useEffect(() => {
+    clearEntries()
+  }, [clearEntries])
 
   // 1. Initial 5s lockout countdown
   useEffect(() => {

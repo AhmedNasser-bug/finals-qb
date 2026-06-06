@@ -6,7 +6,8 @@ import {
   Trophy, 
   RotateCcw, 
   Plus,
-  BarChart3
+  BarChart3,
+  Sparkles
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -20,6 +21,7 @@ interface SideNavBarProps {
   onShowGallery: () => void
   onChangeSubject: () => void
   onImportNew: () => void
+  onAddQuestions: () => void
   onInitialize: () => void
 }
 
@@ -32,6 +34,7 @@ export function SideNavBar({
   onShowGallery,
   onChangeSubject,
   onImportNew,
+  onAddQuestions,
   onInitialize,
 }: SideNavBarProps) {
   return (
@@ -101,6 +104,12 @@ export function SideNavBar({
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
           <Plus className="w-3.5 h-3.5" /> <span>Import JSON</span>
+        </button>
+        <button 
+          onClick={onAddQuestions}
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> <span>Add questions</span>
         </button>
       </nav>
 

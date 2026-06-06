@@ -178,6 +178,7 @@ function QuestionCardHtmlContent() {
 function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below" }) {
   const { state } = useQuestionCard()
   const { currentQuestion } = state
+  const [zoomedVisual, setZoomedVisual] = React.useState<"diagram" | "latex" | "html" | null>(null)
 
   const hasDedicatedDiagram = !!currentQuestion.diagram
   const parts = React.useMemo(() => parseRichTextParts(currentQuestion.question), [currentQuestion.question])
@@ -214,9 +215,12 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
             mode === "below" ? "min-h-[180px] h-[180px]" : "min-h-[280px] h-[280px]"
           )}>
             <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
-              [VISUAL_1: MERMAID_DIAGRAM]
+              [VISUAL_1: MERMAID_DIAGRAM] (Click to zoom)
             </span>
-            <div className="bg-[#131313] border border-zinc-800 p-3 flex-1 overflow-hidden rounded relative">
+            <div 
+              onClick={() => setZoomedVisual("diagram")}
+              className="bg-[#131313] border border-zinc-800 hover:border-zinc-700 transition-all p-3 flex-1 overflow-hidden rounded relative cursor-zoom-in hover:shadow-md active:scale-[0.99]"
+            >
               <MermaidDiagram
                 chart={chart}
                 id={diagId}
@@ -230,10 +234,11 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
         {hasVisualLatex && (
           <div className="flex flex-col gap-1.5 shrink-0 w-full">
             <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
-              [VISUAL_2: LATEX_FORMULA]
+              [VISUAL_2: LATEX_FORMULA] (Click to zoom)
             </span>
             <div 
-              className="bg-[#131313] border border-zinc-800 p-4 text-center rounded overflow-x-auto text-[#e5e2e1]"
+              onClick={() => setZoomedVisual("latex")}
+              className="bg-[#131313] border border-zinc-800 hover:border-zinc-700 transition-all p-4 text-center rounded overflow-x-auto text-[#e5e2e1] cursor-zoom-in hover:shadow-md active:scale-[0.99]"
               dangerouslySetInnerHTML={{
                 __html: renderMath(`$$${currentQuestion.visualLatex}$$`)
               }}
@@ -245,10 +250,11 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
         {hasVisualHtml && (
           <div className="flex flex-col gap-1.5 shrink-0 w-full">
             <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
-              [VISUAL_3: SPECIMEN_HTML]
+              [VISUAL_3: SPECIMEN_HTML] (Click to zoom)
             </span>
             <div 
-              className="bg-[#131313] border border-zinc-800 p-4 rounded text-left text-sm text-[#e5e2e1] overflow-x-auto font-sans"
+              onClick={() => setZoomedVisual("html")}
+              className="bg-[#131313] border border-zinc-800 hover:border-zinc-700 transition-all p-4 rounded text-left text-sm text-[#e5e2e1] overflow-x-auto font-sans cursor-zoom-in hover:shadow-md active:scale-[0.99]"
               dangerouslySetInnerHTML={{
                 // 100% secure: sanitized prior to LaTeX rendering!
                 __html: renderMath(DOMPurify.sanitize(currentQuestion.visualHtml ?? ""))
@@ -260,8 +266,66 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
     </div>
   )
 
+  const zoomOverlay = zoomedVisual && (
+    <div
+      onClick={() => setZoomedVisual(null)}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xs cursor-zoom-out p-4 md:p-8 animate-fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative bg-[#131313] border border-zinc-800 p-6 md:p-8 rounded max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col gap-4 shadow-2xl cursor-default animate-slide-up"
+      >
+        <button
+          onClick={() => setZoomedVisual(null)}
+          className="absolute top-4 right-4 text-zinc-500 hover:text-[#fecc17] font-mono text-[10px] uppercase border border-zinc-800 hover:border-[#fecc17]/20 bg-zinc-950 px-2 py-1 rounded transition-all cursor-pointer z-10"
+        >
+          [CLOSE]
+        </button>
+
+        <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-zinc-500 select-none">
+          ZOOM_VIEW // SPECIMEN_{zoomedVisual.toUpperCase()}
+        </span>
+
+        <div className="flex-1 min-h-0 w-full overflow-auto mt-2 select-text">
+          {zoomedVisual === "diagram" && chart && (
+            <div className="h-[60vh] min-h-[350px] w-full flex items-center justify-center bg-[#090909] border border-zinc-900 rounded p-4 relative">
+              <MermaidDiagram
+                chart={chart}
+                id={`${diagId}-zoomed`}
+                className="w-full h-full"
+              />
+            </div>
+          )}
+
+          {zoomedVisual === "latex" && (
+            <div
+              className="p-8 text-center text-xl text-[#e5e2e1] overflow-x-auto bg-[#090909] border border-zinc-900 rounded select-all"
+              dangerouslySetInnerHTML={{
+                __html: renderMath(`$$${currentQuestion.visualLatex}$$`)
+              }}
+            />
+          )}
+
+          {zoomedVisual === "html" && (
+            <div
+              className="p-6 rounded text-left text-sm text-[#e5e2e1] overflow-x-auto font-sans bg-[#090909] border border-zinc-900 select-all"
+              dangerouslySetInnerHTML={{
+                __html: renderMath(DOMPurify.sanitize(currentQuestion.visualHtml ?? ""))
+              }}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  )
+
   if (mode === "side") {
-    return <div className="hidden md:flex flex-col min-h-0 h-full w-full">{inner}</div>
+    return (
+      <div className="hidden md:flex flex-col min-h-0 h-full w-full">
+        {inner}
+        {zoomOverlay}
+      </div>
+    )
   }
 
   // Mobile stacked view: uses scroll container with standard margin

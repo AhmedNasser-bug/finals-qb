@@ -35,11 +35,13 @@ test("calculateDayStreak: run today and run yesterday returns 2", () => {
 })
 
 test("calculateDayStreak: multiple runs on the same day count as 1 day in streak", () => {
-  const today = new Date()
-  const todayStr1 = today.toISOString()
+  const today1 = new Date()
+  today1.setUTCHours(12, 0, 0, 0)
+  const todayStr1 = today1.toISOString()
   
-  today.setHours(today.getHours() - 2)
-  const todayStr2 = today.toISOString()
+  const today2 = new Date()
+  today2.setUTCHours(14, 0, 0, 0)
+  const todayStr2 = today2.toISOString()
 
   const runs = [
     { date: todayStr1 },

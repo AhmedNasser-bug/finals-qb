@@ -16,6 +16,11 @@ const SubjectImporter = dynamic(
   { ssr: false }
 )
 
+const AddQuestionsWizard = dynamic(
+  () => import("@/components/mold/home/add-questions-wizard").then((mod) => mod.AddQuestionsWizard),
+  { ssr: false }
+)
+
 import { TopNavBar } from "@/components/mold/home/top-nav-bar"
 import { SideNavBar } from "@/components/mold/home/side-nav-bar"
 import { BottomMobileNav } from "@/components/mold/home/bottom-mobile-nav"
@@ -59,6 +64,7 @@ export function HomeScreen({
   const [showGallery, setShowGallery]       = useState(false)
   const [showEncyclopedia, setShowEncyclopedia] = useState(false)
   const [showImporter, setShowImporter]     = useState(false)
+  const [showAiWizard, setShowAiWizard]     = useState(false)
 
   const { runs, stats, recordSession } = useStats()
   const { achievements, syncSubjectAchievements } = useAchievements()
@@ -162,6 +168,7 @@ export function HomeScreen({
           onShowGallery={() => setShowGallery(true)}
           onChangeSubject={onChangeSubject}
           onImportNew={() => setShowImporter(true)}
+          onAddQuestions={() => setShowAiWizard(true)}
           onInitialize={handleInitialize}
         />
 
@@ -237,6 +244,17 @@ export function HomeScreen({
           onImport={handleImport}
           onCancel={() => setShowImporter(false)}
           existingIds={allSubjectIds}
+        />
+      )}
+
+      {showAiWizard && (
+        <AddQuestionsWizard
+          activeSubject={activeSubject}
+          onMerge={(mergedSubject) => {
+            setShowAiWizard(false)
+            onAddSubject(mergedSubject)
+          }}
+          onCancel={() => setShowAiWizard(false)}
         />
       )}
     </>
