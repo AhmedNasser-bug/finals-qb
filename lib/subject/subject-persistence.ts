@@ -259,6 +259,7 @@ function autoFixQuestions(obj: Record<string, unknown>, warnings: string[]) {
     } else {
       qObj.answer = qObj.answer.toUpperCase().trim()
       let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer)
+
       if (!hasLabel) {
         const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer)
         if (matchedOpt) {
@@ -267,26 +268,26 @@ function autoFixQuestions(obj: Record<string, unknown>, warnings: string[]) {
           warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`)
           qFixed = true
           hasLabel = true
-        } else {
-          // Check for "True" / "False" maps to A / B
-          if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-            const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer)
-            const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer)
-            if (isTrueMatch || isFalseMatch) {
-              const oldAnswer = qObj.answer
-              qObj.answer = isTrueMatch ? "A" : "B"
-              warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`)
-              qFixed = true
-              hasLabel = true
-            }
-          }
-          if (!hasLabel) {
-            const oldAnswer = qObj.answer
-            qObj.answer = normalizedOptions[0].label
-            warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`)
-            qFixed = true
-          }
         }
+      }
+
+      if (!hasLabel && (qObj.type === "TrueFalse" || normalizedOptions.length === 2)) {
+        const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer)
+        const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer)
+        if (isTrueMatch || isFalseMatch) {
+          const oldAnswer = qObj.answer
+          qObj.answer = isTrueMatch ? "A" : "B"
+          warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`)
+          qFixed = true
+          hasLabel = true
+        }
+      }
+
+      if (!hasLabel) {
+        const oldAnswer = qObj.answer
+        qObj.answer = normalizedOptions[0].label
+        warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`)
+        qFixed = true
       }
     }
 
@@ -672,22 +673,29 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
-    } else if (char === '[') {
+      continue
+    }
+    if (char === '[') {
       stack.push('[')
-    } else if (char === '}') {
+      continue
+    }
+    if (char === '}') {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        continue
       }
-    } else if (char === ']') {
+      const idx = stack.lastIndexOf('{')
+      if (idx !== -1) stack.splice(idx)
+      continue
+    }
+    if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        continue
       }
+      const idx = stack.lastIndexOf('[')
+      if (idx !== -1) stack.splice(idx)
+      continue
     }
   }
   
@@ -736,67 +744,69 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
       continue
     }
 
-    if (inString && char === '\\') {
-      const nextChar = str[i + 1]
+    if (!inString || char !== '\\') {
+      repaired += char
+      continue
+    }
 
-      if (nextChar === undefined) {
+    const nextChar = str[i + 1]
+
+    if (nextChar === undefined) {
+      repaired += '\\\\'
+      fixed = true
+      continue
+    }
+
+    // Check if it's a LaTeX command starting with b, f, n, r, t, u
+    if (/[bfnrtu]/i.test(nextChar)) {
+      // Extract the alphabetical word starting at nextChar
+      let word = ""
+      let j = i + 1
+      while (j < str.length && /[a-zA-Z]/.test(str[j])) {
+        word += str[j]
+        j++
+      }
+
+      // If the extracted word is a known LaTeX command, double escape the backslash!
+      if (LATEX_WORDS.has(word.toLowerCase())) {
         repaired += '\\\\'
         fixed = true
         continue
       }
-
-      // Check if it's a LaTeX command starting with b, f, n, r, t, u
-      if (/[bfnrtu]/i.test(nextChar)) {
-        // Extract the alphabetical word starting at nextChar
-        let word = ""
-        let j = i + 1
-        while (j < str.length && /[a-zA-Z]/.test(str[j])) {
-          word += str[j]
-          j++
-        }
-
-        // If the extracted word is a known LaTeX command, double escape the backslash!
-        if (LATEX_WORDS.has(word.toLowerCase())) {
-          repaired += '\\\\'
-          fixed = true
-          continue
-        }
-      }
-
-      // Standard JSON escape validation
-      if (
-        nextChar === '"' ||
-        nextChar === '\\' ||
-        nextChar === '/' ||
-        nextChar === 'b' ||
-        nextChar === 'f' ||
-        nextChar === 'n' ||
-        nextChar === 'r' ||
-        nextChar === 't'
-      ) {
-        repaired += '\\' + nextChar
-        i++
-      } else if (nextChar === 'u') {
-        const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
-        if (
-          isHex(str[i + 2]) &&
-          isHex(str[i + 3]) &&
-          isHex(str[i + 4]) &&
-          isHex(str[i + 5])
-        ) {
-          repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
-          i += 5
-        } else {
-          repaired += '\\\\'
-          fixed = true
-        }
-      } else {
-        repaired += '\\\\'
-        fixed = true
-      }
-    } else {
-      repaired += char
     }
+
+    // Standard JSON escape validation
+    if (
+      nextChar === '"' ||
+      nextChar === '\\' ||
+      nextChar === '/' ||
+      nextChar === 'b' ||
+      nextChar === 'f' ||
+      nextChar === 'n' ||
+      nextChar === 'r' ||
+      nextChar === 't'
+    ) {
+      repaired += '\\' + nextChar
+      i++
+      continue
+    }
+
+    if (nextChar === 'u') {
+      const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
+      if (
+        isHex(str[i + 2]) &&
+        isHex(str[i + 3]) &&
+        isHex(str[i + 4]) &&
+        isHex(str[i + 5])
+      ) {
+        repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
+        i += 5
+        continue
+      }
+    }
+
+    repaired += '\\\\'
+    fixed = true
   }
 
   return { repaired, fixed }
