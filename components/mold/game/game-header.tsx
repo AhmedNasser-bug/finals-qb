@@ -178,15 +178,15 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           </div>
         </div>
 
-        {/* Right: Quit & Terminal Buttons (Compact for Mobile) */}
+        {/* Right: Quit & Review Deck Buttons (Compact for Mobile) */}
         <div className="flex gap-2">
           <button
             onClick={toggleCheatSheet}
-            aria-label="Open terminal"
-            title="Open terminal"
+            aria-label="Open Review Deck"
+            title="Open Review Deck"
             className="px-2 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-[#fecc17]/40 hover:bg-[#fecc17]/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
           >
-            {"[>_]"}
+            [DECK]
           </button>
           <button
             onClick={onForfeit}
@@ -317,13 +317,14 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
             <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
           </div>
-          {/* Terminal & Quit Buttons */}
+          {/* Review Deck & Quit Buttons */}
           <div className="md:mt-1.5 flex gap-2">
             <button
               onClick={toggleCheatSheet}
               className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] hover:border-[#fecc17]/50 hover:bg-[#fecc17]/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0 cursor-pointer"
+              title="Open Review Deck (Ctrl + `)"
             >
-              {"[>_ TERMINAL]"}
+              [REVIEW DECK]
             </button>
             <button
               onClick={onForfeit}

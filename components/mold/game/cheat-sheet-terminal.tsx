@@ -1,64 +1,16 @@
 "use client"
 
-import React, { useState, useEffect, useRef, useCallback } from "react"
+import React, { useEffect } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
 import { renderMath } from "@/lib/utils/math-renderer"
 import { cn } from "@/lib/utils"
 
-interface LogLine {
-  id: string
-  type: "input" | "system" | "success" | "error" | "rich"
-  text?: string
-  element?: React.ReactNode
-}
-
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
-  const [terminalInput, setTerminalInput] = useState("")
-  const [logs, setLogs] = useState<LogLine[]>([])
-  const [history, setHistory] = useState<string[]>([])
-  const [historyIndex, setHistoryIndex] = useState(-1)
-  
-  const logContainerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
 
-  // 1. Initial boot screen logs
-  useEffect(() => {
-    setLogs([
-      { id: "boot-1", type: "system", text: "MOLD SYSTEM CONTROL TERMINAL v2.0.0" },
-      { id: "boot-2", type: "system", text: "=========================================" },
-      { id: "boot-3", type: "system", text: "[STATUS: ONLINE. CHEAT_SHEET_LOG LOADED.]" },
-      { id: "boot-4", type: "system", text: "Type 'help' for available commands or 'list' to see flagged questions." },
-      { id: "boot-5", type: "system", text: "-----------------------------------------" },
-    ])
-  }, [])
-
-  // 2. Scroll to bottom when logs change
-  useEffect(() => {
-    if (logContainerRef.current) {
-      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight
-    }
-  }, [logs])
-
-  // 3. Keep focus in input when terminal is clicked
-  const handleContainerClick = () => {
-    if (inputRef.current) {
-      inputRef.current.focus()
-    }
-  }
-
-  // 4. Focus input when terminal opens
-  useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => {
-        if (inputRef.current) inputRef.current.focus()
-      }, 100)
-    }
-  }, [isOpen])
-
-  // 5. Ctrl + ` (Backtick) global keyboard toggle (only when terminal is active in GameRunner)
+  // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && (e.key === "`" || e.key === "~")) {
@@ -70,212 +22,12 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [toggleCheatSheet])
 
-  // Helper to append a line to the terminal
-  const appendLog = useCallback((log: Omit<LogLine, "id">) => {
-    setLogs((prev) => [...prev, { ...log, id: `log-${Date.now()}-${Math.random()}` }])
-  }, [])
-
-  // Command executor
-  const executeCommand = useCallback((cmdText: string) => {
-    const trimmed = cmdText.trim()
-    if (!trimmed) return
-
-    // Add to input history
-    appendLog({ type: "input", text: `MOLD_SYS@USER:~$ ${trimmed}` })
-    setHistory((prev) => [...prev, trimmed])
-    setHistoryIndex(-1)
-
-    const parts = trimmed.split(" ")
-    const command = parts[0].toLowerCase()
-    const arg = parts.slice(1).join(" ")
-
-    switch (command) {
-      case "help":
-        appendLog({
-          type: "system",
-          text: `Available Console Commands:
-  help          - Display this help message.
-  list          - List all flagged question entries (wrong or hinted).
-  view <index>  - Display detailed explanation of a flagged entry.
-  clear         - Wipe the cheat sheet database for this subject.
-  close         - Close the terminal side panel.`
-        })
-        break
-
-      case "list":
-        if (entries.length === 0) {
-          appendLog({
-            type: "system",
-            text: "LOG STATUS: Empty. Answer questions incorrectly or request hints to populate the terminal cheat sheet."
-          })
-        } else {
-          appendLog({ type: "system", text: `FLAGGED DATABASE ENTRIES (${entries.length} RECORDS FOUND):` })
-          entries.forEach((entry, idx) => {
-            const num = idx + 1
-            const statusStr = [
-              entry.gotWrong ? "WRONG" : null,
-              entry.hintUsed ? "HINTED" : null
-            ].filter(Boolean).join(" & ")
-
-            appendLog({
-              type: "rich",
-              element: (
-                <div key={entry.id} className="py-0.5 flex flex-wrap gap-2 items-center">
-                  <span className="text-[#a1a1aa] font-mono">[{num}]</span>
-                  <button
-                    onClick={() => executeCommand(`view ${num}`)}
-                    className="text-left font-mono text-[#fecc17] hover:underline focus:outline-none hover:text-white"
-                  >
-                    {formatLabel(entry.category)} / {entry.id.substring(0, 12)}
-                  </button>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 bg-zinc-800 rounded text-zinc-400">
-                    {entry.difficulty}
-                  </span>
-                  <span className={cn(
-                    "text-[9px] font-mono font-bold tracking-wider",
-                    entry.gotWrong ? "text-red-400" : "text-yellow-500"
-                  )}>
-                    ({statusStr})
-                  </span>
-                </div>
-              )
-            })
-          })
-        }
-        break
-
-      case "view": {
-        const idxVal = parseInt(arg, 10)
-        if (isNaN(idxVal) || idxVal < 1 || idxVal > entries.length) {
-          appendLog({ type: "error", text: `Syntax Error: 'view' expects a valid index between 1 and ${entries.length}. Usage: view <index>` })
-        } else {
-          const entry = entries[idxVal - 1]
-          appendLog({
-            type: "rich",
-            element: (
-              <div className="bg-[#121212] border border-zinc-800/80 p-4 rounded my-2 text-[#e5e2e1] space-y-3 font-sans">
-                {/* Header */}
-                <div className="flex justify-between items-center border-b border-zinc-800 pb-2">
-                  <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
-                    RECORD_ID: {entry.id}
-                  </span>
-                  <span className="font-mono text-[9px] px-2 py-0.5 bg-zinc-900 rounded text-zinc-400 uppercase">
-                    {entry.difficulty}
-                  </span>
-                </div>
-
-                {/* Question Text */}
-                <div className="space-y-1">
-                  <span className="block font-mono text-[9px] text-[#fecc17] uppercase tracking-wider">
-                    [QUESTION]
-                  </span>
-                  <p 
-                    className="text-sm font-semibold leading-relaxed"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(renderMath(entry.question))
-                    }}
-                  />
-                </div>
-
-                {/* Options */}
-                {entry.options && entry.options.length > 0 && (
-                  <div className="space-y-1">
-                    <span className="block font-mono text-[9px] text-zinc-500 uppercase tracking-wider">
-                      [OPTIONS]
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                      {entry.options.map((opt) => {
-                        const isCorrect = opt.label === entry.answer
-                        return (
-                          <div 
-                            key={opt.label} 
-                            className={cn(
-                              "p-2 border rounded font-mono",
-                              isCorrect 
-                                ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-400" 
-                                : "bg-zinc-900/40 border-zinc-800 text-zinc-400"
-                            )}
-                          >
-                            <span className="font-black mr-1.5">{opt.label}:</span>
-                            <span dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(renderMath(opt.text))
-                            }} />
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Explanation */}
-                <div className="space-y-1 border-t border-zinc-800/80 pt-3">
-                  <span className="block font-mono text-[9px] text-[#4ae176] uppercase tracking-wider">
-                    [SYSTEM_EXPLANATION]
-                  </span>
-                  <p 
-                    className="text-xs leading-relaxed text-zinc-300 italic"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(renderMath(entry.explanation))
-                    }}
-                  />
-                </div>
-              </div>
-            )
-          })
-        }
-        break
-      }
-
-      case "clear":
-        clearEntries()
-        appendLog({ type: "success", text: "LOG ACTION: Cheat sheet database cleared. 0 records remaining." })
-        break
-
-      case "close":
-        appendLog({ type: "system", text: "Terminating session..." })
-        setIsOpen(false)
-        break
-
-      default:
-        appendLog({ type: "error", text: `Command not found: '${command}'. Type 'help' for instructions.` })
-    }
-  }, [entries, appendLog, clearEntries, setIsOpen])
-
-  // Key down event handler for input field (handles Enter and History UP/DOWN keys)
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Proactively block propagation so typing inside terminal doesn't trigger game keystrokes
-    e.stopPropagation()
-
-    if (e.key === "Enter") {
-      const val = terminalInput
-      setTerminalInput("")
-      executeCommand(val)
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault()
-      if (history.length === 0) return
-      
-      const newIdx = historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1)
-      setHistoryIndex(newIdx)
-      setTerminalInput(history[newIdx])
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault()
-      if (history.length === 0) return
-      
-      if (historyIndex === -1) return
-      if (historyIndex >= history.length - 1) {
-        setHistoryIndex(-1)
-        setTerminalInput("")
-      } else {
-        const newIdx = historyIndex + 1
-        setHistoryIndex(newIdx)
-        setTerminalInput(history[newIdx])
-      }
-    }
-  }
+  // Reverse entries so the most recently flagged questions appear at the top
+  const reversedEntries = [...entries].reverse()
 
   return (
     <>
-      {/* Drawer Overlay (to click outside and close) */}
+      {/* Overlay Backdrop */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
@@ -283,97 +35,164 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         />
       )}
 
-      {/* Terminal Drawer */}
+      {/* Side Panel Drawer */}
       <div
-        onClick={handleContainerClick}
-        onKeyDown={(e) => e.stopPropagation()} // block game keys globally inside terminal drawer
+        onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#090909] border-l border-zinc-800/80 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
+          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="scanlines absolute inset-0 opacity-[0.05] pointer-events-none z-0" />
-        
-        {/* Terminal Header */}
-        <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-3 shrink-0 flex justify-between items-center font-mono">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
-            <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold">
-              MOLD_CONTROL_UNIT://SYSTEM_TERMINAL
-            </span>
+        <div className="scanlines absolute inset-0 opacity-[0.03] pointer-events-none z-0" />
+
+        {/* Panel Header */}
+        <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-4 shrink-0 flex justify-between items-start font-mono">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase tracking-wider text-zinc-300 font-bold">
+                STUDY DECK // REVIEW PANEL
+              </span>
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-[#fecc17]/10 text-[#fecc17] border border-[#fecc17]/20 rounded">
+                {entries.length} ITEMS
+              </span>
+            </div>
+            <p className="font-sans text-[11px] text-zinc-500 max-w-md leading-normal">
+              Review full explanations for questions where you requested hints or provided incorrect responses.
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-[9px] text-zinc-500 uppercase tracking-widest hidden sm:inline">
-              Ctrl + ` to Toggle
-            </span>
+
+          <div className="flex items-center gap-2">
+            {entries.length > 0 && (
+              <button
+                onClick={clearEntries}
+                className="text-zinc-400 hover:text-red-400 font-mono text-[10px] uppercase border border-zinc-800 hover:border-red-500/20 bg-zinc-950 px-2.5 py-1 rounded transition-all cursor-pointer"
+              >
+                Clear Deck
+              </button>
+            )}
             <button
               onClick={() => setIsOpen(false)}
-              className="text-zinc-500 hover:text-red-400 transition-colors uppercase text-[10px] font-black border border-zinc-800 hover:border-red-500/30 bg-zinc-950 px-2 py-0.5 rounded cursor-pointer"
+              className="text-zinc-400 hover:text-[#fecc17] font-mono text-[10px] uppercase border border-zinc-800 hover:border-[#fecc17]/20 bg-zinc-950 px-2 py-1 rounded transition-all cursor-pointer"
+              title="Close panel (Ctrl + `)"
             >
               [X]
             </button>
           </div>
         </div>
 
-        {/* Terminal Body (Scrollable Output) */}
-        <div
-          ref={logContainerRef}
-          className="relative z-10 flex-1 overflow-y-auto p-4 font-mono text-xs text-[#fecc17] space-y-2 custom-scrollbar selection:bg-[#fecc17]/20 selection:text-white"
-        >
-          {logs.map((log) => {
-            if (log.type === "input") {
-              return (
-                <div key={log.id} className="text-zinc-400 font-semibold break-all">
-                  {log.text}
-                </div>
-              )
-            }
-            if (log.type === "error") {
-              return (
-                <div key={log.id} className="text-red-400 break-all">
-                  {log.text}
-                </div>
-              )
-            }
-            if (log.type === "success") {
-              return (
-                <div key={log.id} className="text-[#4ae176] break-all">
-                  {log.text}
-                </div>
-              )
-            }
-            if (log.type === "rich") {
-              return <div key={log.id} className="w-full">{log.element}</div>
-            }
-            return (
-              <div key={log.id} className="white-space-pre-wrap leading-relaxed break-all">
-                {log.text}
+        {/* Panel Content (Scrollable Deck of Cards) */}
+        <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
+          {reversedEntries.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
+              <div className="text-4xl">📚</div>
+              <div className="space-y-1">
+                <p className="font-sans font-bold text-sm text-zinc-300">Your review deck is currently empty</p>
+                <p className="font-sans text-xs text-zinc-500 max-w-xs leading-normal">
+                  Questions you answer incorrectly or request hints for during a session will appear here automatically.
+                </p>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          ) : (
+            reversedEntries.map((entry) => {
+              const statusStr = [
+                entry.gotWrong ? "INCORRECT" : null,
+                entry.hintUsed ? "HINTED" : null
+              ].filter(Boolean).join(" & ")
 
-        {/* Terminal Input Bar */}
-        <div className="relative z-10 bg-[#0c0c0c] border-t border-zinc-800/80 px-4 py-3 shrink-0 flex items-center gap-2 font-mono">
-          <span className="text-zinc-400 font-bold shrink-0">MOLD_SYS@USER:~$</span>
-          <div className="flex-1 relative flex items-center">
-            <input
-              ref={inputRef}
-              type="text"
-              value={terminalInput}
-              onChange={(e) => setTerminalInput(e.target.value)}
-              onKeyDown={handleInputKeyDown}
-              className="w-full bg-transparent text-[#fecc17] focus:outline-none border-none p-0 focus:ring-0 text-xs shrink-0 select-text"
-              placeholder="Type command (e.g. help, list, clear)..."
-              autoComplete="off"
-              autoCapitalize="off"
-              spellCheck="false"
-            />
-            {/* Blinking cursor emulation (optional, but looks amazing!) */}
-            {terminalInput === "" && (
-              <span className="absolute left-0 w-1.5 h-3.5 bg-[#fecc17] animate-pulse pointer-events-none" style={{ animationDuration: "1s" }} />
-            )}
-          </div>
+              return (
+                <div
+                  key={entry.id}
+                  className={cn(
+                    "bg-[#121212] border p-4 md:p-5 rounded shadow-sm space-y-4 transition-all",
+                    entry.gotWrong 
+                      ? "border-red-500/20 bg-gradient-to-br from-[#121212] to-red-950/[0.02]" 
+                      : "border-amber-500/20 bg-gradient-to-br from-[#121212] to-amber-950/[0.02]"
+                  )}
+                >
+                  {/* Card Meta Header */}
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      <span className={cn(
+                        "text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 rounded border uppercase leading-none",
+                        entry.gotWrong 
+                          ? "bg-red-950/30 text-red-400 border-red-500/30" 
+                          : "bg-amber-950/30 text-amber-400 border-amber-500/30"
+                      )}>
+                        {statusStr}
+                      </span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 bg-zinc-900 rounded text-zinc-400 uppercase leading-none">
+                        {entry.difficulty}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest leading-none">
+                      {formatLabel(entry.category)}
+                    </span>
+                  </div>
+
+                  {/* Question Prompt */}
+                  <div className="space-y-1">
+                    <span className="block font-mono text-[9px] text-zinc-500 uppercase tracking-wider">
+                      Question:
+                    </span>
+                    <p
+                      className="font-sans text-sm font-semibold leading-relaxed text-[#e5e2e1] text-pretty"
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(renderMath(entry.question))
+                      }}
+                    />
+                  </div>
+
+                  {/* Options List */}
+                  {entry.options && entry.options.length > 0 && (
+                    <div className="space-y-1.5">
+                      <span className="block font-mono text-[9px] text-zinc-500 uppercase tracking-wider">
+                        Options:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        {entry.options.map((opt) => {
+                          const isCorrect = opt.label === entry.answer
+                          return (
+                            <div
+                              key={opt.label}
+                              className={cn(
+                                "p-2 border rounded font-mono flex items-start gap-2",
+                                isCorrect
+                                  ? "bg-emerald-950/20 border-emerald-500/30 text-emerald-400"
+                                  : "bg-zinc-900/40 border-zinc-800/80 text-zinc-500"
+                              )}
+                            >
+                              <span className="font-black shrink-0">{opt.label}:</span>
+                              <span 
+                                className="font-sans shrink-0 max-w-[90%]"
+                                dangerouslySetInnerHTML={{
+                                  __html: DOMPurify.sanitize(renderMath(opt.text))
+                                }} 
+                              />
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Explanation Block */}
+                  <div className="space-y-2 border-t border-zinc-800/80 pt-3">
+                    <span className="block font-mono text-[9px] text-[#4ae176] uppercase tracking-wider">
+                      Explanation:
+                    </span>
+                    <div className="border-l-2 border-[#4ae176]/40 bg-emerald-950/[0.04] p-3 rounded-r">
+                      <p
+                        className="font-sans text-xs leading-relaxed text-zinc-300 italic text-pretty"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(renderMath(entry.explanation))
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )
+            })
+          )}
         </div>
       </div>
     </>
