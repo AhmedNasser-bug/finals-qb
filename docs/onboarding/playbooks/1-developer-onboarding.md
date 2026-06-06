@@ -1,6 +1,6 @@
-# Developer Onboarding Playbook
+# Automated Developer Onboarding Playbook
 
-## 1. Workspace Setup & Initialization
+## 1. Workspace Setup & Initialization Commands
 
 **Follow these steps to initialize your local workspace and start the multi-tenant development sandbox:**
 
