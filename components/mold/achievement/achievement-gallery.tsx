@@ -23,7 +23,13 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
   }, [achievements])
 
   return (
-    <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Achievement Gallery"
+      tabIndex={-1}
+      className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in outline-none"
+    >
       <div className="w-full max-w-lg bg-panel border border-border rounded flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">

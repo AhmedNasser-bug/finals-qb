@@ -268,8 +268,12 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
 
   const zoomOverlay = zoomedVisual && (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Zoom Overlay"
+      tabIndex={-1}
       onClick={() => setZoomedVisual(null)}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xs cursor-zoom-out p-4 md:p-8 animate-fade-in"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xs cursor-zoom-out p-4 md:p-8 animate-fade-in outline-none"
     >
       <div
         onClick={(e) => e.stopPropagation()}

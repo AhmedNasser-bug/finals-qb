@@ -37,9 +37,13 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Cheat Sheet"
+        tabIndex={-1}
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
+          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text outline-none",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
