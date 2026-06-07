@@ -81,7 +81,16 @@ async function processComponent(filePath) {
     edgeCases.push("Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.");
   }
   if (content.includes('JSON.parse')) {
-    edgeCases.push("Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.");
+    edgeCases.push("Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation to prevent prototype pollution or invalid state.");
+  }
+  if (content.includes('validateSubjectData')) {
+    edgeCases.push("Implements explicit domain-specific validation logic (e.g., validateSubjectData) for parsed payloads to enforce schema integrity.");
+  }
+  if (content.includes('next/image')) {
+    edgeCases.push("Utilizes Next.js optimized asset delivery (`next/image`); ensure external image domains are whitelisted in next.config.js.");
+  }
+  if (content.includes('next/font')) {
+    edgeCases.push("Utilizes Next.js optimized font delivery (`next/font`); preloads critical typography to eliminate layout shifts.");
   }
   if (content.includes('localStorage') || content.includes('sessionStorage')) {
     edgeCases.push("Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.");
