@@ -1,0 +1,4546 @@
+================================================================================
+FINALIST STUDY MATERIAL GENERATION PACKAGE
+================================================================================
+INSTRUCTIONS FOR THE CHATBOT:
+You are a pedagogical expert and curriculum designer. Using the PARTS framework (Persona, Act, Recipient, Theme, Structure), generate a complete MOLD V2 subject dataset for: Advanced Programming
+
+You are a senior curriculum designer and academic assessment designer. Your tone is professional, precise, and highly analytical. You design standards-aligned question banks focused on testing critical thinking, conceptual application, and deep comprehension rather than simple rote memorization.
+
+Act: Design a comprehensive, inquiry-based dataset for learning.
+Recipient: For learners who need high-quality practice and scaffolding to stimulate curiosity and deepen metacognition.
+Theme: Advanced Programming
+
+Structure: Generate ONLY a single raw JSON object. No markdown, no code fences, no surrounding explanation — just the JSON.
+
+The JSON structure MUST follow this exact schema:
+{
+  "id": "advanced-programming",
+  "name": "Advanced Programming",
+  "config": {
+    "title": "Advanced Programming Mastery",
+    "description": "One sentence summary detailing the pedagogical goal of this subject.",
+    "version": "1.0"
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "MCQ" or "TrueFalse",
+      "difficulty": "Easy" or "Medium" or "Hard",
+      "category": "category-slug",
+      "question": "The question text (HTML supported — see FORMATTING RULES).",
+      "diagram": "Optional. Raw Mermaid diagram source code string (see DIAGRAM RULES). Omit field entirely if no diagram.",
+      "diagramPosition": "right",
+      "options": [
+        { "label": "A", "text": "Option A" },
+        { "label": "B", "text": "Option B" },
+        { "label": "C", "text": "Option C" },
+        { "label": "D", "text": "Option D" }
+      ],
+      "answer": "A",
+      "explanation": "Why correct. (See pedagogical instructions below)",
+      "hint": "A guiding nudge. (See pedagogical instructions below)"
+    }
+  ],
+  "flashcards": [
+    { "id": "f1", "term": "Key Concept", "definition": "Clear definition", "category": "category-slug" }
+  ],
+  "terminology": {
+    "category-slug": [{ "term": "Term", "definition": "Definition" }]
+  },
+  "achievements": [
+    { "id": "ach-1", "title": "Bronze Medal", "description": "Complete 1 run", "icon": "Zap", "condition": { "type": "runs_gte", "value": 1 } }
+  ]
+}
+
+PEDAGOGICAL STRATEGIES & SCAFFOLDING INSTRUCTIONS:
+- Question Hints: Provide a clear, supportive hint that simplifies the question without giving away the direct answer.
+- Metacognitive Explanations: When writing question "explanation" fields, do not just state what the correct option is. Explicitly detail the logical reasoning process behind why it is correct and why the distractors are incorrect. Address common student misconceptions and prompt them to reflect on their own strategies.
+- Cognitive Load Management: Structure all text definitions, flashcards, and explanations to be highly digestible. Use concise bullet points, simple vocabulary, short sentences, and logical conceptual sequences to avoid overwhelming the learner.
+
+FORMATTING & VISUAL LAYOUT GUIDELINES:
+- HTML Rich Text: The "question" field supports HTML for rich text formatting. You are highly encouraged to use inline styles (color, font-weight), <br>, <i>, <b>, <code>, <pre>, and HTML tables to format question text and organize comparative data.
+- Mermaid Visual Diagrams: To include a visual diagram with a question, add a "diagram" field containing raw Mermaid source code as a plain string. Supported diagram types: graph, flowchart, sequenceDiagram, classDiagram, stateDiagram-v2, erDiagram, gantt, pie, gitGraph, mindmap, timeline.
+When "diagram" is present, the question card enters a two-column split layout. The diagram string must be valid Mermaid syntax. Do not wrap it in code fences or quotes — write the raw syntax directly as the field value. Use \n for line breaks within the diagram string value in JSON.
+
+TECHNICAL SUBJECT BIAS:
+- Prioritize generating rich, valid Mermaid diagrams (flowcharts, sequence diagrams, state machines, etc.) for at least 60% of the questions.
+- Embed code blocks (<code>, <pre>) and algorithmic data comparisons where helpful.
+- Terminology definitions should be precise, mathematical, and programmatic.
+
+REFERENCE DOCUMENT CONSTRAINTS:
+If the user has attached, pasted, or uploaded an existing question bank, syllabus, course notes, reference textbook pages, or draft database file, you MUST strictly use its key concepts, terminology definitions, structure, difficulty grading, and formatting styles as your primary source of truth. Ensure all generated questions, flashcards, and achievements map perfectly to these source concepts while matching our requested JSON schema rules.
+
+CRITICAL GENERAL REQUIREMENTS:
+- Generate EXACTLY 120 unique, high-quality, comprehensive questions.
+- MCQ questions: exactly 4 options (A, B, C, D)
+- TrueFalse questions: exactly 2 options (A=True, B=False)
+- Include a substantial amount of questions, flashcards, and achievements to provide thorough practice.
+- Ensure varying levels of difficulty (Easy, Medium, Hard).
+- Spread questions across distinct categories.
+- All ids must be unique and kebab-case.
+- No duplicate question text.
+- Every category slug used in questions must exist in terminology.
+- All questions MUST have both explanation and hint fields populated.
+
+ACHIEVEMENT CONDITION TYPES:
+- "runs_gte": { "type": "runs_gte", "value": N } — Complete N runs
+- "accuracy_gte": { "type": "accuracy_gte", "value": 85 } — Score 85%+ accuracy
+- "streak_gte": { "type": "streak_gte", "value": 15 } — 15-question streak
+- "mode_complete": { "type": "mode_complete", "mode": "speedrun" } — Complete this mode
+- "speedrun_under": { "type": "speedrun_under", "mode": "speedrun", "seconds": 300 } — Under time limit
+- "no_hints": { "type": "no_hints", "mode": "hardcore" } — Mode without hints
+- "all_categories": { "type": "all_categories" } — Practice every category
+- "all_unlocked": { "type": "all_unlocked" } — Unlock all other achievements
+
+CRITICAL — OUTPUT COMPACTNESS:
+The JSON output will be encoded into shareable URLs. To maximize shareability, generate the JSON with:
+- NO extra whitespace or indentation — output single-line, no spaces between tokens
+- NO unnecessary fields or null values
+- Short but descriptive strings (concise terminology definitions, brief hints)
+- Output the complete JSON object on a single line (no formatting).
+
+================================================================================
+SOURCE STUDY MATERIAL & EXPLICIT NOTES:
+================================================================================
+--- DETECTED SOURCE MATERIAL (PARSED CLIENT-SIDE) ---
+CS 209
+ Advanced Programming
+ Lecture 1
+ Prepared By:
+ Dr. Amr AbdelFatah
+Course Description
+Course Outline
+ Week   Lecture Topic
+ 1   Introduction
+ 2   C# and .NET   framework
+ 3   Object - Oriented Design and programming overview
+ 4   Encapsulation and Inheritance
+ 5   Abstraction
+ 6   Revision and Discussion
+ 7   Mid Term Exam
+ 8   Introduction to Design Patterns
+ 9   Architectural Pattern
+ 10   Model View Controller (MVC)
+ 11   S.O.L.I.D. Principles
+ 12   Entity Framework (EF Core)
+ 13   Version Control Systems
+ 15   Revision and Discussion
+Introduction
+Opening Discussion
+ •   What programming languages have you used?
+ •   What did you build?
+ •   Was it a script or a structured system?
+Script vs System
+ •   Script: Small, single - file, short - term
+ •   System: Large, layered, maintainable
+ •   Advanced Programming = Building Systems
+Language vs   Framework
+ •   Language = Syntax and rules
+ •   framework   = Runtime + Libraries + Structure
+ •   C# runs on .NET
+What is Advanced Programming?
+ •   Difference between:
+ •   Coding
+ •   Building applications
+ •   Types of applications (desktop, web, enterprise)
+Coding vs Building Applications
+ •   What is Coding?
+ •   Writing instructions in a programming language (e.g., C#)
+ •   Focuses on:
+ •   Syntax
+ •   Logic
+ •   Algorithms
+ •   Usually answers the question:
+ •   “How do I make the computer do this task?”
+ •   Example:
+ •   Write a function to calculate salary
+ •   Print results on the screen
+ •   Output = Correct code
+Coding vs Building Applications
+ Coding   Building Applications
+ Small tasks   Complete systems
+ Syntax - focused   Design - focused
+ Individual functions   Integrated components
+What is Building Applications?
+ •   Using code within a structured system
+ •   Focuses on:
+ •   Architecture
+ •   User interaction
+ •   Data storage
+ •   Performance & maintainability
+ •   Answers the question:
+ •   “How do I deliver a complete solution to users?”
+ •   Example:
+ •   Web application to manage employees
+ •   Login, database, UI, security
+ •   Output = Usable software system
+Desktop Applications
+ •   Run on a single computer
+ •   Installed locally
+ •   Examples:
+ •   Calculator
+ •   Text editor
+ •   Desktop accounting software
+ •   Technologies:
+ •   C#   WinForms
+ •   Windows Presentation Foundation (WPF)
+ •   Limited to one device
+Web Applications
+ •   Run in a web browser
+ •   Accessed via internet or local network
+ •   Examples:
+ •   University portals
+ •   Online shopping systems
+ •   Management dashboards
+ •   Technologies:
+ •   Asp.net framework
+ •   Angular / React (frontend)
+ •   Platform - independent (Windows, Mac, Mobile)
+Enterprise Applications
+ •   Large - scale systems
+ •   Serve many users simultaneously
+ •   High requirements:
+ •   Security
+ •   Scalability
+ •   Maintainability
+ •   Examples:
+ •   Banking systems
+ •   Hospital management systems
+ •   ERP systems
+ •   ASP.NET is   designed mainly for this type also
+Why This Course Focuses on Web &
+ Enterprise Apps
+ •   Industry demand
+ •   Real - world relevance
+ •   Uses advanced programming concepts naturally
+Why This Course Matters ?
+ •   Industry expectations
+ •   Framework - driven development
+Framework - driven development
+.NET framework
+Why C#?
+ •   Modern object - oriented language
+ •   Strong static typing
+ •   Designed for scalable systems
+ •   Excellent tooling support
+Grading
+ •   Labs   10%
+ •   Interaction 20%
+ •   Assignments   10%
+ •   Interaction in the lecture and through the office hours 10%
+ •   Quizzes   10%
+ •   Mid Term exam 20%
+ •   Final   exam   40%
+ 21
+Assignments system
+ •   To get your grade
+ 1.   Send a Soft Copy as message on the blackboard
+ 2.   Arrange a stand - up discussion with the Lecturer
+ 3.   Follow up until your grade recorded on the lecturer grades main file.
+Let’s start
+What is a Programming Language?
+ •   A vocabulary,   set of grammar rules , and   associated meanings   for
+ communication between people and computers, or communication
+ between computers.
+ •   Another d efinition: A   programming language   is a   notational system
+ for describing computation   in   machine - readable and   human - readable
+ form   [K. Louden].
+ 24
+Low - level and high - level languages
+ •   Higher, more "abstract" , languages aid programming and thinking
+ about algorithms.
+ •   Separate program logic from hardware implementation.
+ 25
+ .globl   sum
+ .type   sum,@function
+ sum:
+ pushl   %ebp
+ movl   %esp,   %ebp
+ subl   $4,   %esp
+ movl   12(%ebp),   %eax
+ addl   8(%ebp),   %eax
+ movl   %eax,   - 4(%ebp)
+ movl   - 4(%ebp),   %eax
+ movl   %eax,   %eax
+ leave
+ ret
+ In Assembly Language:
+ int   sum(   int   x,   int   y   )   {
+ int   z   =   x   +   y;
+ return z;
+ }
+ Add 2 numbers in C:
+ Which one is easier to
+ understand?
+High Level Languages
+ Higher level languages (also called   third generation languages ) provide these
+ features:
+ •   English - like syntax
+ •   descriptive names to represent data elements
+ •   concise representation of complex logic
+ •   use of standard math symbols:
+ total = quantity * price * (1 +   taxrate );
+ •   conditional execution and looping expressions:
+ i f ( total > 0 ) then   writeln (“The total is “, total)
+ else   writeln (“No sale.”);
+ •   functional units, such as "functions" or "classes":
+ radius = sqrt( x*x + y*x );   // call sqrt function
+ 26
+Fourth Generation Languages
+ Fourth Generation Languages (4GL) are   application specific . They are
+ tailored for a particular application.
+ •   SQL   (structured query language) for databases
+ •   Postscript   page description language for printers
+ •   PDF   (portable document format) for online documents
+ •   HTML   and   PHP   for World Wide Web content
+ •   Mathematica   for symbolic math on a computer
+ Mathematica   is a proprietary language; the others are industry standards.
+ 27
+Some higher - level languages
+ There are several broad categories:
+ •   Imperative:   FORTRAN, COBOL, BASIC, C, Pascal
+ •   Functional:   Scheme, Lisp
+ •   Logic Languages:   Prolog
+ •   Object - oriented:
+ •   Pure object - oriented:   Java, C#, Python
+ •   Object - oriented & imperative : C++, Perl, Visual Basic
+ 28
+29
+ Factors Influencing Language
+ Many factors influence the nature of a programming language. Some
+ major factors are:
+ •   Environment :   the capabilities of the machine that we are
+ communicating with.
+ •   early computers had very few instructions, no operating system, no memory
+ management.
+ •   Application Domain : language is influenced by the kind of
+ information we want to communicate.
+ •   most languages are used to specify algorithms.
+ •   language may contain only statements for the kind of problem we are
+ interested in solving, e.g., Fortran for scientific/numerical computing.
+30
+ Factors Influencing Language (2)
+ •   Methodology :   an evolving discipline.
+ •   new approaches to constructing software are developed based on experience
+ and need.
+ •   O - O emerged as response to limitations of imperative languages   in handling
+ complexity.
+ •   Preference, Economics, and Patronage :
+ •   languages have been influenced by the backing of large companies (Fortran
+ by IBM, Java by Sun)
+ •   government patronage: Ada by U.S. DoD.
+ •   preferred by experts:
+ •   "structured programming" and modularity made popular by C.S. professors
+Readability or writability?
+ •   Should programming languages promote the writing of programs or
+ the reading of programs?
+ •   Many people (including the writer!) may need to read a program after
+ it is written.
+ 31
+32
+ Readability or writability?
+ Q:   What does this Perl script do?
+ #!/usr/bin/perl
+ foreach $FILE ( @ARGV ) {
+ open(FILE) || die "Couldn't open $FILE";
+ while($_ = <FILE>) { print $_; }
+ close(FILE);
+ }
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 2
+ Prepared By:
+ Dr. Amr AbdelFatah
+Some higher - level languages
+ There are several broad categories:
+ •   Imperative:   FORTRAN, COBOL, BASIC, C, Pascal
+ •   Functional:   Scheme, Lisp
+ •   Logic Languages:   Prolog
+ •   Object - oriented:
+ •   Pure object - oriented:   Java, C#, Python
+ •   Object - oriented & imperative : C++, Perl, Visual Basic
+ 2
+Readability or writability?
+ •   Should programming languages promote the writing of programs or
+ the reading of programs?
+ •   Many people (including the writer!) may need to read a program after
+ it is written.
+ 3
+4
+ Readability or writability?
+ Q:   What does this Perl script do?
+ #!/usr/bin/perl
+ foreach $FILE ( @ARGV ) {
+ open(FILE) || die "Couldn't open $FILE";
+ while($_ = <FILE>) { print $_; }
+ close(FILE);
+ }
+Our case study
+ C# programming language
+Why C# in 2026?
+ •   C# is simple, readable and easy to use
+ •   C# is all about developer productivity
+ •   C# is a multi - paradigm programming language
+ •   C# is a flexible general - purpose language
+ •   C# runs on a solid well - engineered .NET runtime
+ •   C# is cross - platform
+ •   C# is mature, popular and in very active development (25 years old)
+ •   C# is Open - Source and led by Microsoft
+ •   C# has an active and vibrant community
+ •   C# is a well - documented language
+Why C# in 2026?
+ •   C#   has   built - in   design   patterns   and   best   practices
+ •   C#   embed   directly   in   the   language   many   important   design
+ patterns .
+ •   It   helps   to   implement   design   patterns   correctly   in   a   very
+ elegant   way .
+ •   C#   can   leverage   an   extensive   collection   of   libraries
+ •   C#   can   be   optimized   to   run   very   fast
+ •   C#   can   run   in   the   browser
+ •   C#   developers   are   in   high   demand
+C#   –   The Big Ideas
+ A component - oriented language
+ •   C# is the first “component oriented” language in the C/C++ family
+ •   Everything really is an object
+ •   Component concepts are first class:
+ •   Properties, methods, events
+ •   Design - time and run - time attributes
+ •   Integrated documentation using XML
+ •   Enables one - stop programming
+ •   No header files, IDL, etc.
+ •   Can be embedded in web pages
+C#   –   The Big Ideas
+ Robust and durable software
+ •   Garbage collection
+ •   No memory leaks and stray pointers
+ •   Exceptions
+ •   Error handling is not an afterthought
+ •   Type - safety
+ •   No uninitialized variables, unsafe casts
+ •   Versioning
+ •   Pervasive versioning considerations in all aspects of language design
+C#   –   The Big Ideas
+ Preservation of Investment
+ •   C++ heritage
+ •   Namespaces,   enums , unsigned types, pointers (in unsafe code), etc.
+ •   No unnecessary sacrifices
+ •   Interoperability
+ •   What software is increasingly about
+ •   MS C# implementation talks to XML, SOAP, COM, DLLs, and any .NET
+ language
+ •   Millions of lines of C# code in .NET
+ •   Short learning curve
+ •   Increased productivity
+C# how to Program
+Hello World
+ using System;
+ class Hello
+ {
+ static void   Main() {
+ Console.WriteLine ("Hello world");
+ }
+ }
+C# Program Structure
+ •   Namespaces
+ •   Contain types and other namespaces
+ •   Type declarations
+ •   Classes, structs, interfaces,   enums ,
+ and delegates
+ •   Members
+ •   Constants, fields, methods, properties, indexers, events, operators,
+ constructors, destructors
+ •   Organization
+ •   No header files, code written “in - line”
+ •   No declaration order dependence
+Type System
+ •   Value types
+ •   Directly contain data
+ •   Cannot be null
+ •   Reference types
+ •   Contain references to objects
+ •   May be null  
+int   i   = 123;
+ string s = "Hello world";
+ 123 i
+ s   "Hello world"
+Type System
+ •   Value types
+ •   Primitives   int   i ;
+ •   Enums   enum   State   {   Off,   On   }
+ •   Structs   struct   Point   {   int   x,   y;   }
+ •   Reference types
+ •   Classes   class   Foo:   Bar,   IFoo   {...}
+ •   Interfaces   interface   IFoo :   IBar   {...}
+ •   Arrays   string[]   a   =   new   string[10];
+ •   Delegates   delegate void   Empty();
+Predefined Types
+ •   C# predefined types
+ •   Reference   object, string
+ •   Signed   sbyte , short, int, long
+ •   Unsigned   byte,   ushort ,   uint ,   ulong
+ •   Character   char
+ •   Floating - point   float, double, decimal
+ •   Logical   bool
+ •   Predefined types   are simply aliases   for system - provided
+ types
+ •   For example, int == System.Int32
+C# data types
+ •   C# supports a variety of built - in data types, including:
+ •   Integral Types
+ •   sbyte : 8 - bit signed integer
+ •   byte: 8 - bit unsigned integer
+ •   short: 16 - bit signed integer
+ •   ushort : 16 - bit unsigned integer
+ •   int: 32 - bit signed integer
+ •   uint : 32 - bit unsigned integer
+ •   long: 64 - bit signed integer
+ •   ulong : 64 - bit unsigned integer
+C# data types
+ •   Floating - Point   Types
+ •   float :   32 - bit   single - precision   floating   point
+ •   double :   64 - bit   double - precision   floating   point
+C# data types
+ •   Decimal Types
+ •   decimal:   128 - bit decimal value with higher precision
+C# data types
+ •   Boolean Type
+ •   bool: true/false value
+C# data types
+ •   Character Type
+ •   char : 16 - bit Unicode character
+ •   String Type
+ •   string : a sequence of Unicode characters
+C# data types
+ •   Object   Type
+ •   object :   the   base   class   of   all   types   in   C#
+ •   In   addition   to   these   built - in   data   types,   C#   also   supports
+ user - defined   data   types,   such   as   structs   and   classes .
+Classes
+ •   Single   inheritance
+ •   Multiple   interface   implementation
+ •   Class   members
+ •   Constants,   fields,   methods,   properties,   indexers,   events,
+ operators,   constructors,   destructors
+ •   Static   and   instance   members
+ •   Nested   types
+ •   Member   access
+ •   public,   protected,   internal,   private
+Create a Class
+ •   Create a class named "Car" with a variable color:
+ class   Car   {
+ string   color   =   "red" ;
+ }
+Create an object
+ •   Create an object called " myObj " and use it to print the value of color:
+ class   Car   {
+ string   color   =   "red" ;
+ static   void   Main ( string []   args )
+ {
+ Car   myObj   =   new   Car ();
+ Console . WriteLine ( myObj . color );
+ }
+ }
+create multiple objects of one class:
+ •   Create two objects of Car:
+Fields and methods
+ •   Fields and methods inside classes are often referred to as "Class
+ Members":
+Fields
+Fields
+ •   You   can   also   leave
+ the   fields   blank,
+ and   modify   them
+ when   creating   the
+ object :
+Example
+Object
+ Methods
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 3
+ Prepared By:
+ Dr. Amr AbdelFatah
+The four pillars of object - oriented
+ design /programming
+ •   Polymorphism
+ •   Encapsulation
+ •   Inheritance
+ •   Abstraction
+The four pillars of object - oriented
+ design /programming
+ •   Polymorphism
+ •   Encapsulation
+ •   Inheritance
+ •   Abstraction
+Polymorphism
+ •   It   is   the   ability   to   redefine   a   function   or   object   in   more
+ than   one   form .
+ •   Polymorphism   can   help   to   make   programs   more
+ flexible   and   easier   to   maintain ,   because   it   allows   for
+ code   reuse   and   modularity .
+ •   Same   name,   Different   behavior
+C# | Method Overloading
+ •   Method   Overloading   is   the   common   way   of   implementing
+ polymorphism .
+ •   A   user   can   implement   function   overloading   by   defining   two   or
+ more   functions   in   a   class   sharing   the   same   name .
+ •   C#   can   distinguish   the   methods   with   different   method   signatures .
+ •   i . e .   the   methods   can   have   the   same   name   but   with   different
+ parameters   list   (i . e .   the   number   of   the   parameters,   order   of   the
+ parameters,   and   data   types   of   the   parameters)   within   the   same
+ class .
+Why do we need Method Overloading?
+ •   If   we   need   to   do   the   same   kind   of   the   operation   in   different   ways   i . e .
+ for   different   inputs .
+ •   In   the   example   described   below,   we   are   doing   the   addition   operation
+ for   different   input s .
+ •   It   is   hard   to   find   many   different   meaningful   names   for   single   action .
+ •   Different   ways   of   doing   overloading   methods .
+ •   Method   overloading   can   be   done   by   changing :
+ •   The   number   of   parameters   in   two   methods .
+ •   The   data   types   of   the   parameters   of   methods .
+ •   The   Order   of   the   parameters   of   methods .
+By changing the Number of
+ Parameters
+PAGE 2  PAGE 1
+ Example
+//   C#   program   to   demonstrate the function
+ //   overloading   by   changing   the   Number
+ //   of   parameters
+ using   System ;
+ class   Calculator   {
+ //   adding   two   integer   values.
+ public   int   Add ( int   a ,   int   b )
+ {
+ int   sum   =   a   +   b ;
+ return   sum ;
+ }
+ // adding   three integer   values.
+ public   int   Add ( int   a ,   int   b ,   int   c )
+ {
+ int   sum   =   a   +   b   +   c ;
+ return   sum ;
+ }
+//   Main Method
+ public   static   void   Main ( String []   args )
+ {
+ //   Creating   Object
+ Calculator   ob   =   new   Calculator ();
+ int   sum1   =   ob . Add ( 1 ,   2 );
+ Console . WriteLine ( "sum   of   the   two   "
+ +   "integer   value   :   "   +   sum1 );
+ int   sum2   =   ob . Add ( 1 ,   2 ,   3 );
+ Console . WriteLine ( "sum   of   the   three   "
+ +   "integer   value   :   "   +   sum2 );
+ }
+By changing the Data types of the
+ parameters
+PAGE 2  PAGE 1
+ Example
+/ /   C#   program   to   demonstrate   the   function
+ //   overloading   by   changing   the   Data   types
+ //   of   the   parameters
+ using   System ;
+ class   Calculator   {
+ //   adding   three   integer   values.
+ public   int   Add ( int   a ,   int   b ,   int   c )
+ {
+ int   sum   =   a   +   b   +   c ;
+ return   sum ;
+ }
+ //   adding   three   double   values.
+ public   double   Add ( double   a ,
+ double   b ,   double   c )
+ {
+ double   sum   =   a   +   b   +   c ;
+ return   sum ;
+ }
+//   Main   Method
+ public   static   void   Main ( String []   args )
+ {
+ //   Creating   Object
+ Calculator   ob   =   new   Calculator ();
+ int   sum2   =   ob . Add ( 1 ,   2 ,   3 );
+ Console . WriteLine ( "sum   of   the   three   "
+ +   "integer   value   :   "   +   sum2 );
+ double   sum3   =   ob . Add ( 1.0 ,   2.0 ,   3.0 );
+ Console . WriteLine ( "sum   of   the   three   "
+ +   "double   value   :   "   +   sum3 );
+ }
+ }
+By changing the Order of the
+ parameters
+PAGE 2  PAGE 1
+ Example 1
+//   C#   program   to   demonstrate   the   function
+ //   overloading   by   changing   the
+ //   Order   of   the   parameters
+ using   System ;
+ class   Student   {
+ //   Method
+ public   void   Identity ( String   name ,   int   id )
+ {
+ Console . WriteLine ( "Name1   :   "   +   name   +   ",   "
+ +   "Id1   :   "   +   id );
+ }
+ //   Method
+ public   void   Identity ( int   id ,   String   name )
+ {
+ Console . WriteLine ( "Name2   :   "   +   name   +   ",   "
+ +   "Id2   :   "   +   id );
+ }
+//   Main   Method
+ public   static   void   Main ( String []   args )
+ {
+ //   Creating   Object
+ Student   obj   =   new   Student ();
+ obj . Identity ( "Akku" ,   1 );
+ obj . Identity ( 2 ,   "Abby" );
+ }
+ }
+PAGE 2  PAGE 1
+ Example 2
+//   C#   program   to   show   error   when   method   signature
+ //   is   the   same   and   the   return   type   is   different.
+ using   System ;
+ class   Calculator   {
+ //   adding   two   integer   value.
+ public   int   Add ( int   a ,   int   b )
+ {
+ int   sum   =   a   +   b ;
+ return   sum ;
+ }
+ //   adding   two   integer   value.
+ public   double   Add ( int   a ,   int   b )
+ {
+ double   sum   =   a   +   b   +   0.0 ;
+ return   sum ;
+ }
+//   Main   Method
+ public   static   void   Main ( String []   args )
+ {
+ //   Creating   Object
+ Calculator   ob   =   new   Calculator ();
+ int   sum1   =   ob . Add ( 1 ,   2 );
+ Console . WriteLine ( "sum   of   the   two   "
+ +   "integer   value   :"   +   sum1 );
+ int   sum2   =   ob . Add ( 1 ,   2 );
+ C onsole . WriteLine ( "sum   of   the   three   "
+ +   "integer   value   :"   +   sum2 );
+ }
+ }
+ The output:
+What happens when method signature is
+ same and the return type is different?
+ •   The   compiler   will   give   error   as   the   return   value   alone   is   not
+ sufficient   for   the   compiler   to   figure   out   which   function   it   has
+ to   call .
+ •   Only   if   both   methods   have   different   parameter   types   (so,
+ they   have   the   different   signature ),   then   Method   overloading
+ is   possible .
+C# | Method Parameters
+ •   C#   contains   the   following   types   of   Method   Parameters :
+ •   Named   Parameters
+ •   Ref   Parameters
+ •   Out   Parameters
+ •   Default   or   Optional   Parameters
+ •   Dynamic   Parameters
+ •   Value   Parameters
+ •   Param
+Named Parameters
+ •   Using   named   parameters,   you   can   specify   the   value   of   the
+ parameter   according   to   their   names   not   their   order   in   the
+ method .
+ •   Or   in   other   words,   it   provides   us   a   facility   to   not   remember
+ parameters   according   to   their   order .
+ •   This   concept   is   introduced   in   C#   4 . 0 .
+ •   It   makes   your   program   easier   to   understand   when   you   are
+ working   with   a   larger   number   of   parameters   in   your   method .
+Example
+// C# program to illustrate the
+ // concept of the named parameters
+ using   System ;
+ public   class   Test
+ {
+ // addstr contain three parameters
+ public   static   void   addstr ( string   s1 ,   string   s2 ,   string   s3 )
+ {
+ string   result   =   s1   +   s2   +   s3 ;
+ Console . WriteLine ( "Final string is: "   +   result );
+ }
+ //   Main   Method
+ static   public   void   Main ()
+ {
+ //   calling   the   static   method   with   named
+ //   parameters   without   any   order
+ addstr (   s3 :   "Welcome" ,   s1 :   "Thanks" ,   s2 :   "   and   " );
+ }
+ }
+ The output:
+Ref Parameters
+ •   The   ref   is   a   keyword   in   C#   which   is   used   for   passing   the   value   types   by
+ reference .
+ •   Or   we   can   say   that   if   any   changes   made   in   this   argument   in   the   method
+ will   reflect   in   that   variable   when   the   control   return   to   the   calling   method .
+ •   The   ref   parameter   does   not   pass   the   property .
+ •   In   ref   parameters,   it   is   necessary   that   the   parameters   should   initialize
+ before   it   pass   to   ref .
+ •   The   passing   of   value   through   the   ref   parameter   is   useful   when   the   called
+ method   also   needs   to   change   the   value   of   the   passed   parameter .
+Example
+//   C#   program   to   illustrate   the
+ //   concept   of   ref   parameter
+ using   System ;
+ class   Test   {
+ //   Main   Method
+ public   static   void   Main ()
+ {
+ //   Assigning   value
+ string   val   =   "Dog" ;
+ //   Pass   as   a   reference   parameter
+ CompareValue ( ref   val );
+ //   Display   the   given   value
+ Console . WriteLine ( val );
+ }
+ static   void   CompareValue ( ref   string   val1 )
+ {
+ //   Compare   the   value
+ if   ( val1   ==   "Dog" )
+ {
+ Console . WriteLine ( "Matched!" );
+ }
+ //   Assigning   new   value
+ val1   =   "Cat" ;
+ }
+ }
+ The output:
+Out Parameters
+ •   The   out   is   a   keyword   in   C#   which   is   used   for   the
+ passing   the   arguments   to   methods   as   a   reference   type .
+ •   It   is   generally   used   when   a   method   returns   multiple
+ values .
+ •   The   out   parameter   does   not   pass   the   property .
+ •   It   is   not   necessary   to   initialize   parameters   before   it
+ passes   to   out .
+ •   The   declaring   of   parameter   throughout   parameter   is
+ useful   when   a   method   returns   multiple   values .
+Example
+//   C#   program   to   illustrate   the
+ //   concept   of   out   parameter
+ using   System ;
+ class   Test   {
+ //   Main   method
+ static   public   void   Main ()
+ {
+ //   Creating   variable
+ //   without   assigning   value
+ int   num ;
+ //   Pass   variable   num   to   the   method
+ //   using   out   keyword
+ AddNum ( out   num );
+ //   Display   the   value   of   num
+ Console . WriteLine ( "The   sum   of"
+ +   "   the   value   is:   {0}" , num );
+ }
+ //   Method   in   which   out   parameter   is   passed
+ //   and   this   method   returns   the   value   of
+ //   the   passed   parameter
+ public   static   void   AddNum ( out   int   num )
+ {
+ num   =   40 ;
+ num   +=   num ;
+ }
+ }
+ The output:
+Dynamic Parameters
+ •   In   C#   4 . 0 ,   a   new   type   of   parameters   is   introduced   that   is
+ known   as   a   dynamic   parameter .
+ •   Here   the   parameters   pass   dynamically   means   the
+ compiler   does   not   check   the   type   of   the   dynamic   type
+ variable   at   compile - time,   instead   of   this,   the   compiler
+ gets   the   type   at   the   run   time .
+ •   The   dynamic   type   variable   is   created   using   a   dynamic
+ keyword .
+Example
+// C# program to illustrate the concept
+ // of the dynamic parameters
+ using   System ;
+ class   Test
+ {
+ // Method which contains dynamic parameter
+ public   static   void   mulval ( dynamic   val )
+ {
+ val   +=   val ;
+ Console . WriteLine ( val );
+ }
+ // Main method
+ static   public   void   Main ()
+ {
+ // Calling mulval method
+ mulval ( "Ahmed" );
+ mulval ( 30 );
+ mulval ( 30.45 );
+ }
+ }
+ The output:
+Params
+ •   It   is   useful   when   the   programmer   doesn’t   have   any   prior
+ knowledge   about   the   number   of   parameters   to   be   used .
+ •   By   using   params   you   are   allowed   to   pass   any   variable
+ number   of   arguments .
+ •   Only   one   params   keyword   is   allowed   and   no   additional
+ Params   will   be   allowed   in   function   declaration   after   a
+ params   keyword .
+ •   The   length   of   params   will   be   zero   if   no   arguments   will
+ be   passed .
+Example
+//   C#   program   to   illustrate   params
+ using   System ;
+ namespace   Examples
+ {
+ class   Test
+ {
+ //   function   containing   params   parameters
+ public   static   int   mulval ( params   int   []   num )
+ {
+ int   res   =   1 ;
+ //   foreach   loop
+ foreach   ( int   j   in   num )
+ {
+ res   *=   j ;
+ }
+ return   res ;
+ }
+ static   void   Main ( string []   args )
+ {
+ //   Calling   mulval   method
+ int   x   =   mulval ( 1 ,   2 ,   3 ,   4 ,   5 );
+ //   show   result
+ Console . WriteLine ( x );
+ }
+ }
+ }
+ The output:
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 4
+ Prepared By:
+ Dr. Amr AbdelFatah
+The four pillars of object - oriented
+ design /programming
+ •   Polymorphism
+ •   Encapsulation
+ •   Inheritance
+ •   Abstraction
+The four pillars of object - oriented
+ design /programming
+ •   Polymorphism
+ •   Encapsulation
+ •   Inheritance
+ •   Abstraction
+Encapsulation
+Constructors and   Encapsulation
+ •   Encapsulation   means :
+ •   Bundling   data and methods together   and controlling   how the object is
+ initialized and accessed .
+ •   A   constructor helps enforce this by :
+ •   Initializing   the object's internal   data
+ •   Ensuring   the object starts in a valid   state
+ •   Preventing   incorrect or incomplete initialization
+Constructors
+Constructor
+ •   A   constructor   is   a   special   member   of   a   class   that   is   used   to
+ initialize   objects .
+ •   It   runs   automatically   when   an   object   is   created .
+ •   It   prepares   the   object   for   use .
+Create a constructor
+
+Key Differences
+ Feature   Constructor   Method
+ Purpose   Initialize   object   Perform   an   action
+ Name   Same   as   class   name   Any   valid   name
+ Return   Type  
+No   return   type   (not   even
+ void)  
+Must   have   return   type   (even   void)
+ When   It   Runs  
+Automatically   when   object   is
+ created  
+When   explicitly   called
+ How   Many   Times?   Runs   once   per   object   creation   Can   run   multiple   times
+Constructor Parameters
+
+
+
+Overloaded Constructors
+PAGE 2  PAGE 1
+ Overloaded Constructors
+class   Car   {
+ public   string   model ;
+ public   Car ()   {
+ model   =   "Mustang" ;
+ }
+ public   Car ( string   carModel )   {
+ model   =   carModel ;
+ }
+// Main Method
+ static   void   Main ( string []   args )
+ {
+ Car car1   =   new   Car ();   ]
+ Car car2   =   new   Car ( "BMW" );
+ Console . WriteLine ( car1 . model );
+ Console . WriteLine ( car2 . model );
+ }
+ }
+ The output:
+Access Modifiers
+C# Access Modifiers
+ Modifier   Description
+ public   The code is   accessible for all classes
+ private   The code is   only accessible within the same class
+ protected   The code is   accessible within the same class ,   or   in a
+ class that   is inherited from that class .
+Private Modifier
+ •   The output will be:
+Private Modifier
+ The output will be:
+Public Modifier
+ •   The output will be:
+The default is private
+ •   By default, all members of a class are private if you don't specify an
+ access modifier:
+Properties and Encapsulation
+ •   The   meaning   of   Encapsulation ,   is   to   make   sure   that
+ "sensitive"   data   is   hidden   from   users .   To   achieve   this,   you
+ must :
+    declare   fields/variables   as   private
+    provide   public   get   and   set   methods,   through   properties ,
+ to   access   and   update   the   value   of   a   private   field
+Properties and Encapsulation
+Example
+ •   The output will be:
+Automatic Properties (Short Hand)
+PAGE 2  PAGE 1
+ Example
+public   double   Height
+ {
+ get   {   return   _height ;   }
+ set
+ {
+ if   ( value   >   0 )
+ {
+ _height   =   value ;
+ }
+ else
+ {
+ Console . WriteLine ( "Height must be greater than 0." );
+ _height   =   1 ;
+ }
+ }
+ }
+ public   double   CalculateArea ()
+ {
+ return   _width   *   _height ;
+ }
+ }
+using   System ;
+ public   class   Rectangle
+ {
+ //   Private   fields   to   store   the   rectangle's
+ dimensions.
+ private   double   _width ;
+ private   double   _height ;
+ //   Public   properties   to   access   and   modify   the
+ fields.
+ public   double   Width
+ {
+ get   {   return   _width ;   }
+ set
+ {
+ if   ( value   >   0 )
+ {
+ _width   =   value ;
+ }
+ else
+ {
+ Console . WriteLine ( "Width   must   be   greater   than   0.” );
+ _width   =   1 ;
+ }
+ }
+ }
+ }
+Run the example by a Driver Class
+ public   class   Program
+ {
+ public   static   void   Main ( string []   args )   {
+ Rectangle   myRectangle   =   new   Rectangle ();
+ myRectangle . Width   =   5 ;
+ myRectangle . Height   =   10 ;
+ Console . WriteLine ( $ "Rectangle Width: { myRectangle.Width }" );
+ Console . WriteLine ( $ "Rectangle Height:   { myRectangle.Height }" );
+ Console . WriteLine ( $ "Rectangle Area:{ myRectangle.CalculateArea ()}" );
+ myRectangle . Width   =   - 2 ;
+ Console . WriteLine ( $ "Rectangle Width after invalid set: { myRectangle.Width }" );
+ }
+ }
+A practice
+ Design   a   system   for   managing   student   course   enrollments .   Create   three
+ classes :   Student,   Course,   and   Enrollment .
+ The   Student   class   should   have   private   fields   for   name   and   student   ID,
+ initialized   via   a   constructor .   The   Course   class   should   have   private   fields
+ for   course   name   and   course   code,   also   initialized   by   a   constructor .   The
+ Enrollment   class   should   manage   the   association   between   students   and
+ courses,   storing   a   student   and   a   course   object,   and   have   a   constructor
+ that   accepts   both .
+ Ensure   proper   access   modifiers   are   used   to   encapsulate   data   and
+ demonstrate   how   to   create   instances   of   these   classes   and   enroll   a
+ student   in   a   course   in   a   Program   class's   Main   method .
+PAGE 2  PAGE 1
+ Solution
+public   class   Student
+ {
+ private   string   name ;
+ private   int   studentId ;
+ public   Student ( string   name ,
+ int   studentId )
+ {
+ this . name   =   name ;
+ this . studentId   =   studentId ;
+ }
+ public   string   Name   {
+ get   {   return   name ;   }   }
+ public   int   StudentId   {
+ get   {   return   studentId ;   }
+ }
+ }
+public   class   Course
+ {
+ private   string   courseName ;
+ private   string   courseCode ;
+ public   Course ( string   courseName ,
+ string   courseCode )
+ {
+ this . courseName   =   courseName ;
+ this . courseCode   =   courseCode ;
+ }
+ public   string   CourseName   {
+ get   {   return   courseName ;   }   }
+ public   string   CourseCode   {
+ get   {   return   courseCode ;   }   }
+ }
+PAGE 1
+ Solution
+public   class   Enrollment
+ {
+ private   Student   student ;
+ private   Course   course ;
+ public   Enrollment ( Student   student ,
+ Course   course )
+ {
+ this . student   =   student ;
+ this . course   =   course ;
+ }
+ public   Student   Student   {
+ get   {   return   student ;   }   }
+ public   Course   Course   {
+ get   {   return   course ;   }   }
+ }
+Run the example by a Driver Class
+ public   class   Program   {
+ public   static   void   Main ( string []   args )   {
+ Student   student1   =   new   Student ( "Alice   Smith" ,   12345 );
+ Course   course1   =   new   Course ( "Introduction   to Programming" ,   "CS101" );
+ Enrollment enrollment1   =   new   Enrollment ( student1 ,   course1 );
+ Console . WriteLine ( $ "{enrollment1.Student.Name}   (ID:
+ {enrollment1.Student.StudentId}) is enrolled   in
+ {enrollment1.Course.CourseName}   ({enrollment1.Course.CourseCode})." );
+ Student   student2   =   new   Student ( "Bob Johnson" ,   67890 );
+ Course   course2   =   new   Course ( "Data Structures" ,   "CS202" );
+ Enrollment enrollment2   =   new   Enrollment ( student2 ,   course2 );
+ Console . WriteLine ( $ "{enrollment2.Student.Name}   (ID:
+ {enrollment2.Student.StudentId}) is enrolled   in
+ {enrollment2.Course.CourseName}   ({enrollment2.Course.CourseCode})." );
+ }
+ }
+Assignment
+ Design   a   system   to   manage   projects,   employees,   and   tasks   within   a   company .
+ Create   three   classes :   Employee,   Project,   and   Task .
+ The   Employee   class   should   have   private   fields   for   employeeId ,   name,   and
+ department,   initialized   via   a   constructor .
+ The   Project   class   should   have   private   fields   for   projectId ,   projectName ,   startDate ,
+ and   endDate ,   also   initialized   by   a   constructor .
+ The   Task   class   should   manage   the   association   between   employees   and   projects,
+ storing   taskId ,   taskDescription ,   an   Employee   object,   a   Project   object,   a   dueDate ,
+ and   a   boolean   isCompleted   flag .   Provide   a   constructor   that   accepts   all   necessary
+ parameters,   and   a   method   MarkCompleted ()   to   set   the   task's   completion   status .
+ Ensure   proper   access   modifiers   are   used   to   encapsulate   data   and   demonstrate   how
+ to   create   instances   of   these   classes,   assign   employees   to   tasks   within   projects,   and
+ manage   task   completion   in   a   Project_Management_System   class's   Main   method .
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture   5
+ Prepared By:
+ Dr. Amr AbdelFatah
+A practice
+ Design   a   system   for   managing   student   course   enrollments .   Create   three
+ classes :   Student,   Course,   and   Enrollment .
+ The   Student   class   should   have   private   fields   for   name   and   student   ID,
+ initialized   via   a   constructor .   The   Course   class   should   have   private   fields
+ for   course   name   and   course   code,   also   initialized   by   a   constructor .   The
+ Enrollment   class   should   manage   the   association   between   students   and
+ courses,   storing   a   student   and   a   course   object,   and   have   a   constructor
+ that   accepts   both .
+ Ensure   proper   access   modifiers   are   used   to   encapsulate   data   and
+ demonstrate   how   to   create   instances   of   these   classes   and   enroll   a
+ student   in   a   course   in   a   Program   class's   Main   method .
+PAGE 2  PAGE 1
+ Solution
+public   class   Student
+ {
+ private   string   name ;
+ private   int   studentId ;
+ public   Student ( string   name ,
+ int   studentId )
+ {
+ this . name   =   name ;
+ this . studentId   =   studentId ;
+ }
+ public   string   Name   {
+ get   {   return   name ;   }   }
+ public   int   StudentId   {
+ get   {   return   studentId ;   }
+ }
+ }
+public   class   Course
+ {
+ private   string   courseName ;
+ private   string   courseCode ;
+ public   Course ( string   courseName ,
+ string   courseCode )
+ {
+ this . courseName   =   courseName ;
+ this . courseCode   =   courseCode ;
+ }
+ public   string   CourseName   {
+ get   {   return   courseName ;   }   }
+ public   string   CourseCode   {
+ get   {   return   courseCode ;   }   }
+ }
+PAGE 1
+ Solution
+public   class   Enrollment
+ {
+ private   Student   student ;
+ private   Course   course ;
+ public   Enrollment ( Student   student ,
+ Course   course )
+ {
+ this . student   =   student ;
+ this . course   =   course ;
+ }
+ public   Student   Student   {
+ get   {   return   student ;   }   }
+ public   Course   Course   {
+ get   {   return   course ;   }   }
+ }
+Run the example by a Driver Class
+ public   class   Program   {
+ public   static   void   Main ( string []   args )   {
+ Student   student1   =   new   Student ( "Alice   Smith" ,   12345 );
+ Course   course1   =   new   Course ( "Introduction   to Programming" ,   "CS101" );
+ Enrollment enrollment1   =   new   Enrollment ( student1 ,   course1 );
+ Console . WriteLine ( $ "{enrollment1.Student.Name}   (ID:
+ {enrollment1.Student.StudentId}) is enrolled   in
+ {enrollment1.Course.CourseName}   ({enrollment1.Course.CourseCode})." );
+ Student   student2   =   new   Student ( "Bob Johnson" ,   67890 );
+ Course   course2   =   new   Course ( "Data Structures" ,   "CS202" );
+ Enrollment enrollment2   =   new   Enrollment ( student2 ,   course2 );
+ Console . WriteLine ( $ "{enrollment2.Student.Name}   (ID:
+ {enrollment2.Student.StudentId}) is enrolled   in
+ {enrollment2.Course.CourseName}   ({enrollment2.Course.CourseCode})." );
+ }
+ }
+Assignment
+ Design   a   system   to   manage   projects,   employees,   and   tasks   within   a   company .
+ Create   three   classes :   Employee,   Project,   and   Task .
+ The   Employee   class   should   have   private   fields   for   employeeId ,   name,   and
+ department,   initialized   via   a   constructor .
+ The   Project   class   should   have   private   fields   for   projectId ,   projectName ,   startDate ,
+ and   endDate ,   also   initialized   by   a   constructor .
+ The   Task   class   should   manage   the   association   between   employees   and   projects,
+ storing   taskId ,   taskDescription ,   an   Employee   object,   a   Project   object,   a   dueDate ,
+ and   a   boolean   isCompleted   flag .   Provide   a   constructor   that   accepts   all   necessary
+ parameters,   and   a   method   MarkCompleted ()   to   set   the   task's   completion   status .
+ Ensure   proper   access   modifiers   are   used   to   encapsulate   data   and   demonstrate   how
+ to   create   instances   of   these   classes,   assign   employees   to   tasks   within   projects,   and
+ manage   task   completion   in   a   Project_Management_System   class's   Main   method .
+The four pillars of object - oriented
+ design /programming
+ •   Polymorphism
+ •   Encapsulation
+ •   Inheritance
+ •   Abstraction
+The four pillars of object - oriented
+ design /programming
+ •   Polymorphism
+ •   Encapsulation
+ •   Inheritance
+ •   Abstraction
+Inheritance
+C# Inheritance
+ •   In C#, it is possible to inherit fields and methods from one
+ class to another. We group the "inheritance concept" into
+ two categories:
+    Derived Class (child)   -   the class that inherits from another class
+    Base Class (parent)   -   the class being inherited from
+    To inherit from a class, use the : symbol.
+Example
+Driver class
+The sealed Keyword
+ •   If you don't want other classes to inherit from a class, use the sealed
+ keyword:
+ •   The error message will be something like this:
+C# | Method Overriding
+ •   Overriding   is   a   technique   that   allows   the   invoking   of
+ functions   from   another   class   (base   class)   in   the   derived
+ class .
+ •   Creating   a   method   in   the   derived   class   with   the   same
+ signature   as   a   method   in   the   base   class   is   called   as
+ method   overriding .
+Example
+//   C#   program   to   demonstrate   the   method   overriding
+ //   without   using   'virtual'   and   'override'   modifiers
+ using   System ;
+ //   base   class   name   'baseClass'
+ class   baseClass
+ {
+ public   void   show ()
+ {
+ Console . WriteLine ( "Base   class" );
+ }
+ }
+ //   derived   class   name   'derived'
+ //   'baseClass'   inherit   here
+ class   derived   :   baseClass
+ {
+ //   overriding
+ new   public   void   show ()
+ {
+ Console . WriteLine ( "Derived   class" );
+ }
+ }
+Example
+class   Test {
+ //   Main   Method
+ public   static   void   Main ()
+ {
+ //   'obj'   is   the   object   of
+ //   class   'baseClass'
+ baseClass   obj   =   new   baseClass ();
+ //   invokes   the   method   'show()'
+ //   of   class   'baseClass'
+ obj . show ();
+ obj   =   new   derived ();
+ //   it   also   invokes   the   method
+ //   'show()'   of   class   'baseClass'
+ obj . show ();
+ }
+ }
+ The output:
+Method overriding using virtual
+ and override modifiers.
+Example
+//   C#   program   to   illustrate   the   use   of
+ //'virtual'   and   'override'   modifiers
+ using   System ;
+ class   baseClass   {
+ //   show()   is   'virtual'   here
+ public   virtual   void   show ()
+ {
+ Console . WriteLine ( "Base   class" );
+ }
+ }
+ //   class   'baseClass'   inherit
+ //   class   'derived'
+ class   derived   :   baseClass
+ {
+ //'show()'   is   'override'   here
+ public   override   void   show ()
+ {
+ Console . WriteLine ( "Derived   class" );
+ }
+ }
+Example
+class   Test   {
+ //   Main   Method
+ public   static   void   Main ()
+ {
+ baseClass   obj ;
+ //   'obj'   is   the   object
+ //   of   class   'baseClass'
+ obj   =   new   baseClass ();
+ //   it   invokes   'show()'
+ //   of   class   'baseClass'
+ obj . show ();
+ //   the   same   object   'obj'   is   now
+ //   the   object   of   class   'derived'
+ obj   =   new   derived ();
+ //   it   invokes   'show()'   of   class   'derived'
+ //   'show()'   of   class   'derived'   is   overridden
+ //   for   'override'   modifier
+ obj . show ();
+ }
+ }
+ The output:
+Protected   access modifier
+ •   The protected access modifier in C# limits the accessibility of a
+ member to within its containing class and any class that derives
+ (inherits) from that class.
+ •   It   is not accessible by non - derived classes, even if they are in the
+ same assembly.
+PAGE 2  PAGE 1
+ Example 1
+public   class   Person
+ {
+ protected   string   ssn =   "444 - 55 - 6666" ;
+ protected   string   name =   "John L. Malgraine" ;
+ public   virtual   void   GetInfo ()
+ {
+ Console.WriteLine( "Name: {0}" , name);
+ Console.WriteLine( "SSN: {0}" , ssn);
+ }
+ }
+ class   Employee   :   Person
+ {
+ public   string   id =   "ABC567EFG" ;
+ public   override   void   GetInfo ()
+ {
+ base .GetInfo();
+ Console.WriteLine( "Employee ID: {0}" , id);
+ }
+ }
+class   TestClass
+ {
+ static   void   Main ()
+ {
+ Employee E =   new   Employee();
+ E.GetInfo();
+ }
+ }
+ The output:
+ Name: John L.   Malgraine
+ SSN: 444 - 55 - 6666
+ Employee ID: ABC567EFG
+Protected access modifier
+Internal   access   modifier
+ •   When   we declare a   type or type member as internal , it can be
+ accessed only within the same assembly .
+ •   An assembly is a   collection of types (classes, interfaces,   etc )   and
+ resources (data).
+ •   They   are built to work together and form a logical unit of
+ functionality.
+Assignment
+ •   Write a code example that   show the functionality   of
+ internal access modifier
+base Keyword
+ •   This   is   used   to   access   members   of   the   base   class   from
+ derived   class .
+ •   It   basically   used   to   access   constructors   and   methods   or
+ functions   of   the   base   class .
+ •   The   base   keyword   cannot   use   within   a   static   method .
+ •   Base   keyword   specifies   which   constructor   of   the   base
+ class   should   be   invoked   while   creating   the   instances   of
+ the   derived   class .
+PAGE 2  PAGE 1
+ Example 1
+public   class   Person
+ {
+ protected   string   ssn =   "444 - 55 - 6666" ;
+ protected   string   name =   "John L. Malgraine" ;
+ public   virtual   void   GetInfo ()
+ {
+ Console.WriteLine( "Name: {0}" , name);
+ Console.WriteLine( "SSN: {0}" , ssn);
+ }
+ }
+ class   Employee   :   Person
+ {
+ public   string   id =   "ABC567EFG" ;
+ public   override   void   GetInfo ()
+ {
+ base .GetInfo();
+ Console.WriteLine( "Employee ID: {0}" , id);
+ }
+ }
+class   TestClass
+ {
+ static   void   Main ()
+ {
+ Employee E =   new   Employee();
+ E.GetInfo();
+ }
+ }
+ The output:
+ Name: John L.   Malgraine
+ SSN: 444 - 55 - 6666
+ Employee ID: ABC567EFG
+PAGE 2  PAGE 1
+ Example 2
+public   class   BaseClass
+ {
+ int   num;
+ public   BaseClass ()
+ {
+ Console.WriteLine( "in BaseClass()" );
+ }
+ public   BaseClass ( int   i )
+ {
+ num = i;
+ Console.WriteLine( "in BaseClass(int i)" );
+ }
+ public   int   GetNum ()
+ {
+ return   num;
+ }
+ }
+public   class   DerivedClass   :   BaseClass
+ {
+ // This constructor will call
+ BaseClass.BaseClass()
+ public   DerivedClass () :   base ()
+ {
+ }
+ // This constructor will call
+ BaseClass.BaseClass(int i)
+ public   DerivedClass ( int   i ) :   base ( i )
+ {
+ }
+ static   void   Main ()
+ {
+ DerivedClass md =   new   DerivedClass();
+ DerivedClass md1 =   new   DerivedClass( 1 );
+ }
+ }
+ The output:
+ in   BaseClass ()
+ in   BaseClass (int   i )
+The four pillars of object - oriented
+ design /programming
+ •   Polymorphism
+ •   Encapsulation
+ •   Inheritance
+ •   Abstraction
+Abstraction
+Abstraction
+ •   This   involves   modeling   real - world   objects   and   concepts   in
+ code   by   abstracting   away   unnecessary   details   and   focusing
+ only   on   the   most   important   aspects .
+ •   Abstraction   helps   to   simplify   code,   making   it   easier   to
+ understand   and   modify .
+ •   It   is   often   used   in   conjunction   with   encapsulation   to   provide
+ a   clear   interface   for   interacting   with   objects .
+Using abstract classes and abstract methods
+ •   There   are   situations   in   which   we   want   to   define   a   superclass
+ that   declares   the   structure   of   a   given   abstraction   without
+ providing   a   complete   implementation   of   every   method .
+ •   That   is,   sometimes   we   want   to   create   a   superclass   that   only
+ defines   a   generalized   form   that   will   be   shared   by   all   of   its
+ subclasses ,   leaving   it   to   each   subclass   to   fill   in   the   details .
+Example
+ •   Consider   a   classic   “shape”   example,   perhaps   used   in   a
+ computer - aided   design   system   or   game   simulation .
+ •   The   base   type   is   “shape”   and   each   shape   has   a   color,   size   and
+ so   on .   From   this,   specific   types   of   shapes   are
+ derived (inherited) - circle,   square,   triangle,   and   so   on   –   each
+ of   which   may   have   additional   characteristics   and   behaviors .
+ •   For   example,   certain   shapes   can   be   flipped .   Some   behaviors
+ may   be   different,   such   as   when   you   want   to   calculate   the
+ area   of   a   square .
+PAGE 2  PAGE 1
+ Example
+//   C#   program   to   calculate   the   area
+ //   of   a   square   using   the   concept   of
+ //   data   abstraction
+ using   System ;
+ namespace   Demoabstraction   {
+ //   abstract   class
+ abstract   class   Shape   {
+ //   abstract   method
+ public   abstract   int   area ();
+ }
+ //   square   class   inheriting
+ //   the   Shape   class
+ class   Square   :   Shape   {
+ //   private   data   member
+ private   int   side ;
+ //   method   of   square   class
+ public   Square ( int   x   =   0 )
+ {
+ side   =   x ;
+ }
+//   overriding   of   the   abstract   method   o f   Shape
+ //   class   using   the   override   keyword
+ public   override   int   area ()
+ {
+ Console . Write ( "Area   of   Square:   " );
+ return   ( side   *   side );
+ }
+ }
+ //   Driver   Class
+ class   Test   {
+ //   Main   Method
+ static   void   Main ( string []   args )
+ {
+ //   creating   reference   of   Shape   class
+ //   which   refer   to   Square   class   instance
+ Shape   sh   =   new   Square ( 4 );
+ //   calling   the   method
+ double   result   =   sh . area ();
+ Console . Write ( "{0 }" ,   result );
+ }
+ }
+ }
+ The output:
+Encapsulation vs Data Abstraction
+ •   Encapsulation   is   data   hiding (information   hiding)   while
+ Abstraction   is   detail   hiding (implementation   hiding) .
+ •   While   encapsulation   groups   together   data   and   methods   that
+ act   upon   the   data,   data   abstraction   deal   with   exposing   to   the
+ user   and   hiding   the   details   of   implementation .
+Advantages of Abstraction
+ •   It   reduces   the   complexity   of   viewing   things .
+ •   Avoids   code   duplication   and   increases   reusability .
+ •   Helps   to   increase   the   security   of   an   application   or   program
+ as   only   important   details   are   provided   to   the   user .
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 6
+ Prepared By:
+ Dr. Amr AbdelFatah
+MCQ
+ •   Functional programming uses:
+ •   a) Pure functions
+ •   b) Global state
+ •   c) Mutable data
+ •   d) Loops only
+ •   Answer: a
+Programming Paradigm
+Understanding logical programming paradigm
+ with   Prolog
+LISP example
+MCQ
+ •   Logical programming uses:
+ •   a) Facts and rules
+ •   b) Step instructions
+ •   c) Variables only
+ •   d) Loops
+ •   Answer: a
+MCQ
+ •   Imperative paradigm uses:
+ •   a)   Facts and rules
+ •   b ) Pure functions
+ •   c) Rules only
+ •   d)   Step instructions
+ •   Answer :   d
+MCQ
+ •   Deep nesting reduces:
+ •   a) Readability
+ •   b) Security
+ •   c) Portability
+ •   d) Storage
+ •   Answer: a
+MCQ
+ •   Comments should be:
+ •   a)   Rare only
+ •   b) Long always
+ •   c )   Clear and brief
+ •   d ) Complex
+ •   Answer:   c
+MCQ
+ •   Data members define:
+ •   a) Object state
+ •   b) Method logic
+ •   c) Program flow
+ •   d) Loop count
+ •   Answer: a
+MCQ
+ •   Public data members allow:
+ •   a)   No   access
+ •   b)   Direct access
+ •   c ) Hidden access
+ •   d) Static access
+ •   Answer:   b
+MCQ
+ •   Data members belong to:
+ •   a)   Constructor
+ •   b) Method
+ •   c) Loop
+ •   d)   Class
+ •   Answer :   d
+MCQ
+ •   Constructor name is:
+ •   a) Class name
+ •   b) Method name
+ •   c) Variable name
+ •   d) Property name
+ •   Answer: a
+MCQ
+ •   Constructor is called when:
+ •   a)   Loop starts
+ •   b ) Method called
+ •   c)   Object created
+ •   d) Program ends
+ •   Answer:   c
+MCQ
+ •   Constructor can be:
+ •   a) Overloaded
+ •   b) Overridden
+ •   c) Static only
+ •   d) Abstract only
+ •   Answer: a
+MCQ
+ •   Constructor initializes:
+ •   a)   Interfaces
+ •   b) Methods
+ •   c) Loops
+ •   d)   Object data
+ •   Answer :   d
+MCQ
+ •   Protected means:
+ •   a)   Global   access
+ •   b)   Derived   access
+ •   c ) Local only
+ •   d) Static only
+ •   Answer:   b
+MCQ
+ •   Access modifiers control:
+ •   a) Visibility
+ •   b) Speed
+ •   c) Memory
+ •   d) Size
+ •   Answer: a
+MCQ
+ •   Internal is used for:
+ •   a) Same   loop
+ •   b) Same method
+ •   c)   Same assembly
+ •   d ) Same class
+ •   Answer:   c
+MCQ
+ •   Getter is used to:
+ •   a) Read value
+ •   b) Set value
+ •   c) Hide value
+ •   d) Delete value
+ •   Answer: a
+MCQ
+ •   Setter is used to:
+ •   a)   input   value
+ •   b) Read value
+ •   c) Print value
+ •   d)   write   value
+ •   Answer :   d
+MCQ
+ •   Property improves:
+ •   a) Encapsulation
+ •   b) Speed
+ •   c) Memory
+ •   d) Compilation
+ •   Answer: a
+MCQ
+ •   Encapsulation exposes:
+ •   a)   Constants
+ •   b) Private data
+ •   c) Static loops
+ •   d)   Public methods
+ •   Answer :   d
+MCQ
+ •   Encapsulation reduces:
+ •   a) Direct access
+ •   b) Code reuse
+ •   c) Flexibility
+ •   d) Inheritance
+ •   Answer: a
+MCQ
+ •   Derived class inherits:
+ •   a)   Loop values
+ •   b ) Local variables
+ •   c)   Base members
+ •   d) Constants
+ •   Answer:   c
+MCQ
+ •   Inheritance forms:
+ •   a) Hierarchy
+ •   b) Loop
+ •   c) Array
+ •   d) Stack
+ •   Answer: a
+MCQ
+ •   Base class is:
+ •   a)   Static   class
+ •   b) Child class
+ •   c) Local class
+ •   d)   Parent class
+ •   Answer :   d
+MCQ
+ •   Inheritance supports:
+ •   a) Code reuse
+ •   b) Data hiding
+ •   c) Loop control
+ •   d) Compilation
+ •   Answer: a
+MCQ
+ Polymorphism improves:
+ a) Memory
+ b) Compilation
+ c) Speed
+ d)   Flexibility
+ Answer: d
+MCQ
+ Abstraction means:
+ a) Show all
+ b) Only data
+ c) Hide complexity
+ d) No   methods
+ Answer: c
+MCQ
+ Same method name with different parameters is:
+ a) Overriding
+ b) Encapsulation
+ c) Abstraction
+ d)   Overloading
+ Answer: d
+MCQ
+ Abstract class cannot:
+ a) Have methods
+ b) Have constructors
+ c) Be instantiated
+ d) Have   properties
+ Answer: c
+MCQ
+ •   Abstraction improves:
+ a) Performance
+ b)   Readability
+ c)   Writability
+ d)   Maintainability
+ Answer: d
+Assignment
+ Design   a   system   to   manage   projects,   employees,   and   tasks   within   a   company .
+ Create   three   classes :   Employee,   Project,   and   Task .
+ The   Employee   class   should   have   private   fields   for   employeeId ,   name,   and
+ department,   initialized   via   a   constructor .
+ The   Project   class   should   have   private   fields   for   projectId ,   projectName ,
+ startDate ,   and   endDate ,   also   initialized   by   a   constructor .
+ The   Task   class   should   manage   the   association   between   employees   and
+ projects,   storing   taskId ,   taskDescription ,   an   Employee   object,   a   Project
+ object,   a   dueDate ,   and   a   boolean   isCompleted   flag .   Provide   a   constructor
+ that   accepts   all   necessary   parameters,   and   a   method   MarkCompleted ()   to
+ set   the   task's   completion   status .
+ Ensure   proper   access   modifiers   are   used   to   encapsulate   data .
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture   7
+ Prepared By:
+ Dr. Amr AbdelFatah
+The four pillars of object - oriented
+ design /programming
+ •   Encapsulation
+ •   Polymorphism
+ •   Inheritance
+ •   Abstraction
+The four pillars of object - oriented
+ design /programming
+ •   Encapsulation
+ •   Polymorphism
+ •   Inheritance
+ •   Abstraction
+Thanks to   Abdelrahman Mohamed Saeed Mohamed Saif
+What Is a Contract?
+ •   we   will   consider   a   contract   to   be   any   mechanism   that
+ requires   a   developer   to   comply   with   the   specifications   of   an
+ Application   Programming   Interface   (API) .
+ •   Often,   an   API   is   referred   to   as   a   framework .
+Abstraction
+ •   This   involves   modeling   real - world   objects   and   concepts   in
+ code   by   abstracting   away   unnecessary   details   and   focusing
+ only   on   the   most   important   aspects .
+ •   Abstraction   helps   to   simplify   code,   making   it   easier   to
+ understand   and   modify .
+ •   It   is   often   used   in   conjunction   with   encapsulation   to   provide
+ a   clear   interface   for   interacting   with   objects .
+Abstraction in C#
+ •   C# provides two main ways to achieve abstraction:
+ •   Abstract Classes
+ •   Interfaces
+Using abstract classes and abstract methods
+ •   There   are   situations   in   which   we   want   to   define   a   superclass
+ that   declares   the   structure   of   a   given   abstraction   without
+ providing   a   complete   implementation   of   every   method .
+ •   That   is,   sometimes   we   want   to   create   a   superclass   that   only
+ defines   a   generalized   form   that   will   be   shared   by   all   of   its
+ subclasses ,   leaving   it   to   each   subclass   to   fill   in   the   details .
+Abstract Classes
+ •   An abstract class   cannot be instantiated .
+ •   It may contain :
+ •   Abstract methods (without implementation).
+ •   Concrete methods (with implementation).
+ •   Child classes must implement the abstract methods.
+Example
+ •   Consider   a   classic   “shape”   example,   perhaps   used   in   a
+ computer - aided   design   system   or   game   simulation .
+ •   The   base   type   is   “shape ”   and   each   shape   has   a   color,   size   and
+ so   on .   From   this,   specific   types   of   shapes   are
+ derived (inherited) - circle,   square,   triangle,   and   so   on   –   each
+ of   which   may   have   additional   characteristics   and   behaviors .
+ •   For   example,   certain   shapes   can   be   flipped .   Some   behaviors
+ may   be   different,   such   as   when   you   want   to   calculate   the
+ area   of   a   square .
+The Example UML
+The   Example   code
+ abstract   class   Shape   //   Abstract class   {
+ public   abstract   void   Draw ();   // Abstract method (no implementation)
+ public   void   Display ()   {   // Concrete method (has implementation)
+ Console . WriteLine ( "Displaying shape" );
+ }
+ }
+ class   Circle   :   Shape   {   // Derived class
+ public   override   void   Draw ()   { // Implementing abstract method
+ Console . WriteLine ( "Drawing a Circle" );
+ }
+ }
+PAGE 2  PAGE 1
+ Example
+//   C#   program   to   calculate   the   area
+ //   of   a   square   using   the   concept   of
+ //   data   abstraction
+ using   System ;
+ namespace   Demoabstraction   {
+ //   abstract   class
+ abstract   class   Shape   {
+ //   abstract   method
+ public   abstract   int   area ();
+ }
+ //   square   class   inheriting
+ //   the   Shape   class
+ class   Square   :   Shape   {
+ //   private   data   member
+ private   int   side ;
+ //   method   of   square   class
+ public   Square ( int   x   =   0 )
+ {
+ side   =   x ;
+ }
+//   overriding   of   the   abstract   method   o f   Shape
+ //   class   using   the   override   keyword
+ public   override   int   area ()
+ {
+ Console . Write ( "Area   of   Square:   " );
+ return   ( side   *   side );
+ }
+ }
+ //   Driver   Class
+ class   Test   {
+ //   Main   Method
+ static   void   Main ( string []   args )
+ {
+ //   creating   reference   of   Shape   class
+ //   which   refer   to   Square   class   instance
+ Shape   sh   =   new   Square ( 4 );
+ //   calling   the   method
+ double   result   =   sh . area ();
+ Console . Write ( "{0 }" ,   result );
+ }
+ }
+ }
+ The output:
+Interfaces
+ •   An interface is   a contract that classes must follow .
+ •   It cannot have concrete methods (before C# 8.0).
+ •   A class can   implement multiple interfaces, unlike abstract classes .
+Example
+ interface   IAnimal   { // Interface
+ void   MakeSound ();   // Abstract method (no implementation)
+ }
+ class   Dog   :   IAnimal   { // Implementing interface
+ public   void   MakeSound ()   {
+ Console . WriteLine ( "Dog barks" );
+ }
+ }
+ class   Program   {
+ static   void   Main ()   {
+ IAnimal   animal   =   new   Dog ();
+ animal . MakeSound ();
+ }
+ }
+Differences Between Abstract Classes and Interfaces
+Example: Abstract Class vs Interface
+ using   System ;
+ abstract   class   Vehicle   { // Abstract class
+ public   abstract   void   StartEngine ();
+ public   void   StopEngine ()   {
+ Console . WriteLine ( "Engine stopped" );
+ }
+ }
+ interface   IFuel   // Interface   {
+ void   Refuel ();
+ }
+Example: Abstract Class vs Interface (cont.)
+ class   Car   :   Vehicle ,   IFuel   {   //   Inheriting   abstract   class   and   implementing   interface
+ public   override   void   StartEngine ()   {
+ Console . WriteLine ( "Car   engine   started" );
+ }
+ public   void   Refuel ()   {
+ Console . WriteLine ( "Car   refueled" );
+ }
+ }
+ class   Program   {
+ static   void   Main ()   {
+ Car   myCar   =   new   Car ();
+ myCar . StartEngine ();
+ myCar . Refuel ();
+ myCar . StopEngine ();
+ }
+ }
+Abstract Class vs Interface
+ •   In C#,   a class can only inherit from one abstract class   but   can
+ implement multiple interfaces .
+ •   Abstract classes   support single inheritance .
+ •   Interfaces   allow multiple inheritance   because a class can implement
+ multiple interfaces at the same time.
+Example : Abstract Class (Single Inheritance)
+ abstract   class   Animal   {
+ public   abstract   void   Eat ();
+ }
+ abstract   class   monster   {
+ public   abstract   void   bite ();
+ }
+ abstract   class   Mammal   :   Animal , monster   {   }
+ class   Dog   :   Mammal   {
+ public   override   void   Eat ()   {
+ Console . WriteLine ( "Dog eats food." );
+ }
+ }
+ class   Program   {
+ static   void   Main ()   {
+ Dog   myDog   =   new   Dog ();
+ myDog . Eat ();
+ }
+ }
+Multiple   inheritance
+ •   T his   is   invalid   because :
+ •   C#   does   NOT   support   multiple   inheritance   between
+ classes
+Example :   using Interface
+ interface   Animal   {   void   Eat ();   }
+ interface   monster   {   void   bite ();   }
+ class   Mammal   :   Animal ,   monster   {
+ public   void   Eat ()   {
+ Console . WriteLine ( "Mammal   eats." );   }
+ public   void   bite ()   {
+ Console . WriteLine ( "Mammal   bites." );   }
+ }
+ class   Dog   :   Mammal   {
+ public   new   void   Eat ()   {
+ Console . WriteLine ( "Dog eats food." );
+ }
+ }
+ class   Program   {
+ static   void   Main ()   {
+ Dog   myDog   =   new   Dog ();
+ myDog . Eat ();
+ }
+ }
+
+Implementation Versus Definition Inheritance
+ •   Sometimes   inheritance   is referred to as   implementation
+ inheritance ,
+ •   I nterfaces   are called   definition inheritance .
+Implementation Versus Definition Inheritance
+Abstract Class vs Interface (Summary)
+ •   Use an abstract class when   you need to share common functionality
+ across subclasses .
+ •   Use   multiple interfaces when you need a class to have different
+ capabilities .
+Encapsulation vs Data Abstraction
+ •   Encapsulation   is   data   hiding (information   hiding)   while
+ Abstraction   is   detail   hiding (implementation   hiding) .
+ •   While   encapsulation   groups   together   data   and   methods   that
+ act   upon   the   data,   data   abstraction   deal   with   exposing   to   the
+ user   and   hiding   the   details   of   implementation .
+Advantages of Abstraction
+ •   It   reduces   the   complexity   of   viewing   things .
+ •   Avoids   code   duplication   and   increases   reusability .
+ •   Helps   to   increase   the   security   of   an   application   or   program
+ as   only   important   details   are   provided   to   the   user .
+Composition Relationships
+An inheritance   relationship (Is - a)
+A composition   relationship (Has - a)
+Types of Composition
+ • Aggregations
+ • Associations
+An aggregation hierarchy
+Associations
+ •   An aggregation is a complex object composed of other
+ objects.
+ •   An association is used when   one object wants another object
+ to perform a service   for it.
+Association examples
+Design Patterns Introduction
+What is a Design Pattern?
+ A ( Problem, Solution ) pair.
+ •   A   technique to repeat designer success.
+ •   Borrowed from Civil and Electrical Engineering domains.
+How are Patterns used?
+ •   Design Problem.
+ •   Solution.
+ •   Implementation details .
+ Reduce gap
+ Design  
+Implementation
+ Designer
+ Programmer
+ Gamma, E., Helm, R., Johnson, R., Vlissides, J.:   Design patterns: elements of reusable
+ object - oriented software . 1995.
+ Buschmann, F., Meunier, R., Rohnert, H., Sommerlad, P., Stal, M.:   Pattern - oriented
+ software architecture: a system of patterns . 2002.
+Design patterns you have already seen
+ •   Encapsulation (Data Hiding)
+ •   Subclassing (Inheritance)
+ •   Iteration
+ •   Exceptions
+Encapsulation pattern
+ •   Problem :   Exposed   fields   are   directly   manipulated   from
+ outside,   leading   to   undesirable   dependences   that   prevent
+ changing   the   implementation .
+ •   Solution :   Hide   some   components ,   permitting   only   stylized
+ access   to   the   object .
+Subclassing pattern
+ •   Problem :   Similar   abstractions   have   similar   members   (fields
+ and   methods) .   Repeating   these   is   tedious,   error - prone ,   and   a
+ maintenance   headache .
+ •   Solution :   Inherit   default   members   from   a   superclass ;   select
+ the   correct   implementation   via   run - time   dispatching .
+Iteration pattern
+ •   Problem :   Clients   that   wish   to   access   all   members   of   a
+ collection   must   perform   a   specialized   traversal   for   each   data
+ structure .
+ •   Solution :   Implementations   perform   traversals .   The   results
+ are   communicated   to   clients   via   a   standard   interface .
+Exception pattern
+ •   Problem :   Code   is   cluttered   with   error - handling   code .
+ •   Solution :   Errors   occurring   in   one   part   of   the   code   should
+ often   be   handled   elsewhere .   Use   language   structures   for
+ throwing   and   catching   exceptions .
+Example
+Derived Conclusion
+ •   Programming   languages   are   moving   towards   Design .
+ •   Many   patterns   are   being   implemented   in   programming
+ languages .
+What is the addressing Quality Attribute?
+ •   M od ifiability,
+ •   E x changeability,
+ •   R eusab ility,
+ •   E xten sibility,
+ •   M aintain ability.
+•   More   general   code   for   better   Reusability .
+ •   Redundant   code   elimination   for   better   Maintainability .
+ What properties these patterns provide?
+Pattern Categories
+ •   Creational   Patterns   concern   the   process   of   object   creation .
+ •   Structural   Patterns   concern   with   integration   and
+ composition   of   classes   and   objects .
+ •   Behavioral   Patterns   concern   with   class   or   object
+ communication .
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture   8
+ Prepared By:
+ Dr. Amr AbdelFatah
+What is a Design Pattern?
+ A ( Problem, Solution ) pair.
+ •   A technique to repeat designer success.
+ •   Borrowed from Civil and Electrical Engineering domains.
+How are Patterns used?
+ •   Design Problem.
+ •   Solution.
+ •   Implementation details .
+ Reduce gap
+ Design  
+Implementation
+ Designer
+ Programmer
+ Gamma, E., Helm, R., Johnson, R., Vlissides, J.:   Design patterns: elements of reusable
+ object - oriented software . 1995.
+ Buschmann, F., Meunier, R., Rohnert, H., Sommerlad, P., Stal, M.:   Pattern - oriented
+ software architecture: a system of patterns . 2002.
+Design patterns you have already seen
+ •   Encapsulation (Data Hiding)
+ •   Subclassing (Inheritance)
+ •   Iteration
+ •   Exceptions
+Pattern Categories
+ •   Creational   Patterns   concern   the   process   of   object   creation .
+ •   Structural   Patterns   concern   with   integration   and
+ composition   of   classes   and   objects .
+ •   Behavioral   Patterns   concern   with   class   or   object
+ communication .
+Creational Patterns
+
+
+Singleton class pattern
+ •   Singleton   pattern   is   one   of   the   simplest   design   patterns .
+ •   This   type   of   design   pattern   comes   under   creational   pattern
+ which   ensures   that   only   one   object   of   its   kind   exists   and
+ provides   a   single   point   of   access   to   it   for   any   other   code .
+ •   This   pattern   involves   a   single   class   which   is   responsible   to
+ create   an   object   while   making   sure   that   only   single   object
+ gets   created .
+ •   This   class   provides   a   way   to   access   its   only   object   which   can
+ be   accessed   directly   without   need   to   instantiate   the   object
+ of   the   class .
+PAGE 2  PAGE 1
+ Example
+// C# Program to illustrate calling
+ // a Private constructor
+ using   System ;
+ namespace   privateConstructorExample
+ {
+ public   class   Item   {
+ // declare private Constructor
+ private   Item ()
+ {
+ }
+ // declare static variable field
+ public   static   int   count_Item ;
+ // declare static method
+ public   static   int   Item_Count ()
+ {
+ return   ++ count_Item ;
+ }
+//   Main   Method
+ public   static   void   Main ()
+ {
+ //   If   you   uncomment   the   following
+ //   statement,   it   will   generate
+ //   an   error   because   the
+ constructor
+ //   is   unaccess ible:
+ //   Item   s   =   new   Item();   //   Error
+ Item . count_Item   =   99 ;
+ //   Accessing   without   any
+ //   instance   of   the   class
+ Item . Item_Count ();
+ Console . WriteLine ( Item . count_Item );
+ //   Accessing   without   any
+ //   instance   of   the   class
+ Item . Item_Count ();
+ Console . WriteLine ( Item . count_Item );
+ }
+ }
+ }
+ The output:
+Static   method
+ •   In C#, a static method is a   member that belongs to the class itself rather
+ than to a specific instance (object)   of the class.
+ •   This   means you can   call the method directly using the class name   without
+ creating an object.
+ •   Key   Features
+ •   No Instantiation : You cannot create an object of a static class using the new keyword .
+ •   Direct Access : Members are accessed directly via the class name (e.g.,
+ ClassName.MethodName ()).
+ •   Static Members Only : All fields, methods, properties, and events within the class
+ must also be declared as static.
+ •   Implicitly Sealed : It cannot be inherited by another class, nor can it inherit from any
+ class other than   System.Object .
+Example
+ public   class   Calculator{
+ //   Static method
+ public   static   int   Add( int   a,   int   b)   {
+ return   a   +   b;
+ }
+ }
+ //   Calling   the static method without "new Calculator ()“
+ int   sum =   Calculator.Add (5, 10);
+Factory Method design pattern
+
+What is the Factory Method Pattern?
+ •   A creational design pattern that   defines an interface for creating an
+ object but lets subclasses decide which class to instantiate .
+ •   Promotes loose coupling and greater flexibility by delegating object
+ creation to subclasses.
+Use of the Factory method design pattern
+ •   The Factory method design pattern is used in many areas.
+ •   For example, in software development where you need to create different
+ kinds of objects like databases.
+ •   Imagine you have an application that relies on   different types of reports .
+ •   Using the Factory method design pattern, you can   create new reports
+ easily without changing the core application code .
+ •   This saves time and effort and makes the application more flexible
+ and easier to update and maintain.
+Factory Method design pattern
+Example
+ •   Imagine   we   have   a   program   that   creates   different   shapes
+ (Square,   Circle) .
+ •   We   want   a   flexible   way   to   create   these   shapes   without
+ directly   calling   their   constructors .
+Product Interface
+ •   This defines the common functionalities of the shapes (e.g.,
+ Draw()).
+public   interface   IShape
+ {
+ void   Draw ();
+ }
+ Interfaces   define   a   set   of   methods,
+ properties,   and   events   that   a   class
+ must   implement .   An   interface   only
+ specifies   the   behavior   that   a   class
+ must   have ,   but   it   doesn’t   provide   any
+ implementation .
+ What is meant by   Interface ?
+Concrete Products
+ •   These are the specific shape classes implementing the
+ IShape   interface.
+public   class   Square   :   IShape
+ {
+ public   void   Draw ()
+ {
+ Console . WriteLine ( "Drawing   a   Square" );
+ }
+ }
+ public   class   Circle   :   IShape
+ {
+ public   void   Draw ()
+ {
+ Console . WriteLine ( "Drawing a Circle" );
+ }
+ }
+Creator Class (Abstract)
+ •   This defines the factory method   CreateShape   which returns
+ an   IShape   object.
+public   abstract   class
+ ShapeFactory
+ {
+ public   abstract   IShape
+ CreateShape ();
+ }
+ Abstract   classes   can   provide
+ concrete   implementations   of
+ methods   and   properties,
+ whereas   interfaces   cannot .
+Concrete Creator Classes
+ •   These extend the   ShapeFactory   and override the
+ CreateShape   method to return the specific concrete product
+ (Square or Circle).
+public   class   SquareFactory   :
+ ShapeFactory
+ {
+ public   override   IShape
+ CreateShape ()
+ {
+ return   new   Square ();
+ }
+ }
+Concrete Creator Classes
+ •   These extend the   ShapeFactory   and override the
+ CreateShape   method to return the specific concrete product
+ (Square or Circle).
+public   class   CircleFactory   :
+ ShapeFactory
+ {
+ public   override   IShape
+ CreateShape ()
+ {
+ return   new   Circle ();
+ }
+ }
+Usage
+ •   Now, you   can use the factory classes to create shapes without knowing their
+ concrete implementation .
+//   Example   Usage
+ ShapeFactory   shapeFactory ;
+ //   Decide   on   shape   type   at   runtime   (or   based   on   configuration)
+ string   shapeType   =   "Square" ;
+ if   ( shapeType   ==   "Square" )
+ {
+ shapeFactory   =   new   SquareFactory ();
+ }
+ else
+ {
+ shapeFactory   =   new   CircleFactory ();
+ }
+ IShape   shape   =   shapeFactory . CreateShape ();
+ shape . Draw ();   //   Output:   Drawing   a   Square   (or   Drawing   a   Circle)
+Why Factory Method design pattern ?
+ •   The   factory   method   design   pattern   might   seem   like   extra
+ complexity   at   first   glance,
+ •   but   it   offers   several   advantages   that   make   it   worthwhile :
+Why Factory Method design pattern ?
+ •   Loose Coupling :
+ •   By   using   a   factory   to   create   objects,   your   code   interacts
+ only   with   the   interface   or   abstract   class   of   the   object
+ being   created .
+ •   This   means   you   can   easily   swap   out   different
+ implementations   of   the   object   without   modifying   the   rest
+ of   your   code .
+ •   This   is   a   key   principle   of   object - oriented   programming
+ that   promotes   reusability   and   maintainability .
+Why Factory Method design pattern ?
+ •   Flexibility and Extensibility :
+ •   The factory method   allows subclasses to decide which
+ concrete class to instantiate .
+ •   This makes   your code more flexible and adaptable to
+ changes .
+ •   You can   easily add new types of objects without modifying
+ the existing code that uses the factory.
+Why Factory Method design pattern ?
+ •   Centralized   Control   over   Object   Creation :
+ •   The   factory   method   centralizes   the   logic   for   creating
+ objects .
+ •   This   makes   it   easier   to   manage   and   control   object
+ creation ,   especially   when   you   need   to   perform   additional
+ steps   like   logging   or   initialization   during   object   creation .
+Why Factory Method design pattern ?
+ •   Decoupling from Concrete Classes :
+ •   The code that uses the   factory method doesn't need to
+ know about the specific concrete classes   of the objects
+ being created.
+ •   This   makes your code more readable and easier to
+ understand .
+Real - World Use Cases
+ using   C#
+Real - World Use Case: Notification System
+ •   Scenario: Sending different types of notifications (Email, SMS, Push).
+ •   Solution: Use the Factory Method Pattern to create these
+ notifications without specifying their concrete classes.
+Step 1   -   Define an Interface
+ public   interface   INotification   {
+ void   Send ( string   message );
+ }
+Step 2   -   Create Concrete Classes
+ public   class   EmailNotification   :   INotification   {
+ public   void   Send ( string   message )   {
+ Console . WriteLine ( "Sending Email Notification: "   +   message );
+ }
+ }
+Step 2   -   Create Concrete Classes (cont.)
+ public   class   SmsNotification   :   INotification   {
+ public   void   Send ( string   message )   {
+ Console . WriteLine ( "Sending SMS Notification: "   +   message );
+ }
+ }
+Step 2   -   Create Concrete Classes (cont.)
+ public   class   PushNotification   :   INotification   {
+ public   void   Send ( string   message )   {
+ Console . WriteLine ( "Sending Push Notification: "   +   message );
+ }
+ }
+Step 3   -   Abstract Class with Factory Method
+ public   abstract   class   NotificationCreator   {
+ public   abstract   INotification   CreateNotification ();
+ public   void   Notify ( string   message )   {
+ INotification   notification   =   CreateNotification ();
+ notification . Send ( message );
+ }
+ }
+Step 4   -   Implement Factory Method
+ public   class   EmailNotificationCreator   :   NotificationCreator   {
+ public   override   INotification   CreateNotification ()   {
+ return   new   EmailNotification ();
+ }
+ }
+Step 4   -   Implement Factory Method (Cont.)
+ public   class   SmsNotificationCreator   :   NotificationCreator   {
+ public   override   INotification   CreateNotification ()   {
+ return   new   SmsNotification ();
+ }
+ }
+ public   class   PushNotificationCreator   :   NotificationCreator   {
+ public   override   INotification   CreateNotification ()   {
+ return   new   PushNotification ();
+ }
+ }
+Step 5   -   Client Code
+ class   Program   {
+ static   void   Main ( string []   args )   {
+ NotificationCreator   emailCreator   =   new   EmailNotificationCreator ();
+ emailCreator . Notify ( "Email message content." );
+ NotificationCreator   smsCreator   =   new   SmsNotificationCreator ();
+ smsCreator . Notify ( "SMS message content." );
+ NotificationCreator   pushCreator   =   new   PushNotificationCreator ();
+ pushCreator . Notify ( "Push message content." );
+ }
+ }
+Folder Structure
+ •   NotificationSystem
+ •   INotification.cs
+ •   EmailNotification.cs
+ •   SmsNotification.cs
+ •   PushNotification.cs
+ •   NotificationCreator.cs
+ •   EmailNotificationCreator.cs
+ •   SmsNotificationCreator.cs
+ •   PushNotificationCreator.cs
+ •   Program.cs
+Real - World Use Case: Payment System
+ •   an online store and you want to add different payment methods like
+ credit card, e - payment, and cash on delivery.
+ •   Using the Factory method design pattern, you can create a unified
+ interface to generate any of these payment systems without writing
+ separate code for each.
+ •   That means if you want to add a new payment method later, you can
+ do it easily without modifying existing code.
+Factory Method with Interfaces
+ public   interface   IPaymentProcessor   {
+ void   ProcessPayment ( double   amount );
+ }
+Factory Method with Interfaces (cont.)
+ public   class   CreditCardPayment   :   IPaymentProcessor   {
+ public   void   ProcessPayment ( double   amount )   {
+ Console . WriteLine ( $ "Processing   credit   card   payment   of   ${amount}" );
+ }
+ }
+ public   class   PayPalPayment   :   IPaymentProcessor   {
+ public   void   ProcessPayment ( double   amount )   {
+ Console . WriteLine ( $ "Processing   PayPal   payment   of   ${amount}" );
+ }
+ }
+ public   class   BankTransferPayment   :   IPaymentProcessor   {
+ public   void   ProcessPayment ( double   amount )   {
+ Console . WriteLine ( $ "Processing   bank transfer   payment   of   ${amount}" );
+ }
+ }
+Factory Interfaces and Concrete Factories
+ public   interface   IPaymentProcessorFactory   {
+ IPaymentProcessor   CreatePaymentProcessor ();
+ }
+ public   class   CreditCardPaymentFactory   :   IPaymentProcessorFactory   {
+ public   IPaymentProcessor   CreatePaymentProcessor ()
+ {
+ return   new   CreditCardPayment ();
+ }
+ }
+Factory Interfaces and Concrete Factories
+ (cont.)
+ public   class   PayPalPaymentFactory   :   IPaymentProcessorFactory   {
+ public   IPaymentProcessor   CreatePaymentProcessor ()   {
+ return   new   PayPalPayment ();
+ }
+ }
+ public   class   BankTransferPaymentFactory   :   IPaymentProcessorFactory {
+ public   IPaymentProcessor   CreatePaymentProcessor ()   {
+ return   new   BankTransferPayment ();
+ }
+ }
+Client Using Factory
+ public   class   Client   {
+ public   static   void   Main ( string []   args )   {
+ Console . WriteLine ( "Enter payment method ( credit_card ,   paypal ,   bank_transfer ):" );
+ string   paymentMethod   =   Console . ReadLine ()?. ToLower ();
+ IPaymentProcessorFactory   factory   =   paymentMethod
+ switch   {
+ " credit_card "   =>   new   CreditCardPaymentFactory (),
+ " paypal "   =>   new   PayPalPaymentFactory (),
+ " bank_transfer "   =>   new   BankTransferPaymentFactory (),
+ _   =>   null
+ };
+Client Using Factory (cont.)
+ if   ( factory   ==   null ){
+ Console . WriteLine ( "Invalid   payment   method!" );
+ return ;
+ }
+ IPaymentProcessor   processor   =   factory . CreatePaymentProcessor ();
+ processor . ProcessPayment ( 100.00 );
+ }   //the   end   of   the   main
+ }   //   the end   of the   class client
+Conclusion
+ •   Promotes loose coupling
+ •   Adheres to   Open/Closed Principle
+ •   Simplifies object creation
+ •   Enhances code maintainability and scalability
+Open/Closed Principle
+ •   Open for extension, closed for modification
+ Violation Example:
+ public   class   DiscountCalculator   {
+ public   double   Calculate ( Customer customer )   {
+ if   ( customer . Type   ==   "Regular" )   return   0.1 ;
+ else   if   ( customer . Type   ==   "Premium" )   return   0.2 ;
+ return   0 ;
+ }
+ }
+Open/Closed Principle
+ •   Open for extension, closed for modification
+ Refactored Using Polymorphism:
+ public   interface   IDiscountStrategy   {
+ double   GetDiscount ();
+ }
+ public   class   RegularDiscount   :   IDiscountStrategy   {
+ public   double   GetDiscount ()   =>   0.1 ;
+ }
+ public   class   PremiumDiscount   :   IDiscountStrategy   {
+ public   double   GetDiscount ()   =>   0.2 ;
+ }
+ public   class   DiscountCalculator   {
+ public   double   Calculate ( IDiscountStrategy   strategy )   =>   strategy . GetDiscount ();
+ }
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 9
+ Prepared By:
+ Dr. Amr AbdelFatah
+What is a Design Pattern?
+ A ( Problem, Solution ) pair.
+ •   A technique to repeat designer success.
+ •   Borrowed from Civil and Electrical Engineering domains.
+Pattern Categories
+ •   Creational   Patterns   concern   the   process   of   object   creation .
+ •   Structural   Patterns   concern   with   integration   and
+ composition   of   classes   and   objects .
+ •   Behavioral   Patterns   concern   with   class   or   object
+ communication .
+Creational Patterns
+
+
+Singleton class pattern
+ •   Singleton   pattern   is   one   of   the   simplest   design   patterns .
+ •   It   ensures   that   only   one   object   of   its   kind   exists .
+ •   It   provides   a   single   point   of   access   to   it   for   any   other   code .
+Singleton class pattern
+Static method/object
+ •   In C#, a static method is a   member that belongs to the class itself rather
+ than to a specific instance (object)   of the class.
+ •   This means you can   call the method directly using the class name   without
+ creating an object.
+ •   Key Features
+ •   No Instantiation : You cannot create an object of a static class using the new keyword.
+ •   Direct Access : Members are accessed directly via the class name (e.g.,
+ ClassName.MethodName ()).
+ •   Static Members Only : All fields, methods, properties, and events within the class
+ must also be declared as static.
+ •   Implicitly Sealed : It cannot be inherited by another class, nor can it inherit from any
+ class other than   System.Object .
+Example
+ public   class   Calculator{
+ // Static method
+ public   static   int   Add( int   a,   int   b)   {
+ return   a   + b;
+ }
+ }
+ //   Calling   the static method without "new Calculator()“
+ int   sum =   Calculator.Add (5, 10);
+Singleton Implementation   Ways   in C#
+ •   Lazy Initialization (not thread - safe)
+ •   Thread - safe (using lock)
+ •   Double - checked locking
+ •   Eager initialization (static field)
+PAGE 2  PAGE 1
+ Example
+// C# Program to illustrate calling
+ // a Private constructor
+ using   System ;
+ namespace   privateConstructorExample
+ {
+ public   class   Item   {
+ // declare private Constructor
+ private   Item ()
+ {
+ }
+ // declare static variable field
+ public   static   int   count_Item ;
+ // declare static method
+ public   static   int   Item_Count ()
+ {
+ return   ++ count_Item ;
+ }
+//   Main   Method
+ public   static   void   Main ()
+ {
+ //   If   you   uncomment   the   following
+ //   statement,   it   will   generate
+ //   an   error   because   the
+ constructor
+ //   is   unaccess ible:
+ //   Item   s   =   new   Item();   //   Error
+ Item . count_Item   =   99 ;
+ //   Accessing   without   any
+ //   instance   of   the   class
+ Item . Item_Count ();
+ Console . WriteLine ( Item . count_Item );
+ //   Accessing   without   any
+ //   instance   of   the   class
+ Item . Item_Count ();
+ Console . WriteLine ( Item . count_Item );
+ }
+ }
+ }
+ The output:
+How to edit the previous code to
+ implement the   4   ways we
+ mentioned earlier?
+ Assignment (deadline: Thursday 30 April 2026)
+Factory Method design pattern
+
+What is the Factory Method Pattern?
+ •   A creational design pattern that   defines an interface for creating an
+ object but lets subclasses decide which class to instantiate .
+ •   Promotes loose coupling and greater flexibility by delegating object
+ creation to subclasses.
+Use of the Factory method design pattern
+ •   The Factory method design pattern is used in many areas.
+ •   For example, in software development where you need to create different
+ kinds of objects like databases.
+ •   Imagine you have an application that relies on   different types of reports .
+ •   Using the Factory method design pattern, you can   create new reports
+ easily without changing the core application code .
+ •   This saves time and effort and makes the application more flexible
+ and easier to update and maintain.
+Factory Method design pattern
+Real - World Use Case: Notification System
+ •   Scenario: Sending different types of notifications (Email, SMS, Push).
+ •   Solution: Use the Factory Method Pattern to create these
+ notifications without specifying their concrete classes.
+Real - World Use Case: Notification System
+Step 1   -   Define an Interface
+ public   interface   INotification   {
+ void   Send ( string   message );
+ }
+Step 2   -   Create Concrete Classes
+ public   class   EmailNotification   :   INotification   {
+ public   void   Send ( string   message )   {
+ Console . WriteLine ( "Sending Email Notification: "   +   message );
+ }
+ }
+Step 2   -   Create Concrete Classes (cont.)
+ public   class   SmsNotification   :   INotification   {
+ public   void   Send ( string   message )   {
+ Console . WriteLine ( "Sending SMS Notification: "   +   message );
+ }
+ }
+Step 2   -   Create Concrete Classes (cont.)
+ public   class   PushNotification   :   INotification   {
+ public   void   Send ( string   message )   {
+ Console . WriteLine ( "Sending Push Notification: "   +   message );
+ }
+ }
+Step 3   -   Abstract Class with Factory Method
+ public   abstract   class   NotificationFactory   {
+ public   abstract   INotification   CreateNotification ();
+ public   void   Notify ( string   message )   {
+ INotification   notification   =   CreateNotification ();
+ notification . Send ( message );
+ }
+ }
+Step 4   -   Implement Factory Method
+ public   class   EmailNotificationCreator   :   NotificationCreator   {
+ public   override   INotification   CreateNotification ()   {
+ return   new   EmailNotification ();
+ }
+ }
+Step 4   -   Implement Factory Method (Cont.)
+ public   class   SmsNotificationCreator   :   NotificationCreator   {
+ public   override   INotification   CreateNotification ()   {
+ return   new   SmsNotification ();
+ }
+ }
+ public   class   PushNotificationCreator   :   NotificationCreator   {
+ public   override   INotification   CreateNotification ()   {
+ return   new   PushNotification ();
+ }
+ }
+Folder Structure
+ •   NotificationSystem
+ •   INotification.cs
+ •   EmailNotification.cs
+ •   SmsNotification.cs
+ •   PushNotification.cs
+ •   NotificationCreator.cs
+ •   EmailNotificationCreator.cs
+ •   SmsNotificationCreator.cs
+ •   PushNotificationCreator.cs
+ •   Program.cs
+Why Factory Method design pattern ?
+ •   Loose Coupling
+ •   Flexibility and Extensibility
+ •   Centralized Control over Object Creation
+
+What is the   Builder   Pattern?
+ •   A creational design pattern that   separates the construction of a
+ complex object from its representation   so the same   construction
+ process can create different representations .
+ •   It build an   object step - by - step   using a   builder .
+Uses of the Builder Design Pattern
+Creating Complex Objects Step - by - Step
+ •   When an object has many fields, some of which are optional or
+ conditional, using constructors becomes messy:
+ // Too   many parameters   -   hard to read and maintain
+ var   user   =   new   User ( "John" ,   "Doe" ,   30 ,   "USA" ,   "Engineer" ,   null ,   null );
+ •   With Builder, you can create an object cleanly:
+ var   user   =   new   UserBuilder ()
+ . SetFirstName ( "John" )
+ . SetLastName ( "Doe" )
+ . SetAge ( 30 )
+ . SetCountry ( "USA" )
+ . Build ();
+ Builder pattern often uses   method chaining   (fluent API)
+Example:
+ •   For example, let’s think about how to create a House object. To build
+ a simple house, you need to construct four walls and a floor, install a
+ door, fit a pair of windows, and build a roof.
+ •   But what if you want a bigger, brighter house, with a backyard and
+ other
+Code Without Design Pattern (Anti - pattern)
+ •   You can create a   giant constructor right in the base House class   with
+ all possible parameters that control the house object.
+Code Without Design Pattern (Anti - pattern)
+ public   class   House   {
+ public   int   Windows   {   get ;   }
+ public   int   Doors   {   get ;   }
+ public   int   Rooms   {   get ;   }
+ public   bool   HasGarage   {   get ;   }
+ public   bool ?   HasSwimmingPool   {   get ;   }
+ public   bool ?   HasStatues   {   get ;   }
+ public   bool ?   HasGarden   {   get ;   }
+ public   House ( int   windows ,   int   doors ,   int   rooms ,   bool   hasGarage ,   bool ?   hasSwimmingPool ,   bool ?   hasStatues ,   bool ?   hasGarden ){
+ Windows   =   windows ;
+ Doors   =   doors ;
+ Rooms   =   rooms ;
+ HasGarage   =   hasGarage ;
+ HasSwimmingPool   =   hasSwimmingPool ;
+ HasStatues   =   hasStatues ;
+ HasGarden   =   hasGarden ;
+ }
+ public   void   Show ()   {
+ Console . WriteLine ( $ "House: {Windows} windows, {Doors}   doors,   {Rooms}   rooms" );
+ Console . WriteLine ( $ "Garage: { HasGarage }, Pool:   { HasSwimmingPool },   Statues: { HasStatues },   Garden:   { HasGarden }" );   }
+ }
+Code Without Design Pattern (Cont.)
+ var   simpleHouse   =   new   House ( 4 ,   2 ,   4 ,   true ,   null ,   null ,   null );
+ var   fancyHouse   =   new   House ( 4 ,   2 ,   4 ,   true ,   true ,   true ,   true );
+ simpleHouse . Show ();
+ fancyHouse . Show ();
+A solution
+ •   A   solution   is   to   extend   the   base   House   class   and   create   a   set   of
+ subclasses   to   cover   all   combinations   of   the   parameters .
+ •   But   eventually   you’ll   end   up   with   a   considerable   number   of   subclasses .
+ Any   new   parameter,   such   as   the   porch   style,   will   require   growing   this
+ hierarchy   even   more .
+A solution (Cont.)
+ public   class   SimpleHouse   :   House   {
+ public   SimpleHouse ()   :   base ( 4 ,   2 ,   4 ,   true ,   false ,   false ,   false )   {   }
+ }
+ public   class   LuxuryHouse   :   House   {
+ public   LuxuryHouse ()   :   base ( 4 ,   2 ,   4 ,   true ,   true ,   true ,   true )   {   }
+ }
+ 2
+7  
+= 128 subclasses
+ if your House has 7 optional features, and each one can be either:
+ present (true)
+ absent (false)
+ Then for each feature, there are 2 choices (yes or no).
+ So with 7 such options:
+ Total combinations = 2   ×   2   ×   2   ×   2   ×   2   ×   2   ×   2 = 2⁷ = 128
+ That’s   combinatorial explosion , and your
+ codebase will become a nightmare to maintain
+Fluent Builder design pattern
+ •   Fluent Builder is a design pattern that falls under the category of
+ creational design patterns.
+ •   It is a   variation of the Builder Design Pattern   and it allows us to chain
+ different builder calls.
+Fluent Builder design pattern
+Example
+ public   class   House   {
+ public   int   Windows   {   get ;   private   set ;   }
+ public   int   Doors   {   get ;   private   set ;   }
+ public   int   Rooms   {   get ;   private   set ;   }
+ public   bool   HasGarage   {   get ;   private   set ;   }
+ public   bool   HasSwimmingPool   {   get ;   private   set ;   }
+ public   bool   HasStatues   {   get ;   private   set ;   }
+ public   bool   HasGarden   {   get ;   private   set ;   }
+ private   House ()   {   }
+ public   void   Show ()   {
+ Console . WriteLine ( $ "House: {Windows} windows, {Doors} doors, {Rooms} rooms" );
+ Console . WriteLine ( $ "Garage:   { HasGarage }, Pool: { HasSwimmingPool }, Statues:
+ { HasStatues }, Garden: { HasGarden }" );   }
+Example (Cont.)
+ public   class   Builder   {
+ private   readonly   House   _house   =   new   House ();
+ public   Builder   SetWindows ( int   windows ){   _ house . Windows   =   windows ;   return   this ;   }
+ public   Builder   SetDoors ( int   doors ){   _ house . Doors   =   doors ;   return   this ;   }
+ public   Builder   SetRooms ( int   rooms ){   _ house . Rooms   =   rooms ;   return   this ;   }
+ public   Builder   SetGarage ( bool   hasGarage ){   _ house . HasGarage   =   hasGarage ;   return   this ;   }
+ public   Builder   SetSwimmingPool ( bool   hasSwimmingPool ){
+ _ house . HasSwimmingPool   =   hasSwimmingPool ;   return   this ;   }
+ public   Builder   SetStatues ( bool   hasStatues ){   _ house . HasStatues   =   hasStatues ;   return   this ;   }
+ public   Builder   SetGarden ( bool   hasGarden )   {   _ house . HasGarden   =   hasGarden ;   return   this ;   }
+ public   House   Build ()   =>   _house ;
+ }
+ }   //   end   of   class   House
+Usage
+ class   Program   {
+ static   void   Main ()   {
+ // Simple house
+ var   simpleHouse
+ =   new
+ House . Builder (). SetWindows ( 4 )
+ . SetDoors ( 2 )
+ . SetRooms ( 4 )
+ . SetGarage ( true )
+ . Build ();
+Usage (Cont.)
+ //   Fancy   house
+ var   fancyHouse   =
+ new
+ House . Builder (). SetWindows ( 4 )
+ . SetDoors ( 2 )
+ . SetRooms ( 4 )
+ . SetGarage ( true )
+ . SetSwimmingPool ( true )
+ . SetStatues ( true )
+ . SetGarden ( true )
+ . Build ();
+ simpleHouse . Show ();
+ Console . WriteLine ();
+ fancyHouse . Show ();
+ }   // end of the main method
+ }   // end of the program class
+Builder design pattern
+Example
+ public   interface   IHouseBuilder   {
+ void   Reset ();
+ void   BuildWalls ();
+ void   BuildRoof ();
+ void   BuildGarage ();
+ void   BuildSwimmingPool ();
+ House   GetResult ();
+ }
+Example (Cont.)
+ public   class   SimpleHouseBuilder   :   IHouseBuilder   {
+ private   House   _house   =   new   House ();
+ public   void   Reset ()   =>   _house   =   new   House ();
+ public   void   BuildWalls ()   =>   _ house . Walls   =   "Wooden" ;
+ public   void   BuildRoof ()   =>   _ house . Roof   =   "Shingle" ;
+ public   void   BuildGarage ()   =>
+ _ house . HasGarage   =   true ;
+ public   void   BuildSwimmingPool ()   =>
+ _ house . HasSwimmingPool   =   false ;
+ public   House   GetResult ()   =>   _house ;
+ }
+Example (Cont.)
+ public   class   LuxuryHouseBuilder   :   IHouseBuilder   {
+ private   House   _house   =   new   House ();
+ public   void   Reset ()   =>   _house   =   new   House ();
+ public   void   BuildWalls ()   =>   _ house . Walls   =   "Marble" ;
+ public   void   BuildRoof ()   =>   _ house . Roof   =   "Tile" ;
+ public   void   BuildGarage ()   =>   _ house . HasGarage   =   true ;
+ public   void   BuildSwimmingPool ()   =>
+ _ house . HasSwimmingPool   =   true ;
+ public   House   GetResult ()   =>   _house ;
+ }
+Example (Cont.)
+ public   class   Director   {
+ private   IHouseBuilder   _builder ;
+ public   Director ( IHouseBuilder   builder )   {   _builder   =   builder ;   }
+ public   void   ChangeBuilder ( IHouseBuilder   builder )   {   _builder   =   builder ;   }
+ public   void   Make ( string   type )   {
+ _ builder . Reset ();
+ if   ( type   ==   "simple" )   {
+ _ builder . BuildWalls ();
+ _ builder . BuildRoof ();
+ _ builder . BuildGarage ();   }
+ else   if   ( type   ==   "luxury" )   {
+ _ builder . BuildWalls ();
+ _ builder . BuildRoof ();
+ _ builder . BuildGarage ();
+ _ builder . BuildSwimmingPool ();   }
+ }   // end of the   make   method
+ }   // end of   Director class
+Example (Cont.)
+ class   Program   {
+ static   void   Main ()   {
+ var   builder   =   new   SimpleHouseBuilder ();
+ var   director   =   new   Director ( builder );
+ director . Make ( "simple" );
+ House   simpleHouse   =   builder . GetResult ();
+ simpleHouse . Show ();
+ Console . WriteLine ();
+ director . ChangeBuilder ( new   LuxuryHouseBuilder ());
+ director . Make ( "luxury" );
+ House   luxuryHouse   =   director . Make ( "luxury" );
+ luxuryHouse   =   (( LuxuryHouseBuilder ) director ). GetResult ();
+ luxuryHouse . Show ();
+ }
+ }
+Single Responsibility Principle & Builder
+ Pattern
+ •   Single Responsibility Principle (SRP)
+ •   A class should have only one reason to change.
+ •   Each class should   do one thing and do it well .
+The Problem (Without SRP)
+ •   Class is doing too much   —   mixing data and building logic.
+ class   User   {
+ // Data
+ string   Name ;   int   Age ;
+ // Building logic
+ public   User   BuildUser ( string   name ,   int   age )   {   ...   }
+ }
+SRP (with Builder design pattern)
+ class   User   {   string   Name ;   int   Age ;   }
+ class   UserBuilder   {
+ string   _name ;   int   _age ;
+ public   UserBuilder   SetName ( string   name )   {
+ _name   =   name ;   return   this ;
+ }
+ public   UserBuilder   SetAge ( int   age )   {
+ _age   =   age ;   return   this ;
+ }
+ public   User   Build ()   =>   new   User   {   Name   =   _name ,   Age   =   _age   };
+ }
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 10
+ Prepared By:
+ Dr. Amr AbdelFatah
+Builder Pattern (Non - Fluent) in C#
+ The GOAL:
+ Build
+ Step - by - step
+ complex
+ object construction
+Example: building a computer
+Product Class
+ // Product
+ public   class   Computer   {
+ public   string   CPU   {   get ;   set ;   }
+ public   string   RAM   {   get ;   set ;   }
+ public   string   Storage   {   get ;   set ;   }
+ public   void   Show ()   {
+ Console . WriteLine ( $ "CPU: {CPU}, RAM: {RAM}, Storage: {Storage}" );
+ }
+ }
+Abstract Builder and Concreter Builder
+ //   Abstract   Builder
+ public   abstract   class   ComputerBuilder   {
+ protected   Computer   computer   =   new   Computer ();
+ public   abstract   void   BuildCPU ();
+ public   abstract   void   BuildRAM ();
+ public   abstract   void   BuildStorage ();
+ public   Computer   GetComputer ()   =>   computer ;
+ }
+ //   Concrete   Builder
+ public   class   GamingComputerBuilder   :   ComputerBuilder   {
+ public   override   void   BuildCPU ()   =>   computer . CPU   =   "Intel   i9" ;
+ public   override   void   BuildRAM ()   =>   computer . RAM   =   "32GB" ;
+ public   override   void   BuildStorage ()   =>   computer . Storage   =   "1TB   SSD" ;
+ }
+The Director Class
+ // Director
+ public   class   Director   {
+ public   void   make ( ComputerBuilder   builder )
+ {
+ builder . BuildCPU ();
+ builder . BuildRAM ();
+ builder . BuildStorage ();
+ }
+ }
+The Client
+ var   director   =   new   Director ();
+ var   builder   =   new   GamingComputerBuilder ();
+ director . Construct ( builder );
+ Computer pc   =   builder . GetComputer ();
+ pc . Show ();
+Real world use case
+ •   A hospital is developing a Patient Registration Module where every
+ patient must provide basic information (name and age), while
+ additional details depend on the situation: insured patients provide
+ insurance information, emergency cases require an emergency
+ contact, and normal patients only provide basic data.
+ •   The system supports multiple registration types (normal, insured,
+ emergency), all producing the same patient record but with different
+ data included.
+
+Product (Patient)
+ public   class   Patient
+ {
+ public string   Name   { get; set; }
+ public int Age {   get;   set; }
+ public string Insurance { get; set; }
+ public string   EmergencyContact   { get; set; }
+ }
+Builder Interface
+ public   interface   IPatientBuilder
+ {
+ void   BuildBasicInfo ();
+ void   BuildInsurance ();
+ void   BuildEmergencyContact ();
+ Patient   GetPatient ();
+ }
+Concrete Builder   -   Normal Patient
+ public   class   NormalPatientBuilder   :   IPatientBuilder
+ {
+ private Patient   patient   = new Patient();
+ public void   BuildBasicInfo ()
+ {
+ patient.Name   = "Ahmed";
+ patient.Age   = 30;
+ }
+ public Patient   GetPatient ()
+ {
+ return patient;
+ }
+ }
+Concrete Builder   -   Insured Patient
+ public   class   InsuredPatientBuilder   :   IPatientBuilder
+ {
+ public override void   SetBasicInfo ()
+ {
+ patient.Name   = "Ahmed";
+ patient.Age   = 30;
+ }
+ public override void   SetInsurance ()
+ {
+ patient.Insurance   = "AXA";
+ }
+ }
+Director
+ public class   RegistrationDirector
+ {
+ public void   Construct( IPatientBuilder   builder)
+ {
+ builder.BuildBasicInfo ();
+ builder.BuildInsurance ();
+ builder.BuildEmergencyContact ();
+ }
+ }
+
+What is the Prototype Pattern?
+ •   The Prototype Pattern allows you to   clone an existing object   rather
+ than creating a new one from scratch.
+ •   It provides a way to   create duplicate objects while keeping
+ performance in mind .
+Use
+ •   Creating a new   object is   costly or time - consuming .
+ •   You   want to clone existing objects , potentially   with slight
+ modifications .
+ •   You want to   avoid the cost of creating new instances   (like parsing,
+ setting up connections, large configurations).
+ •   You need to   duplicate complex objects .
+ •   You want to   abstract away the instantiation logic   from the client.
+Structure
+ •   Prototype   (interface) :   declares   a   Clone()   method .
+ •   ConcretePrototype :   implements   the   Clone()   method .
+ •   Client :   uses   the   prototype   to   create   copies .
+Example
+ public   interface   IPrototype < T >   {
+ T Clone ();
+ }
+ •   T is a   type parameter : it stands for   a generic type .
+ •   You can think of it like   a placeholder for a real data type   (like int, string, House,
+ etc.) that   will be specified later when you implement   or use the interface.
+ •   This   makes the interface reusable   for any class.
+ •   no cast needed (unlike declaring object)
+ public interface   IPrototype
+ {
+ object Clone();
+ }
+ var cloned = (House) house.Clone (); // need a cast
+Example (Cont.)
+ public   class   House   :   IPrototype < House >   {
+ public   int   Windows   {   get ;   set ;   }
+ public   bool   HasGarage   {   get ;   set ;   }
+ public   bool   HasPool   {   get ;   set ;   }
+ public   House Clone ()   {
+ return   ( House )
+ this . MemberwiseClone ();   //   shallow copy
+ }
+ public   void   Show ()   {
+ Console . WriteLine ( $ "House: {Windows} windows,
+ Garage: { HasGarage }, Pool:   { HasPool }" );
+ }
+ }
+Example (Cont.)
+ public   class   LuxuryHouse   :   House   {
+ public   bool   HasSwimmingPool   {   get ;   set ;   }
+ public   bool   HasGarden   {   get ;   set ;   }
+ public   override   House Clone ()   {
+ return   ( LuxuryHouse ) this . MemberwiseClone ();
+ }
+ public   override   void   Show ()   {
+ base . Show ();
+ Console . WriteLine ( $ "Luxury features → Pool:
+ { HasSwimmingPool }, Garden: { HasGarden }" );
+ }
+ }
+Example (Cont.)
+ class   Program   {
+ static   void   Main ()   {
+ LuxuryHouse   luxury   =   new   LuxuryHouse   {
+ Windows   =   10 ,   HasGarage   =   true ,   HasSwimmingPool   =   true ,
+ HasGarden   =   true   };
+ // downcast to access   luxury features
+ LuxuryHouse   copy   =   ( LuxuryHouse ) luxury . Clone ();
+ copy . HasGarden   =   false ;
+ luxury . Show ();
+ Console . WriteLine ( " ----   Cloned   ---- " );
+ copy . Show ();
+ }
+ }
+Prototype Pattern
+ •   The Goal:
+ Clone
+ an object
+Example: copy a document
+The prototype interface
+ using   System ;
+ public   interface   IPrototype < T >   {
+ T   Clone ();
+ }
+The Abstract product
+ //   Abstract   Product
+ public   abstract   class   Document   :   IPrototype < Document >   {
+ public   string   Title   {   get ;   set ;   }
+ public   string   Content   {   get ;   set ;   }
+ public   abstract   void   Display ();
+ public   abstract   Document Clone ();
+ // use   Document as return type
+ }
+The concrete product
+ // Concrete Product
+ public   class   Report   :   Document   {
+ public   string   Author   {   get ;   set ;   }
+ public   override   void   Display ()   {
+ Console . WriteLine ( $ "[Report] Title: {Title}, Content: {Content},
+ Author: {Author}" );
+ }
+ public   override   Document Clone ()   {
+ return   ( Report ) this . MemberwiseClone ();   // shallow copy
+ }
+ }   //
+Extended Concrete Product
+ public   class   ConfidentialReport   :   Report   {
+ public   string   SecurityLevel   {   get ;   set ;   }
+ public   override   void   Display ()   {
+ Console . WriteLine ( $ "[Confidential Report] Title: {Title},
+ Content: {Content}, Author: {Author}, Security: { SecurityLevel }" );
+ }
+ public   override   Document Clone ()   {
+ return   ( ConfidentialReport ) this . MemberwiseClone ();
+ }
+ }
+The Client
+ class   Program   {
+ static   void   Main ()   {
+ ConfidentialReport   original   =   new   ConfidentialReport   {
+ Title   =   "Budget 2025" ,   Content   =   "Highly confidential financial
+ forecast" ,   Author   =   "Dr. Alice" ,   SecurityLevel   =   "Top Secret"   };
+ ConfidentialReport   copy   =   ( ConfidentialReport ) original . Clone ();
+ copy . SecurityLevel   =   "Internal Use" ;
+ original . Display ();
+ Console . WriteLine ( " ----   Cloned   ---- " );
+ copy . Display ();
+ }
+ }
+Structural Patterns
+Structural Patterns
+ •   concerned   with   how   classes   and   objects   are   composed   to   form   larger
+ structures
+ •   Façade :   provide   a   unified   interface   to   a   subsystem
+ •   Proxy :   provide   a   surrogate   for   another   object   to   control   access
+ •   Adapter :   interface   converter
+ •   Bridge :   decouple   abstraction   from   its   implementation
+ •   Composite :   compose   objects   into   tree   structures,   treating   all
+ nodes   uniformly
+ •   Decorator :   attach   additional   responsibilities   dynamically
+ •   Flyweight :   using   sharing   to   support   a   large   number   of   fine - grained
+ objects   efficiently
+Structural Patterns
+ •   concerned with how classes and objects are composed to form larger structures
+ •   Façade
+ •   provide a unified interface to a subsystem
+ •   Proxy
+ •   provide a surrogate for another object to control access
+ •   Adapter
+ •   interface converter
+ •   Bridge
+ •   decouple abstraction from its implementation
+ •   Composite
+ •   compose objects into tree structures, treating all nodes uniformly
+ •   Decorator
+ •   attach additional responsibilities dynamically
+ •   Flyweight
+ •   using sharing to support a large number of fine - grained objects efficiently
+Façade Design Pattern
+Façade
+ •   Provide   a unified interface to a set of interfaces   in a subsystem.
+ •   Façade defines a higher - level interface that makes the subsystem easier to
+ use
+Applicability
+ •   you want   a simple interface to a complex subsystem
+ •   Subsystems often get more complex as they evolve
+ •   this makes the subsystem more reusable and easier to customize,
+ •   but it also becomes harder to use for clients that don't need to customize it
+ •   A façade   can provide a simple default view of the subsystem   that is good enough for
+ most clients
+ •   Only clients needing more customizability will need to look beyond the façade
+ •   there are many dependencies between clients and the implementation
+ classes of an abstraction
+ •   Introduce a façade to decouple the subsystem from clients and other subsystems
+ •   you want to layer your subsystems
+ •   Use a façade to define an entry point to each subsystem level
+Structure
+ •   Façade
+ •   knows which subsystem classes are responsible for a request
+ •   delegates client requests to appropriate subsystem objects
+ •   subsystem classes
+ •   implement subsystem functionality
+ •   handle work assigned by the Façade object
+ •   have no knowledge of the façade
+Consequences
+ •   shields   clients   from   subsystem   components
+ •   reduces   the   #   of   objects   clients   see
+ •   easier   to   use   subsystem
+ •   promotes   weak   coupling   between   the   subsystem   and   its   client
+ •   can   vary   the   components   of   a   subsystem   without   affecting   clients
+ •   reduces   compilation   dependencies
+ •   doesn't   prevent   applications   from   using   subsystem   classes   if   they
+ need   to .
+ •   you   can   choose   between   ease   of   use   and   generality
+Example (UML)
+Example (Cont.) in C# code
+ using   System ;
+ // Subsystems
+ class   CPU   {
+ public   void   Start ()   {
+ Console . WriteLine ( "CPU starting..." );
+ }
+ }
+ class   Memory   {
+ public   void   Load ()   {
+ Console . WriteLine ( "Memory loading..." );
+ }
+ }
+ class   HardDrive   {
+ public   void   Read ()   {
+ Console . WriteLine ( "Hard Drive reading data..." );
+ }
+ }
+Example (Cont.) in C# code
+ // Facade
+ class   ComputerFacade   {
+ private   CPU   cpu ;
+ private   Memory   memory ;
+ private   HardDrive   hardDrive ;
+ public   ComputerFacade ()   {
+ cpu   =   new   CPU ();
+ memory   =   new   Memory ();
+ hardDrive   =   new   HardDrive ();
+ }
+ public   void   StartComputer ()   {
+ cpu . Start ();
+ memory . Load ();
+ hardDrive . Read ();
+ Console . WriteLine ( "Computer started successfully!" );
+ }
+ }
+Example (Cont.) in C# code
+ //   Client
+ class   Program   {
+ static   void   Main ( string []   args )   {
+ ComputerFacade   computer   =   new   ComputerFacade ();
+ computer . StartComputer ();
+ }
+ }
+Façade
+Proxy Design Pattern
+Proxy Design Pattern
+ a   structural design pattern
+ that
+ provides a   substitute or placeholder
+ for another object to
+ control access   to it.
+Proxy Design Pattern
+ •   e.g.,   on - demand image loading   :   so that opening a document is fast
+Applicability
+ •   whenever   there   is   a   need   for   a   more   versatile   or
+ sophisticated   reference   to   an   object   than   a   simple   pointer
+Structure
+ •   Subject
+ •   defines   the common interface for   RealSubject
+ •   Proxy so that   a Proxy can be used anywhere a
+ RealSubject   is expected
+ •   RealSubject
+ •   defines   the real object that the proxy represents
+Adapter Design Pattern
+Adapter Design Pattern
+ a   structural design pattern
+ that allows
+ objects
+ with   incompatible interfaces
+ to   work together .
+Adapter
+ •   For existing and unrelated classes working in an application that
+ expects classes with a different and incompatible interfaces (Builder?)
+ •   Unix process, file system, ...
+ Target
+Client
+ Adapter
+ request
+ Adaptee
+ implementation
+Adapter
+Adapter example
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 11
+ Prepared By:
+ Dr. Amr AbdelFatah
+Assignment
+Code Scaffold
+What Is a Code Scaffold?
+ •   A code scaffold is a template or skeleton code that helps you quickly
+ create structure for an application or component.
+ •   It typically includes:
+ •   Class/interface definitions
+ •   Method stubs
+ •   Basic logic structure
+ •   Comments or TODOs as placeholders
+Code Scaffold in Design Patterns
+ •   Design patterns benefit greatly from code scaffolds, because:
+ •   Consistency
+ •   Ensures all developers follow the pattern correctly
+ •   Faster Implementation
+ •   Reduces boilerplate — just plug in the logic
+ •   Easy Learning
+ •   Helps juniors understand structure step - by - step
+Builder Design Pattern   –   Code Scaffold
+ public   class   Product   {
+ // TODO: Add product parts as properties
+ // e.g., public string   PartA { get; set; }
+ // TODO: Optional: Add   a method to show final state (e.g., ToString)
+ }
+ // 2. Builder interface   –   declares   steps to build parts of the product
+ public   interface   IBuilder   {
+ void   BuildPartA ();   // TODO: Define this step
+ void   BuildPartB ();   // TODO:   Define this step
+ void   BuildPartC ();
+ // Optional
+ Product GetResult ();
+ // Return the final product
+ }
+Builder Design Pattern   –   Code Scaffold(cont.)
+ // 3. ConcreteBuilder   –   implements the IBuilder interface
+ public   class   ConcreteBuilder   :   IBuilder   {
+ private   Product product   =   new ();
+ public   void   BuildPartA ()   {
+ //   TODO:   Implement   building   PartA
+ }
+ public   void   BuildPartB ()   {
+ //   TODO:   Implement   building   PartB
+ }
+ public   void   BuildPartC ()   {
+ //   TODO:   Implement   building   PartB
+ }
+ public   Product GetResult ()   {
+ return   product ;
+ }
+ }
+Builder Design Pattern   –   Code Scaffold(cont.)
+ // 4. Director   –   controls the building steps
+ public   class   Director   {
+ private   IBuilder   builder ;
+ public   Director ( IBuilder builder )   {
+ this . builder   =   builder ;
+ }
+ public   void   Construct ()   {
+ // TODO: Define   order   of building   steps
+ builder . BuildPartA ();
+ builder . BuildPartB ();
+ // builder.BuildPartC();
+ }
+ }
+AutoMaker case study
+ •   AutoMaker   Inc .   is   developing   a   Car   Configuration   System   that   allows
+ customers   to   customize   and   order   cars   online .   Each   car   has   multiple
+ customizable   components   such   as   engine   type,   transmission,
+ infotainment   system,   and   interior   design .   To   manage   the   complexity
+ of   car   creation   and   ensure   consistency   in   the   build   process .   the
+ development   team   has   decided   to   use   a   specific   Design   Pattern .
+Solution (Builder Design Pattern Scaffold)
+ 1. Product   –   Car
+ public   class   Car   {
+ //   TODO:   Define   properties   like   EngineType,   Transmission,
+ InfotainmentSystem, InteriorDesign
+ }
+ 2. Builder Interface   –   ICarBuilder
+ public   interface   ICarBuilder   {
+ //   TODO:   Declare   method to   build   engine
+ //   TODO:   Declare   method to   build   transmission
+ //   TODO:   Declare   method to   build   infotainment   system
+ //   TODO:   Declare   method to   build interior   design
+ //   TODO:   Declare   method to   get   final Car   object
+ }
+Solution (Builder Design Pattern Scaffold)
+ 3. Concrete Builder   –   CustomCarBuilder
+ public   class   CustomCarBuilder   :   ICarBuilder   {
+ // TODO: Initialize a new Car object
+ // TODO: Implement method to build engine
+ // TODO: Implement method to build transmission
+ // TODO: Implement method to build infotainment system
+ // TODO: Implement method to build interior design
+ // TODO: Implement method to return the built Car object
+ }
+Solution (Builder Design Pattern Scaffold)
+ 4. Director   –   CarConfigurationDirector
+ public   class   CarConfigurationDirector   {
+ //   TODO:   Declare   ICarBuilder reference
+ //   TODO:   Constructor   to   accept a builder
+ public   void   ConstructCar ()   {
+ //   TODO: Call   builder   methods in order
+ }
+ }
+Behavioral Design Patterns
+Behavioral Patterns
+ •   Chain of Responsibility
+ •   request delegated to the responsible
+ service provider
+ •   Command:
+ •   request is first - class object
+ •   Iterator:
+ •   Aggregate elements are accessed
+ sequentially
+ •   Interpreter:
+ •   language interpreter for a small
+ grammar
+ •   Mediator:
+ •   coordinates interactions
+ between its associates
+ •   Memento:
+ •   snapshot captures and
+ restores object states
+ privately
+ •   Observer:
+ •   dependents update
+ automatically when subject
+ changes
+ •   State:
+ •   object whose behavior
+ depends on its state
+Behavior Patterns (more)
+ •   Strategy:
+ •   Abstraction for selecting one of many algorithms
+ •   Template Method:
+ •   algorithm with some steps supplied by a derived class
+ •   Visitor:
+ •   operations applied to elements of a heterogeneous object structure
+Chain of Responsibility
+Definition
+ •   Chain of Responsibility is a   behavioral design pattern   that lets you
+ pass requests along a chain of handlers .
+ •   Upon receiving a request,   each handler decides either to process the
+ request or to pass it to the next handler   in the chain.
+Example (The Problem)
+Example (The Solution)
+Multiple If - Else Statements
+ public   class   DiscountHandler   {
+ public   string   ApplyDiscount ( decimal   amount )   {
+ if   ( amount   >   1000 )   {
+ return   "10% discount   applied." ;
+ }
+ else   if   ( amount   >   500 )   {
+ return   "5% discount   applied." ;
+ }
+ else   {
+ return   "No discount." ;
+ }
+ }
+ }
+Drawbacks:
+ •   Tightly Coupled Logic :
+ •   Hard to add, remove, or reorder conditions.
+ •   Rigid Code :
+ •   Scaling becomes difficult as new conditions are added.
+ •   Single Responsibility Violation :
+ •   Mixing logic for condition checking and action processing.
+Using Chain of Responsibility Pattern
+ •   The Chain of Responsibility solves these issues by
+ separating conditions into discrete handlers .
+The Solution
+ public   abstract   class   DiscountHandler   {
+ protected   DiscountHandler   _ nextHandler ;
+ public   void   SetNext ( DiscountHandler   nextHandler )   {
+ _ nextHandler   =   nextHandler ;
+ }
+ public   abstract   string   Handle ( decimal   amount );
+ }
+The Solution (Cont.)
+ public   class   HighDiscountHandler   :   DiscountHandler   {
+ public   override   string   Handle ( decimal   amount )   {
+ if   ( amount   >   1000 )   {
+ return   "10%   discount   applied." ;
+ }
+ else   if   ( _ nextHandler   !=   null )   {
+ return   _ nextHandler . Handle ( amount );
+ }
+ return   "No   discount." ;
+ }
+ }
+The Solution (Cont.)
+ public   class   MediumDiscountHandler   :   DiscountHandler   {
+ public   override   string   Handle ( decimal   amount )   {
+ if   ( amount   >   500 )   {
+ return   "5% discount applied." ;   }
+ else   if   ( _ nextHandler   !=   null )   {
+ return   _ nextHandler . Handle ( amount );
+ }
+ return   "No discount." ;
+ }
+ }
+Software Architecture & Design
+S.O.L.I.D. Principles
+What is S.O.L.I.D?
+ •   S.O.L.I.D is an acronym that represents five principles of object - oriented
+ programming and code design theorized by   Uncle Bob   (Robert C. Martin)
+ by the year 2000.
+ ▪   [S] ingle Responsibility Principle
+ ▪   [O] pen/Closed Principle
+ ▪   [L] iskov Substitution Principle
+ ▪   [I] nterface Segregation Principle
+ ▪   [D] ependency Inversion Principle
+What is S.O.L.I.D?
+ •   The principles   actually overlap   each other in   a number of   ways.
+ •   They have   different point of view .
+ •   Based on the context we choose the principles
+What does not support S.O.L.I.D?
+ •   These principles will say   nothing about   a large number of SE issues
+ •   Resource use
+ •   Performance
+ •   Security
+ •   Deployment
+ •   Support
+ •   Licensing
+Why S.O.L.I.D?
+ •   When we use all the principles of S.O.L.I.D in a combined manner, it
+ becomes easier for you to develop software that can be managed
+ easily.
+ •   The other features of using S.O.L.I.D are:
+ •   It avoids code smells.
+ •   Quickly refractor   code.
+ •   Can   do adaptive or agile software   development.
+ •   When we use the principle of S.O.L.I.D in your coding, we start writing
+ the code that is both efficient and effective.
+S   —   Single Responsibility
+S   —   Single Responsibility
+ •   A class should have   a single responsibility
+ •   If a Class has many responsibilities, it increases the possibility of bugs because
+ making changes to one of its responsibilities, could affect the other ones
+ without you knowing.
+ •   Goal
+ •   This principle aims to separate behaviors so that if bugs arise   as a result of
+ your change, it won’t affect other unrelated behaviors.
+S   —   Single Responsibility
+partial Keyword   and
+ Single Responsibility Principle
+ (SRP)
+ Splitting Class and Method Definitions for Better Organization
+What is the partial Keyword?
+ •   The partial keyword in C# allows you to   split the definition   of a class, struct,
+ or interface across multiple files.
+ •   Why It Matters:
+ •   Enables code separation between auto - generated and manually written code.
+ •   Improves collaboration in teams.
+ •   Enhances maintainability of large classes.
+ Applies to:
+ •   Classes
+ •   Structs
+ •   Interfaces
+ •   Methods (partial methods)
+Syntax and Rules
+ Declaring a Partial Class:
+ public   partial   class   MyClass   {
+ public   void   MethodA ()   {   }
+ }
+ public   partial   class   MyClass   {
+ public   void   MethodB ()   {   }
+ }
+Example
+ //   UI   responsibility
+ public   partial   class   UserForm   {
+ private   void   InitializeComponent ()   {   /* UI setup */   }
+ }
+ //   Business   logic responsibility
+ public   partial   class   UserForm   {
+ private   void   ValidateInput ()   {   /* validation logic */   }
+ }
+Rules:
+ •   All parts   must use   the partial keyword.
+ •   All parts   must be in the same namespace and assembly .
+ •   The compiler   merges all parts into a single class .
+When to Use partial?
+ •   Best Use Cases:
+ •   Large classes with different responsibilities.
+ •   Auto - generated code (e.g., Entity Framework, WinForms).
+ •   Collaborative team development.
+ •   Clean separation of UI and logic.
+ •   Avoid When:
+ •   The class is small or self - contained.
+ •   You don’t use code generators or tooling that requires splitting.
+What Are Partial Methods?
+ •   A partial method lets you   define a method signature in one part of a
+ partial class and optionally implement it in another part .
+ •   Used   primarily in code generation scenarios   (e.g., auto - generated EF
+ classes).
+ •   Compiler   removes the method entirely if no implementation is
+ provided .
+Example
+ //   Generated file
+ public   partial   class   Person   {
+ partial   void   OnNameChanged ();
+ }
+ //   Developer file
+ public   partial   class   Person   {
+ partial   void   OnNameChanged ()   {
+ Console . WriteLine ( "Name was changed." );
+ }
+ }
+Real Project Example
+ •   WinForms Scenario:
+ •   Designing a GUI with Visual Studio
+ •   Designer creates:
+ //   Auto - generated code
+ public   partial   class   MainForm   {
+ private   void   InitializeComponent ()   {
+ //   layout   code
+ }
+ }
+Real Project Example
+ •   WinForms Scenario:
+ •   Designing a GUI with Visual Studio
+ •   Developer creates:
+ //   Developer code
+ public   partial   class   MainForm   {
+ private   void   OnButtonClick ( object   sender ,   EventArgs e )
+ {   // business logic
+ }
+ }   Keeps designer and user code separate.
+ Mixing that with business logic becomes
+ messy and error - prone.
+O   —   Open - Closed
+O   —   Open - Closed
+ •   Classes   should   be   open   for   extension,   but   closed   for   modification
+ •   Changing   the   current   behavior   of   a   Class   will   affect   all   the   systems   using   that
+ Class .
+ •   If   you   want   the   Class   to   perform   more   functions,   the   ideal   approach   is   to   add
+ to   the   functions   that   already   exist   NOT   change   them .
+ •   Goal
+ •   This   principle   aims   to   extend   a   Class’s   behavior   without   changing   the   existing
+ behavior   of   that   Class .
+ •   This   is   to   avoid   causing   bugs   wherever   the   Class   is   being   used .
+O   —   Open - Closed
+Without OCP   –   Bad Design
+ Suppose you’re calculating the area of different shapes:
+ public   class   AreaCalculator   {
+ public   double   CalculateArea ( object   shape )   {
+ if   ( shape   is   Circle c )   return   Math . PI   *   c . Radius   *   c . Radius ;
+ else   if   ( shape   is   Rectangle r )
+ return   r . Width   *   r . Height ;
+ else   throw   new   Exception ( "Unknown shape" );
+ }
+ }
+ public   class   Circle   {
+ public   double   Radius ;
+ }
+ public   class   Rectangle   {
+ public   double   Width ,   Height ;
+ }
+With OCP   –   Good Design
+ Use polymorphism instead of if - else blocks:
+ // Base class or   interface
+ public   interface   IShape   {
+ double   GetArea ();
+ }
+ // Extend with new shapes without touching calculator
+ public   class   Circle   :   IShape   {
+ public   double   Radius   {   get ;   set ;   }
+ public   double   GetArea ()   =>   Math . PI   *   Radius   *   Radius ;
+ }
+ public   class   Rectangle   :   IShape   {
+ ublic   double   Width   {   get ;   set ;   }
+ public   double   Height   {   get ;   set ;   }
+ public   double   GetArea ()   =>   Width   *   Height ;
+ }
+ // AreaCalculator does not change
+ public   class   AreaCalculator   {
+ public   double   CalculateArea ( IShape   shape )   =>   shape . GetArea ();
+ }
+L   —   Liskov Substitution
+L   —   Liskov Substitution
+ •   If you write   a piece of code using a base class, it should also work fine
+ if you use any of its subclasses instead — without breaking anything.
+ •   In other words:
+ •   A   child class must be able to stand in place of the parent class   and still behave
+ correctly.
+L   —   Liskov Substitution
+Real - World Example: Payment System
+ •   Design a system where users can pay using CreditCard, PayPal, or Cash.
+Solution (Violation of LSP   –   Bad Design)
+ public   class   PaymentMethod   {
+ public   virtual   void   Authorize ()   {
+ Console . WriteLine ( "Authorizing   payment..." );
+ }
+ }
+ public   class   CreditCard   :   PaymentMethod   {
+ public   override   void   Authorize ()   {
+ Console . WriteLine ( "Credit   card   authorized." );
+ }
+ }
+ public   class   Cash   :   PaymentMethod   {
+ public   override   void   Authorize ()   {
+ throw   new   NotSupportedException ( "Cash does   not   need   authorization" );
+ }
+ }
+ Problem:
+ You can’t substitute Cash where PaymentMethod
+ is expected without handling exceptions.
+Solution (Following LSP   –   Good Design)
+ Separate behaviors into more precise abstractions:
+ public   abstract   class   PaymentMethod   {
+ public   abstract   void   Pay ( decimal   amount );
+ }
+ public   interface   IAuthorizable   {
+ void   Authorize ();
+ }
+ public   class   CreditCard   :   PaymentMethod ,   IAuthorizable   {
+ public   void   Authorize ()   {
+ Console . WriteLine ( "Credit card authorized." );
+ }
+ public   override   void   Pay ( decimal   amount )   {
+ Console . WriteLine ( $ "Paid   {amount:C} with Credit Card." );
+ }
+ }
+ public   class   Cash   :   PaymentMethod   {
+ public   override   void   Pay ( decimal   amount )   {
+ Console . WriteLine ( $ "Paid   {amount:C} in cash." );
+ }
+ }
+I   —   Interface Segregation
+I   —   Interface Segregation
+ Don’t force   a class
+ to
+ use   things
+ it   doesn’t need .
+I   —   Interface Segregation
+Example (Bad design)
+ interface   IWorker
+ {
+ void Work();
+ void Eat();
+ }
+ class   Robot :   IWorker
+ {
+ public   void Work() { }
+ public   void Eat()
+ {
+ //   Robot doesn't eat!
+ throw new   NotImplementedException ();
+ }
+ }
+Example   (Goo d   design)
+ interface   IWorkable {
+ void   Work();
+ }
+ interface   IEatable {
+ void   Eat();
+ }
+ class   Human   :   IWorkable ,   IEatable {
+ public   void   Work() {   }
+ public   void   Eat()   {   }
+ }
+ class   Robot   :   IWorkable {
+ public   void   Work()   {   }
+ }
+D   —   Dependency   Inversion
+D   —   Dependency Inversion
+ High - level code   should not depend
+ on   low - level code.
+ Both   should depend on abstractions .
+ • Or even simpler:
+ “ Depend on interfaces, not concrete
+ classes .”
+D   —   Dependency Inversion
+Bad example (tight coupling)
+ class   EmailService {
+ public   void   Send(string   message)   { }
+ }
+ class   Notification{
+ private   EmailService   email   =   new   EmailService ();
+ public   void   Notify()
+ {
+ email.Send ("Hello");
+ }
+ }
+Good example (using abstraction)
+ interface   IMessageService {
+ void   Send(string message);
+ }
+ class   EmailService   :   IMessageService {
+ public   void   Send(string message) { }
+ }
+ class   SmsService   :   IMessageService {
+ public   void   Send(string message) { }
+ }
+Good example (using abstraction ) (cont.)
+ class   Notification{
+ private   IMessageService   service;
+ public   Notification( IMessageService   service )   {
+ this.service   =   service;
+ }
+ public   void   Notify (){
+ service.Send ("Hello");
+ }
+ }
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 12
+ Prepared By:
+ Dr. Amr AbdelFatah
+Case Study 1: Vehicle Rental System
+ Scenario:
+ A   vehicle   rental   system   provides   different   types   of   vehicles   for   rent :   cars,
+ bikes,   and   trucks .   Each   vehicle   has   specific   rental   policies   and   charges .
+ Questions :
+ •   Define which design pattern suitable for the previous scenario.
+ •   How does this design help if a new vehicle type like “Electric Scooter” is
+ added?
+Case Study 2: Resume Web App
+ Scenario :
+ A   web   app   helps   users   build   professional   resumes .   Users   can   customize
+ sections   such   as   personal   info,   experience,   education,   skills,   and   certifications
+ Some   users   might   skip   certain   sections .
+ Questions :
+ •   Define which design pattern suitable for the previous scenario.
+ •   Implement two builders: a   FullResumeBuilder   and a   MinimalResumeBuilder .
+ •   How can the director manage the sequence of adding sections?
+Case Study 3: Video Game Character Cloning
+ Scenario:
+ In   a   video   game,   different   character   types   (e . g . ,   Warrior,   Mage,   Archer)
+ are   created   with   base   stats .   When   the   player   customizes   them,   clones
+ of   these   base   characters   are   generated   and   modified .
+ Questions :
+ •   Define which design pattern suitable for the previous scenario.
+ •   Demonstrate   how   a   character   can   be   cloned   and   customized .
+ •   What   are   the   benefits   of   using   prototype   here   over   a   constructor?
+Case Study 4: Online Learning Platform
+ Scenario:
+ An online platform delivers different types of content: video lectures,
+ interactive quizzes, and downloadable PDFs. Each content type requires
+ specific rendering logic.
+ Questions:
+ •   Define which design pattern suitable for the previous scenario.
+ •   Explain how this improves scalability and content type extensibility.
+
+Architectural Style and Architectural Pattern
+Topics
+ •   Software architecture and architectural styles
+ •   Layered style
+ •   Pipe - and - Filter style
+ •   Shared - Data style
+ •   Event - Driven style
+ •   Model - View - Controller style
+ •   Hybrid architectures
+Software Architecture
+ A   software   architecture   is   the
+ structure   of   a   program   comprised   by   its
+ major   constituents,   their   responsibilities
+ and   properties,   and   the   relationships
+ and   interactions   between   them .
+Architectural Styles
+ An   architectural   style   is   a   paradigm
+ of   program   or   system   which   made   up
+ types   and   their   interactions .
+Architectural Style vs. Architectural Pattern
+ •   Architectural Style :
+ •   A   broad   classification   that   describes   families   of   architectures   based   on
+ principles   of   organization   (e . g . ,   layered,   event - driven,   client - server) .
+ •   Often   more   theoretical .
+ •   Architectural   Pattern :
+ •   A   concrete   solution   to   a   common   architectural   problem .
+ •   Patterns   are   often   derived   from   styles   but   are   more   practical   and   detailed .
+Architectural Style vs. Architectural Pattern
+ Architectural Style   Related Patterns
+ Layered   3 - tier architecture, MVC
+ Event - Driven   Publisher - Subscriber, Observer, Event Bus
+ Pipe - and - Filter   Unix pipeline, Compiler stages
+ Shared - Data   Repository, Blackboard
+ Client - Server   RESTful APIs, Microservices
+Architectural Style   Key Concept   Example Use Case
+ Layered  
+Vertical layers with clear
+ responsibility  
+Web apps (UI,   logic , DB)
+ Pipe - and - Filter   Sequential data processing   Compilers, media filters
+ Shared - Data   Central data store  
+IDEs, version control
+ systems
+ Event - Driven  
+Event - based
+ communication  
+GUIs, microservices
+Layered Style Architectures
+Layered Style Architectures
+ •   The   program   is   partitioned   into   an   array   of   layers   or   groups .
+ •   Layers   use   the   services   of   the   layer   or   layers   below   and
+ provide   services   to   the   layer   or   layers   above .
+ •   The   Layered   style   is   among   the   most   widely   used   of   all
+ architectural   styles .
+Uses and Invokes
+ •   Module   A   uses   module   B   if   a   correct   version   of   B   must   be
+ present   for   A   to   execute   correctly .
+ •   Module   A   calls   or   invokes   module   B   if   A   triggers   execution   of
+ B .
+ •   Note   that
+ •   A   module   may   use   but   not   invoke   another
+ •   A   module   may   invoke   but   not   use   another
+ •   A   module   may   both   use   and   invoke   another
+ •   A   module   may   neither   use   nor   invoke   another
+Layer Constraints
+ •   Static   structure — The   software   is   partitioned   into   layers   that
+ each   provide   a   cohesive   set   of   services   with   a   well - defined
+ interface .
+ •   Dynamic   structure — Each   layer   is   allowed   to   use   only   the
+ layer   directly   below   it   ( Strict   Layered   style)   or   the   all   the
+ layers   below   it   ( Relaxed   Layered   style) .
+Representing Layers
+Wedding Cake
+Diagram  
+Onion Diagram
+Layer 0
+Layer 4
+Layer 3
+Layer 2
+Layer 1
+Layer 4
+Layer 3
+Layer 2
+Layer 1
+Layer 0
+Layer
+Is Allowed
+to Use
+ Atop
+ Legend
+Layer
+ Directly
+Includes
+ Is Allowed
+to Use
+Forming Layers
+ •   Levels   of   abstraction
+ •   Example :   Network   communication   layers
+ •   Virtual   machines
+ •   Examples :   Operating   systems,   interpreters
+ •   Information   hiding ,   decoupling,   etc
+ •   Examples :   User   interface   layers,   virtual   device   layers
+Layered Style Advantages
+ •   Layers   are   highly   cohesive   and   promote   information   hiding .
+ •   Layers   are   not   strongly   coupled   to   layers   above   them,
+ reducing   overall   coupling .
+ •   Layers   help   decompose   programs ,   reducing   complexity .
+ •   Layers   are   easy   to   alter   or   fix   by   replacing   entire   layers ,   and
+ easy   to   enhance   by   adding   functionality   to   a   layer .
+ •   Layers   are   usually   easy   to   reuse .
+Layered Style Disadvantages
+ •   Passing   everything   through   many   layers   can   complicate
+ systems   and   damage   performance .
+ •   Debugging   through   multiple   layers   can   be   difficult .
+ •   Getting   the   layers   right   can   be   difficult .
+ •   Layer   constraints   may   have   to   be   violated   to   achieve
+ unforeseen   functionality .
+Model - View - Controller (MVC)
+ Architectural Pattern
+Model - View - Controller (MVC)
+ •   Model - View - Controller   (MVC)   is   often   described   as   being
+ related   to   the   Layered   Architectural   Style   because   it
+ embodies   the   same   core   idea   of   separation   of   concerns — but
+ in   a   specialized   and   focused   form .
+Model - View - Controller (MVC)
+ •   This   style   models   how   to   set   up   the   relationships   between
+ user   interface   and   problem - domain   components .
+ •   Model — A   problem - domain   component   with   data   and
+ operations   for   achieving   program   goals   independent   of   the
+ user   interface
+ •   View — A   data   display   component
+ •   Controller — A   component   that   receives   and   acts   on   user
+ input
+MVC Static Structure
+View Controller
+Model
+«can use»
+«layer»
+User Interface
+«layer»
+Application Domain
+«can use»
+MVC Behavior
+:User   :Controller   :Model :View
+manipulate  
+change()  
+makeChange()
+notify()
+query()
+notify()
+query()
+sd MVCinteraction
+Example: Displaying Student Information
+ 1. Model   –   Holds the data
+ public   class   Student   {
+ public   string   Name   {   get ;   set ;   }
+ public   int   Age   {   get ;   set ;   }
+ }
+Entity Framework Core
+
+Example: Displaying Student Information
+ 2. View   –   Displays the data
+ public   class   StudentView   {
+ public   void   DisplayStudentInfo ( string   name ,   int   age )   {
+ Console . WriteLine ( $ "Student Name: {name}" );
+ Console . WriteLine ( $ "Student Age: {age}" );
+ }
+ }
+Example: Displaying Student Information
+ 3. Controller   –   Coordinates Model and View
+ public   class   StudentController   {
+ private   Student _model ;
+ private   StudentView   _view ;
+ public   void   SetStudentName ( string   name )   =>   _ model . Name   =   name ;
+ public   string   GetStudentName ()   =>   _ model . Name ;
+ public   void   SetStudentAge ( int   age )   =>   _ model . Age   =   age ;
+ public   int   GetStudentAge ()   =>   _ model . Age ;
+ public   void   UpdateView ()   {
+ _ view . DisplayStudentInfo ( _ model . Name ,   _ model . Age );
+ }
+ }
+MVC Advantages
+ •   Views   and   controllers   can   be   added,   removed,   or   changed
+ without   disturbing   the   model .
+ •   Views   can   be   added   or   changed   during   execution .
+ •   User   interface   components   can   be   changed,   even   at   runtime .
+MVC Disadvantages
+ •   Views   and   controller   are   often   hard   to   separate .
+ •   Frequent   updates   may   slow   data   display   and   degrade   user
+ interface   performance .
+ •   The   MVC   style   makes   user   interface   components   highly
+ dependent   on   model   components .
+Pipe - and - Filter Style
+Pipe - and - Filter Style
+ •   A   filter   is   a   program   component   that   transforms   an   input
+ stream   to   an   output   stream .
+ •   A   pipe   is   conduit   for   a   stream .
+ •   The   Pipe - and - Filter   style   is   a   dynamic   model   in   which
+ program   components   are   filters   connected   by   pipes .
+Pipe - and - Filter Example
+Lexical Analyzer
+Parser
+Semantic Analyzer
+Code Generator
+Filter   Pipe
+Legend
+Pipe - and - Filter Characteristics
+ •   Pipes   are   isolated   and   usually   only   communicate   through
+ data   streams ,   so   they   are   easy   to   write,   test,   reuse,   and
+ replace .
+ •   Filters   may   execute   concurrently .
+ •   Requires   pipes   to   synchronize   filters
+ •   Pipe - and - filter   topologies   should   be   acyclic   graphs .
+ •   Avoids   timing   and   deadlock   issues
+ •   A   simple   linear   arrangement   is   a   pipeline .
+Pipe - and - Filter Advantages
+ •   Filters   can   be   modified   and   replaced   easily .
+ •   Filters   can   be   rearranged   with   little   effort ,   making   it   easy   to
+ develop   similar   programs .
+ •   Filters   are   highly   reusable .
+ •   Concurrency   is   supported   and   is   relatively   easy   to
+ implement .
+Pipe - and - Filter Disadvantages
+ •   Filters   communicate   only   through   pipes,   which   makes   it
+ difficult   to   coordinate   them .
+ •   Filters   usually   work   on   simple   data   streams ,   which   may   result
+ in   wasted   data   conversion   effort .
+ •   Error   handling   is   difficult .
+ •   Gains   from   concurrency   may   be   illusory .
+Shared - Data Style
+Shared - Data Style
+ •   One   or   more   shared - data   stores   are   used   by   one   or   more   shared - data
+ accessors   that   communicate   solely   through   the   shared - data   stores .
+ •   accessor   (plural   accessors)   Someone   or   something   that   accesses .
+ (object - oriented   programming)   A   function   that   retrieves   a   value,
+ usually   without   changing   any   data .
+ •   Two   variants :
+ •   Blackboard   style — The   shared - data   stores   activate   the   accessors
+ when   the   stores   change .
+ •   Repository   style — The   shared - data   stores   are   passive   and
+ manipulated   by   the   accessors .
+ •   This   is   a   dynamic   model   only .
+Shared - Data Style Example
+Accessor
+Legend
+Accesses
+Project Data
+Store
+Shared-
+Data Store
+Schedule
+Tracking Tool
+Testing Tool
+Class Diagram
+Editor
+Compiler
+Sequence
+Diagram Editor
+State Diagram
+Editor
+Shared - Data Style Advantages
+ •   Shared - data   accessors   communicate   only   through   the
+ shared - data   store,   so   they   are   easy   to   change ,   replace,
+ remove,   or   add   to .
+ •   Accessor   independence   increases   robustness   and   fault
+ tolerance .
+ •   Placing   all   data   in   the   shared - data   store   makes   it   easier   to
+ secure   and   control .
+Shared - Data Style Disadvantages
+ •   Forcing   all   data   through   the   shared - data   store   may   degrade
+ performance .
+ •   If   the   shared - data   store   fails,   the   entire   program   is   crippled .
+Event - Driven Style
+Event - Driven Style
+ •   Also   called   the   Implicit   Invocation   style
+ •   An   event   is   any   noteworthy   occurrence .
+ •   An   event   dispatcher   mediates   between   components   that
+ announce   and   are   notified   of   events .
+ •   This   is   a   dynamic   model   only .
+Event - Driven Style Example
+Event
+Dispatcher
+Event
+Dispatcher
+Announce
+Event
+Legend
+ Smoke
+Detector
+Door
+Sensor
+Carbon
+Dioxide
+Detector
+Thermostat
+Motion
+Sensor
+Detect
+Fire
+Monitor
+Security
+Check
+Environment
+ Sensor
+Monitor  
+Send
+Notification
+Event - Driven Style Advantages
+ •   It   is   easy   to   add   or   remove   components .
+ •   Components   are   decoupled,   so   they   are   highly   reusable,
+ changeable,   and   replaceable .
+ •   Systems   built   with   this   style   are   robust   and   fault   tolerant .
+Event - Driven Style Disadvantages
+ •   Component   interaction   may   be   awkward   when   mediated   by
+ the   event   dispatcher .
+ •   There   are   no   guarantees   about   event   sequencing   or   timing ,
+ which   may   make   it   difficult   to   write   correct   programs .
+ •   Event   traffic   tends   to   be   highly   variable,   which   may   make   it
+ difficult   to   achieve   performance   goals .
+Hybrid Architectures
+ Most   systems   of   any   size   include   several   architectural   styles ,
+ often   at   different   levels   of   abstraction .
+ •   An   overall   a   system   may   have   a   Layered   style,   but   the   one
+ layer   may   use   the   Event - Driven   style,   and   another   the
+ Shared - Data   style .
+ •   An   overall   system   may   have   a   Pipe - and - Filter   style,   but   the
+ individual   filters   may   have   Layered   styles .
+Discussion
+ Thanks
+
+CS 209
+ Advanced Programming
+ Lecture 13
+ Prepared By:
+ Dr. Amr AbdelFatah
+Be Aware
+ •   DO NOT rely   on this lecture   alone   for studying.
+ •   It   does not cover   all topics from previous lectures.
+
+Case Study 1: Vehicle Rental System
+ Scenario:
+ A   vehicle   rental   system   provides   different   types   of   vehicles   for   rent :   cars,
+ bikes,   and   trucks .   Each   vehicle   has   specific   rental   policies   and   charges .
+ Questions :
+ •   Design the vehicle creation logic using the Factory Method pattern.
+ •   Define the interface and concrete vehicle   classes.Create   a factory that
+ generates vehicles based on user input
+ (e.g., VehicleFactory.Create ("Truck")).
+ •   How does this design help if a new vehicle type like “Electric Scooter” is
+ added?
+The Problem   –   Anti Pattern
+ public   class   VehicleRental   {
+ public   void   Rent ( string   type )   {
+ if   ( type   ==   "Car" )
+ Console . WriteLine ( "Renting Car with standard policy" );
+ else   if   ( type   ==   "Bike" )
+ Console . WriteLine ( "Renting Bike   with   hourly rate" );
+ else   if   ( type   ==   "Truck" )
+ Console . WriteLine ( "Renting Truck with heavy vehicle policy" );
+ }
+ }
+The Problem   –   Anti Pattern
+ •   Every new vehicle type requires modifying this class.
+ •   Violates Open/Closed Principle.
+ •   Hard to test or reuse logic per vehicle.
+Define the Product Interface
+ public   interface   IVehicle   {
+ void   Rent ();
+ }
+Implement Concrete Products
+ public   class   Car   :   IVehicle   {
+ public   void   Rent ()   =>   Console . WriteLine ( "Renting   Car   with   standard   policy" );
+ }
+ public   class   Bike   :   IVehicle   {
+ public   void   Rent ()   =>   Console . WriteLine ( "Renting   Bike   with   hourly   rate" );
+ }
+ public   class   Truck   :   IVehicle   {
+ public   void   Rent ()   =>   Console . WriteLine ( "Renting   Truck   with   heavy   vehicle
+ policy" );
+ }
+Create Abstract Factory
+ public   abstract   class   VehicleFactory   {
+ public   abstract   IVehicle   CreateVehicle ();
+ }
+Concrete Factories
+ public   class   CarFactory   :   VehicleFactory   {
+ public   override   IVehicle   CreateVehicle ()   =>   new   Car ();
+ }
+ public   class   BikeFactory   :   VehicleFactory   {
+ public   override   IVehicle   CreateVehicle ()   =>   new   Bike ();
+ }
+ public   class   TruckFactory   :   VehicleFactory   {
+ public   override   IVehicle   CreateVehicle ()   =>   new   Truck ();
+ }
+Case Study 2: Resume Builder Web App
+ Scenario :
+ A   web   app   helps   users   build   professional   resumes .   Users   can   customize
+ sections   such   as   personal   info,   experience,   education,   skills,   and   certifications
+ Some   users   might   skip   certain   sections .
+ Questions :
+ •   Apply the Builder pattern for resume creation.
+ •   Identify the product and builder classes.
+ •   Implement two builders: a   FullResumeBuilder   and a   MinimalResumeBuilder .
+ •   How can the director manage the sequence of adding sections?
+Builder Pattern   –   Resume Web App
+ public   class   Resume   {
+ public   string   PersonalInfo ,   Education ,   Experience ,   Skills ,   Certifications ;
+ public   override   string   ToString ()   =>   //TODO: print Data
+ }
+Resume Builder Base Class
+ public   abstract   class   ResumeBuilder   {
+ protected   Resume _resume   =   new   Resume ();
+ public   abstract   void   BuildPersonalInfo ();
+ public   abstract   void   BuildEducation ();
+ public   abstract   void   BuildExperience ();
+ public   abstract   void   BuildSkills ();
+ public   abstract   void   BuildCertifications ();
+ public   Resume   GetResume ()   =>   _resume ;
+ }
+Concrete Builders
+ public   class   FullResumeBuilder   :   ResumeBuilder   {
+ public   override   void   BuildPersonalInfo ()   =>
+ _ resume . PersonalInfo   =   "John Doe, john@example.com" ;
+ public   override   void   BuildEducation ()   =>
+ _ resume . Education   =   "B.Sc.   Computer Science" ;
+ public   override   void   BuildExperience ()   =>
+ _ resume . Experience   =   "5 years at   TechCorp " ;
+ .........
+ .........
+ .........
+ }
+Director
+ public   class   ResumeDirector   {
+ public   void   ConstructMinimal ( ResumeBuilder   builder )   {
+ builder . BuildPersonalInfo ();
+ builder . BuildEducation ();
+ }
+ public   void   ConstructFull ( ResumeBuilder   builder )   {
+ builder . BuildPersonalInfo ();
+ builder . BuildEducation ();
+ builder . BuildExperience ();
+ builder . BuildSkills ();
+ builder . BuildCertifications ();
+ }
+ }
+Case Study 3: Video Game Character Cloning
+ Scenario:
+ In   a   video   game,   different   character   types   (e . g . ,   Warrior,   Mage,   Archer)
+ are   created   with   base   stats .   When   the   player   customizes   them,   clones
+ of   these   base   characters   are   generated   and   modified .
+ Questions :
+ •   Use   the   Prototype   pattern   to   implement   character   cloning .
+ •   Define   the   prototype   interface   and   a   few   base   character   types .
+ •   Demonstrate   how   a   character   can   be   cloned   and   customized .
+ •   What   are   the   benefits   of   using   prototype   here   over   a   constructor?
+Define Prototype Interface and Base Types
+ public   abstract   class   GameCharacter   {
+ public   string   Name ;
+ public   int   HP ,   Attack ,   Defense ;
+ public   abstract   GameCharacter   Clone ();
+ }
+Concrete Prototypes
+ public   class   Warrior   :   GameCharacter   {
+ public   Warrior ()   {
+ Name   =   "Warrior" ;   HP   =   150 ;   Attack   =   40 ;   Defense   =   30 ;
+ }
+ public   override   GameCharacter   Clone ()   =>   ( GameCharacter ) this . MemberwiseClone ();
+ }
+ public   class   Mage   :   GameCharacter   {
+ public   Mage ()   {
+ Name   =   "Mage" ;   HP   =   80 ;   Attack   =   70 ;   Defense   =   10 ;   }
+ public   override   GameCharacter   Clone ()   =>   ( GameCharacter ) this . MemberwiseClone ();
+ }
+Case 1: Single Responsibility Principle (SRP)
+ Violation
+ public   class   Employee   {
+ public   string   Name   {   get ;   set ;   }
+ public   double   Salary   {   get ;   set ;   }
+ public   void   SaveToDatabase ()   {
+ Console . WriteLine ( "Saving employee to   database..." );
+ }
+ public   void   GenerateReport ()   {
+ Console . WriteLine ( "Generating employee report..." );
+ }
+ }
+Questions
+ •   Identify how the class violates the Single Responsibility Principle.
+ •   Refactor the code so that each class has only one reason to change.
+The Solution
+ •   What’s Wrong?
+ •   SRP Violation   –   Multiple Responsibilities:
+ •   Data Representation: Name, Salary
+ •   Persistence Logic:   SaveToDatabase ()
+ •   Reporting Logic:   GenerateReport ()
+ •   One class should have only one reason to change!
+ •   Currently, changes in database logic or report format would force
+ changes in the Employee class.
+SRP - Compliant Refactoring
+ public   class   Employee   {
+ public   string   Name   {   get ;   set ;   }
+ public   double   Salary   {   get ;   set ;   }
+ }
+ public   class   EmployeeRepository   {
+ public   void   Save ( Employee emp )   {
+ Console . WriteLine ( $ "Saving   { emp.Name }   to   database..." );
+ }
+ }
+ public   class   EmployeeReportGenerator   {
+ public   void   Generate ( Employee   emp )   {
+ Console . WriteLine ( $ "Generating   report   for   { emp.Name }..." );
+ }
+ }
+ Step 1: Separate the Data Class
+ Step 2   –   Create Persistence Class
+ Step 3   –   Create Reporting Class
+Case 2: LSP Violation   –   Content Subscription
+ System
+ public   class   Subscription   {
+ public   virtual   void   Charge ()   {
+ Console . WriteLine ( "Charging user..." );
+ }
+ }
+ public   class   FreeSubscription   :   Subscription   {
+ public   override   void   Charge ()   {
+ throw   new   InvalidOperationException ( "Free subscription should not be charged" );
+ }
+ }
+Questions:
+ •   What’s the problem if   FreeSubscription   is used where Subscription is
+ expected?
+ •   How does this break the   Liskov   Substitution Principle?
+ •   Refactor the hierarchy to fix the issue.
+Liskov   Substitution   Principle   (LSP) Violation
+ •   If a subclass ( FreeSubscription ) cannot be used in place of the base
+ class (Subscription) without altering the correctness of the program,
+ LSP is broken.
+ •   FreeSubscription   changes expected behavior of Charge().
+ •   Using it in any Subscription context may result in runtime exceptions.
+Fix   –   Use Interface Segregation Instead
+ public   interface   IBillable   {
+ void   Charge ();
+ }
+Separate the concepts cleanly
+ public   class   PaidSubscription   :   IBillable   {
+ public   void   Charge ()   {
+ Console . WriteLine ( "Charging paid user..." );
+ }
+ }
+ public   class   FreeSubscription   {
+ // No   Charge method needed   –   not billable
+ }
+Benefits of Refactoring
+ •   No runtime exceptions
+ •   Follows LSP   –   PaidSubscription   is substitutable where   IBillable   is
+ expected
+ •   Clear separation of behavior (free ≠ billable)
+Case 3: OCP Violation   –   Invoice Tax Calculator
+ public   class   TaxCalculator   {
+ public   double   CalculateTax ( string   country ,   double   amount )   {
+ if   ( country   ==   "USA" )   return   amount   *   0.07 ;
+ else   if   ( country   ==   "UK" )   return   amount   *   0.20 ;
+ else   if   ( country   ==   "Germany" )   return   amount   *   0.19 ;
+ else   throw   new   ArgumentException ( "Country not supported" );
+ }
+ }
+Questions
+ •   Why is this implementation not scalable or maintainable?
+ •   How does this violate the   Open/Closed Principle ?
+ •   Refactor it so that new country - specific tax logic can be added
+ without modifying the existing class.
+Discussion
+ Thanks
+
+

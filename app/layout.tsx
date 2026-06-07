@@ -20,7 +20,7 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: "MOLD V2 — Mastery Protocol",
+  title: "Finalist — Mastery Protocol",
   description: "High-performance educational quiz and revision system. Master your subjects with Speedrun, Blitz, Hardcore, Survival, Practice, Flashcards, and Full Revision modes.",
   generator: "v0.dev",
 }
