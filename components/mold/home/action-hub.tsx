@@ -17,23 +17,23 @@ export function ActionHub({
   className,
 }: ActionHubProps) {
   const modeLabels: Record<GameModeId, string> = {
-    speedrun:       "LAUNCH SPEEDRUN PROTOCOL",
-    blitz:          "LAUNCH BLITZ INITIATIVE",
-    hardcore:       "LAUNCH HARDCORE TRIAL",
-    survival:       "LAUNCH SURVIVAL SECTOR",
-    practice:       "LAUNCH PRACTICE DRILL",
-    flashcards:     "LAUNCH FLASHCARD DRILL",
-    "full-revision": "LAUNCH FULL REVISION",
+    speedrun:       "START SPEEDRUN QUIZ",
+    blitz:          "START BLITZ QUIZ",
+    hardcore:       "START HARDCORE QUIZ",
+    survival:       "START SURVIVAL QUIZ",
+    practice:       "START PRACTICE QUIZ",
+    flashcards:     "START FLASHCARDS",
+    "full-revision": "START FULL REVIEW",
   }
 
   const modeDescriptions: Record<GameModeId, string> = {
-    speedrun:       "Complete all questions under strict countdown limits.",
-    blitz:          "Quick, daily rapid-fire question subsets.",
-    hardcore:       "Ultra-high difficulty parameters. Mastery level only.",
-    survival:       "Progressively narrowing countdowns per question.",
-    practice:       "Untimed category drilling with unlimited hints.",
-    flashcards:     "Direct recall training and term memorization.",
-    "full-revision": "Structured sequential exam emulation protocol.",
+    speedrun:       "Answer questions against a ticking clock to test your speed.",
+    blitz:          "Quick, rapid-fire daily review with random questions.",
+    hardcore:       "High-difficulty questions only to test your skills.",
+    survival:       "Outlast the shrinking timer that gets faster every few questions.",
+    practice:       "Relaxed and untimed study. Select a topic to focus on.",
+    flashcards:     "Flip cards to memorize key definitions and terms.",
+    "full-revision": "Go through all questions in their original order, like a real exam.",
   }
 
   return (
@@ -80,7 +80,7 @@ export function ActionHub({
             ? "border-border text-zinc-500"
             : "border-primary/20 text-primary group-hover:border-background/30 group-hover:text-background"
         )}>
-          INITIALIZE_SESSION →
+          START QUIZ →
         </span>
       </button>
     </div>

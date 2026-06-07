@@ -45,9 +45,9 @@ export function SideNavBar({
             <TerminalIcon className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-[#fecc17] font-bold">MOLD_OPERATOR</div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-[#fecc17] font-bold">STUDY PROFILE</div>
             <div className="font-mono text-[8px] text-zinc-500 uppercase tracking-tighter truncate">
-              SUBJECT_{subjectId.substring(0, 8).toUpperCase()}
+              ID: {subjectId.substring(0, 8).toUpperCase()}
             </div>
           </div>
         </div>
@@ -118,7 +118,7 @@ export function SideNavBar({
           onClick={onInitialize}
           className="w-full bg-[#131313] hover:bg-[var(--tw-hex-fecc17)]/5 text-primary hover:border-primary/60 border border-zinc-800 font-mono text-[10px] py-3.5 tracking-[0.2em] transition-all font-bold cursor-pointer hover-scale-premium"
         >
-          INIT_SESSION
+          START QUIZ
         </button>
       </div>
     </aside>

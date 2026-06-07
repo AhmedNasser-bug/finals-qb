@@ -70,7 +70,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         <div className="flex justify-between items-end">
           <div className="flex items-center">
             <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
-              SYSTEM_PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
+              PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
             </span>
             {streak > 0 && (
               <span className={cn(
@@ -91,7 +91,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             )}
           </div>
           <span className="font-mono text-[10px] tracking-[0.2em] text-[#4ae176] uppercase">
-            SYNC_STATUS: {accuracyPct >= 80 ? "OPTIMAL" : accuracyPct >= 50 ? "DEGRADED" : "CRITICAL"}
+            ACCURACY RATING: {accuracyPct >= 80 ? "EXCELLENT" : accuracyPct >= 50 ? "AVERAGE" : "LOW"}
           </span>
         </div>
         <div className="flex w-full gap-[2px]">
@@ -218,7 +218,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
               )} />
               <div>
-                <p className="font-mono text-[8px] text-muted-foreground leading-none mb-0.5 tracking-widest uppercase">STREAK_MAGNITUDE</p>
+                <p className="font-mono text-[8px] text-muted-foreground leading-none mb-0.5 tracking-widest uppercase">CURRENT STREAK</p>
                 <p className={cn(
                   "font-mono text-base font-black leading-none",
                   streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
@@ -233,7 +233,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           </div>
           {/* Lives — always shown, empty hearts when not survival */}
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[8px] text-muted-foreground uppercase mr-1">VITAL_SIGNS:</span>
+            <span className="font-mono text-[8px] text-muted-foreground uppercase mr-1">LIVES REMAINING:</span>
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
               return (
@@ -281,7 +281,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 <p className={cn(
                   "font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1",
                   isCritical ? "text-[#930013]" : "text-muted-foreground/80"
-                )}>TIME_REMAINING</p>
+                )}>TIME REMAINING</p>
                 <p className={cn(
                   "font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none",
                   isCritical ? "text-[#ffb4ab]" : "text-[var(--tw-hex-ffb4ab)]/70",
@@ -306,7 +306,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         {/* Right — session metadata + dots */}
         <div className="hidden md:flex flex-col items-end gap-0.5">
           <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest">
-            SESSION_ID: {mode.toUpperCase()}-MOLD
+            QUIZ MODE: {mode.toUpperCase()}
           </p>
           <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest">
             DIFFICULTY: {state.config?.difficulty?.toUpperCase() ?? "STANDARD"}

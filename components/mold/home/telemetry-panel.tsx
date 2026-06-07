@@ -23,10 +23,10 @@ export function TelemetryPanel() {
     <section className="bg-[#101115] border border-border p-6 rounded-md space-y-5 select-none">
       <div className="flex justify-between items-center select-none">
         <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-white/80">
-          PERFORMANCE_TELEMETRY
+          PERFORMANCE STATS
         </h2>
         <span className="text-primary text-xs font-mono font-bold tracking-widest bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">
-          SYS_FEED
+          STATS
         </span>
       </div>
       
@@ -118,8 +118,8 @@ export function TelemetryPanel() {
             {/* Custom speed calibration legend */}
             <div className="flex justify-between font-mono text-[8px] text-zinc-600 px-0.5 pt-0.5 select-none">
               <span>SLOWER (&gt;5s)</span>
-              <span>NOMINAL (2.5s)</span>
-              <span>RAPID (&lt;1s)</span>
+              <span>AVERAGE (2.5s)</span>
+              <span>FAST (&lt;1s)</span>
             </div>
           </div>
 

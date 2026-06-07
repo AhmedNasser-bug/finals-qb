@@ -28,7 +28,7 @@ export function ModeSelector({ selected, onSelect, onLaunch, className }: ModeSe
     <section className={cn("flex flex-col gap-4", className)}>
       <div className="flex items-center justify-between">
         <h2 className="text-xs font-mono tracking-widest text-muted-foreground uppercase">
-          Operational Mode
+          Choose Study Mode
         </h2>
       </div>
 
@@ -170,7 +170,7 @@ function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, a
         "font-mono text-[9px] uppercase tracking-widest border-t border-zinc-800/60 pt-2.5 w-full transition-all duration-200 font-bold flex items-center justify-between",
         isSelected ? "text-primary animate-pulse" : "text-zinc-500 group-hover:text-zinc-400"
       )}>
-        <span>{isSelected ? "⚡ CLICK AGAIN TO START NOW" : "SELECT REGIME"}</span>
+        <span>{isSelected ? "⚡ CLICK AGAIN TO START" : "SELECT MODE"}</span>
         <span>➔</span>
       </div>
     </button>

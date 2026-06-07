@@ -104,21 +104,21 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--tw-hex-4e4632)]/30 pb-8">
           <div className="flex flex-col gap-2 min-w-0 flex-1">
             <span className="font-mono text-xs tracking-[0.3em] text-[#4ae176] uppercase">
-              SESSION_COMPLETE // {mode} // {config.difficulty}
+              QUIZ COMPLETE // {mode} // {config.difficulty}
             </span>
             <h1 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter text-[#e5e2e1] uppercase break-words break-all">
-              DIAGNOSTIC_REPORT
+              QUIZ RESULTS
             </h1>
           </div>
           <div className="flex flex-col items-start md:items-end gap-1">
-            <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">FINAL_EVALUATION</span>
+            <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">FINAL GRADE</span>
             <div className="flex items-center gap-4">
               <span className="font-mono text-6xl md:text-7xl font-black leading-none drop-shadow-[0_0_20px_rgba(254,204,23,0.2)] grade-text-dynamic">
                 {grade}
               </span>
               <div className="flex flex-col">
                 <span className="font-mono text-xl text-[#e5e2e1] font-bold">{accuracyPct}%</span>
-                <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">SYNCHRONIZATION</span>
+                <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">ACCURACY</span>
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
         {/* ── Result header ── */}
         <section className="flex flex-col items-center gap-6">
           <span className="font-mono text-[10px] tracking-[0.4em] text-[#fecc17] uppercase">
-            SESSION_COMPLETE // EVALUATION_RESULT
+            QUIZ RESULTS
           </span>
 
           {/* Grade box */}
@@ -149,7 +149,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           <div className="w-full max-w-2xl space-y-2">
             <div className="flex justify-between items-end">
               <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
-                ACCURACY_COEFFICIENT
+                ACCURACY RATE
               </span>
               <span className="font-mono text-2xl font-black grade-text-dynamic">
                 {accuracyPct}%
@@ -200,28 +200,28 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
         <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-[var(--tw-hex-4e4632)]/10">
           <div className="flex flex-col">
             <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
-              SYSTEM_ACTION_READY
+              NEXT ACTION
             </span>
             <span className="font-sans text-sm font-medium text-[#e5e2e1]">
-              TERMINATE_OR_REITERATE?
+              Ready to continue?
             </span>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
               onClick={onReturnHome}
-              aria-label="Dump logs to return home"
-              title="Dump logs to return home"
+              aria-label="Return home"
+              title="Return home"
               className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
             >
-              DUMP_LOGS
+              RETURN TO HOME
             </button>
             <button
               onClick={onPlayAgain}
-              aria-label="Continue cycle to play again"
-              title="Continue cycle to play again"
+              aria-label="Play again"
+              title="Play again"
               className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded border-glow"
             >
-              CONTINUE_CYCLE
+              PLAY AGAIN
             </button>
           </div>
         </footer>

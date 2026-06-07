@@ -11,10 +11,60 @@
       "sourceType": "autoskills-registry",
       "computedHash": "1f566c2d9c3b50a784b05d08f6b08ebfeb31f038e4d4173f2d488484edb058a6"
     },
+    "clerk": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "fb1a2d626fa0506151f7fb635ef32727dc0552872b020588aeb1709d4bd2418d"
+    },
+    "clerk-backend-api": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "9fbc43a070268e24851697445a6e940065ef71bc02ba96cf27c8ec80aaf27da6"
+    },
+    "clerk-custom-ui": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "5f73332b05fd88c5f9b3c56dd92370a12a850059fba34ec0605e4506afaddc96"
+    },
+    "clerk-nextjs-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "69c34e157c9f0c4a231a6ece2e599f74b31a008005745ffcc9eb5a625e807698"
+    },
+    "clerk-orgs": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "079f9d185fab81265e15c5310a87a96e320fa482d17551cbc64027b5f8505060"
+    },
+    "clerk-react-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "456206a8bb6f71bb66225fd41844eb9c7f2ee00d58e2d4f39505dea40a8df4a4"
+    },
+    "clerk-setup": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "13ea4e20447ff8e72d8d43d87c043e2c7430379cb73fb4dbd488401b85d8c2a3"
+    },
+    "clerk-testing": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "889a8f63d333dbb09b81608d1dc240f1e32b12dd8e8a8f1e3e72323c69b41f60"
+    },
+    "clerk-webhooks": {
+      "source": "clerk/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "c766d7b021907e6b8f1e567b30d5a5d70fc313626ab0ce7a9c10fc31bf71aae7"
+    },
     "composition-patterns": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "autoskills-registry",
       "computedHash": "c124390cc3441844903ada94cb5820b23d922f2d0ad34e01e029e410197c8a32"
+    },
+    "deploy-to-vercel": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "698dfb0ec0cf3e8d97c3f181e13b37b3b8fbc872a4b031d812adb4193f66035e"
     },
     "frontend-design": {
       "source": "anthropics/skills",

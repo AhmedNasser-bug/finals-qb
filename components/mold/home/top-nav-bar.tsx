@@ -14,16 +14,16 @@ interface TopNavBarProps {
 }
 
 const GUIDANCE_TIPS = [
-  "USABILITY: Tap HINT to trigger Socratic nudges before revealing answers.",
-  "USABILITY: Use Flashcards mode to drill system terminology before starting MCQ drills.",
-  "USABILITY: Check your Session Stats grid on the dashboard to track peak learning streaks.",
-  "USABILITY: Capping runs at 50 ensures local cache performs at sub-millisecond efficiency.",
-  "RESEARCH: Spaced Repetition (Reddy et al.) optimizes intervals to double memory retention.",
-  "RESEARCH: Active Retrieval testing (An et al.) builds stronger mental schema than passive study.",
-  "RESEARCH: Modular micro-drills (Kaczmarek et al.) prevent cognitive load fatigue.",
-  "RESEARCH: Metacognitive failure mapping (reviewing errors) turns mistakes into active insights.",
+  "TIP: Tap HINT to get a helpful clue before checking the answer.",
+  "TIP: Use Flashcards mode to learn terms before taking multiple-choice quizzes.",
+  "TIP: Check your study statistics on the dashboard to track your best streaks.",
+  "TIP: Storing your latest 50 quizzes keeps the app running fast.",
+  "TIP: Spacing out your reviews helps you remember concepts twice as long.",
+  "TIP: Quizzing yourself builds stronger recall than just reading notes.",
+  "TIP: Short, focused quizzes help prevent study burnout.",
+  "TIP: Reviewing your incorrect answers helps you learn from mistakes.",
   "PROJECT: Source files and dev instructions are hosted at github.com/AhmedNasser-bug/finals-qb",
-  "PROJECT: Offline-first architecture guarantees 100% data privacy with zero cloud synchronization."
+  "TIP: All your study progress is saved privately on your device."
 ]
 
 export function TopNavBar({
@@ -52,7 +52,7 @@ export function TopNavBar({
           <ProtocolIcon className="w-5 h-5 text-primary shrink-0" />
           <div>
             <p className="text-[10px] font-mono font-bold tracking-widest text-[#fecc17] uppercase leading-none">FINALIST</p>
-            <p className="text-[9px] font-mono text-muted-foreground tracking-wider leading-none mt-1">MASTERY PROTOCOL</p>
+            <p className="text-[9px] font-mono text-muted-foreground tracking-wider leading-none mt-1">STUDY SYSTEM</p>
           </div>
         </div>
 
@@ -69,7 +69,7 @@ export function TopNavBar({
             <div className="flex items-center gap-2 shrink-0">
               <span className="w-2 h-2 bg-[#fecc17] rounded-full animate-pulse shadow-[0_0_8px_rgba(254,204,23,0.4)]" />
               <span className="font-mono text-[9px] tracking-widest text-[#fecc17] uppercase font-bold bg-[#fecc17]/10 border border-[#fecc17]/40 px-2 py-0.5 transition-colors group-hover:bg-[#fecc17]/25 group-hover:border-[#fecc17]">
-                GUIDE_FEED
+                STUDY TIPS
               </span>
             </div>
             <p className="font-mono text-[10px] lg:text-xs text-[#e5e2e1] group-hover:text-[#fecc17] font-semibold tracking-wide transition-colors leading-relaxed truncate">

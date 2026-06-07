@@ -57,9 +57,9 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
             <span>Return to core</span>
           </button>
           <h1 className="text-3xl font-display font-black tracking-tight text-white flex items-center gap-3">
-            PSYCHOMETRIC_TELEMETRY <span className="font-mono text-xs text-primary font-bold px-2 py-0.5 rounded bg-primary/5 border border-primary/20">LIVE</span>
+            STUDY STATISTICS <span className="font-mono text-xs text-primary font-bold px-2 py-0.5 rounded bg-primary/5 border border-primary/20">LIVE</span>
           </h1>
-          <p className="text-xs text-zinc-400 font-mono mt-1">REAL-TIME ACADEMIC PROGRESS AND GAMIFIED DRILL TELEMETRY LOGS.</p>
+          <p className="text-xs text-zinc-400 font-mono mt-1">REAL-TIME ACADEMIC PROGRESS AND STUDY STATS.</p>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
             <Trophy className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">REVISIONS_COMPLETED</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">QUIZZES COMPLETED</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
             {stats.totalRuns}
           </p>
@@ -86,7 +86,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
             <Target className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">AVERAGE_ACCURACY</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">AVERAGE ACCURACY</p>
           <div className="flex items-baseline gap-3 mt-2">
             <span className="text-3xl font-mono font-bold text-white tabular-nums">
               {stats.averageScore}%
@@ -105,7 +105,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
             <Zap className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">PEAK_CORRECT_STREAK</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">BEST ANSWER STREAK</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
             ×{peakQuestionStreak}
           </p>
@@ -117,7 +117,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
             <Clock className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">MEAN_RESPONSE_LATENCY</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">AVERAGE ANSWER SPEED</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
             {formatTime(Math.round((stats.averageResponseTimeMs || 0) / 1000))}
           </p>
@@ -135,7 +135,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         <div className="lg:col-span-5 space-y-4">
           <div className="border-b border-zinc-800 pb-2">
             <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-              01 // FLAME ASCENT PATHWAY
+              01 // STUDY STREAK PROGRESS
             </h2>
           </div>
           <StreakAscent 
@@ -152,7 +152,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <div className="space-y-4">
             <div className="border-b border-zinc-800 pb-2">
               <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-                02 // DAILY REVISION OBJECTIVES
+                02 // DAILY STUDY GOALS
               </h2>
             </div>
             
@@ -199,7 +199,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <div className="space-y-4">
             <div className="border-b border-zinc-800 pb-2">
               <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-                03 // LONG-TERM OPERATIONAL MILESTONES
+                03 // LONG-TERM MILESTONES
               </h2>
             </div>
 
@@ -260,7 +260,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <div className="space-y-4 pt-4">
             <div className="border-b border-zinc-800 pb-2">
               <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
-                04 // LOCAL OPERATIONAL HYGIENE
+                04 // DATA SETTINGS
               </h2>
             </div>
             
@@ -268,10 +268,10 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
               <div className="space-y-1">
                 <p className="font-mono text-xs font-bold text-white flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-destructive" />
-                  <span>RESET TELEMETRY RECORDINGS</span>
+                  <span>RESET ALL STUDY DATA</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 max-w-md">
-                  This actions wipes all completed run records, daily study streaks, in-quiz correctness peak caches, and telemetry indices. Action is irreversible.
+                  This action deletes all your completed quizzes, study streaks, best streak records, and progress stats. This cannot be undone.
                 </p>
               </div>
 
@@ -281,7 +281,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   aria-label="Wipe all local telemetry and run data"
                   className="bg-transparent hover:bg-destructive/10 text-destructive hover:text-red-400 border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
                 >
-                   WIPE_ALL_DATA
+                   RESET_DATA
                 </button>
               ) : (
                 <div className="flex items-center gap-2 shrink-0">
