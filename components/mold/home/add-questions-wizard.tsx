@@ -6,6 +6,15 @@ import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
 import { formatLabel, type FullSubjectData } from "@/lib/mold-types"
 
+import {
+  Step1ContentType,
+  Step2StyleBias,
+  Step3CategoryFocus,
+  Step4CopyPrompt,
+  Step5PasteMerge,
+  type WizardStepProps
+} from "./add-questions-wizard-components"
+
 interface AddQuestionsWizardProps {
   activeSubject: FullSubjectData
   onMerge: (mergedSubject: FullSubjectData) => void
@@ -102,59 +111,58 @@ Return ONLY a raw JSON object matching the following structure. Do not wrap it i
 {
   ${contentType === "questions" || contentType === "both" ? `"questions": [
     {
-      "id": "gen-q1",
-      "type": "MCQ" or "TrueFalse",
-      "difficulty": "Easy" or "Medium" or "Hard",
-      "category": "category-slug-to-use",
-      "question": "Question text (HTML tags like <b>, <code>, <pre> are supported)",
+      "id": "q-gen-unique-id",
+      "category": "target-category-slug",
+      "type": "multiple-choice", // or "true-false"
+      "question": "The actual question text. Can include basic HTML like <code> or <pre> or <br/>.",
       "options": [
-        { "label": "A", "text": "Option A" },
-        { "label": "B", "text": "Option B" },
-        { "label": "C", "text": "Option C" },
-        { "label": "D", "text": "Option D" }
-      ],
-      "answer": "A",
-      "explanation": "LearnLM explanation.",
-      "hint": "Socratic nudge."
+        { "id": "opt-1", "text": "Option A" },
+        { "id": "opt-2", "text": "Option B" },
+        { "id": "opt-3", "text": "Option C" },
+        { "id": "opt-4", "text": "Option D" }
+      ], // For true-false, strictly use exactly two options with text "True" and "False".
+      "answer": "opt-2", // MUST exactly match one of the option IDs above
+      "explanation": "Detailed explanation of why this is correct and others are not.",
+      "hint": "A guiding socratic hint.",
+      "mermaidDiagram": "sequenceDiagram\\n A->>B: optional diagram" // Only include if relevant. Omit field or set to null if not needed.
     }
   ],` : ""}
   ${contentType === "flashcards" || contentType === "both" ? `"flashcards": [
     {
-      "id": "gen-f1",
-      "term": "Concept Term",
-      "definition": "Clear, concise definition",
-      "category": "category-slug-to-use"
+      "id": "fc-gen-unique-id",
+      "category": "target-category-slug",
+      "front": "Term or Concept",
+      "back": "Definition or explanation"
     }
   ],` : ""}
   "terminology": {
-    "category-slug-to-use": [
-      { "term": "Concept Term", "definition": "Clear, concise definition" }
+    "target-category-slug": [
+      { "term": "Concept", "definition": "Brief definition" }
     ]
   }
-}
+}`
+  }, [
+    activeSubject.name,
+    categoryFocus,
+    contentType,
+    existingCategories,
+    flashcardCount,
+    newCategoryName,
+    questionCount,
+    selectedCategory,
+    styleBias,
+  ])
 
-CRITICAL RULES:
-- Use unique, kebab-case IDs starting with "gen-q-" or "gen-fc-" (e.g., "gen-q-1", "gen-fc-1").
-- Terminology must contain definitions for all terms generated in flashcards or questions under their respective category slug.
-- Double-check that all JSON formatting is correct. Escape backslashes as \\\\ (e.g. \\\\theta or \\\\n). Do not use unescaped backslashes inside JSON strings.
-- Produce compact, minified, or single-line JSON if possible to save space.
-`
-  }, [contentType, questionCount, flashcardCount, styleBias, categoryFocus, selectedCategory, newCategoryName, activeSubject, existingCategories])
+  // --- Handlers ---
 
-  // --- Copy Prompt to Clipboard ---
-  const handleCopyPrompt = async () => {
-    try {
-      await navigator.clipboard.writeText(compiledPrompt)
-      setPromptCopied(true)
-      setTimeout(() => setPromptCopied(false), 2000)
-    } catch (e) {
-      // ignore
-    }
-  }
+  const debounceTimer = React.useRef<NodeJS.Timeout | null>(null)
 
-  // --- Validate Pasted JSON ---
-  const validateJsonInput = useCallback((raw: string) => {
+  const handleJsonChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const raw = e.target.value
+    setJsonInput(raw)
+
     if (!raw.trim()) {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
       setValidationState("idle")
       setValidationResult(null)
       setParsedPreview(null)
@@ -162,41 +170,63 @@ CRITICAL RULES:
     }
 
     setValidationState("validating")
-    
-    // Defer parsing slightly to keep UI responsive
-    requestAnimationFrame(() => {
-      const parsed = parseSubjectJson(raw)
-      if (parsed.parseError) {
-        setValidationResult({ valid: false, errors: [parsed.parseError], warnings: [] })
+
+    if (debounceTimer.current) clearTimeout(debounceTimer.current)
+
+    // Debounce validation slightly for typing smoothness
+    debounceTimer.current = setTimeout(() => {
+      // 1. Attempt to parse JSON structure with repair heuristics
+      const parseResult = parseSubjectJson(raw)
+
+      if (parseResult.parseError || !parseResult.data) {
         setValidationState("error")
+        setValidationResult({
+          valid: false,
+          errors: [parseResult.parseError || "Catastrophic JSON parsing failure."],
+          warnings: parseResult.fixedWarnings,
+          subject: null,
+        })
         setParsedPreview(null)
         return
       }
 
-      const validation = validateSubjectData(parsed.data)
-      if (parsed.fixedWarnings && parsed.fixedWarnings.length > 0) {
-        validation.warnings.push(...parsed.fixedWarnings)
+      // 2. Wrap it in a faux-subject structure to pass through the main validator
+      const mockSubjectToValidate = {
+        id: "preview-subject",
+        name: "Preview Subject",
+        description: "Preview Description",
+        questions: parseResult.data.questions || [],
+        flashcards: parseResult.data.flashcards || [],
+        terminology: parseResult.data.terminology || {},
       }
 
-      setValidationResult(validation)
-      setParsedPreview(validation.subject || (parsed.data as FullSubjectData))
-      setValidationState(validation.valid ? "valid" : "error")
-    })
+      // 3. Validate logical structure (schema, IDs, references)
+      const result = validateSubjectData(mockSubjectToValidate)
+
+      // Combine parse warnings with validation warnings
+      const finalWarnings = [...parseResult.fixedWarnings, ...result.warnings]
+
+      setValidationResult({
+        ...result,
+        warnings: finalWarnings
+      })
+
+      if (result.valid && result.subject) {
+        setValidationState("valid")
+        setParsedPreview(result.subject)
+      } else {
+        setValidationState("error")
+        setParsedPreview(null)
+      }
+    }, 400)
   }, [])
 
-  const handleJsonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    setJsonInput(value)
-    validateJsonInput(value)
-  }
-
-  // --- Merge Action ---
   const handleConfirmMerge = () => {
     if (!parsedPreview) return
 
-    const existingQuestions = [...activeSubject.questions]
-    const existingFlashcards = [...(activeSubject.flashcards || [])]
-    const existingTerminology = { ...(activeSubject.terminology || {}) }
+    const existingQuestions = activeSubject.questions || []
+    const existingFlashcards = activeSubject.flashcards || []
+    const existingTerminology = JSON.parse(JSON.stringify(activeSubject.terminology || {}))
 
     // Filter out the default placeholder question if questions weren't requested
     const incomingQuestions = parsedPreview.questions.filter(
@@ -292,6 +322,24 @@ CRITICAL RULES:
     return false
   }, [step, categoryFocus, newCategoryName, parsedPreview, validationState])
 
+  const stepProps: WizardStepProps = {
+    activeSubject,
+    step,
+    contentType, setContentType,
+    questionCount, setQuestionCount,
+    flashcardCount, setFlashcardCount,
+    styleBias, setStyleBias,
+    categoryFocus, setCategoryFocus,
+    existingCategories,
+    selectedCategory, setSelectedCategory,
+    newCategoryName, setNewCategoryName,
+    compiledPrompt,
+    promptCopied, setPromptCopied,
+    jsonInput, setJsonInput,
+    validationState, validationResult,
+    parsedPreview
+  }
+
   return (
     <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
       <div className="w-full max-w-5xl h-[88vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
@@ -299,24 +347,24 @@ CRITICAL RULES:
         {/* Modal Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
-            <h2 className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary animate-pulse" aria-hidden="true" />
-              <span>Add Questions to Subject Wizard</span>
+            <h2 className="text-xl font-bold font-mono text-white tracking-tight flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <span>AI Question Generator Wizard</span>
             </h2>
-            <p className="text-[10px] font-mono text-zinc-500 mt-0.5 tracking-wider uppercase">
-              Step {step} of 5 — {steps[step - 1].label}
+            <p className="text-xs text-zinc-400 mt-1.5 font-sans">
+              Inject dynamically generated, curriculum-aligned questions and flashcards into <span className="text-primary font-bold">{activeSubject.name}</span>.
             </p>
           </div>
           <button
             onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
-            aria-label="Close wizard"
+            className="p-2 text-zinc-500 hover:text-white transition-colors bg-zinc-900/50 hover:bg-zinc-800 rounded focus-visible:outline-none"
+            aria-label="Close Wizard"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Progress Breadcrumbs */}
+        {/* Progress Tracker */}
         <div className="px-8 py-4 border-b border-border/50 bg-[#0d0e11] flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-4 w-full justify-between sm:justify-start">
             {steps.map((s, idx) => {
@@ -325,32 +373,25 @@ CRITICAL RULES:
               return (
                 <React.Fragment key={s.num}>
                   <div className="flex items-center gap-2">
+                    <div
+                      className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-mono transition-all duration-300",
+                        isActive ? "bg-primary text-black scale-110 shadow-[0_0_10px_rgba(var(--primary),0.4)]" :
+                        isPast ? "bg-primary/20 text-primary" : "bg-zinc-900 text-zinc-600 border border-border"
+                      )}
+                    >
+                      {isPast ? <Check className="w-3 h-3" /> : s.num}
+                    </div>
                     <span className={cn(
-                      "w-6 h-6 rounded-full flex items-center justify-center font-mono text-[10px] font-bold border transition-colors",
-                      isActive
-                        ? "border-primary bg-primary text-black border-glow"
-                        : isPast
-                        ? "border-zinc-500 bg-zinc-800 text-zinc-200"
-                        : "border-border text-zinc-600 bg-transparent"
-                    )}>
-                      {s.num}
-                    </span>
-                    <span className={cn(
-                      "text-[9px] font-mono uppercase hidden md:inline-block tracking-wider",
-                      isActive
-                        ? "text-white font-bold"
-                        : isPast
-                        ? "text-zinc-400 font-semibold"
-                        : "text-zinc-600 font-medium"
+                      "hidden sm:inline-block text-[10px] font-mono tracking-widest uppercase transition-colors duration-300",
+                      isActive ? "text-primary font-bold" :
+                      isPast ? "text-zinc-300" : "text-zinc-600"
                     )}>
                       {s.label}
                     </span>
                   </div>
                   {idx < steps.length - 1 && (
-                    <span className={cn(
-                      "text-[10px] font-mono select-none hidden md:inline-block",
-                      isPast ? "text-zinc-500" : "text-zinc-800"
-                    )}>➔</span>
+                    <div className="hidden sm:block w-8 md:w-16 h-px bg-zinc-800" />
                   )}
                 </React.Fragment>
               )
@@ -362,494 +403,19 @@ CRITICAL RULES:
         <div className="flex-1 px-8 py-6 overflow-y-auto min-h-0 bg-[#0a0b0d]">
 
           {/* STEP 1: Content Type & Quantity */}
-          {step === 1 && (
-            <div className="space-y-6 animate-slide-up">
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
-                  STEP 01 // CONTENT_TYPE_SELECTION
-                </span>
-                <h3 className="text-lg font-bold font-mono text-white tracking-tight">
-                  Choose Generated Material Type & Volume
-                </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                  Select the types of learning materials you would like the AI to generate and configure their quantities.
-                </p>
-              </div>
-
-              {/* Content Type Selector */}
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { id: "questions", name: "Questions Only", desc: "MCQ & TrueFalse sets" },
-                  { id: "flashcards", name: "Flashcards Only", desc: "Key concept definitions" },
-                  { id: "both", name: "Both Sets", desc: "Unified study collection" },
-                ].map((type) => {
-                  const isSelected = contentType === type.id
-                  return (
-                    <button
-                      key={type.id}
-                      type="button"
-                      onClick={() => setContentType(type.id as any)}
-                      className={cn(
-                        "flex flex-col text-left p-4 border transition-all duration-150 cursor-pointer min-h-[90px] justify-between rounded-none",
-                        isSelected
-                          ? "border-primary bg-primary/5 text-foreground border-glow"
-                          : "border-border bg-[#101115] text-zinc-400 hover:text-white"
-                      )}
-                    >
-                      <span className={cn("text-xs font-mono font-bold uppercase tracking-wide", isSelected ? "text-primary" : "text-white")}>
-                        {type.name}
-                      </span>
-                      <span className="text-[10px] leading-snug mt-1 font-sans text-zinc-500">
-                        {type.desc}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Quantity Selectors */}
-              <div className="space-y-4 pt-4 border-t border-zinc-900">
-                {(contentType === "questions" || contentType === "both") && (
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-border/60 bg-[#101115] p-5">
-                    <div className="flex flex-col">
-                      <label htmlFor="question-count-input" className="text-xs font-mono font-bold tracking-wider text-white uppercase">
-                        Questions Count
-                      </label>
-                      <span className="text-[10px] text-zinc-500 mt-0.5 font-mono uppercase">
-                        Range: 5 — 50 items
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="range"
-                        min={5}
-                        max={50}
-                        step={5}
-                        value={questionCount}
-                        onChange={(e) => setQuestionCount(parseInt(e.target.value) || 10)}
-                        className="w-40 accent-primary cursor-pointer"
-                      />
-                      <input
-                        id="question-count-input"
-                        type="number"
-                        min={5}
-                        max={50}
-                        value={questionCount}
-                        onChange={(e) => setQuestionCount(Math.min(50, Math.max(5, parseInt(e.target.value) || 0)))}
-                        className="w-16 bg-[#07080a] border border-border rounded-none py-1.5 text-center text-sm font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {(contentType === "flashcards" || contentType === "both") && (
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-border/60 bg-[#101115] p-5">
-                    <div className="flex flex-col">
-                      <label htmlFor="flashcard-count-input" className="text-xs font-mono font-bold tracking-wider text-white uppercase">
-                        Flashcards Count
-                      </label>
-                      <span className="text-[10px] text-zinc-500 mt-0.5 font-mono uppercase">
-                        Range: 5 — 50 items
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="range"
-                        min={5}
-                        max={50}
-                        step={5}
-                        value={flashcardCount}
-                        onChange={(e) => setFlashcardCount(parseInt(e.target.value) || 10)}
-                        className="w-40 accent-primary cursor-pointer"
-                      />
-                      <input
-                        id="flashcard-count-input"
-                        type="number"
-                        min={5}
-                        max={50}
-                        value={flashcardCount}
-                        onChange={(e) => setFlashcardCount(Math.min(50, Math.max(5, parseInt(e.target.value) || 0)))}
-                        className="w-16 bg-[#07080a] border border-border rounded-none py-1.5 text-center text-sm font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          {step === 1 && <Step1ContentType {...stepProps} />}
 
           {/* STEP 2: Pedagogical Style */}
-          {step === 2 && (
-            <div className="space-y-6 animate-slide-up">
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
-                  STEP 02 // STYLE_PROFILE_BIAS
-                </span>
-                <h3 className="text-lg font-bold font-mono text-white tracking-tight">
-                  Calibrate Pedagogical Output Bias
-                </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                  Select the structural flavor of the questions. Technical profiles generate code elements, trace data, and visual state diagrams, while theoretical sets focus on core logic and terms.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Theoretical */}
-                <button
-                  type="button"
-                  onClick={() => setStyleBias("theoretical")}
-                  className={cn(
-                    "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
-                    styleBias === "theoretical"
-                      ? "border-[#4ae176] bg-[#4ae176]/5 border-glow-success"
-                      : "border-border bg-[#101115] text-zinc-400 hover:text-white"
-                  )}
-                >
-                  <div className="space-y-1.5">
-                    <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">BIAS: THEORETICAL</span>
-                    <h4 className={cn("text-sm font-bold font-mono tracking-tight", styleBias === "theoretical" ? "text-[#4ae176]" : "text-white")}>
-                      Theoretical & Conceptual
-                    </h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal font-sans">
-                      Ideal for definitions, logical relationships, historical context, and explaining "how" and "why" through explanatory prose.
-                    </p>
-                  </div>
-                  <span className="text-[9px] font-mono tracking-widest uppercase font-bold block border-t border-border/30 pt-2 text-[#4ae176]">
-                    {styleBias === "theoretical" ? "✓ SELECTED" : "SELECT"}
-                  </span>
-                </button>
-
-                {/* Technical */}
-                <button
-                  type="button"
-                  onClick={() => setStyleBias("technical")}
-                  className={cn(
-                    "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
-                    styleBias === "technical"
-                      ? "border-primary bg-primary/5 border-glow"
-                      : "border-border bg-[#101115] text-zinc-400 hover:text-white"
-                  )}
-                >
-                  <div className="space-y-1.5">
-                    <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">BIAS: ANALYTICAL_CODE</span>
-                    <h4 className={cn("text-sm font-bold font-mono tracking-tight", styleBias === "technical" ? "text-primary" : "text-white")}>
-                      Technical & Applied Code
-                    </h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal font-sans">
-                      Instructs the AI to embed programming syntax, HTML trace tables, calculations, and Mermaid flowcharts or sequence diagrams.
-                    </p>
-                  </div>
-                  <span className="text-[9px] font-mono tracking-widest uppercase font-bold block border-t border-border/30 pt-2 text-primary">
-                    {styleBias === "technical" ? "✓ SELECTED" : "SELECT"}
-                  </span>
-                </button>
-
-                {/* Balanced */}
-                <button
-                  type="button"
-                  onClick={() => setStyleBias("balanced")}
-                  className={cn(
-                    "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
-                    styleBias === "balanced"
-                      ? "border-primary bg-primary/5 border-glow"
-                      : "border-border bg-[#101115] text-zinc-400 hover:text-white"
-                  )}
-                >
-                  <div className="space-y-1.5">
-                    <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">BIAS: BALANCED_MIX</span>
-                    <h4 className={cn("text-sm font-bold font-mono tracking-tight", styleBias === "balanced" ? "text-primary" : "text-white")}>
-                      Balanced Distribution
-                    </h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal font-sans">
-                      A uniform mixture of algorithmic application, code blocks, visual flowcharts, and theoretical/prose concepts.
-                    </p>
-                  </div>
-                  <span className="text-[9px] font-mono tracking-widest uppercase font-bold block border-t border-border/30 pt-2 text-primary">
-                    {styleBias === "balanced" ? "✓ SELECTED" : "SELECT"}
-                  </span>
-                </button>
-              </div>
-            </div>
-          )}
+          {step === 2 && <Step2StyleBias {...stepProps} />}
 
           {/* STEP 3: Category Focus */}
-          {step === 3 && (
-            <div className="space-y-6 animate-slide-up">
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
-                  STEP 03 // CATEGORY_TARGETING
-                </span>
-                <h3 className="text-lg font-bold font-mono text-white tracking-tight">
-                  Choose Category Targeting Profile
-                </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                  Choose where the new items belong. You can target all existing categories, target a specific existing one, or create a brand new category.
-                </p>
-              </div>
-
-              {/* Category Focus Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { id: "all", name: "All Categories", desc: "Distribute generated items across current categories" },
-                  { id: "existing", name: "Existing Category", desc: "Focus strictly on a single category selected below" },
-                  { id: "new", name: "New Category", desc: "Create a brand new category slug and display name" },
-                ].map((focus) => {
-                  const isSelected = categoryFocus === focus.id
-                  return (
-                    <button
-                      key={focus.id}
-                      type="button"
-                      onClick={() => setCategoryFocus(focus.id as any)}
-                      className={cn(
-                        "p-5 border text-left flex flex-col justify-between gap-3 transition-all duration-150 cursor-pointer rounded-none min-h-[120px]",
-                        isSelected
-                          ? "border-primary bg-primary/5 text-foreground border-glow"
-                          : "border-border bg-[#101115] text-zinc-400 hover:text-white"
-                      )}
-                    >
-                      <span className={cn("text-xs font-mono font-bold uppercase tracking-wide", isSelected ? "text-primary" : "text-white")}>
-                        {focus.name}
-                      </span>
-                      <span className="text-[10px] leading-snug font-sans text-zinc-500">
-                        {focus.desc}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Conditional Inputs */}
-              <div className="pt-4 border-t border-zinc-900">
-                {categoryFocus === "existing" && (
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="existing-category-select" className="text-xs font-mono font-bold tracking-wider text-white uppercase">
-                      Select Target Existing Category
-                    </label>
-                    {existingCategories.length > 0 ? (
-                      <select
-                        id="existing-category-select"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary min-h-[40px] cursor-pointer"
-                      >
-                        {existingCategories.map((cat) => (
-                          <option key={cat} value={cat}>
-                            {formatLabel(cat)} ({cat})
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <p className="text-xs font-mono text-zinc-600 uppercase">
-                        No existing categories found in this subject.
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {categoryFocus === "new" && (
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="new-category-input" className="text-xs font-mono font-bold tracking-wider text-white uppercase flex items-center justify-between">
-                      <span>Enter New Category Name</span>
-                      <span className="text-[10px] text-primary font-mono font-normal">REQUIRED</span>
-                    </label>
-                    <input
-                      id="new-category-input"
-                      type="text"
-                      value={newCategoryName}
-                      onChange={(e) => setNewCategoryName(e.target.value)}
-                      placeholder="E.g., Lexical Analysis, Socratic Dialogues, Heart Anatomy..."
-                      className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary min-h-[40px]"
-                      autoComplete="off"
-                    />
-                    {newCategoryName.trim() && (
-                      <p className="text-[10px] font-mono text-zinc-500 uppercase mt-1">
-                        Slug mapping: {newCategoryName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {categoryFocus === "all" && (
-                  <div className="p-4 bg-zinc-900/40 border border-border/50 text-xs font-mono text-zinc-400">
-                    <p className="font-bold text-white uppercase mb-1">Target Categories Context:</p>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {existingCategories.map((cat) => (
-                        <span key={cat} className="px-2 py-0.5 bg-zinc-800 text-zinc-300 text-[10px] border border-zinc-700/50">
-                          {formatLabel(cat)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          {step === 3 && <Step3CategoryFocus {...stepProps} />}
 
           {/* STEP 4: Copy Prompt */}
-          {step === 4 && (
-            <div className="space-y-6 animate-slide-up">
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
-                  STEP 04 // PROMPT_GENERATION
-                </span>
-                <h3 className="text-lg font-bold font-mono text-white tracking-tight">
-                  Generate & Copy Socratic AI Prompt
-                </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                  Below is the dynamically constructed prompt guiding the AI to output valid, structured questions that match your choices. Copy this prompt and paste it into Gemini, Claude, or ChatGPT.
-                </p>
-              </div>
-
-              <div className="border border-border rounded bg-[#101115] overflow-hidden">
-                <div className="p-4 bg-black/40 border-b border-border flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-semibold flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-primary" />
-                    <span>SYSTEM PROMPT INSTRUCTION BUNDLE</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleCopyPrompt}
-                    className={cn(
-                      "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer flex items-center gap-1.5",
-                      promptCopied
-                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
-                        : "border-primary bg-primary/5 text-primary hover:bg-primary/10"
-                    )}
-                  >
-                    {promptCopied ? (
-                      <>
-                        <Check className="w-3 h-3" />
-                        <span>COPIED</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3 h-3" />
-                        <span>COPY PROMPT</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-                <textarea
-                  readOnly
-                  value={compiledPrompt}
-                  aria-label="Compiled AI Prompt"
-                  className="w-full bg-[#07080a] border-0 font-mono text-[11px] leading-relaxed p-4 text-zinc-400 focus:outline-none resize-none h-64 cursor-default"
-                />
-              </div>
-
-              <div className="p-4 border border-primary/20 bg-primary/5 rounded-none flex items-start gap-3">
-                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                <div className="text-xs leading-relaxed font-sans text-zinc-300">
-                  <span className="font-bold text-white uppercase block">Next Steps:</span>
-                  <ol className="list-decimal list-inside space-y-1 mt-1 text-zinc-400">
-                    <li>Copy the prompt above.</li>
-                    <li>Paste it into your favorite LLM (Claude-3.5-Sonnet or Gemini-1.5-Pro recommended).</li>
-                    <li>Wait for the LLM to output the raw JSON block.</li>
-                    <li>Copy the JSON and click <b>CONTINUE</b> to paste and merge.</li>
-                  </ol>
-                </div>
-              </div>
-            </div>
-          )}
+          {step === 4 && <Step4CopyPrompt {...stepProps} />}
 
           {/* STEP 5: Paste & Merge */}
-          {step === 5 && (
-            <div className="space-y-6 animate-slide-up">
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
-                  STEP 05 // PASTE_AND_MERGE_DATA
-                </span>
-                <h3 className="text-lg font-bold font-mono text-white tracking-tight">
-                  Paste & Validate AI Output
-                </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                  Paste the generated JSON block here. We will validate it, automatically repair syntax/escape flaws, and preview the parsed questions and flashcards before merging.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="ai-json-input" className="text-xs font-mono font-bold tracking-wider text-zinc-400 uppercase">
-                  Paste AI Generated JSON
-                </label>
-                <textarea
-                  id="ai-json-input"
-                  value={jsonInput}
-                  onChange={handleJsonChange}
-                  placeholder="Paste your JSON here (e.g. { 'questions': [ ... ] })"
-                  className={cn(
-                    "w-full bg-[#07080a] border px-4 py-3 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-visible:outline-none transition-all min-h-[160px] resize-y",
-                    validationState === "valid" ? "border-emerald-500/50 focus-visible:ring-1 focus-visible:ring-emerald-500" :
-                    validationState === "error" ? "border-red-500/50 focus-visible:ring-1 focus-visible:ring-red-500" : "border-border focus-visible:ring-1 focus-visible:ring-primary"
-                  )}
-                />
-              </div>
-
-              {/* Validation FeedbackHUD */}
-              {validationState !== "idle" && (
-                <div className="border border-border bg-[#101115] p-5 rounded space-y-4">
-                  <div className="flex items-center gap-3">
-                    <span className={cn(
-                      "w-2.5 h-2.5 rounded-full shrink-0",
-                      validationState === "validating" ? "bg-primary animate-pulse" :
-                      validationState === "valid" ? "bg-emerald-500" : "bg-red-500"
-                    )} />
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-                      {validationState === "validating" ? "Validating data..." :
-                       validationState === "valid" ? "Data Completely Validated" : "Validation Errors Detected"}
-                    </span>
-                  </div>
-
-                  {validationResult && (
-                    <div className="text-xs font-sans space-y-2 leading-relaxed">
-                      {/* Errors list */}
-                      {validationResult.errors.length > 0 && (
-                        <div className="text-red-400 font-mono text-[11px] space-y-1 bg-red-950/20 border border-red-500/10 p-3">
-                          <p className="font-bold uppercase mb-1">Errors ({validationResult.errors.length}):</p>
-                          {validationResult.errors.map((err, idx) => (
-                            <p key={idx}>• {err}</p>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Warnings list */}
-                      {validationResult.warnings.length > 0 && (
-                        <div className="text-amber-400 font-mono text-[11px] space-y-1 bg-amber-950/20 border border-amber-500/10 p-3">
-                          <p className="font-bold uppercase mb-1">Auto-Fix Warnings ({validationResult.warnings.length}):</p>
-                          {validationResult.warnings.map((warn, idx) => (
-                            <p key={idx}>• {warn}</p>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Successful preview stats */}
-                      {validationState === "valid" && parsedPreview && (
-                        <div className="grid grid-cols-3 gap-4 bg-zinc-950/50 p-4 border border-zinc-900 text-zinc-300 font-mono text-[11px]">
-                          <div>
-                            <span className="text-zinc-500 block uppercase">Parsed Questions:</span>
-                            <span className="text-lg font-bold text-white">
-                              {parsedPreview.questions.filter(q => q.id !== "q-default-1").length}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-zinc-500 block uppercase">Parsed Flashcards:</span>
-                            <span className="text-lg font-bold text-white">
-                              {parsedPreview.flashcards?.length ?? 0}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-zinc-500 block uppercase">Target Categories:</span>
-                            <span className="text-xs font-bold text-white truncate block">
-                              {Array.from(new Set(parsedPreview.questions.filter(q => q.id !== "q-default-1").map(q => q.category))).map(cat => formatLabel(cat)).join(", ") || "—"}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+          {step === 5 && <Step5PasteMerge {...stepProps} handleJsonChange={handleJsonChange} />}
 
         </div>
 
