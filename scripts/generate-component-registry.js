@@ -21,8 +21,7 @@ function scanDirectory(dir, fileList = []) {
 
 function extractInterface(content, componentName) {
   // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
+  const interfaceMatch = content.match(/(?:interface\s+\w+|type\s+\w+\s*=)\s*\{([\s\S]*?)\n\}/);
   if (interfaceMatch) {
     return interfaceMatch[1].trim();
   }
