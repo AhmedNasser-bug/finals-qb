@@ -8,7 +8,8 @@ import {
   Plus,
   BarChart3,
   Sparkles,
-  Download
+  Download,
+  FileText
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -25,6 +26,7 @@ interface SideNavBarProps {
   onAddQuestions: () => void
   onInitialize: () => void
   onDownloadHtml: () => void
+  onDownloadPdf: () => void
 }
 
 export function SideNavBar({
@@ -39,6 +41,7 @@ export function SideNavBar({
   onAddQuestions,
   onInitialize,
   onDownloadHtml,
+  onDownloadPdf,
 }: SideNavBarProps) {
   return (
     <aside className="hidden md:flex flex-col gap-2 p-4 w-64 h-[calc(100vh-64px)] bg-[#1c1b1b] border-r border-border fixed left-0 top-16 z-40 select-none">
@@ -119,6 +122,12 @@ export function SideNavBar({
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
           <Download className="w-3.5 h-3.5" /> <span>Download Q&A Sheet</span>
+        </button>
+        <button 
+          onClick={onDownloadPdf}
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+        >
+          <FileText className="w-3.5 h-3.5 text-primary" /> <span>Download PDF Sheet</span>
         </button>
       </nav>
 

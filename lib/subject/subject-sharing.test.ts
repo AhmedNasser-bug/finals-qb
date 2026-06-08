@@ -9,7 +9,9 @@ import {
   detectShareHash,
   clearShareHash,
   downloadSubjectJson,
-  downloadSubjectHtml
+  downloadSubjectHtml,
+  generateSubjectHtml,
+  downloadSubjectPdf
 } from "./subject-sharing"
 import type { FullSubjectData } from "@/lib/mold-types"
 
@@ -213,6 +215,83 @@ describe("subject-sharing", () => {
       delete (global as any).Blob
       delete (global as any).URL.createObjectURL
       delete (global as any).URL.revokeObjectURL
+    })
+  })
+
+  describe("generateSubjectHtml", () => {
+    it("should generate HTML string with title and questions", () => {
+      const html = generateSubjectHtml(mockSubject, false)
+      assert.match(html, /<!DOCTYPE html>/)
+      assert.match(html, /Test Subject Revision Sheet/)
+      assert.match(html, /QUESTION 1/)
+      assert.match(html, /Q\?/)
+      assert.match(html, /const isPrint = false;/)
+    })
+
+    it("should configure print theme when isPrint is true", () => {
+      const html = generateSubjectHtml(mockSubject, true)
+      assert.match(html, /const isPrint = true;/)
+      assert.match(html, /--background: 0 0% 100%;/)
+    })
+  })
+
+  describe("downloadSubjectPdf", () => {
+    it("should create iframe and append it to body to print PDF", () => {
+      const mockAppendChild = mock.fn()
+      const mockRemoveChild = mock.fn()
+      const mockWrite = mock.fn()
+      const mockOpen = mock.fn()
+      const mockClose = mock.fn()
+      const mockFocus = mock.fn()
+      const mockPrint = mock.fn()
+
+      const mockIframe = {
+        style: {},
+        contentWindow: {
+          document: {
+            open: mockOpen,
+            write: mockWrite,
+            close: mockClose
+          },
+          focus: mockFocus,
+          print: mockPrint,
+          addEventListener: mock.fn()
+        },
+        parentNode: {
+          removeChild: mockRemoveChild
+        }
+      }
+
+      global.document = {
+        createElement: (tag: string) => {
+          if (tag === "iframe") return mockIframe
+          return {}
+        },
+        body: {
+          appendChild: mockAppendChild,
+          removeChild: mockRemoveChild
+        }
+      } as any
+
+      // Mock setTimeout to handle cleanup synchronously and ignore fallback timers
+      const originalSetTimeout = global.setTimeout
+      global.setTimeout = ((fn: Function, delay: number) => {
+        if (delay === 5000) {
+          fn()
+        }
+      }) as any
+
+      try {
+        downloadSubjectPdf(mockSubject)
+
+        assert.strictEqual(mockAppendChild.mock.calls.length, 1)
+        assert.strictEqual(mockWrite.mock.calls.length, 1)
+        assert.strictEqual(mockOpen.mock.calls.length, 1)
+        assert.strictEqual(mockClose.mock.calls.length, 1)
+      } finally {
+        global.setTimeout = originalSetTimeout
+        delete (global as any).document
+      }
     })
   })
 })

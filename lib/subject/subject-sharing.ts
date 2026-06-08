@@ -126,8 +126,18 @@ export function downloadSubjectJson(subject: FullSubjectData): void {
   URL.revokeObjectURL(url)
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+}
+
 /** Trigger a browser download of the subject as a beautifully styled self-rendering HTML revision sheet. */
-export function downloadSubjectHtml(subject: FullSubjectData): void {
+/** Generate the compiled self-rendering HTML revision sheet. */
+export function generateSubjectHtml(subject: FullSubjectData, isPrint: boolean = false): string {
   const categories = Array.from(new Set(subject.questions.map((q) => q.category)))
   
   const lines: string[] = []
@@ -141,7 +151,7 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   lines.push('  <!-- KaTeX CSS & JS -->')
   lines.push('  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">')
   lines.push('  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>')
-  lines.push('  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>')
+  lines.push('  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>')
   lines.push('  <!-- Google Fonts -->')
   lines.push('  <link rel="preconnect" href="https://fonts.googleapis.com">')
   lines.push('  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
@@ -149,13 +159,33 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   
   lines.push("  <style>")
   lines.push("    :root {")
-  lines.push("      --background: 220 13% 6%;")
-  lines.push("      --foreground: 210 20% 92%;")
-  lines.push("      --primary: 43 96% 52%;")
-  lines.push("      --panel: 220 12% 11%;")
-  lines.push("      --border: 220 10% 18%;")
-  lines.push("      --muted: 215 12% 45%;")
-  lines.push("      --success: 142 70% 45%;")
+  if (isPrint) {
+    lines.push("      --background: 0 0% 100%;")
+    lines.push("      --foreground: 0 0% 0%;")
+    lines.push("      --primary: 43 96% 40%;")
+    lines.push("      --panel: 0 0% 98%;")
+    lines.push("      --border: 0 0% 85%;")
+    lines.push("      --muted: 0 0% 40%;")
+    lines.push("      --success: 142 70% 30%;")
+    lines.push("      --badge-text: #1e7e34;")
+    lines.push("      --hint-text: #856404;")
+    lines.push("      --explanation-text: #2b2b2b;")
+    lines.push("      --explanation-border: #004499;")
+    lines.push("      --explanation-bg: rgba(0, 68, 153, 0.05);")
+  } else {
+    lines.push("      --background: 220 13% 6%;")
+    lines.push("      --foreground: 210 20% 92%;")
+    lines.push("      --primary: 43 96% 52%;")
+    lines.push("      --panel: 220 12% 11%;")
+    lines.push("      --border: 220 10% 18%;")
+    lines.push("      --muted: 215 12% 45%;")
+    lines.push("      --success: 142 70% 45%;")
+    lines.push("      --badge-text: #4ae176;")
+    lines.push("      --hint-text: #d1b46a;")
+    lines.push("      --explanation-text: #b8b5b4;")
+    lines.push("      --explanation-border: #0066cc;")
+    lines.push("      --explanation-bg: rgba(0, 102, 204, 0.03);")
+  }
   lines.push("    }")
   lines.push("")
   lines.push("    body {")
@@ -286,10 +316,21 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   lines.push("      border: 1px solid hsl(var(--border));")
   lines.push("      padding: 16px;")
   lines.push("      overflow-x: auto;")
+  lines.push("      display: flex;")
+  lines.push("      justify-content: center;")
+  lines.push("      align-items: center;")
+  lines.push("      min-height: 100px;")
   lines.push("    }")
   lines.push("")
-  lines.push("    .diagram-box pre {")
-  lines.push("      margin: 0;")
+  lines.push("    .mermaid-render {")
+  lines.push("      width: 100%;")
+  lines.push("      display: flex;")
+  lines.push("      justify-content: center;")
+  lines.push("    }")
+  lines.push("")
+  lines.push("    .mermaid-render svg {")
+  lines.push("      max-width: 100% !important;")
+  lines.push("      height: auto !important;")
   lines.push("    }")
   lines.push("")
   lines.push("    .answer-card {")
@@ -304,7 +345,7 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   lines.push("      padding: 4px 10px;")
   lines.push("      background-color: hsl(var(--success) / 0.15);")
   lines.push("      border: 1px solid hsl(var(--success));")
-  lines.push("      color: #4ae176;")
+  lines.push("      color: var(--badge-text);")
   lines.push("      font-family: 'Geist Mono', monospace;")
   lines.push("      font-size: 12px;")
   lines.push("      font-weight: 700;")
@@ -322,14 +363,14 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   lines.push("    .callout-hint {")
   lines.push("      border-left-color: hsl(var(--primary));")
   lines.push("      background-color: hsl(var(--primary) / 0.03);")
-  lines.push("      color: #d1b46a;")
+  lines.push("      color: var(--hint-text);")
   lines.push("      font-style: italic;")
   lines.push("    }")
   lines.push("")
   lines.push("    .callout-explanation {")
-  lines.push("      border-left-color: #0066cc;")
-  lines.push("      background-color: rgba(0, 102, 204, 0.03);")
-  lines.push("      color: #b8b5b4;")
+  lines.push("      border-left-color: var(--explanation-border);")
+  lines.push("      background-color: var(--explanation-bg);")
+  lines.push("      color: var(--explanation-text);")
   lines.push("    }")
   lines.push("")
   lines.push("    .callout-title {")
@@ -439,9 +480,9 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
     
     if (q.diagram) {
       lines.push('      <div class="diagram-box">')
-      lines.push('        <pre class="mermaid">')
-      lines.push(q.diagram.trim())
-      lines.push('        </pre>')
+      lines.push(`        <div class="mermaid-render" data-diagram="${escapeHtml(q.diagram.trim())}">`)
+      lines.push('          <div class="font-mono text-xs text-zinc-500 animate-pulse">Loading diagram...</div>')
+      lines.push('        </div>')
       lines.push('      </div>')
     }
     
@@ -491,10 +532,71 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   
   lines.push('  </div>')
   
-  // Mermaid support
+  // Script definitions for programmatic Mermaid + KaTeX
+  lines.push('  <script>')
+  lines.push('    window.mathDone = false;')
+  lines.push('    window.mermaidDone = false;')
+  lines.push('    window.checkComplete = function() {')
+  lines.push('      if (window.mermaidDone && window.mathDone) {')
+  lines.push('        window.dispatchEvent(new CustomEvent("sheet-render-complete"));')
+  lines.push('      }')
+  lines.push('    };')
+  lines.push('  </script>')
+  
+  lines.push('  <!-- Mermaid support -->')
   lines.push('  <script type="module">')
   lines.push("    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';")
-  lines.push("    mermaid.initialize({ startOnLoad: true, theme: 'dark' });")
+  lines.push(`    const isPrint = ${isPrint};`)
+  lines.push("    mermaid.initialize({")
+  lines.push("      startOnLoad: false,")
+  lines.push("      theme: isPrint ? 'default' : 'dark',")
+  lines.push("      securityLevel: 'strict',")
+  lines.push("      flowchart: { useMaxWidth: true, htmlLabels: true }")
+  lines.push("    });")
+  lines.push("")
+  lines.push("    function sanitizeChart(raw) {")
+  lines.push("      return raw")
+  lines.push("        .replace(/&lt;/g, '<')")
+  lines.push("        .replace(/&gt;/g, '>')")
+  lines.push("        .replace(/&amp;/g, '&')")
+  lines.push("        .replace(/\\\\N/g, '\\n')")
+  lines.push("        .replace(/\\\\n/gi, '\\n')")
+  lines.push("        .trim();")
+  lines.push("    }")
+  lines.push("")
+  lines.push("    async function renderDiagrams() {")
+  lines.push("      const elements = document.querySelectorAll('.mermaid-render');")
+  lines.push("      let idCounter = 0;")
+  lines.push("      for (const el of elements) {")
+  lines.push("        const rawDiagram = el.getAttribute('data-diagram');")
+  lines.push("        if (!rawDiagram) continue;")
+  lines.push("        const cleanDiagram = sanitizeChart(rawDiagram);")
+  lines.push("        const id = 'mermaid-svg-' + (idCounter++);")
+  lines.push("        try {")
+  lines.push("          await mermaid.parse(cleanDiagram);")
+  lines.push("          const { svg } = await mermaid.render(id, cleanDiagram);")
+  lines.push("          el.innerHTML = svg;")
+  lines.push("        } catch (err) {")
+  lines.push("          console.error('Mermaid render error:', err);")
+  lines.push("          el.innerHTML = `")
+  lines.push("            <div style=\"background-color: #1a0c0c; border: 1px solid #930013; padding: 12px; font-family: monospace; font-size: 12px; color: #ff8080; width: 100%; box-sizing: border-box;\">")
+  lines.push("              <div style=\"font-weight: bold; margin-bottom: 4px;\">[Diagram Render Fault]</div>")
+  lines.push("              <div style=\"white-space: pre-wrap;\">${err?.message || err || 'Syntax or parsing error'}</div>")
+  lines.push("            </div>")
+  lines.push("          `;")
+  lines.push("        }")
+  lines.push("      }")
+  lines.push("      window.mermaidDone = true;")
+  lines.push("      if (typeof window.checkComplete === 'function') {")
+  lines.push("        window.checkComplete();")
+  lines.push("      }")
+  lines.push("    }")
+  lines.push("")
+  lines.push("    if (document.readyState === 'loading') {")
+  lines.push("      document.addEventListener('DOMContentLoaded', renderDiagrams);")
+  lines.push("    } else {")
+  lines.push("      renderDiagrams();")
+  lines.push("    }")
   lines.push("  </script>")
   
   // KaTeX rendering script
@@ -511,12 +613,21 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   lines.push('          throwOnError: false')
   lines.push('        });')
   lines.push('      }')
+  lines.push('      window.mathDone = true;')
+  lines.push('      if (typeof window.checkComplete === "function") {')
+  lines.push('        window.checkComplete();')
+  lines.push('      }')
   lines.push('    });')
   lines.push('  </script>')
   lines.push("</body>")
   lines.push("</html>")
   
-  const htmlText = lines.join("\n")
+  return lines.join("\n")
+}
+
+/** Trigger a browser download of the subject as a beautifully styled self-rendering HTML revision sheet. */
+export function downloadSubjectHtml(subject: FullSubjectData): void {
+  const htmlText = generateSubjectHtml(subject, false)
   const blob = new Blob([htmlText], { type: "text/html;charset=utf-8;" })
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
@@ -524,6 +635,64 @@ export function downloadSubjectHtml(subject: FullSubjectData): void {
   a.download = `${subject.id}_revision_sheet.html`
   a.click()
   URL.revokeObjectURL(url)
+}
+
+/** Trigger a browser print of the subject via a hidden iframe to save as PDF. */
+export function downloadSubjectPdf(subject: FullSubjectData): void {
+  // Generate light-theme friendly HTML sheet
+  const htmlContent = generateSubjectHtml(subject, true)
+  
+  // Create iframe
+  const iframe = document.createElement("iframe")
+  iframe.style.position = "fixed"
+  iframe.style.width = "0"
+  iframe.style.height = "0"
+  iframe.style.border = "none"
+  iframe.style.visibility = "hidden"
+  document.body.appendChild(iframe)
+  
+  const iframeDoc = iframe.contentWindow?.document
+  if (!iframeDoc) {
+    console.error("Failed to create print iframe document")
+    if (iframe.parentNode) {
+      document.body.removeChild(iframe)
+    }
+    return
+  }
+  
+  // Write content
+  iframeDoc.open()
+  iframeDoc.write(htmlContent)
+  iframeDoc.close()
+  
+  let printed = false
+  const triggerPrint = () => {
+    if (printed) return
+    printed = true
+    try {
+      iframe.contentWindow?.focus()
+      iframe.contentWindow?.print()
+    } catch (err) {
+      console.error("Failed to trigger print:", err)
+    } finally {
+      // Keep iframe in DOM for a little bit to ensure print dialog renders properly
+      setTimeout(() => {
+        if (iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe)
+        }
+      }, 5000)
+    }
+  }
+  
+  // Wait for the render-complete event
+  iframe.contentWindow?.addEventListener("sheet-render-complete", () => {
+    triggerPrint()
+  })
+  
+  // Fallback timeout in case of script load issues
+  setTimeout(() => {
+    triggerPrint()
+  }, 10000)
 }
 
 // ─── Internal Base64url ───────────────────────────────────────────────────────
