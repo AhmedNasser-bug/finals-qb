@@ -533,3 +533,64 @@
   scrollbar-color: #2a2a2a #0e0e0e;
 }
 
+/* ── Print Utilities ───────────────────────────────────────────────────────── */
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  /* Hide all normal application elements */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Show only the print layout container and its contents */
+  .print-only,
+  .print-only * {
+    visibility: visible;
+  }
+  
+  .print-only {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: block !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Ink-friendly resets: force black text, remove shadows and dark backgrounds */
+  .print-only * {
+    background-color: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Page borders and margins */
+  @page {
+    margin: 2cm;
+    size: A4 portrait;
+  }
+
+  /* Page break rules */
+  .page-break-before {
+    page-break-before: always;
+    break-before: page;
+  }
+  
+  .keep-together {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+

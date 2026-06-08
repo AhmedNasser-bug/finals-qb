@@ -7,7 +7,8 @@ import {
   RotateCcw, 
   Plus,
   BarChart3,
-  Sparkles
+  Sparkles,
+  Printer
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -23,6 +24,7 @@ interface SideNavBarProps {
   onImportNew: () => void
   onAddQuestions: () => void
   onInitialize: () => void
+  onPrintPDF: () => void
 }
 
 export function SideNavBar({
@@ -36,6 +38,7 @@ export function SideNavBar({
   onImportNew,
   onAddQuestions,
   onInitialize,
+  onPrintPDF,
 }: SideNavBarProps) {
   return (
     <aside className="hidden md:flex flex-col gap-2 p-4 w-64 h-[calc(100vh-64px)] bg-[#1c1b1b] border-r border-border fixed left-0 top-16 z-40 select-none">
@@ -110,6 +113,12 @@ export function SideNavBar({
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
           <Sparkles className="w-3.5 h-3.5 text-primary" /> <span>Add questions</span>
+        </button>
+        <button 
+          onClick={onPrintPDF}
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+        >
+          <Printer className="w-3.5 h-3.5" /> <span>Print PDF</span>
         </button>
       </nav>
 
