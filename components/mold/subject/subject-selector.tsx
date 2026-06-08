@@ -197,7 +197,7 @@ export function SubjectSelector({
 
               {/* BOTTOM LEFT: Cortex identifier */}
               <div className="absolute bottom-4 left-4 bg-black/85 px-3 py-1 font-mono text-[9px] text-primary border border-primary/20 uppercase tracking-widest font-bold">
-                REF_ID: THEORY-OF-_CORTEX
+                REF_ID: حلتيتة
               </div>
             </div>
 
