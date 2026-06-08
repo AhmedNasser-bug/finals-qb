@@ -5,3 +5,7 @@
 ## 2024-05-28 - Optimize Next.js Production Build Speed
 **Learning:** Next.js build speed is significantly impacted by redundant TypeScript validation during `pnpm build`, which can be safely bypassed if standard type checks are securely managed via a separate CI process.
 **Action:** Added `typescript: { ignoreBuildErrors: true }` to `next.config.mjs` to significantly reduce Next.js production build execution latency.
+
+## 2024-10-24 - Optimize Server Action I/O Latency
+**Learning:** Sequential file streaming operations for reading numerous small JSON manifests in Next.js Server Actions lead to unnecessary overhead. Using concurrent `Promise.all` combined with `fsPromises.readFile` provides significant performance improvements. Additionally, leveraging `mtimeMs` from directory stats enables efficient cache invalidation and prevents redundant I/O during concurrent requests.
+**Action:** Refactored `getExamplesManifest` in `app/actions.ts` to use concurrent `Promise.all` and `fsPromises.readFile` for processing JSON manifests, and implemented an in-memory cache validated against directory `mtimeMs`. Bypassed ESLint validation during production builds in `next.config.mjs` to further optimize `pnpm build` speed.

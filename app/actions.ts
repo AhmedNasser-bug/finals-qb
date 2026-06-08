@@ -16,31 +16,27 @@ export interface ExampleManifestEntry {
   tags: string[]
 }
 
-let manifestCache: ExampleManifestEntry[] | null = null
+let manifestCache: { entries: ExampleManifestEntry[], lastModTime: number } | null = null
 
 export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
-  if (manifestCache) {
-    return manifestCache
-  }
-
   const examplesDir = path.join(process.cwd(), "public", "examples")
 
   try {
+    const dirStat = await fsPromises.stat(examplesDir)
+    const currentModTime = dirStat.mtimeMs
+
+    if (manifestCache && manifestCache.lastModTime === currentModTime) {
+      return manifestCache.entries
+    }
+
     const files = await fsPromises.readdir(examplesDir)
     const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
-    const manifestResults: ExampleManifestEntry[] = []
-
-    for (const file of jsonFiles) {
+    const manifestPromises = jsonFiles.map(async (file) => {
       const filePath = path.join(examplesDir, file)
       const fileStem = file.replace(/\.json$/i, "")
       try {
-        const stream = fs.createReadStream(filePath)
-        const chunks: Buffer[] = []
-        for await (const chunk of stream) {
-          chunks.push(chunk)
-        }
-        const content = Buffer.concat(chunks).toString("utf-8")
+        const content = await fsPromises.readFile(filePath, "utf-8")
         const data = JSON.parse(content)
 
         // Calculate categories
@@ -55,7 +51,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
           tags.push(data.config.difficulty)
         }
 
-        manifestResults.push({
+        return {
           id: data.id || fileStem,
           filename: fileStem,   // always the actual file name, not the subject id
           name: data.name || fileStem,
@@ -63,13 +59,17 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
           questionCount: data.questions?.length || 0,
           categoryCount: categories.size,
           tags: data.tags || tags
-        })
+        } as ExampleManifestEntry
       } catch (err) {
         logger.error(`Failed to parse Example Example: ${file}`, err)
+        return null
       }
-    }
+    })
 
-    manifestCache = manifestResults
+    const results = await Promise.all(manifestPromises)
+    const manifestResults = results.filter((entry): entry is ExampleManifestEntry => entry !== null)
+
+    manifestCache = { entries: manifestResults, lastModTime: currentModTime }
     return manifestResults
   } catch (err) {
     logger.error("Failed to read examples directory", err)
