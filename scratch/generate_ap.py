@@ -146,7 +146,7 @@ def generate_subject():
         {"id": "ach-speedrun-300", "title": "Rapid Refactor", "description": "Speedrun in under 300 seconds.", "icon": "Zap", "condition": {"type": "speedrun_under", "mode": "speedrun", "seconds": 300}},
         {"id": "ach-no-hints", "title": "Pure Compile", "description": "Complete hardcore mode without hints.", "icon": "Star", "condition": {"type": "no_hints", "mode": "hardcore"}},
         {"id": "ach-all-categories", "title": "Domain Expert", "description": "Practice all subject categories.", "icon": "Award", "condition": {"type": "all_categories"}},
-        {"id": "ach-all-unlocked", "title": "Chief Software Architect", "description": "Unlock all achievements.", "icon": "Star", "condition": {"type": "all_unlocked"}}
+        {"id": "grand-master", "title": "Chief Software Architect", "description": "Unlock all achievements.", "icon": "Star", "condition": {"type": "all_unlocked"}}
     ]
 
     questions = []
@@ -2792,6 +2792,9 @@ def generate_subject():
             "hint": "Concentric rings or stacked cakes."
         }
     ]
+    for q in layered_questions:
+        q["diagram"] = layered_diagram
+        q["diagramPosition"] = "right"
     arch_questions.extend(layered_questions)
 
     # Style 2: Pipe-and-Filter Style (8 questions)
@@ -2926,6 +2929,9 @@ def generate_subject():
             "hint": "A straight connection of filters forms a pipeline."
         }
     ]
+    for q in pf_questions:
+        q["diagram"] = pf_diagram
+        q["diagramPosition"] = "right"
     arch_questions.extend(pf_questions)
 
     # Style 3: Shared-Data Style (8 questions)
@@ -3060,6 +3066,9 @@ def generate_subject():
             "hint": "Concentrating data storage enables centralized security policies."
         }
     ]
+    for q in sd_questions:
+        q["diagram"] = sd_diagram
+        q["diagramPosition"] = "right"
     arch_questions.extend(sd_questions)
 
     # Style 4: Event-Driven Style (8 questions)
@@ -3194,6 +3203,9 @@ def generate_subject():
             "hint": "C# constructs enabling registration of method callbacks."
         }
     ]
+    for q in ed_questions:
+        q["diagram"] = ed_diagram
+        q["diagramPosition"] = "right"
     arch_questions.extend(ed_questions)
 
     # Style 5: MVC Architectural Pattern (8 questions)
@@ -3328,6 +3340,9 @@ def generate_subject():
             "hint": "The Controller routes HTTP actions, triggers logic, and picks the view template."
         }
     ]
+    for q in mvc_questions:
+        q["diagram"] = mvc_diagram
+        q["diagramPosition"] = "right"
     arch_questions.extend(mvc_questions)
     questions.extend(arch_questions)
 

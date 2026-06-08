@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { evaluateCondition } from "./achievement-logic.ts";
+import { evaluateCondition, checkNewUnlocks } from "./achievement-logic.ts";
 import type { GameState, RunRecord, AchievementCondition } from "../types/mold-types.ts";
 
 function createMockState(overrides: Partial<GameState> = {}): GameState {
@@ -219,3 +219,27 @@ test("evaluateCondition: unknown type", () => {
     false // always returns false
   );
 });
+
+test("checkNewUnlocks: unlocks meta-achievement when all others are unlocked dynamically", () => {
+  const achievements = [
+    { id: "ach-1", title: "Ach 1", description: "Ach 1 desc", icon: "Zap", unlockedAt: 123 },
+    { id: "ach-2", title: "Ach 2", description: "Ach 2 desc", icon: "Zap", unlockedAt: null }, // this one will unlock now
+    { id: "custom-meta-id", title: "Meta", description: "Meta desc", icon: "Star", unlockedAt: null }
+  ];
+
+  const conditionMap: Record<string, AchievementCondition> = {
+    "ach-1": { type: "runs_gte", value: 1 },
+    "ach-2": { type: "runs_gte", value: 2 },
+    "custom-meta-id": { type: "all_unlocked" }
+  };
+
+  // State is complete, we have 2 runs, which triggers ach-2
+  const state = createMockState();
+  const runs = [createMockRun(), createMockRun()];
+
+  const unlocked = checkNewUnlocks(achievements as any, state, runs, conditionMap);
+
+  // Both ach-2 and custom-meta-id should be unlocked
+  assert.deepStrictEqual(unlocked, ["ach-2", "custom-meta-id"]);
+});
+

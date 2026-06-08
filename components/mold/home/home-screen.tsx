@@ -10,7 +10,7 @@ import dynamic from "next/dynamic"
 import { Footer } from "@/components/mold/common/footer"
 import { useAchievements } from "@/lib/achievement-engine"
 import { toSubjectData } from "@/lib/subject-persistence"
-import { PrintLayout } from "@/components/mold/subject/print-layout"
+import { downloadSubjectHtml } from "@/lib/subject/subject-sharing"
 
 const SubjectImporter = dynamic(
   () => import("@/components/mold/subject/subject-importer").then((mod) => mod.SubjectImporter),
@@ -171,7 +171,7 @@ export function HomeScreen({
           onImportNew={() => setShowImporter(true)}
           onAddQuestions={() => setShowAiWizard(true)}
           onInitialize={handleInitialize}
-          onPrintPDF={() => window.print()}
+          onDownloadHtml={() => downloadSubjectHtml(activeSubject)}
         />
 
         {/* ─── MAIN CANVAS AREA ────────────────────────────────────────────── */}
@@ -259,8 +259,6 @@ export function HomeScreen({
           onCancel={() => setShowAiWizard(false)}
         />
       )}
-
-      <PrintLayout subject={activeSubject} />
     </>
   )
 }

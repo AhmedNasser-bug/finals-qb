@@ -65,7 +65,7 @@ function QuestionCardFrame({ children }: { children: React.ReactNode }) {
           <div className="absolute inset-0 bg-red-950/5 opacity-[0.03] pointer-events-none z-0 mix-blend-color-dodge animate-pulse" />
         )}
         <div className="scanlines absolute inset-0 opacity-20 pointer-events-none z-0" />
-        <div className="relative z-10 flex flex-col flex-1 min-h-0 p-4 md:p-6 lg:p-8 gap-4">
+        <div className="relative z-10 flex flex-col flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:p-8 gap-4">
           {children}
         </div>
       </div>
@@ -151,7 +151,7 @@ function QuestionCardHtmlContent() {
 
   return (
     <div className="space-y-2 shrink-0">
-      <h2 className="font-sans text-xl md:text-2xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty">
+      <h2 className="font-sans text-xl md:text-2xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty select-text">
         <span id={currentQuestion.id}>
           {hasDedicatedDiagram ? (
             <span dangerouslySetInnerHTML={{
@@ -178,7 +178,6 @@ function QuestionCardHtmlContent() {
 function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below" }) {
   const { state } = useQuestionCard()
   const { currentQuestion } = state
-  const [zoomedVisual, setZoomedVisual] = React.useState<"diagram" | "latex" | "html" | null>(null)
 
   const hasDedicatedDiagram = !!currentQuestion.diagram
   const parts = React.useMemo(() => parseRichTextParts(currentQuestion.question), [currentQuestion.question])
@@ -199,27 +198,37 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
 
   const diagId = `q-diag-${currentQuestion.id}-${mode}`
 
+  const activeVisualsCount = [!!chart, hasVisualLatex, hasVisualHtml].filter(Boolean).length
+  const isSingle = activeVisualsCount === 1
+
   const inner = (
     <div className="flex flex-col gap-2 h-full min-h-0 w-full">
       <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-zinc-500 select-none shrink-0">
         VISUAL_SPECIMEN_PANEL
       </span>
       <div className={cn(
-        "flex-1 flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar min-h-0 w-full",
-        mode === "below" ? "max-h-[220px]" : "max-h-[450px] md:max-h-[600px]"
+        "flex-1 flex flex-col gap-4 pr-2 custom-scrollbar min-h-0 w-full",
+        mode === "below" 
+          ? "max-h-[320px] overflow-y-auto" 
+          : "h-full overflow-y-auto"
       )}>
-        {/* Section 1: Diagram (scroll-protected height to avoid squishing) */}
+        {/* Section 1: Diagram */}
         {chart && (
           <div className={cn(
-            "flex flex-col gap-1.5 shrink-0 w-full",
-            mode === "below" ? "min-h-[180px] h-[180px]" : "min-h-[280px] h-[280px]"
+            "flex flex-col gap-1.5 w-full",
+            mode === "below"
+              ? isSingle
+                ? "shrink-0 min-h-[280px] h-[280px]"
+                : "shrink-0 min-h-[220px] h-[220px]"
+              : isSingle
+                ? "flex-1 min-h-0 h-full"
+                : "shrink-0 min-h-[300px] h-[300px]"
           )}>
             <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
-              [VISUAL_1: MERMAID_DIAGRAM] (Click to zoom)
+              [VISUAL_1: MERMAID_DIAGRAM]
             </span>
             <div 
-              onClick={() => setZoomedVisual("diagram")}
-              className="bg-[#131313] border border-zinc-800 hover:border-zinc-700 transition-all p-3 flex-1 overflow-hidden rounded relative cursor-zoom-in hover:shadow-md active:scale-[0.99]"
+              className="bg-[#131313] border border-zinc-800 p-3 flex-1 overflow-auto rounded relative w-full h-full"
             >
               <MermaidDiagram
                 chart={chart}
@@ -232,13 +241,21 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
 
         {/* Section 2: LaTeX (centered KaTeX display block) */}
         {hasVisualLatex && (
-          <div className="flex flex-col gap-1.5 shrink-0 w-full">
+          <div className={cn(
+            "flex flex-col gap-1.5 w-full",
+            mode === "below"
+              ? isSingle
+                ? "shrink-0 min-h-[280px] h-[280px]"
+                : "shrink-0 min-h-[220px] h-[220px]"
+              : isSingle
+                ? "flex-1 min-h-0 h-full"
+                : "shrink-0 min-h-[300px] h-[300px]"
+          )}>
             <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
-              [VISUAL_2: LATEX_FORMULA] (Click to zoom)
+              [VISUAL_2: LATEX_FORMULA]
             </span>
             <div 
-              onClick={() => setZoomedVisual("latex")}
-              className="bg-[#131313] border border-zinc-800 hover:border-zinc-700 transition-all p-4 text-center rounded overflow-x-auto text-[#e5e2e1] cursor-zoom-in hover:shadow-md active:scale-[0.99]"
+              className="bg-[#131313] border border-zinc-800 p-4 text-center rounded overflow-auto text-[#e5e2e1] w-full h-full flex items-center justify-center"
               dangerouslySetInnerHTML={{
                 __html: renderMath(`$$${currentQuestion.visualLatex}$$`)
               }}
@@ -248,15 +265,22 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
 
         {/* Section 3: HTML Block */}
         {hasVisualHtml && (
-          <div className="flex flex-col gap-1.5 shrink-0 w-full">
+          <div className={cn(
+            "flex flex-col gap-1.5 w-full",
+            mode === "below"
+              ? isSingle
+                ? "shrink-0 min-h-[280px] h-[280px]"
+                : "shrink-0 min-h-[220px] h-[220px]"
+              : isSingle
+                ? "flex-1 min-h-0 h-full"
+                : "shrink-0 min-h-[300px] h-[300px]"
+          )}>
             <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
-              [VISUAL_3: SPECIMEN_HTML] (Click to zoom)
+              [VISUAL_3: SPECIMEN_HTML]
             </span>
             <div 
-              onClick={() => setZoomedVisual("html")}
-              className="bg-[#131313] border border-zinc-800 hover:border-zinc-700 transition-all p-4 rounded text-left text-sm text-[#e5e2e1] overflow-x-auto font-sans cursor-zoom-in hover:shadow-md active:scale-[0.99]"
+              className="bg-[#131313] border border-zinc-800 p-4 rounded text-left text-sm text-[#e5e2e1] overflow-auto font-sans w-full h-full"
               dangerouslySetInnerHTML={{
-                // 100% secure: sanitized prior to LaTeX rendering!
                 __html: renderMath(DOMPurify.sanitize(currentQuestion.visualHtml ?? ""))
               }}
             />
@@ -266,64 +290,10 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
     </div>
   )
 
-  const zoomOverlay = zoomedVisual && (
-    <div
-      onClick={() => setZoomedVisual(null)}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xs cursor-zoom-out p-4 md:p-8 animate-fade-in"
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="relative bg-[#131313] border border-zinc-800 p-6 md:p-8 rounded max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col gap-4 shadow-2xl cursor-default animate-slide-up"
-      >
-        <button
-          onClick={() => setZoomedVisual(null)}
-          className="absolute top-4 right-4 text-zinc-500 hover:text-[#fecc17] font-mono text-[10px] uppercase border border-zinc-800 hover:border-[#fecc17]/20 bg-zinc-950 px-2 py-1 rounded transition-all cursor-pointer z-10"
-        >
-          [CLOSE]
-        </button>
-
-        <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-zinc-500 select-none">
-          ZOOM_VIEW // SPECIMEN_{zoomedVisual.toUpperCase()}
-        </span>
-
-        <div className="flex-1 min-h-0 w-full overflow-auto mt-2 select-text">
-          {zoomedVisual === "diagram" && chart && (
-            <div className="h-[60vh] min-h-[350px] w-full flex items-center justify-center bg-[#090909] border border-zinc-900 rounded p-4 relative">
-              <MermaidDiagram
-                chart={chart}
-                id={`${diagId}-zoomed`}
-                className="w-full h-full"
-              />
-            </div>
-          )}
-
-          {zoomedVisual === "latex" && (
-            <div
-              className="p-8 text-center text-xl text-[#e5e2e1] overflow-x-auto bg-[#090909] border border-zinc-900 rounded select-all"
-              dangerouslySetInnerHTML={{
-                __html: renderMath(`$$${currentQuestion.visualLatex}$$`)
-              }}
-            />
-          )}
-
-          {zoomedVisual === "html" && (
-            <div
-              className="p-6 rounded text-left text-sm text-[#e5e2e1] overflow-x-auto font-sans bg-[#090909] border border-zinc-900 select-all"
-              dangerouslySetInnerHTML={{
-                __html: renderMath(DOMPurify.sanitize(currentQuestion.visualHtml ?? ""))
-              }}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  )
-
   if (mode === "side") {
     return (
       <div className="hidden md:flex flex-col min-h-0 h-full w-full">
         {inner}
-        {zoomOverlay}
       </div>
     )
   }
@@ -351,7 +321,7 @@ function QuestionCardOptions({ cols = "single" }: { cols?: "single" | "split" | 
   return (
     <div
       className={cn(
-        "grid gap-3 flex-1 overflow-y-auto min-h-[180px] md:min-h-0 content-start",
+        "grid gap-3 content-start shrink-0",
         computedCols === "split" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
       )}
       role="radiogroup"

@@ -106,7 +106,9 @@ export function checkNewUnlocks(
 
   for (let i = 0; i < achievements.length; i++) {
     const a = achievements[i];
-    if (a.id === "grand-master" || a.id === "grand_master") {
+    const cond = activeConditions[a.id];
+
+    if (cond?.type === "all_unlocked" || a.id === "grand-master" || a.id === "grand_master") {
       grandMaster = a;
       continue;
     }
