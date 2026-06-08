@@ -27,6 +27,7 @@ interface SideNavBarProps {
   onInitialize: () => void
   onDownloadHtml: () => void
   onDownloadPdf: () => void
+  onDownloadSolvedPdf: () => void
 }
 
 export function SideNavBar({
@@ -42,6 +43,7 @@ export function SideNavBar({
   onInitialize,
   onDownloadHtml,
   onDownloadPdf,
+  onDownloadSolvedPdf,
 }: SideNavBarProps) {
   return (
     <aside className="hidden md:flex flex-col gap-2 p-4 w-64 h-[calc(100vh-64px)] bg-[#1c1b1b] border-r border-border fixed left-0 top-16 z-40 select-none">
@@ -127,7 +129,13 @@ export function SideNavBar({
           onClick={onDownloadPdf}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <FileText className="w-3.5 h-3.5 text-primary" /> <span>Download PDF Sheet</span>
+          <FileText className="w-3.5 h-3.5 text-primary" /> <span>Questions PDF</span>
+        </button>
+        <button 
+          onClick={onDownloadSolvedPdf}
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+        >
+          <FileText className="w-3.5 h-3.5 text-emerald-400" /> <span>Solved Questions PDF</span>
         </button>
       </nav>
 

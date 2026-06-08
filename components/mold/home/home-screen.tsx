@@ -10,7 +10,7 @@ import dynamic from "next/dynamic"
 import { Footer } from "@/components/mold/common/footer"
 import { useAchievements } from "@/lib/achievement-engine"
 import { toSubjectData } from "@/lib/subject-persistence"
-import { downloadSubjectHtml, downloadSubjectPdf } from "@/lib/subject/subject-sharing"
+import { downloadSubjectHtml, downloadSubjectPdf, downloadSubjectSolvedPdf } from "@/lib/subject/subject-sharing"
 
 const SubjectImporter = dynamic(
   () => import("@/components/mold/subject/subject-importer").then((mod) => mod.SubjectImporter),
@@ -173,6 +173,7 @@ export function HomeScreen({
           onInitialize={handleInitialize}
           onDownloadHtml={() => downloadSubjectHtml(activeSubject)}
           onDownloadPdf={() => downloadSubjectPdf(activeSubject)}
+          onDownloadSolvedPdf={() => downloadSubjectSolvedPdf(activeSubject)}
         />
 
         {/* ─── MAIN CANVAS AREA ────────────────────────────────────────────── */}
