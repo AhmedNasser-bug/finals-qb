@@ -157,6 +157,143 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
   }
 }
 
+function autoFixSingleQuestion(
+  qObj: Record<string, unknown>,
+  i: number,
+  seenIds: Set<string>,
+  VALID_TYPES: Set<string>,
+  VALID_DIFFICULTIES: Set<string>,
+  warnings: string[]
+): boolean {
+  let qFixed = false;
+
+  // 1. Auto-Fix ID
+  if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
+    qObj.id = `q-gen-${i + 1}`;
+    qFixed = true;
+  } else if (seenIds.has(qObj.id as string)) {
+    const oldId = qObj.id as string;
+    qObj.id = `${oldId}-${i}`;
+    seenIds.add(qObj.id as string);
+    warnings.push(`questions[${i}]: Duplicate ID "${oldId}" automatically renamed to "${qObj.id}".`);
+    qFixed = true;
+  } else {
+    seenIds.add(qObj.id as string);
+  }
+
+  // 2. Auto-Fix Type
+  if (typeof qObj.type !== "string" || !VALID_TYPES.has(qObj.type)) {
+    const originalType = qObj.type;
+    qObj.type = Array.isArray(qObj.options) && qObj.options.length === 2 ? "TrueFalse" : "MCQ";
+    warnings.push(`questions[${i}]: Invalid type "${originalType}" automatically set to "${qObj.type}".`);
+    qFixed = true;
+  }
+
+  if (qObj.type === "TrueFalse" && Array.isArray(qObj.options) && qObj.options.length !== 2) {
+    qObj.type = "MCQ";
+    warnings.push(`questions[${i}]: TrueFalse question had ${qObj.options.length} options; converted to MCQ.`);
+    qFixed = true;
+  }
+
+  // 3. Auto-Fix Difficulty
+  if (typeof qObj.difficulty !== "string" || !VALID_DIFFICULTIES.has(qObj.difficulty)) {
+    qObj.difficulty = "Medium";
+    qFixed = true;
+  }
+
+  // 4. Auto-Fix Category
+  if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
+    qObj.category = "general";
+    qFixed = true;
+  }
+
+  // 5. Auto-Fix Question Text
+  if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
+    qObj.question = "No question text provided.";
+    qFixed = true;
+  }
+
+  // 6. Auto-Fix Options
+  if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
+    if (qObj.type === "TrueFalse") {
+      qObj.options = [{ label: "A", text: "True" }, { label: "B", text: "False" }];
+    } else {
+      qObj.options = [
+        { label: "A", text: "Option A" },
+        { label: "B", text: "Option B" },
+        { label: "C", text: "Option C" },
+        { label: "D", text: "Option D" },
+      ];
+    }
+    warnings.push(`questions[${i}]: Missing options — generated default choices.`);
+    qFixed = true;
+  }
+
+  const labels = ["A", "B", "C", "D", "E", "F"];
+  const normalizedOptions = new Array((qObj.options as unknown[]).length);
+  for (let optIdx = 0; optIdx < (qObj.options as unknown[]).length; optIdx++) {
+    const opt = (qObj.options as any[])[optIdx];
+    if (typeof opt !== "object" || opt === null) {
+      normalizedOptions[optIdx] = { label: labels[optIdx] || "X", text: "Option Option" };
+    } else {
+      const label = typeof opt.label === "string" && opt.label.trim() !== "" ? opt.label.toUpperCase() : (labels[optIdx] || "X");
+      const text = typeof opt.text === "string" && opt.text.trim() !== "" ? opt.text : `Option ${label}`;
+      normalizedOptions[optIdx] = { label, text };
+    }
+  }
+  qObj.options = normalizedOptions;
+
+  // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
+  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+    qObj.answer = "A";
+    qFixed = true;
+  } else {
+    qObj.answer = qObj.answer.toUpperCase().trim();
+    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+    if (!hasLabel) {
+      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+      if (matchedOpt) {
+        const oldAnswer = qObj.answer;
+        qObj.answer = matchedOpt.label;
+        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+        qFixed = true;
+        hasLabel = true;
+      } else {
+        // Check for "True" / "False" maps to A / B
+        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+          if (isTrueMatch || isFalseMatch) {
+            const oldAnswer = qObj.answer;
+            qObj.answer = isTrueMatch ? "A" : "B";
+            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+            qFixed = true;
+            hasLabel = true;
+          }
+        }
+        if (!hasLabel) {
+          const oldAnswer = qObj.answer;
+          qObj.answer = normalizedOptions[0].label;
+          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+          qFixed = true;
+        }
+      }
+    }
+  }
+
+  // 8. Auto-Fix Explanation and Hint
+  if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
+    qObj.explanation = `Option ${qObj.answer} is correct.`;
+    qFixed = true;
+  }
+  if (typeof qObj.hint !== "string" || qObj.hint.trim() === "") {
+    qObj.hint = "Focus on the key terminology and relationships described.";
+    qFixed = true;
+  }
+
+  return qFixed;
+}
+
 function autoFixQuestions(obj: Record<string, unknown>, warnings: string[]) {
   if (!Array.isArray(obj.questions)) return;
 
@@ -174,134 +311,12 @@ function autoFixQuestions(obj: Record<string, unknown>, warnings: string[]) {
     }
 
     const qObj = { ...(q as Record<string, unknown>) }
-    let qFixed = false
 
-    // 1. Auto-Fix ID
-    if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
-      qObj.id = `q-gen-${i + 1}`
-      qFixed = true
-    } else if (seenIds.has(qObj.id)) {
-      const oldId = qObj.id
-      qObj.id = `${oldId}-${i}`
-      seenIds.add(qObj.id)
-      warnings.push(`questions[${i}]: Duplicate ID "${oldId}" automatically renamed to "${qObj.id}".`)
-      qFixed = true
-    } else {
-      seenIds.add(qObj.id)
-    }
-
-    // 2. Auto-Fix Type
-    if (typeof qObj.type !== "string" || !VALID_TYPES.has(qObj.type)) {
-      const originalType = qObj.type
-      qObj.type = Array.isArray(qObj.options) && qObj.options.length === 2 ? "TrueFalse" : "MCQ"
-      warnings.push(`questions[${i}]: Invalid type "${originalType}" automatically set to "${qObj.type}".`)
-      qFixed = true
-    }
-
-    if (qObj.type === "TrueFalse" && Array.isArray(qObj.options) && qObj.options.length !== 2) {
-      qObj.type = "MCQ"
-      warnings.push(`questions[${i}]: TrueFalse question had ${qObj.options.length} options; converted to MCQ.`)
-      qFixed = true
-    }
-
-    // 3. Auto-Fix Difficulty
-    if (typeof qObj.difficulty !== "string" || !VALID_DIFFICULTIES.has(qObj.difficulty)) {
-      qObj.difficulty = "Medium"
-      qFixed = true
-    }
-
-    // 4. Auto-Fix Category
-    if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
-      qObj.category = "general"
-      qFixed = true
-    }
-
-    // 5. Auto-Fix Question Text
-    if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
-      qObj.question = "No question text provided."
-      qFixed = true
-    }
-
-    // 6. Auto-Fix Options
-    if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
-      if (qObj.type === "TrueFalse") {
-        qObj.options = [{ label: "A", text: "True" }, { label: "B", text: "False" }]
-      } else {
-        qObj.options = [
-          { label: "A", text: "Option A" },
-          { label: "B", text: "Option B" },
-          { label: "C", text: "Option C" },
-          { label: "D", text: "Option D" }
-        ]
-      }
-      warnings.push(`questions[${i}]: Missing options — generated default choices.`)
-      qFixed = true
-    }
-
-    const labels = ["A", "B", "C", "D", "E", "F"]
-    const normalizedOptions = new Array(qObj.options.length)
-    for (let optIdx = 0; optIdx < qObj.options.length; optIdx++) {
-      const opt = qObj.options[optIdx]
-      if (typeof opt !== "object" || opt === null) {
-        normalizedOptions[optIdx] = { label: labels[optIdx] || "X", text: "Option Option" }
-      } else {
-        const label = typeof opt.label === "string" && opt.label.trim() !== "" ? opt.label.toUpperCase() : (labels[optIdx] || "X")
-        const text = typeof opt.text === "string" && opt.text.trim() !== "" ? opt.text : `Option ${label}`
-        normalizedOptions[optIdx] = { label, text }
-      }
-    }
-    qObj.options = normalizedOptions
-
-    // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
-    if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-      qObj.answer = "A"
-      qFixed = true
-    } else {
-      qObj.answer = qObj.answer.toUpperCase().trim()
-      let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer)
-      if (!hasLabel) {
-        const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer)
-        if (matchedOpt) {
-          const oldAnswer = qObj.answer
-          qObj.answer = matchedOpt.label
-          warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`)
-          qFixed = true
-          hasLabel = true
-        } else {
-          // Check for "True" / "False" maps to A / B
-          if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-            const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer)
-            const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer)
-            if (isTrueMatch || isFalseMatch) {
-              const oldAnswer = qObj.answer
-              qObj.answer = isTrueMatch ? "A" : "B"
-              warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`)
-              qFixed = true
-              hasLabel = true
-            }
-          }
-          if (!hasLabel) {
-            const oldAnswer = qObj.answer
-            qObj.answer = normalizedOptions[0].label
-            warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`)
-            qFixed = true
-          }
-        }
-      }
-    }
-
-    // 8. Auto-Fix Explanation and Hint
-    if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
-      qObj.explanation = `Option ${qObj.answer} is correct.`
-      qFixed = true
-    }
-    if (typeof qObj.hint !== "string" || qObj.hint.trim() === "") {
-      qObj.hint = "Focus on the key terminology and relationships described."
-      qFixed = true
+    if (autoFixSingleQuestion(qObj, i, seenIds, VALID_TYPES, VALID_DIFFICULTIES, warnings)) {
+        fixedQuestionsCount++;
     }
 
     newQuestions.push(qObj)
-    if (qFixed) fixedQuestionsCount++
   }
 
   obj.questions = newQuestions
@@ -437,6 +452,75 @@ function validateConfigBlock(obj: Record<string, unknown>, errors: string[]) {
   }
 }
 
+function validateSingleQuestion(
+  qObj: Record<string, unknown>,
+  i: number,
+  seenIds: Set<string>,
+  VALID_TYPES: Set<string>,
+  VALID_DIFFICULTIES: Set<string>,
+  errors: string[]
+) {
+  const prefix = `questions[${i}]`;
+
+  if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
+    errors.push(`${prefix}: missing "id".`);
+  } else if (seenIds.has(qObj.id)) {
+    errors.push(`${prefix}: duplicate id "${qObj.id}".`);
+  } else {
+    seenIds.add(qObj.id);
+  }
+
+  if (!VALID_TYPES.has(qObj.type as string)) {
+    errors.push(`${prefix}: "type" must be "MCQ" or "TrueFalse", got "${qObj.type}".`);
+  }
+  if (!VALID_DIFFICULTIES.has(qObj.difficulty as string)) {
+    errors.push(`${prefix}: "difficulty" must be "Easy", "Medium", or "Hard", got "${qObj.difficulty}".`);
+  }
+  if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
+    errors.push(`${prefix}: missing "category".`);
+  }
+  if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
+    errors.push(`${prefix}: missing "question" text.`);
+  }
+  if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
+    errors.push(`${prefix}: "options" must be an array with at least 2 entries.`);
+  }
+  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+    errors.push(`${prefix}: missing "answer".`);
+  }
+
+  // diagramPosition must be a known value if present
+  if (qObj.diagramPosition != null && qObj.diagramPosition !== "right" && qObj.diagramPosition !== "below") {
+    errors.push(`${prefix}: "diagramPosition" must be "right" or "below", got "${qObj.diagramPosition}".`);
+  }
+
+  // answer label must exist in options
+  if (!Array.isArray(qObj.options) || qObj.options.length === 0 || typeof qObj.answer !== "string") {
+    return;
+  }
+
+  let labelExists = false;
+  for (let j = 0; j < qObj.options.length; j++) {
+    const opt = qObj.options[j] as Record<string, unknown>;
+    if (opt.label === qObj.answer) {
+      labelExists = true;
+      break;
+    }
+  }
+
+  if (!labelExists) {
+    const options = qObj.options as Record<string, unknown>[];
+    const labels = new Array(options.length);
+    for (let j = 0; j < options.length; j++) {
+      labels[j] = options[j].label;
+    }
+    errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`);
+  }
+  if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
+    errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`);
+  }
+}
+
 function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) {
   if (!Array.isArray(obj.questions)) {
     errors.push('"questions" must be an array.')
@@ -459,66 +543,8 @@ function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) 
       continue
     }
     const qObj = q as Record<string, unknown>
-    const prefix = `questions[${i}]`
 
-    if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
-      errors.push(`${prefix}: missing "id".`)
-    } else if (seenIds.has(qObj.id)) {
-      errors.push(`${prefix}: duplicate id "${qObj.id}".`)
-    } else {
-      seenIds.add(qObj.id)
-    }
-
-    if (!VALID_TYPES.has(qObj.type as string)) {
-      errors.push(`${prefix}: "type" must be "MCQ" or "TrueFalse", got "${qObj.type}".`)
-    }
-    if (!VALID_DIFFICULTIES.has(qObj.difficulty as string)) {
-      errors.push(`${prefix}: "difficulty" must be "Easy", "Medium", or "Hard", got "${qObj.difficulty}".`)
-    }
-    if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
-      errors.push(`${prefix}: missing "category".`)
-    }
-    if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
-      errors.push(`${prefix}: missing "question" text.`)
-    }
-    if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
-      errors.push(`${prefix}: "options" must be an array with at least 2 entries.`)
-    }
-    if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-      errors.push(`${prefix}: missing "answer".`)
-    }
-
-    // diagramPosition must be a known value if present
-    if (qObj.diagramPosition != null && qObj.diagramPosition !== "right" && qObj.diagramPosition !== "below") {
-      errors.push(`${prefix}: "diagramPosition" must be "right" or "below", got "${qObj.diagramPosition}".`)
-    }
-
-    // answer label must exist in options
-    if (!Array.isArray(qObj.options) || qObj.options.length === 0 || typeof qObj.answer !== "string") {
-      if (errors.length >= 8) break
-      continue
-    }
-
-    let labelExists = false;
-    for (let j = 0; j < qObj.options.length; j++) {
-      const opt = qObj.options[j] as Record<string, unknown>;
-      if (opt.label === qObj.answer) {
-        labelExists = true;
-        break;
-      }
-    }
-
-    if (!labelExists) {
-      const options = qObj.options as Record<string, unknown>[]
-      const labels = new Array(options.length)
-      for (let j = 0; j < options.length; j++) {
-        labels[j] = options[j].label
-      }
-      errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`)
-    }
-    if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
-      errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`)
-    }
+    validateSingleQuestion(qObj, i, seenIds, VALID_TYPES, VALID_DIFFICULTIES, errors)
 
     // Bail after 8 errors to avoid flooding the UI
     if (errors.length >= 8) break
@@ -707,6 +733,66 @@ function balanceJsonStack(str: string): string {
   return balanced
 }
 
+function processEscapeSequence(
+  str: string,
+  i: number,
+  LATEX_WORDS: Set<string>
+): { addition: string; charsConsumed: number; wasFixed: boolean } {
+  const nextChar = str[i + 1];
+
+  if (nextChar === undefined) {
+    return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
+  }
+
+  // Check if it's a LaTeX command starting with b, f, n, r, t, u
+  if (/[bfnrtu]/i.test(nextChar)) {
+    // Extract the alphabetical word starting at nextChar
+    let word = "";
+    let j = i + 1;
+    while (j < str.length && /[a-zA-Z]/.test(str[j])) {
+      word += str[j];
+      j++;
+    }
+
+    // If the extracted word is a known LaTeX command, double escape the backslash!
+    if (LATEX_WORDS.has(word.toLowerCase())) {
+      return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
+    }
+  }
+
+  // Standard JSON escape validation
+  if (
+    nextChar === '"' ||
+    nextChar === "\\" ||
+    nextChar === "/" ||
+    nextChar === "b" ||
+    nextChar === "f" ||
+    nextChar === "n" ||
+    nextChar === "r" ||
+    nextChar === "t"
+  ) {
+    return { addition: "\\" + nextChar, charsConsumed: 2, wasFixed: false };
+  } else if (nextChar === "u") {
+    const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c);
+    if (
+      isHex(str[i + 2]) &&
+      isHex(str[i + 3]) &&
+      isHex(str[i + 4]) &&
+      isHex(str[i + 5])
+    ) {
+      return {
+        addition: "\\u" + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5],
+        charsConsumed: 6,
+        wasFixed: false,
+      };
+    } else {
+      return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
+    }
+  } else {
+    return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
+  }
+}
+
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   let repaired = ""
   let inString = false
@@ -737,63 +823,10 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
     }
 
     if (inString && char === '\\') {
-      const nextChar = str[i + 1]
-
-      if (nextChar === undefined) {
-        repaired += '\\\\'
-        fixed = true
-        continue
-      }
-
-      // Check if it's a LaTeX command starting with b, f, n, r, t, u
-      if (/[bfnrtu]/i.test(nextChar)) {
-        // Extract the alphabetical word starting at nextChar
-        let word = ""
-        let j = i + 1
-        while (j < str.length && /[a-zA-Z]/.test(str[j])) {
-          word += str[j]
-          j++
-        }
-
-        // If the extracted word is a known LaTeX command, double escape the backslash!
-        if (LATEX_WORDS.has(word.toLowerCase())) {
-          repaired += '\\\\'
-          fixed = true
-          continue
-        }
-      }
-
-      // Standard JSON escape validation
-      if (
-        nextChar === '"' ||
-        nextChar === '\\' ||
-        nextChar === '/' ||
-        nextChar === 'b' ||
-        nextChar === 'f' ||
-        nextChar === 'n' ||
-        nextChar === 'r' ||
-        nextChar === 't'
-      ) {
-        repaired += '\\' + nextChar
-        i++
-      } else if (nextChar === 'u') {
-        const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c)
-        if (
-          isHex(str[i + 2]) &&
-          isHex(str[i + 3]) &&
-          isHex(str[i + 4]) &&
-          isHex(str[i + 5])
-        ) {
-          repaired += '\\u' + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5]
-          i += 5
-        } else {
-          repaired += '\\\\'
-          fixed = true
-        }
-      } else {
-        repaired += '\\\\'
-        fixed = true
-      }
+        const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
+        repaired += addition;
+        fixed = fixed || wasFixed;
+        i += charsConsumed - 1; // loop naturally increments i
     } else {
       repaired += char
     }
