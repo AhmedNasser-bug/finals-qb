@@ -197,7 +197,7 @@ ${presetConfig.formats.includes("diagrams") ? "- Mermaid Visual Diagrams: To inc
 
     const topicSlug = (topic || "subject").toLowerCase().replace(/[^a-z0-9]+/g, "-")
 
-    return `You are a pedagogical expert and curriculum designer. Using the PARTS framework (Persona, Act, Recipient, Theme, Structure), generate a complete MOLD V2 subject dataset for: ${topic || "[YOUR TOPIC HERE]"}
+    return `You are a pedagogical expert and curriculum designer. Using the PARTS framework (Persona, Act, Recipient, Theme, Structure), generate a complete Finalist subject dataset for: ${topic || "[YOUR TOPIC HERE]"}
 
 ${personaText}
 

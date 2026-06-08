@@ -41,10 +41,10 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
             <ProtocolIcon />
             <div>
               <p className="text-xs font-mono font-semibold tracking-widest text-primary uppercase">
-                MOLD V2
+                FINALIST
               </p>
               <p className="text-[10px] font-mono text-muted-foreground tracking-wider">
-                MASTERY PROTOCOL
+                STUDY SYSTEM
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                   Add Your First Subject
                 </h2>
                 <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
-                  MOLD V2 runs entirely in your browser. Subjects are stored as JSON and kept in
+                  Finalist runs entirely in your browser. Subjects are stored as JSON and kept in
                   local storage — nothing is ever sent to a server.
                 </p>
               </div>
@@ -188,7 +188,7 @@ const ONBOARDING_STEPS = [
   },
   {
     title: "Paste and verify",
-    body: "Copy the AI response and paste it into the importer. MOLD validates every field in real time — question count, difficulty spread, achievement conditions — and shows a preview before you confirm.",
+    body: "Copy the AI response and paste it into the importer. Finalist validates every field in real time — question count, difficulty spread, achievement conditions — and shows a preview before you confirm.",
   },
 ]
 

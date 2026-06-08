@@ -167,7 +167,7 @@ export function FileTabContent({ subject, onDownload }: FileTabContentProps) {
     <>
       <p className="text-xs text-muted-foreground leading-relaxed">
         Download the subject as a raw <span className="font-mono text-foreground">.json</span> file.
-        The recipient can import it directly into MOLD V2 using the subject importer.
+        The recipient can import it directly into Finalist using the subject importer.
       </p>
 
       <div className="flex flex-col gap-2 border border-border rounded p-4 bg-background">

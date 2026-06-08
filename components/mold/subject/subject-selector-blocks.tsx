@@ -10,7 +10,7 @@ import type { ExampleManifestEntry } from "@/app/actions"
 export function WelcomeBanner() {
   return (
     <div className="border border-primary/20 bg-primary/5 px-5 py-4 flex flex-col gap-1">
-      <p className="text-sm font-semibold text-primary tracking-tight">Welcome to MOLD V2</p>
+      <p className="text-sm font-semibold text-primary tracking-tight">Welcome to Finalist</p>
       <p className="text-xs text-muted-foreground leading-relaxed">
         Load one of the example modules below to get started immediately, or import your own subject file.
       </p>
