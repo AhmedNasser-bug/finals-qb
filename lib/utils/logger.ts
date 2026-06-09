@@ -3,16 +3,16 @@ type RedactReplacement = string | ((match: string, ...args: any[]) => string);
 const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
-    pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    pattern: /(?<=^|[^a-zA-Z0-9._%+-])([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
     replacement: '[REDACTED]'
   },
   {
-    // Bearer tokens
+    // Bearer authentication tokens
     pattern: /(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
     replacement: '$1[REDACTED]'
   },
   {
-    // Private keys
+    // Private keys (RSA, generic, etc.)
     pattern: /(-----BEGIN[A-Z0-9-\s]+PRIVATE KEY-----)([\s\S]+?)(-----END[A-Z0-9-\s]+PRIVATE KEY-----)/g,
     replacement: '$1\n[REDACTED]\n$3'
   },
@@ -29,8 +29,13 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
     }
   },
   {
-    // JWTs
+    // JWT authentication tokens
     pattern: /(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
+    replacement: '[REDACTED]'
+  },
+  {
+    // AWS API Keys
+    pattern: /(?<=^|[^A-Z0-9])((?:AKIA|ABIA|ACCA|ASIA)[A-Z0-9]{16})(?=$|[^A-Z0-9])/g,
     replacement: '[REDACTED]'
   }
 ];
