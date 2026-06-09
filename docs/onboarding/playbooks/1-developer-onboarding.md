@@ -1,4 +1,6 @@
-# Developer Onboarding Playbook
+# Automated Developer Onboarding Playbook
+
+Welcome to the development team! This playbook provides a comprehensive, step-by-step guide to initializing your workspace, running the test suite, and adhering to our PR validation rules.
 
 ## 1. Workspace Setup & Initialization
 

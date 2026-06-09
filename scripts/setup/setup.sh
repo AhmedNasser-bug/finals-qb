@@ -38,38 +38,10 @@ else
     echo ".env.local already exists."
 fi
 
-echo "=> Seeding mock data / workspace prep..."
-# Ensure docs directory exists
-mkdir -p docs
-
-# Create a mock database seed structure as per orchestration requirements
-mkdir -p .data/seeds
-if [ ! -f .data/seeds/default-tenant.json ]; then
-cat <<EOF3 > .data/seeds/default-tenant.json
-{
-  "tenants": ["tenant-a", "tenant-b"],
-  "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-}
-EOF3
-echo "Mock database seeded."
-else
-    echo "Mock database already seeded."
-fi
+./scripts/setup/seed-tenant.sh
 
 if [ "$1" = "--multi-tenant" ]; then
-    echo "=> Starting multi-tenant sandbox..."
-    if [ ! -f docker-compose.yml ]; then
-        echo "Error: docker-compose.yml not found."
-    elif command -v docker-compose &> /dev/null; then
-        # Use idempotent up command, and restart conditionally if needed
-        docker-compose up -d --build --remove-orphans
-    elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
-        # Use idempotent up command
-        docker compose up -d --build --remove-orphans
-    else
-        echo "Error: docker-compose or docker compose is required for multi-tenant setup."
-    fi
-    echo "Multi-tenant sandbox containers are spinning up..."
+    ./scripts/setup/start-sandbox.sh
 fi
 
 echo "=> Environment bootstrap complete."
