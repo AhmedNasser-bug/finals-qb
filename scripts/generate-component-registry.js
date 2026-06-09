@@ -21,8 +21,7 @@ function scanDirectory(dir, fileList = []) {
 
 function extractInterface(content, componentName) {
   // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
+  const interfaceMatch = content.match(/(?:interface\s+\w+|type\s+\w+\s*=)\s*\{([\s\S]*?)\n\}/);
   if (interfaceMatch) {
     return interfaceMatch[1].trim();
   }
@@ -30,12 +29,7 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await fs.promises.readFile(filePath, 'utf-8');
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
@@ -136,11 +130,7 @@ async function generateDocs() {
   const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
   const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
 
-  const componentDocs = [];
-  for (const file of tsxFiles) {
-    const doc = await processComponent(file);
-    componentDocs.push(doc);
-  }
+  const componentDocs = await Promise.all(tsxFiles.map(file => processComponent(file)));
 
   const markdown = `# Component Registry
 
