@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 
 const UI_DIR = path.join(__dirname, '../components');
@@ -20,22 +21,32 @@ function scanDirectory(dir, fileList = []) {
 }
 
 function extractInterface(content, componentName) {
-  // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
-  if (interfaceMatch) {
-    return interfaceMatch[1].trim();
+  const startMatch = content.match(/(?:interface\s+\w+|type\s+\w+\s*=)\s*\{/);
+  if (!startMatch) return 'None specified or inline props';
+
+  const startIndex = startMatch.index + startMatch[0].length - 1;
+  const stack = [];
+  let endIndex = -1;
+
+  for (let i = startIndex; i < content.length; i++) {
+    if (content[i] === '{') stack.push('{');
+    else if (content[i] === '}') {
+      stack.pop();
+      if (stack.length === 0) {
+        endIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (endIndex !== -1) {
+    return content.slice(startIndex + 1, endIndex).trim();
   }
   return 'None specified or inline props';
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await fsPromises.readFile(filePath, 'utf-8');
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
@@ -136,11 +147,7 @@ async function generateDocs() {
   const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
   const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
 
-  const componentDocs = [];
-  for (const file of tsxFiles) {
-    const doc = await processComponent(file);
-    componentDocs.push(doc);
-  }
+  const componentDocs = await Promise.all(tsxFiles.map(file => processComponent(file)));
 
   const markdown = `# Component Registry
 
