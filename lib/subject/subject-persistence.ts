@@ -261,8 +261,9 @@ function autoFixSingleQuestion(
       } else {
         // Check for "True" / "False" maps to A / B
         if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+          const answerStr = qObj.answer as string;
+          const isTrueMatch = answerStr === "TRUE" || answerStr === "YES" || answerStr === "T" || answerStr === "1";
+          const isFalseMatch = answerStr === "FALSE" || answerStr === "NO" || answerStr === "F" || answerStr === "0";
           if (isTrueMatch || isFalseMatch) {
             const oldAnswer = qObj.answer;
             qObj.answer = isTrueMatch ? "A" : "B";
@@ -705,14 +706,14 @@ function balanceJsonStack(str: string): string {
         stack.pop()
       } else {
         const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        if (idx !== -1) stack.length = idx
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
         const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        if (idx !== -1) stack.length = idx
       }
     }
   }
