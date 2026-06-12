@@ -3,17 +3,17 @@ type RedactReplacement = string | ((match: string, ...args: any[]) => string);
 const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
-    pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    pattern: /(?<=^|[^a-zA-Z0-9._%+-])([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
     replacement: '[REDACTED]'
   },
   {
     // Bearer tokens
-    pattern: /(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
+    pattern: /\b(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
     replacement: '$1[REDACTED]'
   },
   {
     // Private keys
-    pattern: /(-----BEGIN[A-Z0-9-\s]+PRIVATE KEY-----)([\s\S]+?)(-----END[A-Z0-9-\s]+PRIVATE KEY-----)/g,
+    pattern: /(-----BEGIN[A-Z0-9\s\-]+?PRIVATE KEY-----)([\s\S]+?)(-----END[A-Z0-9\s\-]+?PRIVATE KEY-----)/g,
     replacement: '$1\n[REDACTED]\n$3'
   },
   {
@@ -30,7 +30,7 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // JWTs
-    pattern: /(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
+    pattern: /(?<=^|[^a-zA-Z0-9_-])(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
     replacement: '[REDACTED]'
   }
 ];
