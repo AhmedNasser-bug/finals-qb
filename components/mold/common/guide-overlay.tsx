@@ -113,8 +113,16 @@ const TIPS = [
 export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
   const [activeSection, setActiveSection] = useState<SectionId>("overview")
   const [activeStep, setActiveStep] = useState(0)
+  const overlayRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<Partial<Record<SectionId, HTMLElement | null>>>({})
+
+  // Trap focus on mount
+  useEffect(() => {
+    if (open) {
+      overlayRef.current?.focus()
+    }
+  }, [open])
 
   // Close on Escape
   useEffect(() => {
@@ -168,10 +176,12 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
 
   return (
     <div
+      ref={overlayRef}
       role="dialog"
       aria-modal="true"
       aria-label="User Guide"
-      className="fixed inset-0 z-[60] bg-background flex flex-col animate-fade-in"
+      tabIndex={-1}
+      className="fixed inset-0 z-[60] bg-background flex flex-col animate-fade-in outline-none"
     >
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <header className="flex-none flex items-center justify-between px-6 h-14 bg-panel border-b-2 border-primary/40 shrink-0 z-10">

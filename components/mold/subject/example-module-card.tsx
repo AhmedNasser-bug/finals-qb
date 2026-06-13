@@ -53,8 +53,16 @@ export function ExampleModuleCard({
 
       {/* Invisible main button overlay covering the whole card (except z-10 interactive controls) */}
       {!isLoading && (
-        <button
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => onLoad(entry)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              onLoad(entry)
+            }
+          }}
           className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none z-0"
           aria-label={`Load module ${entry.name}`}
         />
