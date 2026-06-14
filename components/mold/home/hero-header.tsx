@@ -3,7 +3,7 @@
 import Image from "next/image"
 import type { SubjectData, Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
-import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs"
+import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
 interface HeroHeaderProps {
