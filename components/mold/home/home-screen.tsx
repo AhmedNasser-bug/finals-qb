@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react"
 
-import { PerformanceTable } from "@/components/mold/home/performance-table"
 import { GameRunner } from "@/components/mold/game/game-runner"
 import { AchievementGallery } from "@/components/mold/achievement/achievement-gallery"
 import { EncyclopediaOverlay } from "@/components/mold/common/encyclopedia-overlay"
@@ -25,11 +24,9 @@ const AddQuestionsWizard = dynamic(
 import { TopNavBar } from "@/components/mold/home/top-nav-bar"
 import { SideNavBar } from "@/components/mold/home/side-nav-bar"
 import { BottomMobileNav } from "@/components/mold/home/bottom-mobile-nav"
-import { HeaderWell } from "@/components/mold/home/header-well"
-import { StatsScreen } from "@/components/mold/home/stats-screen"
 import { useStats } from "@/lib/game/stats-context"
 import { MobileBottomNavBar } from "@/components/mold/home/home-screen-components"
-import { MainContentGrid } from "@/components/mold/home/home-screen-blocks"
+import { HomeMainCanvas } from "@/components/mold/home/home-main-canvas"
 import type { AppView } from "@/components/mold/home/home-screen-types"
 
 import {
@@ -177,48 +174,25 @@ export function HomeScreen({
         />
 
         {/* ─── MAIN CANVAS AREA ────────────────────────────────────────────── */}
-        <main className="md:ml-64 pt-24 pb-20 px-4 sm:px-6 lg:px-12 min-h-screen flex-1">
-          
-          {view === "stats" ? (
-            <StatsScreen onReturnHome={() => setView("home")} />
-          ) : (
-            <>
-              {/* Header Well */}
-              <HeaderWell
-                subjectName={activeSubject.name}
-                description={activeSubject.config.description}
-                runCount={runs.length}
-                visualAccuracyPct={visualAccuracyPct}
-              />
-
-              <MainContentGrid
-                selectedMode={selectedMode}
-                handleModeSelect={handleModeSelect}
-                handleInitialize={handleInitialize}
-                config={config}
-                handleConfigChange={handleConfigChange}
-                categories={subjectData.categories}
-                unlockedCount={unlockedCount}
-                totalAchievementsCount={totalAchievementsCount}
-                topAchievements={topAchievements}
-                achievements={achievements}
-                setShowGallery={setShowGallery}
-              />
-
-              {/* Performance runs table list below the main grid split */}
-              <div className="flex items-center gap-4 py-8 select-none">
-                <div className="flex-1 h-px bg-zinc-800" />
-                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase font-bold">
-                  QUIZ HISTORY
-                </span>
-                <div className="flex-1 h-px bg-zinc-800" />
-              </div>
-
-              <PerformanceTable runs={runs} stats={stats} />
-            </>
-          )}
-
-        </main>
+        <HomeMainCanvas
+          view={view}
+          setView={setView}
+          activeSubject={activeSubject}
+          runs={runs}
+          visualAccuracyPct={visualAccuracyPct}
+          selectedMode={selectedMode}
+          handleModeSelect={handleModeSelect}
+          handleInitialize={handleInitialize}
+          config={config}
+          handleConfigChange={handleConfigChange}
+          subjectDataCategories={subjectData.categories}
+          unlockedCount={unlockedCount}
+          totalAchievementsCount={totalAchievementsCount}
+          topAchievements={topAchievements}
+          achievements={achievements}
+          setShowGallery={setShowGallery}
+          stats={stats}
+        />
 
         {/* ─── BOTTOM NAVIGATION BAR (MOBILE ONLY) ────────────────────────────────── */}
         <BottomMobileNav
