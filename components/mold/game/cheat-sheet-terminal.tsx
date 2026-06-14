@@ -137,7 +137,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                     <p
                       className="font-sans text-sm font-semibold leading-relaxed text-[#e5e2e1] text-pretty"
                       dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(renderMath(entry.question))
+                        __html: renderMath(DOMPurify.sanitize(entry.question))
                       }}
                     />
                   </div>
@@ -165,7 +165,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                               <span 
                                 className="font-sans shrink-0 max-w-[90%]"
                                 dangerouslySetInnerHTML={{
-                                  __html: DOMPurify.sanitize(renderMath(opt.text))
+                                  __html: renderMath(DOMPurify.sanitize(opt.text))
                                 }} 
                               />
                             </div>
@@ -184,7 +184,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                       <p
                         className="font-sans text-xs leading-relaxed text-zinc-300 italic text-pretty"
                         dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(renderMath(entry.explanation))
+                          __html: renderMath(DOMPurify.sanitize(entry.explanation))
                         }}
                       />
                     </div>

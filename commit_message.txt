@@ -1,0 +1,10 @@
+🔒 Fix DOMPurify + KaTeX mutation XSS bypass
+
+🎯 What:
+Changed the order of execution in `cheat-sheet-terminal.tsx` and `question-card-builder.tsx` from `DOMPurify.sanitize(renderMath(text))` to `renderMath(DOMPurify.sanitize(text))`.
+
+⚠️ Risk:
+When KaTeX output (which contains complex nested HTML and MathML) is passed into DOMPurify, an attacker can exploit mXSS (mutation XSS) bypasses caused by parsing differences between DOMPurify and the browser's HTML parser. This allowed XSS payloads to execute.
+
+🛡️ Solution:
+By running `DOMPurify.sanitize` *before* `renderMath`, we ensure that any dangerous user input is stripped out of the raw text first. Then, `renderMath` safely transforms the remaining sanitized text into KaTeX elements without being subject to DOMPurify's complex DOM mutation logic, standardizing the order across the codebase (e.g., matching `rich-text.tsx`).

@@ -421,7 +421,7 @@ function OptionButton({
                     "text-[#e5e2e1]"
           )}
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(renderMath(text ?? label))
+            __html: renderMath(DOMPurify.sanitize(text ?? label))
           }}
         />
       </div>
@@ -503,7 +503,7 @@ function QuestionCardFooter({ showHint = false }: { showHint?: boolean }) {
         <p
           className="font-sans text-xs text-[#b8b5b4] leading-relaxed italic"
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(renderMath(hasExplanation ? currentQuestion.explanation ?? "" : currentQuestion.hint ?? ""))
+            __html: renderMath(DOMPurify.sanitize(hasExplanation ? currentQuestion.explanation ?? "" : currentQuestion.hint ?? ""))
           }}
         />
       </div>
