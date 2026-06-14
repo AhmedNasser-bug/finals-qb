@@ -53,14 +53,16 @@ def check_mermaid_syntax(diagram, qid, errors, warnings):
 
         # Check unquoted special characters in flowcharts/graphs (which crash the renderer)
         if is_flowchart:
-            matches = re.finditer(r'\b([a-zA-Z0-9_-]+)\s*([\[\(\{])', clean_line)
+            # Temporarily remove double-quoted substrings to avoid matching inside them
+            line_no_quotes = re.sub(r'"[^"\\]*(?:\\.[^"\\]*)*"', '""', clean_line)
+            matches = re.finditer(r'\b([a-zA-Z0-9_-]+)\s*([\[\(\{])', line_no_quotes)
             for m in matches:
                 start_char = m.group(2)
                 start_pos = m.end()
                 end_char = ']' if start_char == '[' else ')' if start_char == '(' else '}'
                 
                 # Find matching closing character considering depth
-                rest = clean_line[start_pos:]
+                rest = line_no_quotes[start_pos:]
                 end_pos = -1
                 depth = 1
                 for char_idx, c in enumerate(rest):
