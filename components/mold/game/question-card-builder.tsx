@@ -426,10 +426,10 @@ function OptionButton({
         />
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
-        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
-        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
+        {isRevealed && isCorrect && <CheckCircleIcon aria-hidden="true" className="w-5 h-5 text-[#fecc17]" />}
+        {isRevealed && isWrong && <XIcon aria-hidden="true" className="w-5 h-5 text-[#ffb4ab]" />}
+        {!isRevealed && isSelected && <CheckCircleIcon aria-hidden="true" className="w-5 h-5 text-[#fecc17]" />}
+        {!isRevealed && !isSelected && <RadioIcon aria-hidden="true" className="w-5 h-5 text-zinc-700" />}
       </div>
       {isRevealed && isCorrect && isSelected && (
         <>
@@ -472,7 +472,7 @@ function QuestionCardFooter({ showHint = false }: { showHint?: boolean }) {
 
   return (
     <div className="bg-[#0e0e0e] px-6 py-4 flex items-start gap-4 animate-fade-in border-t border-[#2a2a2a] shrink-0" aria-live="polite">
-      <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
+      <LightbulbIcon aria-hidden="true" className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
       <div className="space-y-1 flex-1 min-w-0">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
