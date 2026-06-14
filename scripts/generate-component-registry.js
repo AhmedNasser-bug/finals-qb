@@ -151,6 +151,17 @@ This registry outlines the exact properties, slots, state dependencies, and perf
 
 ## Architecture Guidelines
 
+### Cross-Layer Routing & Backend Services
+- **Frontend Client Apps:** Utilizes Next.js App Router (\`app/\` directory) for strict server-components by default, with client hydration via \`"use client"\` boundary markers.
+- **Backend Services:** Implements Server Actions (e.g. \`app/actions.ts\`) for backend logic.
+- **Cloud Infra Targets:** Deployed in multi-tenant Docker containers, utilizing \`NEXT_DIST_DIR\` (e.g. \`.next-tenant-a\`) to enforce compilation and runtime isolation between instances.
+
+### Data Pipelines & Core Interfaces
+- **Data Contracts:** All core data models reside in \`lib/types/mold-types.ts\`.
+- **FullSubjectData:** The primary subject structure, dictating the schema for quizzes, config, flashcards, terminology, and achievements.
+- **RunRecord:** A discrete record of a session run, logging score, streak, time taken, and accuracy.
+- **Persistence:** Employs an asynchronous interface wrapping local storage (e.g. \`loadRuns\`, \`saveRuns\`, \`loadAchievements\`), architected for straightforward swapping to remote or IndexedDB backends.
+
 ### Routing States
 - **App Router:** Utilizes Next.js App Router for strict server-components by default.
 - **Client Hydration:** Interactive islands and global state providers are explicitly marked with \`"use client"\` to cleanly split static and hydrated content.
