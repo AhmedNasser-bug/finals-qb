@@ -28,9 +28,9 @@ import { BottomMobileNav } from "@/components/mold/home/bottom-mobile-nav"
 import { HeaderWell } from "@/components/mold/home/header-well"
 import { StatsScreen } from "@/components/mold/home/stats-screen"
 import { useStats } from "@/lib/game/stats-context"
-import { MobileBottomNavBar } from "@/components/mold/home/home-screen-components"
 import { MainContentGrid } from "@/components/mold/home/home-screen-blocks"
 import type { AppView } from "@/components/mold/home/home-screen-types"
+import { QuizHistoryHeader } from "@/components/mold/home/quiz-history-header"
 
 import {
   type GameModeId,
@@ -206,13 +206,7 @@ export function HomeScreen({
               />
 
               {/* Performance runs table list below the main grid split */}
-              <div className="flex items-center gap-4 py-8 select-none">
-                <div className="flex-1 h-px bg-zinc-800" />
-                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase font-bold">
-                  QUIZ HISTORY
-                </span>
-                <div className="flex-1 h-px bg-zinc-800" />
-              </div>
+              <QuizHistoryHeader />
 
               <PerformanceTable runs={runs} stats={stats} />
             </>

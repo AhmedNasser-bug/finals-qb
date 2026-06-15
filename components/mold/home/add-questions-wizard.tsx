@@ -5,6 +5,7 @@ import { Sparkles, X, Copy, Check, Info, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
 import { formatLabel, type FullSubjectData } from "@/lib/mold-types"
+import { WizardHeader } from "@/components/mold/home/wizard-header"
 
 interface AddQuestionsWizardProps {
   activeSubject: FullSubjectData
@@ -297,24 +298,11 @@ CRITICAL RULES:
       <div className="w-full max-w-5xl h-[88vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
-          <div>
-            <h2 className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary animate-pulse" aria-hidden="true" />
-              <span>Add Questions to Subject Wizard</span>
-            </h2>
-            <p className="text-[10px] font-mono text-zinc-500 mt-0.5 tracking-wider uppercase">
-              Step {step} of 5 — {steps[step - 1].label}
-            </p>
-          </div>
-          <button
-            onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
-            aria-label="Close wizard"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+        <WizardHeader
+          step={step}
+          label={steps[step - 1].label}
+          onCancel={onCancel}
+        />
 
         {/* Progress Breadcrumbs */}
         <div className="px-8 py-4 border-b border-border/50 bg-[#0d0e11] flex items-center justify-between">
