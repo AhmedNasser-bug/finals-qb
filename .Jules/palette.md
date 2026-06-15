@@ -69,3 +69,11 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2026-06-15 - Adding accessibility attributes to mobile navigation and action states
+**Learning:** Mobile navigation items that use stylized small text (e.g., 'CORE', 'DATA') are often insufficient for context without tooltips. In addition,  for categorical toggles and  for loading share buttons were missing, leading to silent state transitions for assistive tech.
+**Action:** Always add descriptive `title` and `aria-label` attributes to stylized mobile actions. Ensure categorical button toggles receive `aria-pressed` instead of just `aria-current`, and loading action buttons use `aria-busy` to indicate asynchronous background work.
+
+## 2026-06-15 - Adding accessibility attributes to mobile navigation and action states
+**Learning:** Mobile navigation items that use stylized small text (e.g., 'CORE', 'DATA') are often insufficient for context without tooltips. In addition, `aria-pressed` for categorical toggles and `aria-busy` for loading share buttons were missing, leading to silent state transitions for assistive tech.
+**Action:** Always add descriptive `title` and `aria-label` attributes to stylized mobile actions. Ensure categorical button toggles receive `aria-pressed` instead of just `aria-current`, and loading action buttons use `aria-busy` to indicate asynchronous background work.
