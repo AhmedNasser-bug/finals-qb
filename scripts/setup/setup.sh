@@ -44,17 +44,29 @@ mkdir -p docs
 
 # Create a mock database seed structure as per orchestration requirements
 mkdir -p .data/seeds
-if [ ! -f .data/seeds/default-tenant.json ]; then
-cat <<EOF3 > .data/seeds/default-tenant.json
+
+seed_tenant() {
+    local tenant_id=$1
+    local seed_file=".data/seeds/${tenant_id}.json"
+    if [ ! -f "$seed_file" ]; then
+        cat <<EOF > "$seed_file"
 {
-  "tenants": ["tenant-a", "tenant-b"],
+  "tenantId": "${tenant_id}",
+  "status": "active",
   "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
-EOF3
-echo "Mock database seeded."
-else
-    echo "Mock database already seeded."
-fi
+EOF
+        echo "Mock database seeded for ${tenant_id}."
+    else
+        echo "Mock database already seeded for ${tenant_id}."
+    fi
+}
+
+TENANTS=("tenant-a" "tenant-b")
+for t in "${TENANTS[@]}"; do
+    seed_tenant "$t"
+    mkdir -p ".next-${t}"
+done
 
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
@@ -62,9 +74,11 @@ if [ "$1" = "--multi-tenant" ]; then
         echo "Error: docker-compose.yml not found."
     elif command -v docker-compose &> /dev/null; then
         # Use idempotent up command, and restart conditionally if needed
+        echo "Isolating Next.js output directories via NEXT_DIST_DIR..."
         docker-compose up -d --build --remove-orphans
     elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
         # Use idempotent up command
+        echo "Isolating Next.js output directories via NEXT_DIST_DIR..."
         docker compose up -d --build --remove-orphans
     else
         echo "Error: docker-compose or docker compose is required for multi-tenant setup."

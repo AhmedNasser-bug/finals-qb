@@ -132,6 +132,45 @@ ${formattedEdgeCases.join('\n')}
 `;
 }
 
+function extractInfraTargets() {
+  const composeFile = path.join(__dirname, '../docker-compose.yml');
+  if (!fs.existsSync(composeFile)) return 'No cloud infra targets found.';
+  const content = fs.readFileSync(composeFile, 'utf-8');
+  const lines = content.split('\n');
+  const targets = [];
+  let currentService = '';
+  for (const line of lines) {
+    if (line.trim().endsWith(':') && line.startsWith('  ') && !line.startsWith('    ')) {
+      currentService = line.trim().replace(':', '');
+      targets.push(`#### Service: ${currentService}`);
+    } else if (line.trim().startsWith('image:')) {
+      targets.push(`- **Image**: ${line.split('image:')[1].trim()}`);
+    } else if (line.trim().startsWith('- NEXT_DIST_DIR=')) {
+      targets.push(`- **Data Pipeline / Output Isolation**: ${line.split('=')[1].trim()}`);
+    } else if (line.trim().startsWith('- "')) {
+      targets.push(`- **Port Mapping**: ${line.trim().replace('- ', '')}`);
+    }
+  }
+  return targets.join('\n');
+}
+
+function extractBackendServices() {
+  const actionsFile = path.join(__dirname, '../app/actions.ts');
+  if (!fs.existsSync(actionsFile)) return 'No backend services found.';
+  const content = fs.readFileSync(actionsFile, 'utf-8');
+  const exports = [];
+  const lines = content.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].includes('export async function')) {
+      const funcName = lines[i].split('export async function ')[1].split('(')[0];
+      exports.push(`### Backend Service: \`${funcName}\``);
+      exports.push(`- **Type**: Server Action`);
+      exports.push(`- **Data Pipeline**: Client component invocation -> Server Action -> File System / Database`);
+    }
+  }
+  return exports.join('\n\n');
+}
+
 async function generateDocs() {
   const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
   const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
@@ -160,6 +199,13 @@ This registry outlines the exact properties, slots, state dependencies, and perf
 - Next.js dynamic imports (\`next/dynamic\`) are employed for complex or heavy UI segments (e.g., Mermaid diagram visualizers) to optimize initial paint payload sizes.
 - Static assets (images, icons) are delivered via the Next.js optimized asset pipeline where possible, or directly inlined if SVG.
 - UI chunks are split automatically via Turbopack per route and dynamically loaded on route transition.
+
+## Infrastructure & Backend Targets
+### Docker Compose Multi-Tenant Sandbox
+${extractInfraTargets()}
+
+### Backend Server Actions
+${extractBackendServices()}
 
 ## Component Definitions
 ${componentDocs.join('\n')}
