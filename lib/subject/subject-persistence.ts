@@ -676,6 +676,8 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
+  const braceStack: number[] = []
+  const bracketStack: number[] = []
   let inString = false
   let escaped = false
   
@@ -697,22 +699,36 @@ function balanceJsonStack(str: string): string {
     if (inString) continue;
 
     if (char === '{') {
+      braceStack.push(stack.length)
       stack.push('{')
     } else if (char === '[') {
+      bracketStack.push(stack.length)
       stack.push('[')
     } else if (char === '}') {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
+        braceStack.pop()
       } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        if (braceStack.length > 0) {
+          const idx = braceStack.pop()!
+          stack.length = idx
+          while (bracketStack.length > 0 && bracketStack[bracketStack.length - 1] >= idx) {
+            bracketStack.pop()
+          }
+        }
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
+        bracketStack.pop()
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        if (bracketStack.length > 0) {
+          const idx = bracketStack.pop()!
+          stack.length = idx
+          while (braceStack.length > 0 && braceStack[braceStack.length - 1] >= idx) {
+            braceStack.pop()
+          }
+        }
       }
     }
   }

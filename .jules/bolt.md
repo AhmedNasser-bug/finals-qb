@@ -5,3 +5,5 @@
 ## 2024-05-28 - Optimize Next.js Production Build Speed
 **Learning:** Next.js build speed is significantly impacted by redundant TypeScript validation during `pnpm build`, which can be safely bypassed if standard type checks are securely managed via a separate CI process.
 **Action:** Added `typescript: { ignoreBuildErrors: true }` to `next.config.mjs` to significantly reduce Next.js production build execution latency.
+
+2026-06-15 - [O(N^2) Mitigation], Refactored string JSON stack parsing to use indexed secondary stacks for brackets and arrays, converting O(N^2) searches into amortized O(N) performance. Upgraded Base64url to use Buffer where available instead of inefficient Uint8Array.from iterators, reducing memory allocation latency., Updated functions in lib/subject/subject-persistence.ts and lib/subject/subject-sharing.ts
