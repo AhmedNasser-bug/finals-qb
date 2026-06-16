@@ -704,15 +704,17 @@ function balanceJsonStack(str: string): string {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        while (stack.length > 0) {
+          if (stack.pop() === '{') break
+        }
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        while (stack.length > 0) {
+          if (stack.pop() === '[') break
+        }
       }
     }
   }
