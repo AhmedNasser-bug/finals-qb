@@ -65,9 +65,17 @@ export function UserSubjectCard({
 
       {/* Invisible main button overlay covering the whole card (except z-10 interactive controls) */}
       {!isConfirming && (
-        <button
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => onSelect(full)}
-          className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none z-0"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              onSelect(full)
+            }
+          }}
+          className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none z-0 outline-none"
           aria-label={`Select subject ${full.name}`}
         />
       )}
