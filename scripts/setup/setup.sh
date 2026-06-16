@@ -56,6 +56,22 @@ else
     echo "Mock database already seeded."
 fi
 
+for tenant in "tenant-a" "tenant-b"; do
+  seed_file=".data/seeds/${tenant}.json"
+  if [ ! -f "$seed_file" ]; then
+    cat <<EOF > "$seed_file"
+{
+  "tenantId": "${tenant}",
+  "NEXT_DIST_DIR": ".next-${tenant}",
+  "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+    echo "Generated seed for ${tenant}."
+  else
+    echo "Seed for ${tenant} already exists."
+  fi
+done
+
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
     if [ ! -f docker-compose.yml ]; then

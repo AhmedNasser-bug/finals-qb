@@ -55,7 +55,7 @@ None specified or inline props
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useEffect, useRouter, useState
+useEffect, useRouter, useSearchParams, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -141,8 +141,10 @@ Utilizes memoization: useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-id: string
+interface ToastItem {
+  id: string
   achievement: Achievement
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -168,8 +170,10 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-subject: FullSubjectData
+interface EncyclopediaOverlayProps {
+  subject: FullSubjectData
   onClose: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -195,8 +199,10 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-rightText?: string
+interface FooterProps {
+  rightText?: string
   className?: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -221,8 +227,10 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-open: boolean
+interface GuideOverlayProps {
+  open: boolean
   onClose: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -248,9 +256,11 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-code: DiagramErrorCode
+interface DiagramError {
+  code: DiagramErrorCode
   message: string
   details?: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -266,7 +276,7 @@ code: DiagramErrorCode
 - Client Component: `Yes`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
-- Dynamic Lazy-Loading: `No`
+- Dynamic Lazy-Loading: `Yes`
 
 **State Dependencies (Hooks):**
 useState
@@ -276,7 +286,9 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-mode: GameMode;
+interface ModeCardProps {
+  mode: GameMode;
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -303,9 +315,11 @@ Utilizes memoization: useMemo to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-content: string
+interface RichTextProps {
+  content: string
   className?: string
   id?: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -332,7 +346,8 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-encoding: boolean;
+interface LinkTabContentProps {
+  encoding: boolean;
   encodeError: string | null;
   shareUrl: string;
   shortUrl: string;
@@ -344,6 +359,7 @@ encoding: boolean;
   onCopy: () => void;
   onShorten: () => void;
   onCopyShortUrl: () => void;
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -369,8 +385,10 @@ Utilizes memoization: useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-subject: FullSubjectData
+interface ShareModalProps {
+  subject: FullSubjectData
   onClose: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -396,12 +414,14 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onQuit: () => void
+interface HeaderProps {
+  onQuit: () => void
   progress: number
   position: string
   round: number
   confident: number
   learning: number
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -427,12 +447,14 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-card: Flashcard;
+interface FlashcardDossierCardProps {
+  card: Flashcard;
   index: number;
   flipped: boolean;
   animClass: string;
   accent: { color: string; border: string; label: string };
   onFlip: () => void;
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -458,13 +480,42 @@ Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-flashcards: Flashcard[]
+interface FlashcardScreenProps {
+  flashcards: Flashcard[]
   onComplete: () => void
   onReturnHome: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
+### `components/mold/game/cheat-sheet-terminal.tsx`
+
+**Module Name:** Cheat-Sheet-Terminal
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useCheatSheet, useEffect
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
 ### `components/mold/game/game-error-boundary.tsx`
@@ -485,8 +536,10 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onReturnHome: () => void
+interface Props {
+  onReturnHome: () => void
   children: ReactNode
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -513,11 +566,13 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onHintRequest: () => void
+interface GameFooterProps {
+  onHintRequest: () => void
   initialLockRemaining: number
   hintTimeRemaining: number
   hintUsedThisQuestion: boolean
   showHint: boolean
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -536,7 +591,7 @@ onHintRequest: () => void
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useGameEngine
+useCheatSheet, useGameEngine
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -587,14 +642,15 @@ None specified or inline props
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useAchievementToast, useAchievements, useEffect, useGameEngine, useHint, useRef, useState, useStreak
+useAchievementToast, useAchievements, useCheatSheet, useEffect, useGameEngine, useHint, useRef, useState, useStreak
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-config: GameConfig
+interface GameRunnerProps {
+  config: GameConfig
   /** The active subject — provides questions and flashcards for this run. */
   subject: FullSubjectData
   /** Real persisted run history — used for achievement evaluation (Fix 1-A). */
@@ -603,11 +659,13 @@ config: GameConfig
   onRunComplete?: () => void
   /** Called with the completed RunRecord so the parent can persist it. */
   onRunSaved?: (run: RunRecord) => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Implements explicit fallback UIs for critical asynchronous or failing boundaries.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
 ### `components/mold/game/game-stat-cell.tsx`
@@ -680,7 +738,8 @@ Utilizes memoization: useMemo to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-idx: number
+interface OptionButtonProps {
+  idx: number
   label: string
   text?: string
   isSelected: boolean
@@ -689,6 +748,7 @@ idx: number
   isWrong: boolean
   isDimmed: boolean
   onSelect: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -767,10 +827,12 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-elapsedSeconds: number
+interface StatsGridProps {
+  elapsedSeconds: number
   avgTimeSec: string | null
   bestStreak: number
   xpYield: number
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -795,8 +857,10 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onReturnHome: () => void
+interface ResultsScreenProps {
+  onReturnHome: () => void
   onPlayAgain: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -822,10 +886,12 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-id: string
+interface AchievementDef {
+  id: string
   title: string
   description: string
   unlockedAt: string | null
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -851,10 +917,42 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onInitialize: () => void
+interface ActionHubProps {
+  onInitialize: () => void
   selectedMode: GameModeId
   disabled?: boolean
   className?: string
+}
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/home/add-questions-wizard.tsx`
+
+**Module Name:** Add-Questions-Wizard
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useState
+
+**Performance Characteristics:**
+Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+interface AddQuestionsWizardProps {
+  activeSubject: FullSubjectData
+  onMerge: (mergedSubject: FullSubjectData) => void
+  onCancel: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -880,12 +978,14 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-view: AppView
+interface BottomMobileNavProps {
+  view: AppView
   setView: (view: AppView) => void
   handleModeSelect: (id: GameModeId) => void
   setShowEncyclopedia: (show: boolean) => void
   setShowGallery: (show: boolean) => void
   onChangeSubject: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -911,10 +1011,12 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-subjectName: string
+interface HeaderWellProps {
+  subjectName: string
   description: string
   runCount: number
   visualAccuracyPct: number
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -939,12 +1041,90 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-subject: SubjectData
+interface HeroHeaderProps {
+  subject: SubjectData
   achievements: Achievement[]
   onTrophyClick?: () => void
   onChangeSubject?: () => void
   onImportNew?: () => void
   className?: string
+}
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/home/home-screen-blocks.tsx`
+
+**Module Name:** Home-Screen-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+interface MainContentGridProps {
+  // Mode Selection
+  selectedMode: GameModeId
+  handleModeSelect: (id: GameModeId) => void
+  handleInitialize: () => void
+
+  // Configuration
+  config: SetupConfig
+  handleConfigChange: (patch: Partial<SetupConfig>) => void
+  categories: CategoryData[]
+
+  // Achievements
+  unlockedCount: number
+  totalAchievementsCount: number
+  topAchievements: Achievement[]
+  achievements: Achievement[]
+  setShowGallery: (show: boolean) => void
+}
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/home/home-screen-components.tsx`
+
+**Module Name:** Home-Screen-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+interface MobileBottomNavBarProps {
+  view: AppView
+  setView: (view: AppView) => void
+  handleModeSelect: (id: GameModeId) => void
+  setShowEncyclopedia: (show: boolean) => void
+  setShowGallery: (show: boolean) => void
+  onChangeSubject: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -960,7 +1140,7 @@ subject: SubjectData
 - Client Component: `Yes`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
-- Dynamic Lazy-Loading: `No`
+- Dynamic Lazy-Loading: `Yes`
 
 **State Dependencies (Hooks):**
 useAchievements, useEffect, useSafeAuth, useState, useStats
@@ -970,7 +1150,8 @@ Utilizes memoization: useMemo to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-/** The currently active FullSubjectData, chosen by the root orchestrator. */
+interface HomeScreenProps {
+  /** The currently active FullSubjectData, chosen by the root orchestrator. */
   activeSubject: FullSubjectData
   /** All subjects in the store — passed down so the importer can check for duplicate ids. */
   allSubjectIds: string[]
@@ -978,6 +1159,7 @@ Utilizes memoization: useMemo to prevent unnecessary re-renders.
   onAddSubject: (subject: FullSubjectData) => void
   /** Called when the user clicks "Change Subject" in the header. */
   onChangeSubject: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1004,10 +1186,12 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-selected: GameModeId
+interface ModeSelectorProps {
+  selected: GameModeId
   onSelect: (id: GameModeId) => void
   onLaunch?: () => void
   className?: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1033,9 +1217,11 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-runs: RunRecord[]
+interface PerformanceTableProps {
+  runs: RunRecord[]
   stats: AggregateStats
   className?: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1085,8 +1271,10 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-config: SetupConfig
+interface ConfigControlsContextValue {
+  config: SetupConfig
   onChange: (patch: Partial<SetupConfig>) => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1112,11 +1300,13 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-config: SetupConfig
+interface SetupPanelProps {
+  config: SetupConfig
   onChange: (patch: Partial<SetupConfig>) => void
   selectedMode: GameModeId
   categories: CategoryData[]
   className?: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1142,7 +1332,8 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-subjectId: string
+interface SideNavBarProps {
+  subjectId: string
   activeView: "home" | "stats"
   onShowDashboard: () => void
   onShowStats: () => void
@@ -1150,7 +1341,12 @@ subjectId: string
   onShowGallery: () => void
   onChangeSubject: () => void
   onImportNew: () => void
+  onAddQuestions: () => void
   onInitialize: () => void
+  onDownloadHtml: () => void
+  onDownloadPdf: () => void
+  onDownloadSolvedPdf: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1176,7 +1372,9 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-onReturnHome: () => void
+interface StatsScreenProps {
+  onReturnHome: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1202,10 +1400,14 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-currentStreak: number
-  bestStreak: number
-  isAtRisk?: boolean // If true, make the flame flicker more intensely/look fragile
-  className?: string
+type StreakTier = {
+  min: number
+  label: string
+  colorClass: string
+  glowClass: string
+  bgClass: string
+  baseBgClass: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1230,8 +1432,10 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-subjectId: string
+interface SubjectVisualCardProps {
+  subjectId: string
   subjectName: string
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1281,11 +1485,13 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-activeSubjectName?: string
+interface TopNavBarProps {
+  activeSubjectName?: string
   loadedSubjectsCount?: number
   onShowEncyclopedia?: () => void
   onShowGallery?: () => void
   onImportNew?: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1311,15 +1517,44 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-entry: ExampleManifestEntry
+interface ExampleModuleCardProps {
+  entry: ExampleManifestEntry
   isLoading: boolean
   onLoad: (entry: ExampleManifestEntry) => void
   onShare: (e: React.MouseEvent, entry: ExampleManifestEntry) => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/subject/print-layout.tsx`
+
+**Module Name:** Print-Layout
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+interface PrintLayoutProps {
+  subject: FullSubjectData
+}
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
 ### `components/mold/subject/share-receiver.tsx`
@@ -1340,12 +1575,14 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-/** The raw Base64url payload extracted from the URL hash. */
+interface ShareReceiverProps {
+  /** The raw Base64url payload extracted from the URL hash. */
   payload: string
   /** Called when the user accepts the import. */
   onAccept: (subject: FullSubjectData) => void
   /** Called when the user declines or closes. */
   onDecline: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1371,8 +1608,10 @@ Utilizes memoization: useMemo to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-promptCopied: boolean
+interface AIPromptSectionProps {
+  promptCopied: boolean
   onCopyPrompt: (promptText: string) => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1424,12 +1663,14 @@ Utilizes memoization: useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-topic: string
+interface Step1PresetTopicProps {
+  topic: string
   setTopic: (val: string) => void
   useReferenceBank: boolean
   setUseReferenceBank: (val: boolean) => void
   selectedPreset: string
   onPresetSelect: (presetId: string) => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1455,9 +1696,11 @@ Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.
 
 **Properties & Slots (Interface):**
 ```typescript
-onImport: (subject: FullSubjectData) => void
+interface SubjectImporterProps {
+  onImport: (subject: FullSubjectData) => void
   onCancel: () => void
   existingIds?: string[]
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1484,7 +1727,8 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-subjects: FullSubjectData[]
+interface YourSubjectsSectionProps {
+  subjects: FullSubjectData[]
   confirmDeleteId: string | null
   onSelect: (subject: FullSubjectData) => void
   onShare: (subject: FullSubjectData) => void
@@ -1492,6 +1736,7 @@ subjects: FullSubjectData[]
   onDeleteCancel: () => void
   onRemoveClick: (id: string) => void
   onShowImporter: () => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1532,7 +1777,7 @@ None specified or inline props
 - Client Component: `Yes`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
-- Dynamic Lazy-Loading: `No`
+- Dynamic Lazy-Loading: `Yes`
 
 **State Dependencies (Hooks):**
 useEffect, useEvent, useState
@@ -1542,10 +1787,12 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-subjects: FullSubjectData[]
+interface SubjectSelectorProps {
+  subjects: FullSubjectData[]
   onSelect: (subject: FullSubjectData) => void
   onAddSubject: (subject: FullSubjectData) => void
   onRemoveSubject: (id: string) => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1572,7 +1819,8 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-full: FullSubjectData
+interface UserSubjectCardProps {
+  full: FullSubjectData
   isConfirming: boolean
   categoryCount: number
   onSelect: (full: FullSubjectData) => void
@@ -1580,6 +1828,7 @@ full: FullSubjectData
   onDeleteConfirm: (id: string) => void
   onDeleteCancel: () => void
   onRemoveClick: (id: string) => void
+}
 ```
 
 **Edge-Case Input Handling & Validation:**
