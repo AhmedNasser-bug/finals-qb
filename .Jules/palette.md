@@ -69,3 +69,7 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2026-06-16 - Use nav elements and descriptive aria labels for mobile bottom navigation
+**Learning:** Bottom mobile navigation components should use semantic `<nav>` elements rather than generic `<footer>` tags, which helps screen readers identify them as primary navigation regions. Additionally, mobile buttons that use abbreviated text (e.g. ACHS, DATA) require explicit `aria-label` and `title` attributes to clarify their purpose to both screen reader and sighted users, and their decorative icons should be hidden using `aria-hidden='true'`.
+**Action:** Use semantic `<nav aria-label='...'>` for main bottom navigation, add descriptive `aria-label` and `title` attributes to abbreviated nav buttons, apply `aria-hidden='true'` to their icons, and consider using `aria-current` to indicate active tabs.
