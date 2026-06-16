@@ -74,21 +74,18 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
   }
 
   const termObj = obj.terminology as Record<string, unknown>
-  if (Object.keys(termObj).length > 0) {
-    const firstVal = Object.values(termObj)[0]
-    if (typeof firstVal === "string") {
-      // Entire map is flat strings — lift into a single _general bucket
-      const entries = Object.entries(termObj)
-      const lifted = new Array(entries.length)
-      for (let i = 0; i < entries.length; i++) {
-        lifted[i] = {
-          term: entries[i][0],
-          definition: entries[i][1] as string,
-        }
+  if (Object.keys(termObj).length > 0 && typeof Object.values(termObj)[0] === "string") {
+    // Entire map is flat strings — lift into a single _general bucket
+    const entries = Object.entries(termObj)
+    const lifted = new Array(entries.length)
+    for (let i = 0; i < entries.length; i++) {
+      lifted[i] = {
+        term: entries[i][0],
+        definition: entries[i][1] as string,
       }
-      obj.terminology = { _general: lifted }
-      warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
     }
+    obj.terminology = { _general: lifted }
+    warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
   }
 
   // Auto-generate empty terminology keys for any categories used by questions
@@ -155,6 +152,41 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
   if (unknownCondTypes > 0) {
     warnings.push(`achievements: ${unknownCondTypes} entr${unknownCondTypes === 1 ? "y" : "ies"} had unknown condition type — defaulted to runs_gte:1.`)
   }
+}
+
+function resolveQuestionAnswer(qObj: Record<string, unknown>, i: number, normalizedOptions: any[], warnings: string[]): boolean {
+  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+    qObj.answer = "A";
+    return true;
+  }
+
+  qObj.answer = qObj.answer.toUpperCase().trim();
+  const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+  if (hasLabel) return false;
+
+  const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+  if (matchedOpt) {
+    const oldAnswer = qObj.answer;
+    qObj.answer = matchedOpt.label;
+    warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+    return true;
+  }
+
+  if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+    const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+    const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+    if (isTrueMatch || isFalseMatch) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = isTrueMatch ? "A" : "B";
+      warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+      return true;
+    }
+  }
+
+  const oldAnswer = qObj.answer;
+  qObj.answer = normalizedOptions[0].label;
+  warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+  return true;
 }
 
 function autoFixSingleQuestion(
@@ -244,42 +276,8 @@ function autoFixSingleQuestion(
   qObj.options = normalizedOptions;
 
   // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
-  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-    qObj.answer = "A";
-    qFixed = true;
-  } else {
-    qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
-      }
-    }
-  }
+  const answerFixed = resolveQuestionAnswer(qObj, i, normalizedOptions, warnings);
+  if (answerFixed) qFixed = true;
 
   // 8. Auto-Fix Explanation and Hint
   if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
@@ -696,24 +694,16 @@ function balanceJsonStack(str: string): string {
 
     if (inString) continue;
 
-    if (char === '{') {
-      stack.push('{')
-    } else if (char === '[') {
-      stack.push('[')
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
-      }
+    if (char === '{') stack.push('{')
+    else if (char === '[') stack.push('[')
+    else if (char === '}') {
+      if (stack[stack.length - 1] === '{') { stack.pop(); continue; }
+      const idx = stack.lastIndexOf('{')
+      if (idx !== -1) stack.splice(idx)
     } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
-      }
+      if (stack[stack.length - 1] === '[') { stack.pop(); continue; }
+      const idx = stack.lastIndexOf('[')
+      if (idx !== -1) stack.splice(idx)
     }
   }
   
@@ -772,7 +762,9 @@ function processEscapeSequence(
     nextChar === "t"
   ) {
     return { addition: "\\" + nextChar, charsConsumed: 2, wasFixed: false };
-  } else if (nextChar === "u") {
+  }
+
+  if (nextChar === "u") {
     const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c);
     if (
       isHex(str[i + 2]) &&
@@ -785,12 +777,10 @@ function processEscapeSequence(
         charsConsumed: 6,
         wasFixed: false,
       };
-    } else {
-      return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
     }
-  } else {
-    return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
   }
+
+  return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
