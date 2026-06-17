@@ -705,14 +705,25 @@ function balanceJsonStack(str: string): string {
         stack.pop()
       } else {
         const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        if (idx !== -1) {
+          // Pop unclosed brackets until the matching '{' is found (O(N) stack unwind, matching original behavior)
+          while (stack.length > 0) {
+            const popped = stack.pop()
+            if (popped === '{') break
+          }
+        }
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
         const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        if (idx !== -1) {
+          while (stack.length > 0) {
+            const popped = stack.pop()
+            if (popped === '[') break
+          }
+        }
       }
     }
   }

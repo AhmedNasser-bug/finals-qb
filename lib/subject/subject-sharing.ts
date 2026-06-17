@@ -1132,6 +1132,14 @@ export function downloadSubjectPdf(subject: FullSubjectData): void {
 // Uses Base64url (RFC 4648 §5) to avoid + / = characters in URLs.
 
 function arrayBufferToBase64url(buffer: ArrayBuffer): string {
+  if (typeof Buffer !== "undefined") {
+    return Buffer.from(buffer)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
+
   const bytes = new Uint8Array(buffer)
   const chunks: string[] = []
   const chunkSize = 8192
@@ -1153,7 +1161,16 @@ function base64urlToArrayBuffer(base64url: string): ArrayBuffer {
     .replace(/_/g, "/")
     .padEnd(base64url.length + ((4 - (base64url.length % 4)) % 4), "=")
 
+  if (typeof Buffer !== "undefined") {
+    const b = Buffer.from(base64, "base64");
+    return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
+  }
+
   const binary = atob(base64)
-  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
+  const len = binary.length
+  const bytes = new Uint8Array(len)
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
   return bytes.buffer
 }
