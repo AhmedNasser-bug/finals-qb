@@ -56,6 +56,18 @@ else
     echo "Mock database already seeded."
 fi
 
+for TENANT in tenant-a tenant-b; do
+    if [ ! -f ".data/seeds/${TENANT}.json" ]; then
+cat <<EOF4 > ".data/seeds/${TENANT}.json"
+{
+  "id": "${TENANT}",
+  "name": "Mock Data for ${TENANT}"
+}
+EOF4
+        echo "Seeded data for ${TENANT}."
+    fi
+done
+
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
     if [ ! -f docker-compose.yml ]; then
