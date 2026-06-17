@@ -62,6 +62,26 @@ function normalizeFlashcards(obj: Record<string, unknown>, warnings: string[]) {
   }
 }
 
+function normalizeFlatTerminology(termObj: Record<string, unknown>, warnings: string[]): Record<string, unknown> {
+  const keys = Object.keys(termObj);
+  if (keys.length === 0) return termObj;
+
+  const firstVal = termObj[keys[0]];
+  if (typeof firstVal !== "string") return termObj;
+
+  // Entire map is flat strings — lift into a single _general bucket
+  const entries = Object.entries(termObj);
+  const lifted = new Array(entries.length);
+  for (let i = 0; i < entries.length; i++) {
+    lifted[i] = {
+      term: entries[i][0],
+      definition: entries[i][1] as string,
+    };
+  }
+  warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.');
+  return { _general: lifted };
+}
+
 function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) {
   if (obj.terminology === undefined) return;
 
@@ -73,23 +93,7 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
     obj.terminology = {}
   }
 
-  const termObj = obj.terminology as Record<string, unknown>
-  if (Object.keys(termObj).length > 0) {
-    const firstVal = Object.values(termObj)[0]
-    if (typeof firstVal === "string") {
-      // Entire map is flat strings — lift into a single _general bucket
-      const entries = Object.entries(termObj)
-      const lifted = new Array(entries.length)
-      for (let i = 0; i < entries.length; i++) {
-        lifted[i] = {
-          term: entries[i][0],
-          definition: entries[i][1] as string,
-        }
-      }
-      obj.terminology = { _general: lifted }
-      warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
-    }
-  }
+  obj.terminology = normalizeFlatTerminology(obj.terminology as Record<string, unknown>, warnings);
 
   // Auto-generate empty terminology keys for any categories used by questions
   if (Array.isArray(obj.questions)) {
@@ -132,17 +136,15 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
     if (typeof a.condition !== "object" || a.condition === null) {
       a.condition = { type: "runs_gte", value: 1 }
       missingConditions++
-      newAchievements[i] = a
-      continue
+    } else {
+      const cond = { ...(a.condition as Record<string, unknown>) }
+      if (typeof cond.type !== "string" || !VALID_CONDITION_TYPES.has(cond.type)) {
+        cond.type = "runs_gte"
+        cond.value = 1
+        unknownCondTypes++
+      }
+      a.condition = cond
     }
-
-    const cond = { ...(a.condition as Record<string, unknown>) }
-    if (typeof cond.type !== "string" || !VALID_CONDITION_TYPES.has(cond.type)) {
-      cond.type = "runs_gte"
-      cond.value = 1
-      unknownCondTypes++
-    }
-    a.condition = cond
     newAchievements[i] = a
   }
   obj.achievements = newAchievements
@@ -155,6 +157,42 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
   if (unknownCondTypes > 0) {
     warnings.push(`achievements: ${unknownCondTypes} entr${unknownCondTypes === 1 ? "y" : "ies"} had unknown condition type — defaulted to runs_gte:1.`)
   }
+}
+
+function autoFixAnswer(qObj: Record<string, unknown>, i: number, normalizedOptions: any[], warnings: string[]): boolean {
+  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+    qObj.answer = "A";
+    return true;
+  }
+
+  qObj.answer = qObj.answer.toUpperCase().trim();
+  const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+  if (hasLabel) return false;
+
+  const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+  if (matchedOpt) {
+    const oldAnswer = qObj.answer;
+    qObj.answer = matchedOpt.label;
+    warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+    return true;
+  }
+
+  // Check for "True" / "False" maps to A / B
+  if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+    const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+    const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+    if (isTrueMatch || isFalseMatch) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = isTrueMatch ? "A" : "B";
+      warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+      return true;
+    }
+  }
+
+  const oldAnswer = qObj.answer;
+  qObj.answer = normalizedOptions[0].label;
+  warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+  return true;
 }
 
 function autoFixSingleQuestion(
@@ -244,41 +282,8 @@ function autoFixSingleQuestion(
   qObj.options = normalizedOptions;
 
   // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
-  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-    qObj.answer = "A";
+  if (autoFixAnswer(qObj, i, normalizedOptions, warnings)) {
     qFixed = true;
-  } else {
-    qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
-      }
-    }
   }
 
   // 8. Auto-Fix Explanation and Hint
@@ -885,6 +890,25 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
  * Safely parse a raw JSON string. Returns { data } on success or { parseError } on failure.
  * Incorporates automated JSON repairs for common syntax errors.
  */
+function fallbackParseSubjectJson(jsonToParse: string, e: unknown, fixedWarnings: string[]) {
+  const { repaired, fixedIssues } = repairJson(jsonToParse)
+  for (const issue of fixedIssues) {
+    if (!fixedWarnings.includes(issue)) {
+      fixedWarnings.push(issue)
+    }
+  }
+  try {
+    const parsed = JSON.parse(repaired)
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      autoFixSubjectData(parsed, fixedWarnings)
+    }
+    return { data: parsed, fixedWarnings }
+  } catch (err) {
+    const msg = e instanceof SyntaxError ? e.message : "Invalid JSON."
+    return { parseError: `JSON parse error: ${msg}` }
+  }
+}
+
 export function parseSubjectJson(raw: string): { data: unknown; parseError?: never; fixedWarnings?: string[] } | { data?: never; parseError: string; fixedWarnings?: never } {
   const fixedWarnings: string[] = []
   const { repaired, fixed } = repairBadEscapes(raw)
@@ -900,22 +924,7 @@ export function parseSubjectJson(raw: string): { data: unknown; parseError?: nev
     }
     return { data: parsed, fixedWarnings }
   } catch (e) {
-    const { repaired, fixedIssues } = repairJson(jsonToParse)
-    for (const issue of fixedIssues) {
-      if (!fixedWarnings.includes(issue)) {
-        fixedWarnings.push(issue)
-      }
-    }
-    try {
-      const parsed = JSON.parse(repaired)
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-        autoFixSubjectData(parsed, fixedWarnings)
-      }
-      return { data: parsed, fixedWarnings }
-    } catch (err) {
-      const msg = e instanceof SyntaxError ? e.message : "Invalid JSON."
-      return { parseError: `JSON parse error: ${msg}` }
-    }
+    return fallbackParseSubjectJson(jsonToParse, e, fixedWarnings);
   }
 }
 
