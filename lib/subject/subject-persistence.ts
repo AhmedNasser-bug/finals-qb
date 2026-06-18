@@ -674,6 +674,28 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   }
 }
 
+function updateJsonStack(stack: ("{" | "[")[], char: string) {
+  if (char === '{') {
+    stack.push('{')
+  } else if (char === '[') {
+    stack.push('[')
+  } else if (char === '}') {
+    if (stack[stack.length - 1] === '{') {
+      stack.pop()
+    } else {
+      const idx = stack.lastIndexOf('{')
+      if (idx !== -1) stack.splice(idx)
+    }
+  } else if (char === ']') {
+    if (stack[stack.length - 1] === '[') {
+      stack.pop()
+    } else {
+      const idx = stack.lastIndexOf('[')
+      if (idx !== -1) stack.splice(idx)
+    }
+  }
+}
+
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
@@ -696,25 +718,7 @@ function balanceJsonStack(str: string): string {
 
     if (inString) continue;
 
-    if (char === '{') {
-      stack.push('{')
-    } else if (char === '[') {
-      stack.push('[')
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
-      }
-    } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
-      }
-    }
+    updateJsonStack(stack, char);
   }
   
   let balanced = str.trim()
@@ -761,35 +765,34 @@ function processEscapeSequence(
   }
 
   // Standard JSON escape validation
-  if (
-    nextChar === '"' ||
-    nextChar === "\\" ||
-    nextChar === "/" ||
-    nextChar === "b" ||
-    nextChar === "f" ||
-    nextChar === "n" ||
-    nextChar === "r" ||
-    nextChar === "t"
-  ) {
-    return { addition: "\\" + nextChar, charsConsumed: 2, wasFixed: false };
-  } else if (nextChar === "u") {
-    const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c);
-    if (
-      isHex(str[i + 2]) &&
-      isHex(str[i + 3]) &&
-      isHex(str[i + 4]) &&
-      isHex(str[i + 5])
-    ) {
-      return {
-        addition: "\\u" + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5],
-        charsConsumed: 6,
-        wasFixed: false,
-      };
-    } else {
+  switch (nextChar) {
+    case '"':
+    case '\\':
+    case '/':
+    case 'b':
+    case 'f':
+    case 'n':
+    case 'r':
+    case 't':
+      return { addition: "\\" + nextChar, charsConsumed: 2, wasFixed: false };
+    case 'u': {
+      const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c);
+      if (
+        isHex(str[i + 2]) &&
+        isHex(str[i + 3]) &&
+        isHex(str[i + 4]) &&
+        isHex(str[i + 5])
+      ) {
+        return {
+          addition: "\\u" + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5],
+          charsConsumed: 6,
+          wasFixed: false,
+        };
+      }
       return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
     }
-  } else {
-    return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
+    default:
+      return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
   }
 }
 

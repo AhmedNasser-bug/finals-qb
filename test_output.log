@@ -1,0 +1,1099 @@
+
+> my-v0-project@0.1.0 test /app
+> node --experimental-strip-types --import ./test-runner.mjs --test lib/utils/accuracy.test.ts lib/achievement/achievement-logic.test.ts lib/subject/active-subject-store.test.ts lib/subject/subject-store.test.ts lib/utils/crypto-utils.test.ts lib/utils/logger.test.ts lib/types/mold-types.test.ts lib/subject/subject-persistence.test.ts lib/subject/subject-sharing.test.ts lib/utils/url-shortener.test.ts lib/utils/utils.test.ts lib/utils/user-storage.test.ts lib/logger.test.ts lib/game/streak-logic.test.ts lib/game/stats-logic.test.ts lib/game/visual-formatting.test.ts lib/utils/json-patcher.test.ts
+
+TAP version 13
+# (node:104404) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/achievement/achievement-logic.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: evaluateCondition: accuracy_gte
+ok 1 - evaluateCondition: accuracy_gte
+  ---
+  duration_ms: 1.692047
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: streak_gte
+ok 2 - evaluateCondition: streak_gte
+  ---
+  duration_ms: 2.045528
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: mode_complete
+ok 3 - evaluateCondition: mode_complete
+  ---
+  duration_ms: 0.302354
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: speedrun_under
+ok 4 - evaluateCondition: speedrun_under
+  ---
+  duration_ms: 0.34613
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: no_hints
+ok 5 - evaluateCondition: no_hints
+  ---
+  duration_ms: 0.206651
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: runs_gte
+ok 6 - evaluateCondition: runs_gte
+  ---
+  duration_ms: 0.354933
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: all_categories
+ok 7 - evaluateCondition: all_categories
+  ---
+  duration_ms: 0.311418
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: all_unlocked
+ok 8 - evaluateCondition: all_unlocked
+  ---
+  duration_ms: 0.149385
+  type: 'test'
+  ...
+# Subtest: evaluateCondition: unknown type
+ok 9 - evaluateCondition: unknown type
+  ---
+  duration_ms: 0.383385
+  type: 'test'
+  ...
+# Subtest: checkNewUnlocks: unlocks meta-achievement when all others are unlocked dynamically
+not ok 10 - checkNewUnlocks: unlocks meta-achievement when all others are unlocked dynamically
+  ---
+  duration_ms: 2.692566
+  type: 'test'
+  location: '/app/lib/achievement/achievement-logic.test.ts:223:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+        'ach-2',
+    -   'custom-meta-id'
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'ach-2'
+    1: 'custom-meta-id'
+  actual:
+    0: 'ach-2'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///app/lib/achievement/achievement-logic.test.ts:243:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:104405) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/game/stats-logic.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: evaluateDailyMissions: returns all missions at 0 when there are no runs
+ok 11 - evaluateDailyMissions: returns all missions at 0 when there are no runs
+  ---
+  duration_ms: 1.999182
+  type: 'test'
+  ...
+# Subtest: evaluateDailyMissions: run completed today completes Revisionist but not Precision Strike if low score
+ok 12 - evaluateDailyMissions: run completed today completes Revisionist but not Precision Strike if low score
+  ---
+  duration_ms: 0.497982
+  type: 'test'
+  ...
+# Subtest: evaluateDailyMissions: completes Rampage when answering 15+ questions
+ok 13 - evaluateDailyMissions: completes Rampage when answering 15+ questions
+  ---
+  duration_ms: 0.221839
+  type: 'test'
+  ...
+# Subtest: evaluateDailyMissions: completes Precision Strike when score is >= 85%
+ok 14 - evaluateDailyMissions: completes Precision Strike when score is >= 85%
+  ---
+  duration_ms: 0.297739
+  type: 'test'
+  ...
+# Subtest: evaluateDailyMissions: ignores runs completed yesterday
+ok 15 - evaluateDailyMissions: ignores runs completed yesterday
+  ---
+  duration_ms: 0.246495
+  type: 'test'
+  ...
+# Subtest: evaluateMilestones: returns all milestones incomplete with 0 runs
+ok 16 - evaluateMilestones: returns all milestones incomplete with 0 runs
+  ---
+  duration_ms: 0.231083
+  type: 'test'
+  ...
+# Subtest: evaluateMilestones: completes Core Initiate at 5 runs
+ok 17 - evaluateMilestones: completes Core Initiate at 5 runs
+  ---
+  duration_ms: 0.312028
+  type: 'test'
+  ...
+# Subtest: evaluateMilestones: completes Flame Novice at 3 study streak
+ok 18 - evaluateMilestones: completes Flame Novice at 3 study streak
+  ---
+  duration_ms: 0.181261
+  type: 'test'
+  ...
+# Subtest: evaluateMilestones: completes Overclock Ascent at 8 peak question streak
+ok 19 - evaluateMilestones: completes Overclock Ascent at 8 peak question streak
+  ---
+  duration_ms: 0.35363
+  type: 'test'
+  ...
+# (node:104406) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/game/streak-logic.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calculateDayStreak: empty run history returns 0
+ok 20 - calculateDayStreak: empty run history returns 0
+  ---
+  duration_ms: 1.375784
+  type: 'test'
+  ...
+# Subtest: calculateDayStreak: single run today returns 1
+ok 21 - calculateDayStreak: single run today returns 1
+  ---
+  duration_ms: 0.519201
+  type: 'test'
+  ...
+# Subtest: calculateDayStreak: single run yesterday (today pending) returns 1
+ok 22 - calculateDayStreak: single run yesterday (today pending) returns 1
+  ---
+  duration_ms: 0.218477
+  type: 'test'
+  ...
+# Subtest: calculateDayStreak: run today and run yesterday returns 2
+ok 23 - calculateDayStreak: run today and run yesterday returns 2
+  ---
+  duration_ms: 0.40809
+  type: 'test'
+  ...
+# Subtest: calculateDayStreak: multiple runs on the same day count as 1 day in streak
+ok 24 - calculateDayStreak: multiple runs on the same day count as 1 day in streak
+  ---
+  duration_ms: 0.224099
+  type: 'test'
+  ...
+# Subtest: calculateDayStreak: consecutive runs with gaps larger than 1 day break the streak
+ok 25 - calculateDayStreak: consecutive runs with gaps larger than 1 day break the streak
+  ---
+  duration_ms: 0.259274
+  type: 'test'
+  ...
+# Subtest: calculateDayStreak: three consecutive days return 3
+ok 26 - calculateDayStreak: three consecutive days return 3
+  ---
+  duration_ms: 0.367311
+  type: 'test'
+  ...
+# Subtest: calculateDayStreak: last run 2 days ago returns 0 (streak completely broken)
+ok 27 - calculateDayStreak: last run 2 days ago returns 0 (streak completely broken)
+  ---
+  duration_ms: 0.202052
+  type: 'test'
+  ...
+# (node:104428) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/game/visual-formatting.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Visual Specimen Panel & Extensible Layout Tests
+    # Subtest: hasVisual encapsulates diagram, visualLatex, and visualHtml checking
+    ok 1 - hasVisual encapsulates diagram, visualLatex, and visualHtml checking
+      ---
+      duration_ms: 0.997653
+      type: 'test'
+      ...
+    1..1
+ok 28 - Visual Specimen Panel & Extensible Layout Tests
+  ---
+  duration_ms: 2.181839
+  type: 'suite'
+  ...
+# Subtest: LaTeX and HTML Overlap Math Parsing
+    # Subtest: renderMath successfully compiles inline LaTeX delimiters into KaTeX
+    ok 1 - renderMath successfully compiles inline LaTeX delimiters into KaTeX
+      ---
+      duration_ms: 6.596546
+      type: 'test'
+      ...
+    # Subtest: renderMath successfully compiles display display block LaTeX
+    ok 2 - renderMath successfully compiles display display block LaTeX
+      ---
+      duration_ms: 3.235166
+      type: 'test'
+      ...
+    # Subtest: renderMath and DOMPurify overlap coexists safely
+    ok 3 - renderMath and DOMPurify overlap coexists safely
+      ---
+      duration_ms: 11.221341
+      type: 'test'
+      ...
+    1..3
+ok 29 - LaTeX and HTML Overlap Math Parsing
+  ---
+  duration_ms: 21.31164
+  type: 'suite'
+  ...
+# Subtest: Streak Shield State Transitions
+    # Subtest: Streak Shield starts inactive, activates at 5-streak, and protects from one mistake
+    ok 1 - Streak Shield starts inactive, activates at 5-streak, and protects from one mistake
+      ---
+      duration_ms: 0.384611
+      type: 'test'
+      ...
+    1..1
+ok 30 - Streak Shield State Transitions
+  ---
+  duration_ms: 0.60579
+  type: 'suite'
+  ...
+# (node:104435) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/logger.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: logger methods use maskData
+ok 31 - logger methods use maskData
+  ---
+  duration_ms: 3.387399
+  type: 'test'
+  ...
+# Subtest: preserves structural quotes correctly with new regex
+ok 32 - preserves structural quotes correctly with new regex
+  ---
+  duration_ms: 0.245724
+  type: 'test'
+  ...
+# Subtest: preserves single quotes and masks values properly
+ok 33 - preserves single quotes and masks values properly
+  ---
+  duration_ms: 0.199527
+  type: 'test'
+  ...
+# Subtest: handles spaced unquoted values without leaking tokens
+ok 34 - handles spaced unquoted values without leaking tokens
+  ---
+  duration_ms: 0.271427
+  type: 'test'
+  ...
+# (node:104443) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/subject/active-subject-store.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: active-subject-store
+    # Subtest: setActiveSubject writes to sessionStorage
+    ok 1 - setActiveSubject writes to sessionStorage
+      ---
+      duration_ms: 1.928216
+      type: 'test'
+      ...
+    # Subtest: getActiveSubject reads from sessionStorage
+    ok 2 - getActiveSubject reads from sessionStorage
+      ---
+      duration_ms: 1.302115
+      type: 'test'
+      ...
+    # Subtest: clearActiveSubject removes from sessionStorage
+    ok 3 - clearActiveSubject removes from sessionStorage
+      ---
+      duration_ms: 0.63203
+      type: 'test'
+      ...
+    # Subtest: getActiveSubject returns null if nothing is stored
+    ok 4 - getActiveSubject returns null if nothing is stored
+      ---
+      duration_ms: 0.604386
+      type: 'test'
+      ...
+    # Subtest: getActiveSubject returns null if value cannot be parsed
+    ok 5 - getActiveSubject returns null if value cannot be parsed
+      ---
+      duration_ms: 3.17615
+      type: 'test'
+      ...
+    # Subtest: handles undefined sessionStorage gracefully
+    ok 6 - handles undefined sessionStorage gracefully
+      ---
+      duration_ms: 0.310432
+      type: 'test'
+      ...
+    # Subtest: setActiveSubject handles quota exceeded gracefully
+    ok 7 - setActiveSubject handles quota exceeded gracefully
+      ---
+      duration_ms: 0.465056
+      type: 'test'
+      ...
+    1..7
+ok 35 - active-subject-store
+  ---
+  duration_ms: 9.997393
+  type: 'suite'
+  ...
+# (node:104452) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/subject/subject-persistence.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: validateSubjectData
+    # Subtest: rejects invalid root types
+    ok 1 - rejects invalid root types
+      ---
+      duration_ms: 1.398415
+      type: 'test'
+      ...
+    # Subtest: accepts valid minimal subject data
+    ok 2 - accepts valid minimal subject data
+      ---
+      duration_ms: 0.896243
+      type: 'test'
+      ...
+    # Subtest: validates top-level string fields
+    ok 3 - validates top-level string fields
+      ---
+      duration_ms: 0.259853
+      type: 'test'
+      ...
+    # Subtest: validates config block
+    ok 4 - validates config block
+      ---
+      duration_ms: 0.480077
+      type: 'test'
+      ...
+    # Subtest: validates questions array existence
+    ok 5 - validates questions array existence
+      ---
+      duration_ms: 0.277398
+      type: 'test'
+      ...
+    # Subtest: validates individual questions
+    ok 6 - validates individual questions
+      ---
+      duration_ms: 0.550945
+      type: 'test'
+      ...
+    # Subtest: validates early bailout on 8+ errors
+    ok 7 - validates early bailout on 8+ errors
+      ---
+      duration_ms: 0.234884
+      type: 'test'
+      ...
+    # Subtest: accepts valid full subject data — legacy normalised with warnings
+    ok 8 - accepts valid full subject data — legacy normalised with warnings
+      ---
+      duration_ms: 0.461749
+      type: 'test'
+      ...
+    # Subtest: validates flashcards empty and non-array arrays
+    ok 9 - validates flashcards empty and non-array arrays
+      ---
+      duration_ms: 0.38242
+      type: 'test'
+      ...
+    1..9
+ok 36 - validateSubjectData
+  ---
+  duration_ms: 7.082628
+  type: 'suite'
+  ...
+# Subtest: parseSubjectJson
+    # Subtest: successfully parses valid JSON
+    ok 1 - successfully parses valid JSON
+      ---
+      duration_ms: 3.159533
+      type: 'test'
+      ...
+    # Subtest: returns parseError for invalid JSON
+    ok 2 - returns parseError for invalid JSON
+      ---
+      duration_ms: 0.61018
+      type: 'test'
+      ...
+    # Subtest: handles empty string
+    ok 3 - handles empty string
+      ---
+      duration_ms: 0.321772
+      type: 'test'
+      ...
+    # Subtest: successfully parses valid JSON with valid escapes preserved
+    ok 4 - successfully parses valid JSON with valid escapes preserved
+      ---
+      duration_ms: 0.42504
+      type: 'test'
+      ...
+    # Subtest: auto-fixes bad escape characters in strings
+    ok 5 - auto-fixes bad escape characters in strings
+      ---
+      duration_ms: 0.176715
+      type: 'test'
+      ...
+    # Subtest: auto-fixes and preserves LaTeX math expressions inside math mode blocks
+    ok 6 - auto-fixes and preserves LaTeX math expressions inside math mode blocks
+      ---
+      duration_ms: 0.324677
+      type: 'test'
+      ...
+    # Subtest: auto-fixes single-escaped LaTeX math commands (which normally trigger tab/backspace JSON control code issues)
+    ok 7 - auto-fixes single-escaped LaTeX math commands (which normally trigger tab/backspace JSON control code issues)
+      ---
+      duration_ms: 0.166971
+      type: 'test'
+      ...
+    # Subtest: auto-fixes and preserves complex equations with mixed escapes (user reported case)
+    ok 8 - auto-fixes and preserves complex equations with mixed escapes (user reported case)
+      ---
+      duration_ms: 0.228948
+      type: 'test'
+      ...
+    # Subtest: auto-fixes and preserves complex equations with single escapes in raw JSON
+    ok 9 - auto-fixes and preserves complex equations with single escapes in raw JSON
+      ---
+      duration_ms: 0.152675
+      type: 'test'
+      ...
+    # Subtest: successfully parses and validates the newly merged subject file
+    ok 10 - successfully parses and validates the newly merged subject file
+      ---
+      duration_ms: 0.248219
+      type: 'test'
+      ...
+    1..10
+ok 37 - parseSubjectJson
+  ---
+  duration_ms: 6.293847
+  type: 'suite'
+  ...
+# Subtest: Auto-Fix & Graceful Degradation Suite
+    # Subtest: recovers missing name and auto-generates id slug
+    ok 1 - recovers missing name and auto-generates id slug
+      ---
+      duration_ms: 0.962837
+      type: 'test'
+      ...
+    # Subtest: auto-generates id slug from custom subject name
+    ok 2 - auto-generates id slug from custom subject name
+      ---
+      duration_ms: 0.282012
+      type: 'test'
+      ...
+    # Subtest: recovers missing config block and populates title/description
+    ok 3 - recovers missing config block and populates title/description
+      ---
+      duration_ms: 0.242791
+      type: 'test'
+      ...
+    # Subtest: recovers partial config block missing title or description
+    ok 4 - recovers partial config block missing title or description
+      ---
+      duration_ms: 0.289645
+      type: 'test'
+      ...
+    # Subtest: recovers missing or empty questions array with placeholder question
+    ok 5 - recovers missing or empty questions array with placeholder question
+      ---
+      duration_ms: 0.243459
+      type: 'test'
+      ...
+    # Subtest: automatically renames duplicate question IDs
+    ok 6 - automatically renames duplicate question IDs
+      ---
+      duration_ms: 0.427332
+      type: 'test'
+      ...
+    # Subtest: calibrates invalid types and converts TrueFalse with bad option count to MCQ
+    ok 7 - calibrates invalid types and converts TrueFalse with bad option count to MCQ
+      ---
+      duration_ms: 0.509831
+      type: 'test'
+      ...
+    # Subtest: remaps answer text and boolean values to matching option labels
+    ok 8 - remaps answer text and boolean values to matching option labels
+      ---
+      duration_ms: 0.328932
+      type: 'test'
+      ...
+    # Subtest: recovers missing question fields (difficulty, category, options, explanation, hint)
+    ok 9 - recovers missing question fields (difficulty, category, options, explanation, hint)
+      ---
+      duration_ms: 0.32975
+      type: 'test'
+      ...
+    # Subtest: recovers missing flashcards, achievements, and terminology containers
+    ok 10 - recovers missing flashcards, achievements, and terminology containers
+      ---
+      duration_ms: 0.226617
+      type: 'test'
+      ...
+    # Subtest: ignores generic JSON inputs from auto-fixes
+    ok 11 - ignores generic JSON inputs from auto-fixes
+      ---
+      duration_ms: 0.156301
+      type: 'test'
+      ...
+    1..11
+ok 38 - Auto-Fix & Graceful Degradation Suite
+  ---
+  duration_ms: 4.383569
+  type: 'suite'
+  ...
+# (node:104458) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/subject/subject-sharing.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: subject-sharing
+    # Subtest: encodeSubject and decodeSubject
+        # Subtest: should successfully encode and decode a subject
+        ok 1 - should successfully encode and decode a subject
+          ---
+          duration_ms: 50.648704
+          type: 'test'
+          ...
+        # Subtest: should return error for invalid base64 string during decoding
+        ok 2 - should return error for invalid base64 string during decoding
+          ---
+          duration_ms: 4.059278
+          type: 'test'
+          ...
+        1..2
+    ok 1 - encodeSubject and decodeSubject
+      ---
+      duration_ms: 55.788727
+      type: 'suite'
+      ...
+    # Subtest: buildShareUrl
+        # Subtest: should build correct URL when window is not defined
+        ok 1 - should build correct URL when window is not defined
+          ---
+          duration_ms: 0.367281
+          type: 'test'
+          ...
+        # Subtest: should build correct URL when window is defined
+        ok 2 - should build correct URL when window is defined
+          ---
+          duration_ms: 0.182734
+          type: 'test'
+          ...
+        1..2
+    ok 2 - buildShareUrl
+      ---
+      duration_ms: 0.776734
+      type: 'suite'
+      ...
+    # Subtest: detectShareHash
+        # Subtest: should return null when window is not defined
+        ok 1 - should return null when window is not defined
+          ---
+          duration_ms: 0.336642
+          type: 'test'
+          ...
+        # Subtest: should return null if hash doesn't start with prefix
+        ok 2 - should return null if hash doesn't start with prefix
+          ---
+          duration_ms: 0.188637
+          type: 'test'
+          ...
+        # Subtest: should return null if hash is exactly the prefix (no payload)
+        ok 3 - should return null if hash is exactly the prefix (no payload)
+          ---
+          duration_ms: 0.429968
+          type: 'test'
+          ...
+        # Subtest: should return payload when hash has prefix and payload
+        ok 4 - should return payload when hash has prefix and payload
+          ---
+          duration_ms: 0.199195
+          type: 'test'
+          ...
+        1..4
+    ok 3 - detectShareHash
+      ---
+      duration_ms: 1.753634
+      type: 'suite'
+      ...
+    # Subtest: clearShareHash
+        # Subtest: should clear the hash and update history
+        ok 1 - should clear the hash and update history
+          ---
+          duration_ms: 1.462652
+          type: 'test'
+          ...
+        1..1
+    ok 4 - clearShareHash
+      ---
+      duration_ms: 1.714523
+      type: 'suite'
+      ...
+    # Subtest: downloadSubjectJson
+        # Subtest: should create a blob, url, anchor and click it
+        ok 1 - should create a blob, url, anchor and click it
+          ---
+          duration_ms: 0.57539
+          type: 'test'
+          ...
+        1..1
+    ok 5 - downloadSubjectJson
+      ---
+      duration_ms: 0.699407
+      type: 'suite'
+      ...
+    # Subtest: downloadSubjectHtml
+        # Subtest: should create a blob, url, anchor and click it to download HTML
+        ok 1 - should create a blob, url, anchor and click it to download HTML
+          ---
+          duration_ms: 1.454569
+          type: 'test'
+          ...
+        1..1
+    ok 6 - downloadSubjectHtml
+      ---
+      duration_ms: 1.561908
+      type: 'suite'
+      ...
+    # Subtest: generateSubjectHtml
+        # Subtest: should generate HTML string with title and questions
+        ok 1 - should generate HTML string with title and questions
+          ---
+          duration_ms: 0.466321
+          type: 'test'
+          ...
+        # Subtest: should configure print theme when isPrint is true
+        ok 2 - should configure print theme when isPrint is true
+          ---
+          duration_ms: 0.28192
+          type: 'test'
+          ...
+        1..2
+    ok 7 - generateSubjectHtml
+      ---
+      duration_ms: 1.565248
+      type: 'suite'
+      ...
+    # Subtest: downloadSubjectPdf
+        # Subtest: should create iframe and append it to body to print PDF
+        ok 1 - should create iframe and append it to body to print PDF
+          ---
+          duration_ms: 0.89442
+          type: 'test'
+          ...
+        1..1
+    ok 8 - downloadSubjectPdf
+      ---
+      duration_ms: 1.00622
+      type: 'suite'
+      ...
+    1..8
+ok 39 - subject-sharing
+  ---
+  duration_ms: 66.193842
+  type: 'suite'
+  ...
+# (node:104469) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/subject/subject-store.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: subject-store
+    # Subtest: deriveCategoriesFromSubject
+        # Subtest: handles empty questions array
+        ok 1 - handles empty questions array
+          ---
+          duration_ms: 1.828539
+          type: 'test'
+          ...
+        # Subtest: counts single category correctly and formats name
+        ok 2 - counts single category correctly and formats name
+          ---
+          duration_ms: 0.485458
+          type: 'test'
+          ...
+        # Subtest: counts multiple categories correctly
+        ok 3 - counts multiple categories correctly
+          ---
+          duration_ms: 0.357783
+          type: 'test'
+          ...
+        1..3
+    ok 1 - deriveCategoriesFromSubject
+      ---
+      duration_ms: 3.59971
+      type: 'suite'
+      ...
+    1..1
+ok 40 - subject-store
+  ---
+  duration_ms: 4.255312
+  type: 'suite'
+  ...
+# (node:104482) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/types/mold-types.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: getStreakTier
+ok 41 - getStreakTier
+  ---
+  duration_ms: 1.343571
+  type: 'test'
+  ...
+# Subtest: getNextStreakThreshold
+ok 42 - getNextStreakThreshold
+  ---
+  duration_ms: 0.288239
+  type: 'test'
+  ...
+# Subtest: getStreakTierProgress
+ok 43 - getStreakTierProgress
+  ---
+  duration_ms: 1.086572
+  type: 'test'
+  ...
+# Subtest: formatTime utility
+    # Subtest: returns "—" for 0 seconds
+    ok 1 - returns "—" for 0 seconds
+      ---
+      duration_ms: 0.224023
+      type: 'test'
+      ...
+    # Subtest: formats seconds under a minute correctly
+    ok 2 - formats seconds under a minute correctly
+      ---
+      duration_ms: 0.24673
+      type: 'test'
+      ...
+    # Subtest: formats seconds over a minute correctly
+    ok 3 - formats seconds over a minute correctly
+      ---
+      duration_ms: 0.233612
+      type: 'test'
+      ...
+    # Subtest: formats exactly 60 seconds correctly
+    ok 4 - formats exactly 60 seconds correctly
+      ---
+      duration_ms: 1.987023
+      type: 'test'
+      ...
+    # Subtest: formats large values into total minutes correctly
+    ok 5 - formats large values into total minutes correctly
+      ---
+      duration_ms: 0.381508
+      type: 'test'
+      ...
+    1..5
+ok 44 - formatTime utility
+  ---
+  duration_ms: 4.298452
+  type: 'test'
+  ...
+# Subtest: computeAggregateStats aggregate stats utility
+    # Subtest: handles empty runs array correctly
+    ok 1 - handles empty runs array correctly
+      ---
+      duration_ms: 0.517577
+      type: 'test'
+      ...
+    # Subtest: aggregates multiple runs statistics correctly
+    ok 2 - aggregates multiple runs statistics correctly
+      ---
+      duration_ms: 0.19951
+      type: 'test'
+      ...
+    # Subtest: handles rounding correct average score boundary values
+    ok 3 - handles rounding correct average score boundary values
+      ---
+      duration_ms: 0.16777
+      type: 'test'
+      ...
+    1..3
+ok 45 - computeAggregateStats aggregate stats utility
+  ---
+  duration_ms: 1.476032
+  type: 'test'
+  ...
+# Subtest: formatLabel converts kebab-case to Title Case
+ok 46 - formatLabel converts kebab-case to Title Case
+  ---
+  duration_ms: 0.203144
+  type: 'test'
+  ...
+# (node:104490) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/utils/accuracy.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: calculateAccuracy uses answeredCount as denominator
+ok 47 - calculateAccuracy uses answeredCount as denominator
+  ---
+  duration_ms: 1.08887
+  type: 'test'
+  ...
+# (node:104498) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/utils/crypto-utils.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: shuffle - should contain the same elements
+ok 48 - shuffle - should contain the same elements
+  ---
+  duration_ms: 4.666445
+  type: 'test'
+  ...
+# Subtest: shuffle - should handle empty array
+ok 49 - shuffle - should handle empty array
+  ---
+  duration_ms: 0.19039
+  type: 'test'
+  ...
+# Subtest: shuffle - should handle single element array
+ok 50 - shuffle - should handle single element array
+  ---
+  duration_ms: 0.312732
+  type: 'test'
+  ...
+# Subtest: shuffle - should return a new array
+ok 51 - shuffle - should return a new array
+  ---
+  duration_ms: 0.300279
+  type: 'test'
+  ...
+# Subtest: shuffle - should eventually change order (probabilistic)
+ok 52 - shuffle - should eventually change order (probabilistic)
+  ---
+  duration_ms: 1.675776
+  type: 'test'
+  ...
+# (node:104506) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/utils/json-patcher.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: JSON Splicer & Brace Matching Tests
+    # Subtest: findDeformedBlockRange: locates simple object boundaries
+    ok 1 - findDeformedBlockRange: locates simple object boundaries
+      ---
+      duration_ms: 1.194899
+      type: 'test'
+      ...
+    # Subtest: findDeformedBlockRange: locates parent object boundaries around errors
+    ok 2 - findDeformedBlockRange: locates parent object boundaries around errors
+      ---
+      duration_ms: 0.229683
+      type: 'test'
+      ...
+    # Subtest: findDeformedBlockRange: ignores brace characters inside strings
+    ok 3 - findDeformedBlockRange: ignores brace characters inside strings
+      ---
+      duration_ms: 0.177587
+      type: 'test'
+      ...
+    # Subtest: applyBlockPatch: successfully replaces deformed block
+    ok 4 - applyBlockPatch: successfully replaces deformed block
+      ---
+      duration_ms: 0.791286
+      type: 'test'
+      ...
+    # Subtest: applyBlockPatch: auto-repairs smart quotes and trailing commas in patch
+    ok 5 - applyBlockPatch: auto-repairs smart quotes and trailing commas in patch
+      ---
+      duration_ms: 0.755688
+      type: 'test'
+      ...
+    1..5
+ok 53 - JSON Splicer & Brace Matching Tests
+  ---
+  duration_ms: 4.627024
+  type: 'suite'
+  ...
+# (node:104514) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/utils/logger.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: redacts object keys
+ok 54 - redacts object keys
+  ---
+  duration_ms: 2.150095
+  type: 'test'
+  ...
+# Subtest: redacts raw JSON string
+ok 55 - redacts raw JSON string
+  ---
+  duration_ms: 0.379785
+  type: 'test'
+  ...
+# Subtest: ignores matches starting with [ or { in regex
+ok 56 - ignores matches starting with [ or { in regex
+  ---
+  duration_ms: 0.364872
+  type: 'test'
+  ...
+# Subtest: conditionally wraps unquoted primitive replacements in quotes to ensure valid JSON
+ok 57 - conditionally wraps unquoted primitive replacements in quotes to ensure valid JSON
+  ---
+  duration_ms: 0.341532
+  type: 'test'
+  ...
+# Subtest: handles primitive values
+ok 58 - handles primitive values
+  ---
+  duration_ms: 0.220642
+  type: 'test'
+  ...
+# Subtest: handles circular references
+ok 59 - handles circular references
+  ---
+  duration_ms: 0.208503
+  type: 'test'
+  ...
+# Subtest: handles Error instances
+ok 60 - handles Error instances
+  ---
+  duration_ms: 0.683529
+  type: 'test'
+  ...
+# Subtest: handles arrays
+ok 61 - handles arrays
+  ---
+  duration_ms: 0.289161
+  type: 'test'
+  ...
+# Subtest: handles non-plain objects
+ok 62 - handles non-plain objects
+  ---
+  duration_ms: 0.454399
+  type: 'test'
+  ...
+# (node:104522) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/utils/url-shortener.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: shortenUrl handles API error
+ok 63 - shortenUrl handles API error
+  ---
+  duration_ms: 1.932471
+  type: 'test'
+  ...
+# Subtest: shortenUrl handles fetch exception
+ok 64 - shortenUrl handles fetch exception
+  ---
+  duration_ms: 0.384026
+  type: 'test'
+  ...
+# Subtest: shortenUrl handles response where data is not ok
+ok 65 - shortenUrl handles response where data is not ok
+  ---
+  duration_ms: 0.376249
+  type: 'test'
+  ...
+# Subtest: shortenUrl handles response where data is ok but missing full_short_link
+ok 66 - shortenUrl handles response where data is ok but missing full_short_link
+  ---
+  duration_ms: 0.346698
+  type: 'test'
+  ...
+# Subtest: shortenUrl successfully shortens a URL
+ok 67 - shortenUrl successfully shortens a URL
+  ---
+  duration_ms: 0.287821
+  type: 'test'
+  ...
+# (node:104530) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/utils/user-storage.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: user-storage persistence
+    # Subtest: loadRuns returns empty array if nothing stored
+    ok 1 - loadRuns returns empty array if nothing stored
+      ---
+      duration_ms: 2.286652
+      type: 'test'
+      ...
+    # Subtest: saveRuns writes to localStorage without userId (anonymous)
+    ok 2 - saveRuns writes to localStorage without userId (anonymous)
+      ---
+      duration_ms: 0.612819
+      type: 'test'
+      ...
+    # Subtest: saveRuns writes to localStorage with userId (authenticated)
+    ok 3 - saveRuns writes to localStorage with userId (authenticated)
+      ---
+      duration_ms: 0.637461
+      type: 'test'
+      ...
+    # Subtest: loadRuns reads from localStorage with userId
+    ok 4 - loadRuns reads from localStorage with userId
+      ---
+      duration_ms: 2.19855
+      type: 'test'
+      ...
+    # Subtest: saveRuns limits stored runs to the last 50 elements
+    ok 5 - saveRuns limits stored runs to the last 50 elements
+      ---
+      duration_ms: 0.659088
+      type: 'test'
+      ...
+    # Subtest: loadRuns handles parsing error gracefully
+    ok 6 - loadRuns handles parsing error gracefully
+      ---
+      duration_ms: 0.351861
+      type: 'test'
+      ...
+    1..6
+ok 68 - user-storage persistence
+  ---
+  duration_ms: 8.391017
+  type: 'suite'
+  ...
+# (node:104537) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/lib/utils/utils.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /app/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: cn utility
+    # Subtest: merges string class names
+    ok 1 - merges string class names
+      ---
+      duration_ms: 7.711344
+      type: 'test'
+      ...
+    # Subtest: conditionally applies classes
+    ok 2 - conditionally applies classes
+      ---
+      duration_ms: 1.581268
+      type: 'test'
+      ...
+    # Subtest: merges tailwind conflicts using twMerge
+    ok 3 - merges tailwind conflicts using twMerge
+      ---
+      duration_ms: 0.628492
+      type: 'test'
+      ...
+    # Subtest: handles arrays and objects correctly
+    ok 4 - handles arrays and objects correctly
+      ---
+      duration_ms: 0.181455
+      type: 'test'
+      ...
+    # Subtest: handles undefined and null
+    ok 5 - handles undefined and null
+      ---
+      duration_ms: 0.179483
+      type: 'test'
+      ...
+    1..5
+ok 69 - cn utility
+  ---
+  duration_ms: 12.029369
+  type: 'test'
+  ...
+1..69
+# tests 141
+# suites 20
+# pass 140
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2201.307534
+ ELIFECYCLE  Test failed. See above for more details.

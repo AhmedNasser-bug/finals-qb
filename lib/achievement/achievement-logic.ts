@@ -99,9 +99,20 @@ export function checkNewUnlocks(
   }
 
   // Check "all_unlocked" meta-achievement separately
-  let allOthersLocked = true;
-  let grandMaster: Achievement | undefined;
+  const grandMaster = checkGrandMasterUnlock(achievements, activeConditions, newlyUnlocked);
+  if (grandMaster) {
+    newlyUnlocked.push(grandMaster.id);
+  }
 
+  return newlyUnlocked
+}
+
+function checkGrandMasterUnlock(
+  achievements: Achievement[],
+  activeConditions: Record<string, AchievementCondition>,
+  newlyUnlocked: string[]
+): Achievement | undefined {
+  let grandMaster: Achievement | undefined;
   const newlyUnlockedSet = new Set(newlyUnlocked);
 
   for (let i = 0; i < achievements.length; i++) {
@@ -113,18 +124,16 @@ export function checkNewUnlocks(
       continue;
     }
 
-    if (a.unlockedAt !== null || newlyUnlockedSet.has(a.id)) {
-      continue;
+    if (a.unlockedAt === null && !newlyUnlockedSet.has(a.id)) {
+      return undefined; // Not all other achievements are unlocked
     }
-
-    allOthersLocked = false;
   }
 
-  if (allOthersLocked && grandMaster && grandMaster.unlockedAt === null) {
-    newlyUnlocked.push(grandMaster.id)
+  if (grandMaster && grandMaster.unlockedAt === null) {
+    return grandMaster;
   }
 
-  return newlyUnlocked
+  return undefined;
 }
 
 /**
