@@ -44,16 +44,32 @@ mkdir -p docs
 
 # Create a mock database seed structure as per orchestration requirements
 mkdir -p .data/seeds
-if [ ! -f .data/seeds/default-tenant.json ]; then
-cat <<EOF3 > .data/seeds/default-tenant.json
+
+if [ -f docker-compose.yml ]; then
+    # Dynamically discover tenants from docker-compose.yml
+    # Matches lines like '  tenant-a:' or 'tenant-b:'
+    TENANTS=$(grep '^[ ]*tenant-[a-z0-9-]\+:' docker-compose.yml | awk -F: '{print $1}' | tr -d ' ')
+
+    if [ -n "$TENANTS" ]; then
+        for TENANT in $TENANTS; do
+            SEED_FILE=".data/seeds/${TENANT}.json"
+            if [ ! -f "$SEED_FILE" ]; then
+cat <<EOF > "$SEED_FILE"
 {
-  "tenants": ["tenant-a", "tenant-b"],
+  "tenantId": "${TENANT}",
   "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
-EOF3
-echo "Mock database seeded."
+EOF
+                echo "Mock database seeded for ${TENANT}."
+            else
+                echo "Mock database already seeded for ${TENANT}."
+            fi
+        done
+    else
+        echo "Warning: No tenants found in docker-compose.yml"
+    fi
 else
-    echo "Mock database already seeded."
+    echo "Warning: docker-compose.yml not found, skipping dynamic tenant seeding."
 fi
 
 if [ "$1" = "--multi-tenant" ]; then
