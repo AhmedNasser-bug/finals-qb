@@ -63,6 +63,32 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
     return () => { cancelled = true }
   }, [subject])
 
+  // ── Trap focus ──────────────────────────────────────────────────────
+  useEffect(() => {
+    function trapFocus(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !overlayRef.current) return
+      const focusable = overlayRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+      const first = focusable[0] as HTMLElement
+      const last = focusable[focusable.length - 1] as HTMLElement
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          last.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === last) {
+          first.focus()
+          e.preventDefault()
+        }
+      }
+    }
+    window.addEventListener("keydown", trapFocus)
+    return () => window.removeEventListener("keydown", trapFocus)
+  }, [])
+
   // ── Escape to close ──────────────────────────────────────────────────────
   useEffect(() => {
     function onKey(e: KeyboardEvent) {

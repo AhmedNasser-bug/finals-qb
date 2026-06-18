@@ -49,7 +49,7 @@ export function TopNavBar({
       <nav className="flex justify-between items-center w-full px-6 h-16 bg-[#0d0e11] fixed top-0 z-50 border-b border-border/50 shadow-[0_0_15px_rgba(254,204,23,0.02)] select-none">
         {/* Left branding block */}
         <div className="flex items-center gap-2.5">
-          <ProtocolIcon className="w-5 h-5 text-primary shrink-0" />
+          <ProtocolIcon className="w-5 h-5 text-primary shrink-0" aria-hidden="true" />
           <div>
             <p className="text-[10px] font-mono font-bold tracking-widest text-[#fecc17] uppercase leading-none">FINALIST</p>
             <p className="text-[9px] font-mono text-muted-foreground tracking-wider leading-none mt-1">STUDY SYSTEM</p>
@@ -138,7 +138,7 @@ export function TopNavBar({
             <div className="flex items-center border-l border-zinc-800/60 pl-3 min-h-[28px]">
               <Show when="signed-out">
                 <SignInButton mode="modal">
-                  <button className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                  <button aria-label="Sign in" title="Sign in" className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
                     SIGN IN
                   </button>
                 </SignInButton>

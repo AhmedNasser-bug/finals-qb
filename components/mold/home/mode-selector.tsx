@@ -135,6 +135,8 @@ function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, a
         if (onLaunch) onLaunch()
       }}
       {...pressedProps}
+      title={mode.name}
+      aria-label={`Select ${mode.name} mode`}
       className={cn(
         "group relative flex flex-col gap-4 p-5 rounded border text-left transition-all duration-200 focus-ring min-h-[160px] justify-between cursor-pointer w-full",
         isSelected
