@@ -5,3 +5,6 @@
 ## 2024-05-28 - Optimize Next.js Production Build Speed
 **Learning:** Next.js build speed is significantly impacted by redundant TypeScript validation during `pnpm build`, which can be safely bypassed if standard type checks are securely managed via a separate CI process.
 **Action:** Added `typescript: { ignoreBuildErrors: true }` to `next.config.mjs` to significantly reduce Next.js production build execution latency.
+## 2026-06-18 - Optimize Base64 Decoding Performance
+**Learning:** In browser fallbacks, `Uint8Array.from` with a mapping callback creates O(N) allocation latency when parsing large binary strings.
+**Action:** Replaced `Uint8Array.from` with a pre-allocated `Uint8Array` and a standard `for` loop to significantly reduce decoding execution latency and garbage collection overhead.
