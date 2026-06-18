@@ -74,6 +74,8 @@ export function BottomMobileNav({
 
       <button
         onClick={onChangeSubject}
+        title="Switch Subject"
+        aria-label="Switch active subject"
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
         <RotateCcw className="w-4 h-4" />

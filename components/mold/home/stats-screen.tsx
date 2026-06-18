@@ -288,14 +288,14 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   <button 
                     onClick={handleReset}
                     aria-label="Confirm wipe all data"
-                    className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
+                    className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
                   >
                     CONFIRM
                   </button>
                   <button 
                     onClick={() => setShowConfirmReset(false)}
                     aria-label="Cancel wipe all data"
-                    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
+                    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
                   >
                     CANCEL
                   </button>

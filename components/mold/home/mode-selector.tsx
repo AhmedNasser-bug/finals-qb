@@ -136,7 +136,7 @@ function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, a
       }}
       {...pressedProps}
       className={cn(
-        "group relative flex flex-col gap-4 p-5 rounded border text-left transition-all duration-200 focus-ring min-h-[160px] justify-between cursor-pointer w-full",
+        "group relative flex flex-col gap-4 p-5 rounded border text-left transition-all duration-200 focus-ring focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none min-h-[160px] justify-between cursor-pointer w-full",
         isSelected
           ? "border-primary bg-[#0f1013] border-glow shadow-[0_0_18px_hsla(var(--primary),0.08)]"
           : "border-border bg-[#101115] hover:border-zinc-700 hover:bg-[#15161b]"
