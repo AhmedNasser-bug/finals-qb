@@ -704,15 +704,19 @@ function balanceJsonStack(str: string): string {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        while (stack.length > 0 && stack[stack.length - 1] !== '{') {
+          stack.pop()
+        }
+        if (stack.length > 0) stack.pop()
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        while (stack.length > 0 && stack[stack.length - 1] !== '[') {
+          stack.pop()
+        }
+        if (stack.length > 0) stack.pop()
       }
     }
   }
@@ -901,8 +905,10 @@ export function parseSubjectJson(raw: string): { data: unknown; parseError?: nev
     return { data: parsed, fixedWarnings }
   } catch (e) {
     const { repaired, fixedIssues } = repairJson(jsonToParse)
+    const warningsSet = new Set(fixedWarnings)
     for (const issue of fixedIssues) {
-      if (!fixedWarnings.includes(issue)) {
+      if (!warningsSet.has(issue)) {
+        warningsSet.add(issue)
         fixedWarnings.push(issue)
       }
     }
