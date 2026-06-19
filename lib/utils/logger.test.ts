@@ -74,3 +74,11 @@ test('handles non-plain objects', () => {
   assert.strictEqual(maskData(map), map);
   assert.strictEqual(maskData(set), set);
 });
+
+test('redacts emails correctly with lookbehind', () => {
+  const result1 = maskData('my email is test@example.com.');
+  assert.strictEqual(result1, 'my email is [REDACTED].');
+
+  const result2 = maskData('prefix_test@example.com');
+  assert.strictEqual(result2, '[REDACTED]');
+});
