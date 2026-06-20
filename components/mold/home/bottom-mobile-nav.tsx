@@ -30,8 +30,10 @@ export function BottomMobileNav({
   onChangeSubject,
 }: BottomMobileNavProps) {
   return (
-    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
+    <nav aria-label="Main mobile navigation" className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
       <button
+        aria-label="Go to core view"
+        title="Go to core view"
         onClick={() => {
           setView("home")
           handleModeSelect("speedrun")
@@ -46,6 +48,8 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Go to stats view"
+        title="Go to stats view"
         onClick={() => setView("stats")}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
@@ -57,6 +61,8 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Open data encyclopedia"
+        title="Open data encyclopedia"
         onClick={() => setShowEncyclopedia(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
@@ -65,6 +71,8 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Open achievements gallery"
+        title="Open achievements gallery"
         onClick={() => setShowGallery(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
@@ -73,12 +81,14 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Switch subject"
+        title="Switch subject"
         onClick={onChangeSubject}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
         <RotateCcw className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">SWITCH</span>
       </button>
-    </footer>
+    </nav>
   )
 }
