@@ -15,7 +15,9 @@
    ```bash
    ./scripts/setup/setup.sh --multi-tenant
    ```
-   **Note:** This script automatically creates `.data/seeds/default-tenant.json` idempotently and mounts isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) dynamically via `NEXT_DIST_DIR`.
+   **Note:** This script automatically detects tenant services in `docker-compose.yml` (e.g., `tenant-a`, `tenant-b`) and creates dedicated per-tenant mock data files (e.g., `.data/seeds/tenant-a.json`) idempotently. It also mounts isolated `.next` output directories (e.g., `.next-tenant-a`) dynamically via `NEXT_DIST_DIR` to prevent build collisions.
+
+*(Note: The previous step-by-step setup guide at `playbooks/01-workspace-setup-and-validation.md` has been consolidated into this playbook.)*
 
 ## 2. Testing Workflows
 
