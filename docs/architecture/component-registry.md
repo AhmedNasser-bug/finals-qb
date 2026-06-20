@@ -28,6 +28,7 @@ This registry outlines the exact properties, slots, state dependencies, and perf
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Optimized (next/image or next/font)`
 
 **State Dependencies (Hooks):**
 None
@@ -53,9 +54,10 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `Yes`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
-useEffect, useRouter, useState
+useEffect, useRouter, useSearchParams, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -80,6 +82,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useState
@@ -106,6 +109,7 @@ None specified or inline props
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useAchievements
@@ -132,6 +136,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useAchievementToast, useEffect, useState
@@ -159,6 +164,7 @@ id: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useRef, useState
@@ -186,6 +192,7 @@ subject: FullSubjectData
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -212,6 +219,7 @@ rightText?: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useRef, useState
@@ -239,6 +247,7 @@ open: boolean
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useMaxWidth, useRef, useState
@@ -266,7 +275,8 @@ code: DiagramErrorCode
 - Client Component: `Yes`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
-- Dynamic Lazy-Loading: `No`
+- Dynamic Lazy-Loading: `Yes`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useState
@@ -294,6 +304,7 @@ mode: GameMode;
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -323,6 +334,7 @@ content: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -360,6 +372,7 @@ encoding: boolean;
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useRef, useState
@@ -387,6 +400,7 @@ subject: FullSubjectData
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -418,6 +432,7 @@ onQuit: () => void
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -449,6 +464,7 @@ card: Flashcard;
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useRef, useState
@@ -467,6 +483,34 @@ flashcards: Flashcard[]
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
+### `components/mold/game/cheat-sheet-terminal.tsx`
+
+**Module Name:** Cheat-Sheet-Terminal
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
+
+**State Dependencies (Hooks):**
+useCheatSheet, useEffect
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `components/mold/game/game-error-boundary.tsx`
 
 **Module Name:** Game-Error-Boundary
@@ -476,6 +520,7 @@ flashcards: Flashcard[]
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -504,6 +549,7 @@ onReturnHome: () => void
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useGameEngine
@@ -534,9 +580,10 @@ onHintRequest: () => void
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
-useGameEngine
+useCheatSheet, useGameEngine
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -560,6 +607,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -585,9 +633,10 @@ None specified or inline props
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
-useAchievementToast, useAchievements, useEffect, useGameEngine, useHint, useRef, useState, useStreak
+useAchievementToast, useAchievements, useCheatSheet, useEffect, useGameEngine, useHint, useRef, useState, useStreak
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -608,6 +657,7 @@ config: GameConfig
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Implements explicit fallback UIs for critical asynchronous or failing boundaries.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
 ### `components/mold/game/game-stat-cell.tsx`
@@ -619,6 +669,7 @@ config: GameConfig
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -644,6 +695,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -671,6 +723,7 @@ None specified or inline props
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useGameEngine, useQuestionCard
@@ -707,6 +760,7 @@ idx: number
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -733,6 +787,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -758,6 +813,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -786,6 +842,7 @@ elapsedSeconds: number
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useGameEngine
@@ -813,6 +870,7 @@ onReturnHome: () => void
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -842,6 +900,7 @@ id: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -862,6 +921,35 @@ onInitialize: () => void
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
+### `components/mold/home/add-questions-wizard.tsx`
+
+**Module Name:** Add-Questions-Wizard
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
+
+**State Dependencies (Hooks):**
+useState
+
+**Performance Characteristics:**
+Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+activeSubject: FullSubjectData
+  onMerge: (mergedSubject: FullSubjectData) => void
+  onCancel: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `components/mold/home/bottom-mobile-nav.tsx`
 
 **Module Name:** Bottom-Mobile-Nav
@@ -871,6 +959,7 @@ onInitialize: () => void
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -902,6 +991,7 @@ view: AppView
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -930,6 +1020,7 @@ subjectName: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Optimized (next/image or next/font)`
 
 **State Dependencies (Hooks):**
 None
@@ -952,6 +1043,80 @@ subject: SubjectData
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
+### `components/mold/home/home-screen-blocks.tsx`
+
+**Module Name:** Home-Screen-Blocks
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+// Mode Selection
+  selectedMode: GameModeId
+  handleModeSelect: (id: GameModeId) => void
+  handleInitialize: () => void
+
+  // Configuration
+  config: SetupConfig
+  handleConfigChange: (patch: Partial<SetupConfig>) => void
+  categories: CategoryData[]
+
+  // Achievements
+  unlockedCount: number
+  totalAchievementsCount: number
+  topAchievements: Achievement[]
+  achievements: Achievement[]
+  setShowGallery: (show: boolean) => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/home/home-screen-components.tsx`
+
+**Module Name:** Home-Screen-Components
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+view: AppView
+  setView: (view: AppView) => void
+  handleModeSelect: (id: GameModeId) => void
+  setShowEncyclopedia: (show: boolean) => void
+  setShowGallery: (show: boolean) => void
+  onChangeSubject: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `components/mold/home/home-screen.tsx`
 
 **Module Name:** Home-Screen
@@ -960,7 +1125,8 @@ subject: SubjectData
 - Client Component: `Yes`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
-- Dynamic Lazy-Loading: `No`
+- Dynamic Lazy-Loading: `Yes`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useAchievements, useEffect, useSafeAuth, useState, useStats
@@ -995,6 +1161,7 @@ Utilizes memoization: useMemo to prevent unnecessary re-renders.
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1024,6 +1191,7 @@ selected: GameModeId
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1051,6 +1219,7 @@ runs: RunRecord[]
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useStats
@@ -1076,6 +1245,7 @@ None specified or inline props
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useConfigControls, useContext
@@ -1103,6 +1273,7 @@ config: SetupConfig
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1133,6 +1304,7 @@ config: SetupConfig
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1150,7 +1322,11 @@ subjectId: string
   onShowGallery: () => void
   onChangeSubject: () => void
   onImportNew: () => void
+  onAddQuestions: () => void
   onInitialize: () => void
+  onDownloadHtml: () => void
+  onDownloadPdf: () => void
+  onDownloadSolvedPdf: () => void
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1167,6 +1343,7 @@ subjectId: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useState, useStats
@@ -1193,6 +1370,7 @@ onReturnHome: () => void
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1202,10 +1380,12 @@ No explicit memoization hooks (useMemo/useCallback) used.
 
 **Properties & Slots (Interface):**
 ```typescript
-currentStreak: number
-  bestStreak: number
-  isAtRisk?: boolean // If true, make the flame flicker more intensely/look fragile
-  className?: string
+min: number
+  label: string
+  colorClass: string
+  glowClass: string
+  bgClass: string
+  baseBgClass: string
 ```
 
 **Edge-Case Input Handling & Validation:**
@@ -1221,6 +1401,7 @@ currentStreak: number
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1247,6 +1428,7 @@ subjectId: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useStats
@@ -1272,6 +1454,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useState
@@ -1302,6 +1485,7 @@ activeSubjectName?: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEvent
@@ -1322,6 +1506,32 @@ entry: ExampleManifestEntry
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
+### `components/mold/subject/print-layout.tsx`
+
+**Module Name:** Print-Layout
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+subject: FullSubjectData
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
 ### `components/mold/subject/share-receiver.tsx`
 
 **Module Name:** Share-Receiver
@@ -1331,6 +1541,7 @@ entry: ExampleManifestEntry
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useRef, useState
@@ -1362,6 +1573,7 @@ No explicit memoization hooks (useMemo/useCallback) used.
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useReferenceBank, useState
@@ -1389,6 +1601,7 @@ promptCopied: boolean
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEnter, useLeave, useState
@@ -1415,6 +1628,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useReferenceBank, useState
@@ -1446,6 +1660,7 @@ topic: string
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useReferenceBank, useState
@@ -1475,6 +1690,7 @@ onImport: (subject: FullSubjectData) => void
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEvent
@@ -1508,6 +1724,7 @@ subjects: FullSubjectData[]
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1532,7 +1749,8 @@ None specified or inline props
 - Client Component: `Yes`
 - Supports Slots (children): `No`
 - Uses Routing: `No`
-- Dynamic Lazy-Loading: `No`
+- Dynamic Lazy-Loading: `Yes`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 useEffect, useEvent, useState
@@ -1563,6 +1781,7 @@ subjects: FullSubjectData[]
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1596,6 +1815,7 @@ full: FullSubjectData
 - Supports Slots (children): `Yes`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1621,6 +1841,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1646,6 +1867,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None
@@ -1671,6 +1893,7 @@ None specified or inline props
 - Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
+- Asset Delivery: `Standard/None`
 
 **State Dependencies (Hooks):**
 None

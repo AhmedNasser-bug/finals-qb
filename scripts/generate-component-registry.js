@@ -20,12 +20,27 @@ function scanDirectory(dir, fileList = []) {
 }
 
 function extractInterface(content, componentName) {
-  // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
-  if (interfaceMatch) {
-    return interfaceMatch[1].trim();
+  const match = content.match(/(?:interface\s+\w+|type\s+\w+\s*=)\s*\{/);
+  if (!match) return 'None specified or inline props';
+
+  const startIndex = match.index + match[0].length - 1;
+  let depth = 0;
+  let endIndex = -1;
+
+  for (let i = startIndex; i < content.length; i++) {
+    if (content[i] === '{') depth++;
+    if (content[i] === '}') depth--;
+
+    if (depth === 0) {
+      endIndex = i;
+      break;
+    }
   }
+
+  if (endIndex !== -1) {
+    return content.substring(startIndex + 1, endIndex).trim();
+  }
+
   return 'None specified or inline props';
 }
 
@@ -51,6 +66,7 @@ async function processComponent(filePath) {
   const hasChildren = content.includes('children') || content.includes('ReactNode');
   const usesRouting = content.includes('useRouter') || content.includes('next/navigation') || content.includes('next/link');
   const isLazyLoaded = content.includes('next/dynamic') || content.includes('lazy(');
+  const usesAssetDelivery = content.includes('next/image') || content.includes('next/font');
 
   const hooksMatch = content.match(/use[A-Z]\w+/g);
   const hooks = hooksMatch ? Array.from(new Set(hooksMatch)).sort() : [];
@@ -115,6 +131,7 @@ async function processComponent(filePath) {
 - Supports Slots (children): \`${hasChildren ? 'Yes' : 'No'}\`
 - Uses Routing: \`${usesRouting ? 'Yes' : 'No'}\`
 - Dynamic Lazy-Loading: \`${isLazyLoaded ? 'Yes' : 'No'}\`
+- Asset Delivery: \`${usesAssetDelivery ? 'Optimized (next/image or next/font)' : 'Standard/None'}\`
 
 **State Dependencies (Hooks):**
 ${stateHooks.length > 0 ? stateHooks.join(', ') : 'None'}
