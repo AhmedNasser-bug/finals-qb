@@ -95,13 +95,12 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
       }
 
       setPeakQuestionStreak((currentPeak) => {
-        if (next > currentPeak) {
-          if (typeof window !== "undefined") {
-            localStorage.setItem(peakQStreakKey, next.toString())
-          }
-          return next
+        if (next <= currentPeak) return currentPeak;
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem(peakQStreakKey, next.toString())
         }
-        return currentPeak
+        return next
       })
 
       return next
