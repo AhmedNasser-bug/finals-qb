@@ -29,45 +29,43 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
     const files = await fsPromises.readdir(examplesDir)
     const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
-    const manifestResults: ExampleManifestEntry[] = []
+    const manifestResultsRaw = await Promise.all(
+      jsonFiles.map(async (file) => {
+        const filePath = path.join(examplesDir, file)
+        const fileStem = file.replace(/\.json$/i, "")
+        try {
+          const content = await fsPromises.readFile(filePath, "utf-8")
+          const data = JSON.parse(content)
 
-    for (const file of jsonFiles) {
-      const filePath = path.join(examplesDir, file)
-      const fileStem = file.replace(/\.json$/i, "")
-      try {
-        const stream = fs.createReadStream(filePath)
-        const chunks: Buffer[] = []
-        for await (const chunk of stream) {
-          chunks.push(chunk)
+          // Calculate categories
+          const categories = new Set<string>()
+          const questions = Array.isArray(data.questions) ? data.questions : []
+          for (const q of questions) {
+            if (q.category) categories.add(q.category)
+          }
+
+          const tags: string[] = []
+          if (data.config?.difficulty) {
+            tags.push(data.config.difficulty)
+          }
+
+          return {
+            id: data.id || fileStem,
+            filename: fileStem,   // always the actual file name, not the subject id
+            name: data.name || fileStem,
+            description: data.config?.description || "",
+            questionCount: data.questions?.length || 0,
+            categoryCount: categories.size,
+            tags: data.tags || tags
+          } as ExampleManifestEntry
+        } catch (err) {
+          logger.error(`Failed to parse Example Example: ${file}`, err)
+          return null
         }
-        const content = Buffer.concat(chunks).toString("utf-8")
-        const data = JSON.parse(content)
+      })
+    )
 
-        // Calculate categories
-        const categories = new Set<string>()
-        const questions = Array.isArray(data.questions) ? data.questions : []
-        for (const q of questions) {
-          if (q.category) categories.add(q.category)
-        }
-
-        const tags: string[] = []
-        if (data.config?.difficulty) {
-          tags.push(data.config.difficulty)
-        }
-
-        manifestResults.push({
-          id: data.id || fileStem,
-          filename: fileStem,   // always the actual file name, not the subject id
-          name: data.name || fileStem,
-          description: data.config?.description || "",
-          questionCount: data.questions?.length || 0,
-          categoryCount: categories.size,
-          tags: data.tags || tags
-        })
-      } catch (err) {
-        logger.error(`Failed to parse Example Example: ${file}`, err)
-      }
-    }
+    const manifestResults: ExampleManifestEntry[] = manifestResultsRaw.filter((m): m is ExampleManifestEntry => m !== null)
 
     manifestCache = manifestResults
     return manifestResults
