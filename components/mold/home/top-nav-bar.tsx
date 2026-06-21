@@ -49,7 +49,7 @@ export function TopNavBar({
       <nav className="flex justify-between items-center w-full px-6 h-16 bg-[#0d0e11] fixed top-0 z-50 border-b border-border/50 shadow-[0_0_15px_rgba(254,204,23,0.02)] select-none">
         {/* Left branding block */}
         <div className="flex items-center gap-2.5">
-          <ProtocolIcon className="w-5 h-5 text-primary shrink-0" />
+          <ProtocolIcon aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
           <div>
             <p className="text-[10px] font-mono font-bold tracking-widest text-[#fecc17] uppercase leading-none">FINALIST</p>
             <p className="text-[9px] font-mono text-muted-foreground tracking-wider leading-none mt-1">STUDY SYSTEM</p>

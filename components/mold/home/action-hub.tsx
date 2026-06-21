@@ -57,7 +57,7 @@ export function ActionHub({
             "w-10 h-10 rounded border flex items-center justify-center shrink-0 transition-colors",
             disabled ? "border-border text-zinc-500" : "border-primary/30 bg-primary/15 text-primary group-hover:border-background/30 group-hover:bg-background/15 group-hover:text-background"
           )}>
-            <PlayIcon className="w-4 h-4 fill-current" />
+            <PlayIcon aria-hidden="true" className="w-4 h-4 fill-current" />
           </div>
 
           <div className="flex flex-col">

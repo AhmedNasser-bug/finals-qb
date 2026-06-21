@@ -30,8 +30,10 @@ export function BottomMobileNav({
   onChangeSubject,
 }: BottomMobileNavProps) {
   return (
-    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
+    <nav aria-label="Main mobile navigation" className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
       <button
+        title="Go to Core Modes"
+        aria-label="Go to Core Modes"
         onClick={() => {
           setView("home")
           handleModeSelect("speedrun")
@@ -41,44 +43,52 @@ export function BottomMobileNav({
           view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
       >
-        <TerminalIcon className="w-4 h-4" />
+        <TerminalIcon aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">CORE</span>
       </button>
 
       <button
+        title="Go to Statistics"
+        aria-label="Go to Statistics"
         onClick={() => setView("stats")}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "stats" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
       >
-        <BarChart3 className="w-4 h-4" />
+        <BarChart3 aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">STATS</span>
       </button>
 
       <button
+        title="Open Encyclopedia"
+        aria-label="Open Encyclopedia"
         onClick={() => setShowEncyclopedia(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <BookOpen className="w-4 h-4" />
+        <BookOpen aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">DATA</span>
       </button>
 
       <button
+        title="Open Achievements Gallery"
+        aria-label="Open Achievements Gallery"
         onClick={() => setShowGallery(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <Trophy className="w-4 h-4" />
+        <Trophy aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">ACHS</span>
       </button>
 
       <button
+        title="Switch Subject"
+        aria-label="Switch Subject"
         onClick={onChangeSubject}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <RotateCcw className="w-4 h-4" />
+        <RotateCcw aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">SWITCH</span>
       </button>
-    </footer>
+    </nav>
   )
 }
