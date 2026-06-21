@@ -114,6 +114,7 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
   const [activeSection, setActiveSection] = useState<SectionId>("overview")
   const [activeStep, setActiveStep] = useState(0)
   const contentRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<Partial<Record<SectionId, HTMLElement | null>>>({})
 
   // Close on Escape
@@ -163,6 +164,58 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
   const registerSection = (id: SectionId) => (el: HTMLElement | null) => {
     sectionRefs.current[id] = el
   }
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (!open) return;
+
+    // Save previous focus
+    previousFocusRef.current = document.activeElement as HTMLElement
+
+    if (overlayRef.current) {
+      const focusableElements = overlayRef.current.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      if (focusableElements.length > 0) {
+        (focusableElements[0] as HTMLElement).focus();
+      } else {
+        overlayRef.current.focus();
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !overlayRef.current) return;
+
+      const focusableElements = overlayRef.current.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])');
+
+      if (focusableElements.length === 0) {
+        e.preventDefault();
+        return;
+      }
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
+    };
+  }, [open])
 
   if (!open) return null
 
@@ -171,7 +224,7 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
       role="dialog"
       aria-modal="true"
       aria-label="User Guide"
-      className="fixed inset-0 z-[60] bg-background flex flex-col animate-fade-in"
+      ref={overlayRef} tabIndex={-1} className="fixed inset-0 z-[60] bg-background flex flex-col animate-fade-in"
     >
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <header className="flex-none flex items-center justify-between px-6 h-14 bg-panel border-b-2 border-primary/40 shrink-0 z-10">

@@ -307,15 +307,69 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
   const isNextDisabled =
     (step === 1 && topic.trim() === "") ||
     (step === 5 && state !== "valid")
+    const overlayRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    // Save previously focused element
+    previousFocusRef.current = document.activeElement as HTMLElement
+
+    // Focus the modal or first element
+    if (overlayRef.current) {
+      const focusableElements = overlayRef.current.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      if (focusableElements.length > 0) {
+        (focusableElements[0] as HTMLElement).focus();
+      } else {
+        overlayRef.current.focus();
+      }
+    }
+
+    // Keydown handler for trapping focus
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !overlayRef.current) return;
+
+      const focusableElements = overlayRef.current.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])');
+
+      if (focusableElements.length === 0) {
+        e.preventDefault();
+        return;
+      }
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      // Restore focus on close
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
+    };
+  }, [])
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div role="dialog" aria-modal="true" aria-labelledby="import-wizard-title" tabIndex={-1} ref={overlayRef} className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
       <div className="w-full max-w-6xl h-[92vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
 
         {/* Modal Main Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
-            <h2 className="text-sm font-display font-bold tracking-wider uppercase text-white">
+            <h2 id="import-wizard-title" className="text-sm font-display font-bold tracking-wider uppercase text-white">
               Import Subject Wizard
             </h2>
             <p className="text-[11px] font-mono text-zinc-400 mt-0.5 tracking-wider uppercase">
