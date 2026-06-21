@@ -44,16 +44,34 @@ mkdir -p docs
 
 # Create a mock database seed structure as per orchestration requirements
 mkdir -p .data/seeds
-if [ ! -f .data/seeds/default-tenant.json ]; then
+
+# Dynamically generate per-tenant mock data files using an idempotent loop
+if [ -f docker-compose.yml ]; then
+    grep -E '^\s+tenant-[a-z0-9-]+:' docker-compose.yml | sed -e 's/^[[:space:]]*//' -e 's/://' | while read tenant; do
+        if [ ! -f ".data/seeds/${tenant}.json" ]; then
+cat <<EOF3 > ".data/seeds/${tenant}.json"
+{
+  "tenantId": "${tenant}",
+  "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF3
+            echo "Mock database seeded for ${tenant}."
+        else
+            echo "Mock database already seeded for ${tenant}."
+        fi
+    done
+else
+    if [ ! -f .data/seeds/default-tenant.json ]; then
 cat <<EOF3 > .data/seeds/default-tenant.json
 {
   "tenants": ["tenant-a", "tenant-b"],
   "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 EOF3
-echo "Mock database seeded."
-else
-    echo "Mock database already seeded."
+        echo "Mock database seeded for default-tenant."
+    else
+        echo "Mock database already seeded for default-tenant."
+    fi
 fi
 
 if [ "$1" = "--multi-tenant" ]; then
