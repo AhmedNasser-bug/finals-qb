@@ -3,13 +3,13 @@ type RedactReplacement = string | ((match: string, ...args: any[]) => string);
 const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
-    pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-    replacement: '[REDACTED]'
+    pattern: /(^|[^a-zA-Z0-9._%+-])([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    replacement: '$1[REDACTED]'
   },
   {
     // Bearer tokens
-    pattern: /(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
-    replacement: '$1[REDACTED]'
+    pattern: /(^|[^a-zA-Z0-9])(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
+    replacement: '$1$2[REDACTED]'
   },
   {
     // Private keys
@@ -18,20 +18,23 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // Common secrets and PII
-    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(")([^"]*)(")|(')([^']*)(')|([^,\]\}\s]+))/gi,
-    replacement: (match: string, p1: string, p2: string, p3: string, p4: string, p5: string, p6: string, p7: string, p8: string) => {
+    pattern: /(^|[^a-zA-Z0-9])((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(")([^"]*)(")|(')([^']*)(')|([^,\]\}\s]+))/gi,
+    replacement: (match: string, p0: string, p1: string, p2: string, p3: string, p4: string, p5: string, p6: string, p7: string, p8: string) => {
+      // p0 is the lookbehind replacement
+      // p1 is the key part
+      // p2-p8 are the value part
       if (p8 && (p8.startsWith('[') || p8.startsWith('{'))) {
         return match;
       }
-      if (p2) return p1 + p2 + "[REDACTED]" + p4;
-      if (p5) return p1 + p5 + "[REDACTED]" + p7;
-      return p1 + '"[REDACTED]"';
+      if (p2) return p0 + p1 + p2 + "[REDACTED]" + p4;
+      if (p5) return p0 + p1 + p5 + "[REDACTED]" + p7;
+      return p0 + p1 + '"[REDACTED]"';
     }
   },
   {
     // JWTs
-    pattern: /(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
-    replacement: '[REDACTED]'
+    pattern: /(^|[^a-zA-Z0-9_-])(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
+    replacement: '$1[REDACTED]'
   }
 ];
 
