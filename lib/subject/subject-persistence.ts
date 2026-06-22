@@ -243,43 +243,60 @@ function autoFixSingleQuestion(
   }
   qObj.options = normalizedOptions;
 
-  // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
-  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-    qObj.answer = "A";
-    qFixed = true;
-  } else {
-    qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
+  // Helper function to resolve the answer and flatten the deep nesting
+  const resolveAnswer = (answerVal: any, opts: any[], qType: string, index: number) => {
+    if (typeof answerVal !== "string" || answerVal.trim() === "") {
+      return { answer: "A", fixed: true, log: null };
+    }
+
+    const ans = answerVal.toUpperCase().trim();
+
+    // Exact label match
+    if (opts.some((opt) => opt.label === ans)) {
+      return { answer: ans, fixed: ans !== answerVal, log: null };
+    }
+
+    // Text match
+    const matchedOpt = opts.find((opt) => opt.text.toUpperCase() === ans);
+    if (matchedOpt) {
+      return {
+        answer: matchedOpt.label,
+        fixed: true,
+        log: `questions[${index}]: Answer text "${answerVal}" automatically remapped to label "${matchedOpt.label}".`
+      };
+    }
+
+    // Boolean match
+    if (qType === "TrueFalse" || opts.length === 2) {
+      const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(ans);
+      const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(ans);
+      if (isTrueMatch || isFalseMatch) {
+        const newAns = isTrueMatch ? "A" : "B";
+        return {
+          answer: newAns,
+          fixed: true,
+          log: `questions[${index}]: Boolean answer "${answerVal}" automatically mapped to option label "${newAns}".`
+        };
       }
     }
+
+    // Fallback
+    return {
+      answer: opts[0].label,
+      fixed: true,
+      log: `questions[${index}]: Unresolved answer "${answerVal}" automatically reset to first option label "${opts[0].label}".`
+    };
+  };
+
+  // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
+  const resolved = resolveAnswer(qObj.answer, normalizedOptions, qObj.type as string, i);
+  if (resolved.fixed) {
+    qFixed = true;
   }
+  if (resolved.log) {
+    warnings.push(resolved.log);
+  }
+  qObj.answer = resolved.answer;
 
   // 8. Auto-Fix Explanation and Hint
   if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
