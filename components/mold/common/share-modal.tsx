@@ -40,7 +40,47 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
 
   // Trap focus inside overlay
   useEffect(() => {
-    overlayRef.current?.focus()
+    const el = overlayRef.current
+    if (!el) return
+
+    const previousFocus = document.activeElement as HTMLElement
+
+    const focusableElements = el.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    const firstFocusable = focusableElements[0]
+    const lastFocusable = focusableElements[focusableElements.length - 1]
+
+    if (focusableElements.length > 0) {
+      firstFocusable.focus()
+    } else {
+      el.focus()
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstFocusable) {
+          lastFocusable.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === lastFocusable) {
+          firstFocusable.focus()
+          e.preventDefault()
+        }
+      }
+    }
+
+    el.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      el.removeEventListener('keydown', onKeyDown)
+      if (previousFocus && typeof previousFocus.focus === "function") {
+        previousFocus.focus()
+      }
+    }
   }, [])
 
   // ── Encode on mount ──────────────────────────────────────────────────────
