@@ -676,6 +676,8 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
+  let braceCount = 0
+  let bracketCount = 0
   let inString = false
   let escaped = false
   
@@ -698,21 +700,39 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
+      braceCount++
     } else if (char === '[') {
       stack.push('[')
+      bracketCount++
     } else if (char === '}') {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        braceCount--
+      } else if (braceCount > 0) {
+        while (stack.length > 0) {
+          const popped = stack.pop()
+          if (popped === '{') {
+            braceCount--
+            break
+          } else {
+            bracketCount--
+          }
+        }
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        bracketCount--
+      } else if (bracketCount > 0) {
+        while (stack.length > 0) {
+          const popped = stack.pop()
+          if (popped === '[') {
+            bracketCount--
+            break
+          } else {
+            braceCount--
+          }
+        }
       }
     }
   }
