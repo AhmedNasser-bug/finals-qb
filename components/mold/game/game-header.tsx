@@ -123,7 +123,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             "px-2 py-1 flex items-center gap-1 border-l-2 bg-[#201f1f]",
             streak >= 10 ? "border-[#930013]" : streak >= 5 ? "border-orange-500" : "border-[#fecc17]"
           )}>
-            <BoltIcon className={cn(
+            <BoltIcon aria-hidden="true" className={cn(
               "w-3.5 h-3.5 shrink-0",
               streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
             )} />
@@ -141,6 +141,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 <HeartIcon
                   key={i}
                   filled={alive}
+                  aria-hidden="true"
                   className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
                 />
               )
@@ -240,6 +241,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 <HeartIcon
                   key={i}
                   filled={alive}
+                  aria-hidden="true"
                   className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
                 />
               )
@@ -321,6 +323,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           <div className="md:mt-1.5 flex gap-2">
             <button
               onClick={toggleCheatSheet}
+              aria-label="Open Review Deck"
               className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] hover:border-[#fecc17]/50 hover:bg-[#fecc17]/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0 cursor-pointer"
               title="Open Review Deck (Ctrl + `)"
             >

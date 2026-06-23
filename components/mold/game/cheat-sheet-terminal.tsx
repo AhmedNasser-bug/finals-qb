@@ -65,6 +65,8 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
             {entries.length > 0 && (
               <button
                 onClick={clearEntries}
+                aria-label="Clear all flagged questions"
+                title="Clear all flagged questions"
                 className="text-zinc-400 hover:text-red-400 font-mono text-[10px] uppercase border border-zinc-800 hover:border-red-500/20 bg-zinc-950 px-2.5 py-1 rounded transition-all cursor-pointer"
               >
                 Clear Deck
@@ -72,6 +74,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
             )}
             <button
               onClick={() => setIsOpen(false)}
+              aria-label="Close review deck"
               className="text-zinc-400 hover:text-[#fecc17] font-mono text-[10px] uppercase border border-zinc-800 hover:border-[#fecc17]/20 bg-zinc-950 px-2 py-1 rounded transition-all cursor-pointer"
               title="Close panel (Ctrl + `)"
             >

@@ -21,7 +21,7 @@ export function OptionButton({
       aria-disabled={isRevealed}
       disabled={isRevealed}
       aria-label={`Select Option ${label}`}
-      title={`Select Option ${label}`}
+      title={`Select: ${text ?? label}`}
       onClick={onSelect}
       className={cn(
         "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
@@ -56,10 +56,10 @@ export function OptionButton({
         </span>
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
-        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
-        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
+        {isRevealed && isCorrect && <CheckCircleIcon aria-hidden="true" className="w-5 h-5 text-[#fecc17]" />}
+        {isRevealed && isWrong && <XIcon aria-hidden="true" className="w-5 h-5 text-[#ffb4ab]" />}
+        {!isRevealed && isSelected && <CheckCircleIcon aria-hidden="true" className="w-5 h-5 text-[#fecc17]" />}
+        {!isRevealed && !isSelected && <RadioIcon aria-hidden="true" className="w-5 h-5 text-zinc-700" />}
       </div>
     </button>
   )
