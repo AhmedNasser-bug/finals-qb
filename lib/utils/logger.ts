@@ -58,50 +58,32 @@ function isPlainObject(value: any): boolean {
   return proto === null || proto === Object.prototype;
 }
 
-export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
-  if (typeof data === 'string') {
-    return maskString(data);
+function maskError(data: any, seen: WeakSet<any>): Error {
+  const maskedError = new Error(maskString(data.message));
+  maskedError.name = data.name;
+  if (data.stack) {
+    maskedError.stack = maskString(data.stack);
   }
 
-  if (typeof data !== 'object' || data === null) {
-    return data;
-  }
-
-  if (seen.has(data)) {
-    return '[Circular]';
-  }
-  seen.add(data);
-
-  if (data instanceof Error) {
-    const maskedError = new Error(maskString(data.message));
-    maskedError.name = data.name;
-    if (data.stack) {
-      maskedError.stack = maskString(data.stack);
+  // Explicitly preserve custom properties
+  for (const key of Object.getOwnPropertyNames(data)) {
+    if (key !== 'name' && key !== 'message' && key !== 'stack') {
+      (maskedError as any)[key] = maskData((data as any)[key], seen);
     }
-
-    // Explicitly preserve custom properties
-    for (const key of Object.getOwnPropertyNames(data)) {
-      if (key !== 'name' && key !== 'message' && key !== 'stack') {
-        (maskedError as any)[key] = maskData((data as any)[key], seen);
-      }
-    }
-    return maskedError;
   }
+  return maskedError;
+}
 
-  if (Array.isArray(data)) {
-    const length = data.length;
-    const result = new Array(length);
-    for (let i = 0; i < length; i++) {
-      result[i] = maskData(data[i], seen);
-    }
-    return result;
+function maskArray(data: any[], seen: WeakSet<any>): any[] {
+  const length = data.length;
+  const result = new Array(length);
+  for (let i = 0; i < length; i++) {
+    result[i] = maskData(data[i], seen);
   }
+  return result;
+}
 
-  // Bypass non-plain objects (e.g. Date, Set, Map)
-  if (!isPlainObject(data)) {
-    return data;
-  }
-
+function maskPlainObject(data: any, seen: WeakSet<any>): Record<string, any> {
   const maskedObj: Record<string, any> = {};
   const sensitiveKeys = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
   for (const key of Object.keys(data)) {
@@ -111,8 +93,21 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
       maskedObj[key] = maskData(data[key], seen);
     }
   }
-
   return maskedObj;
+}
+
+export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
+  if (typeof data === 'string') return maskString(data);
+  if (typeof data !== 'object' || data === null) return data;
+  if (seen.has(data)) return '[Circular]';
+
+  seen.add(data);
+
+  if (data instanceof Error) return maskError(data, seen);
+  if (Array.isArray(data)) return maskArray(data, seen);
+  if (!isPlainObject(data)) return data;
+
+  return maskPlainObject(data, seen);
 }
 
 export const logger = {
