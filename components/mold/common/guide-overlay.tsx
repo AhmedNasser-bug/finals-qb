@@ -116,6 +116,45 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<Partial<Record<SectionId, HTMLElement | null>>>({})
 
+  // Trap focus inside overlay
+  useEffect(() => {
+    if (!open) return
+    const prevFocus = document.activeElement as HTMLElement
+    // Wait a tick for the element to mount if it is controlled by conditional render, but guide is always mounted, just hidden or returned null earlier. Wait, guide-overlay returns null if !open. So ref will be mounted.
+    contentRef.current?.focus()
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Tab") return
+      if (!contentRef.current) return
+
+      const focusableElements = contentRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusableElements.length === 0) return
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus()
+          e.preventDefault()
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+      if (prevFocus) prevFocus.focus()
+    }
+  }, [open])
+
   // Close on Escape
   useEffect(() => {
     if (!open) return
@@ -172,6 +211,8 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
       aria-modal="true"
       aria-label="User Guide"
       className="fixed inset-0 z-[60] bg-background flex flex-col animate-fade-in"
+      ref={contentRef}
+      tabIndex={-1}
     >
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <header className="flex-none flex items-center justify-between px-6 h-14 bg-panel border-b-2 border-primary/40 shrink-0 z-10">

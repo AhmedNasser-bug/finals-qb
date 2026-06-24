@@ -30,7 +30,7 @@ export function BottomMobileNav({
   onChangeSubject,
 }: BottomMobileNavProps) {
   return (
-    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
+    <nav aria-label="Main mobile navigation" className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
       <button
         onClick={() => {
           setView("home")
@@ -40,6 +40,8 @@ export function BottomMobileNav({
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
+        aria-label="Core"
+        title="Core"
       >
         <TerminalIcon className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">CORE</span>
@@ -51,6 +53,8 @@ export function BottomMobileNav({
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "stats" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
+        aria-label="Stats"
+        title="Stats"
       >
         <BarChart3 className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">STATS</span>
@@ -59,6 +63,8 @@ export function BottomMobileNav({
       <button
         onClick={() => setShowEncyclopedia(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
+        aria-label="Data"
+        title="Data"
       >
         <BookOpen className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">DATA</span>
@@ -67,6 +73,8 @@ export function BottomMobileNav({
       <button
         onClick={() => setShowGallery(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
+        aria-label="Achievements"
+        title="Achievements"
       >
         <Trophy className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">ACHS</span>
@@ -75,10 +83,12 @@ export function BottomMobileNav({
       <button
         onClick={onChangeSubject}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
+        aria-label="Switch Subject"
+        title="Switch Subject"
       >
         <RotateCcw className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">SWITCH</span>
       </button>
-    </footer>
+    </nav>
   )
 }

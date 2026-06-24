@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useEffect, useRef } from "react"
 
 import { useAchievements } from "@/lib/achievement-engine"
 import type { Achievement } from "@/lib/mold-types"
@@ -8,6 +8,45 @@ import { cn } from "@/lib/utils"
 
 export function AchievementGallery({ onClose }: { onClose: () => void }) {
   const { achievements, reset } = useAchievements()
+
+  const galleryRef = useRef<HTMLDivElement>(null)
+
+  // Trap focus inside overlay
+  useEffect(() => {
+    const prevFocus = document.activeElement as HTMLElement
+    galleryRef.current?.focus()
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Tab") return
+      if (!galleryRef.current) return
+
+      const focusableElements = galleryRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusableElements.length === 0) return
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus()
+          e.preventDefault()
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+      if (prevFocus) prevFocus.focus()
+    }
+  }, [])
 
   const { unlocked, locked } = useMemo(() => {
     const u: Achievement[] = []
@@ -23,7 +62,12 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
   }, [achievements])
 
   return (
-    <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
+      ref={galleryRef}
+      tabIndex={-1}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Achievement Log">
       <div className="w-full max-w-lg bg-panel border border-border rounded flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
