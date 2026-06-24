@@ -1154,6 +1154,17 @@ function base64urlToArrayBuffer(base64url: string): ArrayBuffer {
     .padEnd(base64url.length + ((4 - (base64url.length % 4)) % 4), "=")
 
   const binary = atob(base64)
-  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
+
+  // Fast path for Node.js environment
+  if (typeof Buffer !== "undefined") {
+    const b = Buffer.from(binary, "binary")
+    return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)
+  }
+
+  // Fallback for browsers
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
   return bytes.buffer
 }
