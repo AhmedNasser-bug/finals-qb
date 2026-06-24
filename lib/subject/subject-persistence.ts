@@ -901,9 +901,11 @@ export function parseSubjectJson(raw: string): { data: unknown; parseError?: nev
     return { data: parsed, fixedWarnings }
   } catch (e) {
     const { repaired, fixedIssues } = repairJson(jsonToParse)
+    const warningsSet = new Set(fixedWarnings)
     for (const issue of fixedIssues) {
-      if (!fixedWarnings.includes(issue)) {
+      if (!warningsSet.has(issue)) {
         fixedWarnings.push(issue)
+        warningsSet.add(issue)
       }
     }
     try {
