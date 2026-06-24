@@ -15,7 +15,7 @@
    ```bash
    ./scripts/setup/setup.sh --multi-tenant
    ```
-   **Note:** This script automatically creates `.data/seeds/default-tenant.json` idempotently and mounts isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) dynamically via `NEXT_DIST_DIR`.
+   **Note:** This script automatically reads from `docker-compose.yml` to dynamically orchestrate multi-tenant mock data and seeds per-tenant isolated output directories via `NEXT_DIST_DIR`.
 
 ## 2. Testing Workflows
 
