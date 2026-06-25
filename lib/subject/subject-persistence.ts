@@ -4,6 +4,9 @@ import { deriveCategoriesFromSubject } from "./subject-store"
 // ─── Storage key ──────────────────────────────────────────────────────────────
 const SUBJECTS_KEY = "mold_v2_subjects"
 
+const TRUE_MATCH_SET = new Set(["TRUE", "YES", "T", "1"])
+const FALSE_MATCH_SET = new Set(["FALSE", "NO", "F", "0"])
+
 // ─── Validation ───────────────────────────────────────────────────────────────
 
 export interface ValidationResult {
@@ -261,8 +264,8 @@ function autoFixSingleQuestion(
       } else {
         // Check for "True" / "False" maps to A / B
         if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+          const isTrueMatch = TRUE_MATCH_SET.has(qObj.answer as string);
+          const isFalseMatch = FALSE_MATCH_SET.has(qObj.answer as string);
           if (isTrueMatch || isFalseMatch) {
             const oldAnswer = qObj.answer;
             qObj.answer = isTrueMatch ? "A" : "B";
@@ -704,15 +707,17 @@ function balanceJsonStack(str: string): string {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '{') idx--
+        if (idx !== -1) stack.length = idx
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '[') idx--
+        if (idx !== -1) stack.length = idx
       }
     }
   }
@@ -901,8 +906,10 @@ export function parseSubjectJson(raw: string): { data: unknown; parseError?: nev
     return { data: parsed, fixedWarnings }
   } catch (e) {
     const { repaired, fixedIssues } = repairJson(jsonToParse)
+    const fixedWarningsSet = new Set(fixedWarnings)
     for (const issue of fixedIssues) {
-      if (!fixedWarnings.includes(issue)) {
+      if (!fixedWarningsSet.has(issue)) {
+        fixedWarningsSet.add(issue)
         fixedWarnings.push(issue)
       }
     }
