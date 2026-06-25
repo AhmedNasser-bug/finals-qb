@@ -105,47 +105,32 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
   const maskedObj: Record<string, any> = {};
   const sensitiveKeys = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
   for (const key of Object.keys(data)) {
-    if (sensitiveKeys.test(key) && (typeof data[key] === 'string' || typeof data[key] === 'number' || typeof data[key] === 'boolean')) {
+    const value = data[key];
+    const isSensitiveType = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+
+    if (sensitiveKeys.test(key) && isSensitiveType) {
       maskedObj[key] = '[REDACTED]';
-    } else {
-      maskedObj[key] = maskData(data[key], seen);
+      continue;
     }
+
+    maskedObj[key] = maskData(value, seen);
   }
 
   return maskedObj;
 }
 
-export const logger = {
-  log: (...args: any[]) => {
-    const length = args.length;
-    const maskedArgs = new Array(length);
-    for (let i = 0; i < length; i++) {
-      maskedArgs[i] = maskData(args[i], new WeakSet());
-    }
-    console.log(...maskedArgs);
-  },
-  info: (...args: any[]) => {
-    const length = args.length;
-    const maskedArgs = new Array(length);
-    for (let i = 0; i < length; i++) {
-      maskedArgs[i] = maskData(args[i], new WeakSet());
-    }
-    console.info(...maskedArgs);
-  },
-  warn: (...args: any[]) => {
-    const length = args.length;
-    const maskedArgs = new Array(length);
-    for (let i = 0; i < length; i++) {
-      maskedArgs[i] = maskData(args[i], new WeakSet());
-    }
-    console.warn(...maskedArgs);
-  },
-  error: (...args: any[]) => {
-    const length = args.length;
-    const maskedArgs = new Array(length);
-    for (let i = 0; i < length; i++) {
-      maskedArgs[i] = maskData(args[i], new WeakSet());
-    }
-    console.error(...maskedArgs);
+const processArgs = (args: any[]) => {
+  const length = args.length;
+  const maskedArgs = new Array(length);
+  for (let i = 0; i < length; i++) {
+    maskedArgs[i] = maskData(args[i], new WeakSet());
   }
+  return maskedArgs;
+};
+
+export const logger = {
+  log: (...args: any[]) => console.log(...processArgs(args)),
+  info: (...args: any[]) => console.info(...processArgs(args)),
+  warn: (...args: any[]) => console.warn(...processArgs(args)),
+  error: (...args: any[]) => console.error(...processArgs(args))
 };

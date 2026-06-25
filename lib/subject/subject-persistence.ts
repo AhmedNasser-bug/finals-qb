@@ -235,50 +235,53 @@ function autoFixSingleQuestion(
     const opt = (qObj.options as any[])[optIdx];
     if (typeof opt !== "object" || opt === null) {
       normalizedOptions[optIdx] = { label: labels[optIdx] || "X", text: "Option Option" };
-    } else {
-      const label = typeof opt.label === "string" && opt.label.trim() !== "" ? opt.label.toUpperCase() : (labels[optIdx] || "X");
-      const text = typeof opt.text === "string" && opt.text.trim() !== "" ? opt.text : `Option ${label}`;
-      normalizedOptions[optIdx] = { label, text };
+      continue;
     }
+    const label = typeof opt.label === "string" && opt.label.trim() !== "" ? opt.label.toUpperCase() : (labels[optIdx] || "X");
+    const text = typeof opt.text === "string" && opt.text.trim() !== "" ? opt.text : `Option ${label}`;
+    normalizedOptions[optIdx] = { label, text };
   }
   qObj.options = normalizedOptions;
 
-  // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
-  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-    qObj.answer = "A";
-    qFixed = true;
-  } else {
+  // Helper for step 7
+  const resolveAnswer = (): boolean => {
+    if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+      qObj.answer = "A";
+      return true;
+    }
+
     qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
+    const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+    if (hasLabel) return false;
+
+    const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+    if (matchedOpt) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = matchedOpt.label;
+      warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+      return true;
+    }
+
+    if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+      const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+      const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+      if (isTrueMatch || isFalseMatch) {
         const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
+        qObj.answer = isTrueMatch ? "A" : "B";
+        warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+        return true;
       }
     }
+
+    const oldAnswer = qObj.answer;
+    qObj.answer = normalizedOptions[0].label;
+    warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+    return true;
+  };
+
+  // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
+  if (resolveAnswer()) {
+    qFixed = true;
   }
 
   // 8. Auto-Fix Explanation and Hint
@@ -346,6 +349,27 @@ function autoFixTerminology(obj: Record<string, unknown>, warnings: string[]) {
   }
 }
 
+const recoverConfigBlock = (obj: Record<string, unknown>, warnings: string[]) => {
+  if (typeof obj.config !== "object" || obj.config === null || Array.isArray(obj.config)) {
+    obj.config = {
+      title: obj.name,
+      description: `Pedagogical study subject generated for ${obj.name}.`
+    }
+    warnings.push(`"config" block was missing or invalid; generated default config block.`)
+    return;
+  }
+
+  const config = obj.config as Record<string, unknown>
+  if (typeof config.title !== "string" || config.title.trim() === "") {
+    config.title = obj.name
+    warnings.push(`"config.title" was missing; defaulted to subject name.`)
+  }
+  if (typeof config.description !== "string" || config.description.trim() === "") {
+    config.description = `Study subject generated for ${obj.name}.`
+    warnings.push(`"config.description" was missing; generated placeholder description.`)
+  }
+};
+
 function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
   // Only treat as a subject and auto-fix if it has at least one subject signature key
   const hasSignature = 
@@ -370,23 +394,7 @@ function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
   }
 
   // 2. Recover Config Block
-  if (typeof obj.config !== "object" || obj.config === null || Array.isArray(obj.config)) {
-    obj.config = {
-      title: obj.name,
-      description: `Pedagogical study subject generated for ${obj.name}.`
-    }
-    warnings.push(`"config" block was missing or invalid; generated default config block.`)
-  } else {
-    const config = obj.config as Record<string, unknown>
-    if (typeof config.title !== "string" || config.title.trim() === "") {
-      config.title = obj.name
-      warnings.push(`"config.title" was missing; defaulted to subject name.`)
-    }
-    if (typeof config.description !== "string" || config.description.trim() === "") {
-      config.description = `Study subject generated for ${obj.name}.`
-      warnings.push(`"config.description" was missing; generated placeholder description.`)
-    }
-  }
+  recoverConfigBlock(obj, warnings);
 
   // 3. Recover Questions Array
   if (!Array.isArray(obj.questions)) {

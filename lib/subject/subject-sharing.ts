@@ -1027,6 +1027,21 @@ export function generateSubjectSolvedHtml(subject: FullSubjectData): string {
   return lines.join("\n")
 }
 
+const triggerIframePrint = (iframe: HTMLIFrameElement, triggerFlag: { printed: boolean }) => {
+  if (triggerFlag.printed) return
+  triggerFlag.printed = true
+  try {
+    iframe.contentWindow?.focus()
+    iframe.contentWindow?.print()
+  } catch (err) {
+    console.error("Failed to trigger print:", err)
+  } finally {
+    setTimeout(() => {
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe)
+    }, 5000)
+  }
+};
+
 /** Trigger a browser print of the solved-questions sheet (questions + hints + explanations inline) via hidden iframe. */
 export function downloadSubjectSolvedPdf(subject: FullSubjectData): void {
   const htmlContent = generateSubjectSolvedHtml(subject)
@@ -1050,24 +1065,10 @@ export function downloadSubjectSolvedPdf(subject: FullSubjectData): void {
   iframeDoc.write(htmlContent)
   iframeDoc.close()
 
-  let printed = false
-  const triggerPrint = () => {
-    if (printed) return
-    printed = true
-    try {
-      iframe.contentWindow?.focus()
-      iframe.contentWindow?.print()
-    } catch (err) {
-      console.error("Failed to trigger print:", err)
-    } finally {
-      setTimeout(() => {
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe)
-      }, 5000)
-    }
-  }
+  const triggerFlag = { printed: false }
 
-  iframe.contentWindow?.addEventListener("sheet-render-complete", () => triggerPrint())
-  setTimeout(() => triggerPrint(), 10000)
+  iframe.contentWindow?.addEventListener("sheet-render-complete", () => triggerIframePrint(iframe, triggerFlag))
+  setTimeout(() => triggerIframePrint(iframe, triggerFlag), 10000)
 }
 
 /** Trigger a browser print of the subject via a hidden iframe to save as PDF. */
@@ -1098,33 +1099,16 @@ export function downloadSubjectPdf(subject: FullSubjectData): void {
   iframeDoc.write(htmlContent)
   iframeDoc.close()
   
-  let printed = false
-  const triggerPrint = () => {
-    if (printed) return
-    printed = true
-    try {
-      iframe.contentWindow?.focus()
-      iframe.contentWindow?.print()
-    } catch (err) {
-      console.error("Failed to trigger print:", err)
-    } finally {
-      // Keep iframe in DOM for a little bit to ensure print dialog renders properly
-      setTimeout(() => {
-        if (iframe.parentNode) {
-          iframe.parentNode.removeChild(iframe)
-        }
-      }, 5000)
-    }
-  }
+  const triggerFlag = { printed: false }
   
   // Wait for the render-complete event
   iframe.contentWindow?.addEventListener("sheet-render-complete", () => {
-    triggerPrint()
+    triggerIframePrint(iframe, triggerFlag)
   })
   
   // Fallback timeout in case of script load issues
   setTimeout(() => {
-    triggerPrint()
+    triggerIframePrint(iframe, triggerFlag)
   }, 10000)
 }
 
