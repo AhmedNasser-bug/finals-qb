@@ -36,6 +36,8 @@ export function BottomMobileNav({
           setView("home")
           handleModeSelect("speedrun")
         }}
+        aria-label="Dashboard"
+        title="Dashboard"
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
@@ -47,6 +49,8 @@ export function BottomMobileNav({
 
       <button
         onClick={() => setView("stats")}
+        aria-label="Statistics"
+        title="Statistics"
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "stats" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
@@ -58,6 +62,8 @@ export function BottomMobileNav({
 
       <button
         onClick={() => setShowEncyclopedia(true)}
+        aria-label="Encyclopedia"
+        title="Encyclopedia"
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
         <BookOpen className="w-4 h-4" />
@@ -66,6 +72,8 @@ export function BottomMobileNav({
 
       <button
         onClick={() => setShowGallery(true)}
+        aria-label="Achievements"
+        title="Achievements"
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
         <Trophy className="w-4 h-4" />
@@ -74,6 +82,8 @@ export function BottomMobileNav({
 
       <button
         onClick={onChangeSubject}
+        aria-label="Switch Subject"
+        title="Switch Subject"
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
         <RotateCcw className="w-4 h-4" />
