@@ -35,6 +35,31 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   }
 ];
 
+function maskError(data: Error, seen: WeakSet<any>): Error {
+  const maskedError = new Error(maskString(data.message));
+  maskedError.name = data.name;
+  if (data.stack) {
+    maskedError.stack = maskString(data.stack);
+  }
+
+  // Explicitly preserve custom properties
+  for (const key of Object.getOwnPropertyNames(data)) {
+    if (key !== 'name' && key !== 'message' && key !== 'stack') {
+      (maskedError as any)[key] = maskData((data as any)[key], seen);
+    }
+  }
+  return maskedError;
+}
+
+function maskArray(data: any[], seen: WeakSet<any>): any[] {
+  const length = data.length;
+  const result = new Array(length);
+  for (let i = 0; i < length; i++) {
+    result[i] = maskData(data[i], seen);
+  }
+  return result;
+}
+
 function maskString(str: string): string {
   try {
     const parsed = JSON.parse(str);
@@ -73,28 +98,11 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
   seen.add(data);
 
   if (data instanceof Error) {
-    const maskedError = new Error(maskString(data.message));
-    maskedError.name = data.name;
-    if (data.stack) {
-      maskedError.stack = maskString(data.stack);
-    }
-
-    // Explicitly preserve custom properties
-    for (const key of Object.getOwnPropertyNames(data)) {
-      if (key !== 'name' && key !== 'message' && key !== 'stack') {
-        (maskedError as any)[key] = maskData((data as any)[key], seen);
-      }
-    }
-    return maskedError;
+    return maskError(data, seen);
   }
 
   if (Array.isArray(data)) {
-    const length = data.length;
-    const result = new Array(length);
-    for (let i = 0; i < length; i++) {
-      result[i] = maskData(data[i], seen);
-    }
-    return result;
+    return maskArray(data, seen);
   }
 
   // Bypass non-plain objects (e.g. Date, Set, Map)

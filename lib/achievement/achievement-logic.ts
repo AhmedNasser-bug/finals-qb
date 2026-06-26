@@ -99,26 +99,28 @@ export function checkNewUnlocks(
   }
 
   // Check "all_unlocked" meta-achievement separately
-  let allOthersLocked = true;
-  let grandMaster: Achievement | undefined;
-
   const newlyUnlockedSet = new Set(newlyUnlocked);
 
-  for (let i = 0; i < achievements.length; i++) {
-    const a = achievements[i];
-    const cond = activeConditions[a.id];
+  const checkAllOthersUnlocked = () => {
+    let grandMasterAch: Achievement | undefined;
+    let allOthersLockedLocal = true;
+    for (let i = 0; i < achievements.length; i++) {
+      const a = achievements[i];
+      const cond = activeConditions[a.id];
 
-    if (cond?.type === "all_unlocked" || a.id === "grand-master" || a.id === "grand_master") {
-      grandMaster = a;
-      continue;
+      if (cond?.type === "all_unlocked" || a.id === "grand-master" || a.id === "grand_master") {
+        grandMasterAch = a;
+        continue;
+      }
+
+      if (a.unlockedAt === null && !newlyUnlockedSet.has(a.id)) {
+        allOthersLockedLocal = false;
+      }
     }
+    return { allOthersLocked: allOthersLockedLocal, grandMaster: grandMasterAch };
+  };
 
-    if (a.unlockedAt !== null || newlyUnlockedSet.has(a.id)) {
-      continue;
-    }
-
-    allOthersLocked = false;
-  }
+  const { allOthersLocked, grandMaster } = checkAllOthersUnlocked();
 
   if (allOthersLocked && grandMaster && grandMaster.unlockedAt === null) {
     newlyUnlocked.push(grandMaster.id)

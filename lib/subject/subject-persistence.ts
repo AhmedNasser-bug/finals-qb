@@ -674,6 +674,37 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   }
 }
 
+function handleBalanceChar(char: string, stack: ("{" | "[")[]): void {
+  if (char === '{') {
+    stack.push('{')
+    return;
+  }
+  if (char === '[') {
+    stack.push('[')
+    return;
+  }
+  if (char === '}') {
+    if (stack[stack.length - 1] === '{') {
+      stack.pop()
+    } else {
+      let idx = stack.length - 1;
+      while (idx >= 0 && stack[idx] !== '{') idx--;
+      if (idx !== -1) stack.length = idx;
+    }
+    return;
+  }
+  if (char === ']') {
+    if (stack[stack.length - 1] === '[') {
+      stack.pop()
+    } else {
+      let idx = stack.length - 1;
+      while (idx >= 0 && stack[idx] !== '[') idx--;
+      if (idx !== -1) stack.length = idx;
+    }
+    return;
+  }
+}
+
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
@@ -696,25 +727,7 @@ function balanceJsonStack(str: string): string {
 
     if (inString) continue;
 
-    if (char === '{') {
-      stack.push('{')
-    } else if (char === '[') {
-      stack.push('[')
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
-      }
-    } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
-      }
-    }
+    handleBalanceChar(char, stack);
   }
   
   let balanced = str.trim()
