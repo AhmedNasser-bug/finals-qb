@@ -21,10 +21,49 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
   const [error, setError]     = useState<string | null>(null)
 
   const overlayRef = useRef<HTMLDivElement>(null)
+  const prevFocusRef = useRef<HTMLElement | null>(null)
 
-  // Trap focus inside overlay
+  // Robust focus trap
   useEffect(() => {
+    // Save previously focused element
+    prevFocusRef.current = document.activeElement as HTMLElement
+
+    // Set initial focus
     overlayRef.current?.focus()
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Tab") return
+      if (!overlayRef.current) return
+
+      const focusable = overlayRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === first || document.activeElement === overlayRef.current) {
+          last.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === last) {
+          first.focus()
+          e.preventDefault()
+        }
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown)
+      // Restore focus
+      prevFocusRef.current?.focus()
+    }
   }, [])
 
   useEffect(() => {

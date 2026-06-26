@@ -26,9 +26,49 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
     return () => window.removeEventListener("keydown", onKey)
   }, [onClose])
 
-  // Trap focus inside overlay
+  const prevFocusRef = useRef<HTMLElement | null>(null)
+
+  // Robust focus trap
   useEffect(() => {
+    // Save previously focused element
+    prevFocusRef.current = document.activeElement as HTMLElement
+
+    // Set initial focus
     overlayRef.current?.focus()
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Tab") return
+      if (!overlayRef.current) return
+
+      const focusable = overlayRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === first || document.activeElement === overlayRef.current) {
+          last.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === last) {
+          first.focus()
+          e.preventDefault()
+        }
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown)
+      // Restore focus
+      prevFocusRef.current?.focus()
+    }
   }, [])
 
   const entries = terminology?.[activeCategory] ?? []
@@ -184,7 +224,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
 
 function CloseIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg aria-hidden="true" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>

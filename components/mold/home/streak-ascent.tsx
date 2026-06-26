@@ -124,7 +124,7 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
         {visibleMilestones.reverse().filter(t => t.min <= currentStreak).map(tier => (
           <div key={tier.min} className="flex flex-col items-center">
             <div className={cn("w-8 h-8 flex items-center justify-center rounded-full border border-border bg-background", tier.colorClass)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>

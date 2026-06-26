@@ -261,7 +261,7 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
         const processed = renderedSvg
           .replace(/ height="[^"]*"/, "")
           .replace(/ width="[^"]*"/, "")
-          .replace(/<svg /, '<svg preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;max-height:100%;display:block;" ')
+          .replace(/<svg /, '<svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;max-height:100%;display:block;" ')
 
         setSvg(processed)
         setError(null)
