@@ -157,63 +157,65 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
   }
 }
 
-function autoFixSingleQuestion(
-  qObj: Record<string, unknown>,
-  i: number,
-  seenIds: Set<string>,
-  VALID_TYPES: Set<string>,
-  VALID_DIFFICULTIES: Set<string>,
-  warnings: string[]
-): boolean {
-  let qFixed = false;
 
-  // 1. Auto-Fix ID
+function autoFixId(qObj: Record<string, unknown>, i: number, seenIds: Set<string>, warnings: string[]): boolean {
   if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
     qObj.id = `q-gen-${i + 1}`;
-    qFixed = true;
-  } else if (seenIds.has(qObj.id as string)) {
+    return true;
+  }
+  if (seenIds.has(qObj.id as string)) {
     const oldId = qObj.id as string;
     qObj.id = `${oldId}-${i}`;
     seenIds.add(qObj.id as string);
     warnings.push(`questions[${i}]: Duplicate ID "${oldId}" automatically renamed to "${qObj.id}".`);
-    qFixed = true;
-  } else {
-    seenIds.add(qObj.id as string);
+    return true;
   }
+  seenIds.add(qObj.id as string);
+  return false;
+}
 
-  // 2. Auto-Fix Type
+function autoFixType(qObj: Record<string, unknown>, i: number, VALID_TYPES: Set<string>, warnings: string[]): boolean {
+  let fixed = false;
   if (typeof qObj.type !== "string" || !VALID_TYPES.has(qObj.type)) {
     const originalType = qObj.type;
     qObj.type = Array.isArray(qObj.options) && qObj.options.length === 2 ? "TrueFalse" : "MCQ";
     warnings.push(`questions[${i}]: Invalid type "${originalType}" automatically set to "${qObj.type}".`);
-    qFixed = true;
+    fixed = true;
   }
-
   if (qObj.type === "TrueFalse" && Array.isArray(qObj.options) && qObj.options.length !== 2) {
     qObj.type = "MCQ";
     warnings.push(`questions[${i}]: TrueFalse question had ${qObj.options.length} options; converted to MCQ.`);
-    qFixed = true;
+    fixed = true;
   }
+  return fixed;
+}
 
-  // 3. Auto-Fix Difficulty
+function autoFixDifficulty(qObj: Record<string, unknown>, VALID_DIFFICULTIES: Set<string>): boolean {
   if (typeof qObj.difficulty !== "string" || !VALID_DIFFICULTIES.has(qObj.difficulty)) {
     qObj.difficulty = "Medium";
-    qFixed = true;
+    return true;
   }
+  return false;
+}
 
-  // 4. Auto-Fix Category
+function autoFixCategory(qObj: Record<string, unknown>): boolean {
   if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
     qObj.category = "general";
-    qFixed = true;
+    return true;
   }
+  return false;
+}
 
-  // 5. Auto-Fix Question Text
+function autoFixQuestionText(qObj: Record<string, unknown>): boolean {
   if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
     qObj.question = "No question text provided.";
-    qFixed = true;
+    return true;
   }
+  return false;
+}
 
-  // 6. Auto-Fix Options
+function autoFixOptions(qObj: Record<string, unknown>, i: number, warnings: string[]): { normalizedOptions: any[]; fixed: boolean } {
+  let fixed = false;
   if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
     if (qObj.type === "TrueFalse") {
       qObj.options = [{ label: "A", text: "True" }, { label: "B", text: "False" }];
@@ -226,7 +228,7 @@ function autoFixSingleQuestion(
       ];
     }
     warnings.push(`questions[${i}]: Missing options — generated default choices.`);
-    qFixed = true;
+    fixed = true;
   }
 
   const labels = ["A", "B", "C", "D", "E", "F"];
@@ -242,56 +244,88 @@ function autoFixSingleQuestion(
     }
   }
   qObj.options = normalizedOptions;
+  return { normalizedOptions, fixed };
+}
+
+function autoFixExplanation(qObj: Record<string, unknown>): boolean {
+  if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
+    qObj.explanation = `Option ${qObj.answer} is correct.`;
+    return true;
+  }
+  return false;
+}
+
+function autoFixHint(qObj: Record<string, unknown>): boolean {
+  if (typeof qObj.hint !== "string" || qObj.hint.trim() === "") {
+    qObj.hint = "Focus on the key terminology and relationships described.";
+    return true;
+  }
+  return false;
+}
+
+function autoFixSingleQuestion(
+  qObj: Record<string, unknown>,
+  i: number,
+  seenIds: Set<string>,
+  VALID_TYPES: Set<string>,
+  VALID_DIFFICULTIES: Set<string>,
+  warnings: string[]
+): boolean {
+  let qFixed = false;
+
+  qFixed = autoFixId(qObj, i, seenIds, warnings) || qFixed;
+  qFixed = autoFixType(qObj, i, VALID_TYPES, warnings) || qFixed;
+  qFixed = autoFixDifficulty(qObj, VALID_DIFFICULTIES) || qFixed;
+  qFixed = autoFixCategory(qObj) || qFixed;
+  qFixed = autoFixQuestionText(qObj) || qFixed;
+
+  const { normalizedOptions, fixed: optionsFixed } = autoFixOptions(qObj, i, warnings);
+  qFixed = optionsFixed || qFixed;
 
   // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
+  qFixed = autoFixAnswer(qObj, i, normalizedOptions, warnings) || qFixed;
+
+  qFixed = autoFixExplanation(qObj) || qFixed;
+  qFixed = autoFixHint(qObj) || qFixed;
+
+  return qFixed;
+}
+
+
+function autoFixAnswer(qObj: Record<string, unknown>, i: number, normalizedOptions: any[], warnings: string[]): boolean {
   if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
     qObj.answer = "A";
-    qFixed = true;
-  } else {
-    qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
-      }
+    return true;
+  }
+
+  qObj.answer = qObj.answer.toUpperCase().trim();
+  if (normalizedOptions.some((opt: any) => opt.label === qObj.answer)) {
+    return false;
+  }
+
+  const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+  if (matchedOpt) {
+    const oldAnswer = qObj.answer;
+    qObj.answer = matchedOpt.label;
+    warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+    return true;
+  }
+
+  if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+    const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+    const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+    if (isTrueMatch || isFalseMatch) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = isTrueMatch ? "A" : "B";
+      warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+      return true;
     }
   }
 
-  // 8. Auto-Fix Explanation and Hint
-  if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
-    qObj.explanation = `Option ${qObj.answer} is correct.`;
-    qFixed = true;
-  }
-  if (typeof qObj.hint !== "string" || qObj.hint.trim() === "") {
-    qObj.hint = "Focus on the key terminology and relationships described.";
-    qFixed = true;
-  }
-
-  return qFixed;
+  const oldAnswer = qObj.answer;
+  qObj.answer = normalizedOptions[0].label;
+  warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+  return true;
 }
 
 function autoFixQuestions(obj: Record<string, unknown>, warnings: string[]) {
