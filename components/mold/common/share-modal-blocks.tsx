@@ -70,7 +70,7 @@ export function LinkTabContent({
               onClick={onCopy}
               aria-label="Copy share link"
               className={cn(
-                "shrink-0 px-3 py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                "shrink-0 px-3 py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-ring",
                 copyState === "copied"
                   ? "border-green-500/40 bg-green-500/10 text-green-400"
                   : copyState === "error"
@@ -91,7 +91,7 @@ export function LinkTabContent({
               disabled={shortenState === "loading"}
               title={shortenState === "loading" ? "Currently shortening link..." : undefined}
               className={cn(
-                "w-full py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                "w-full py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-ring",
                 shortenState === "loading"
                   ? "border-primary/40 bg-primary/10 text-primary opacity-60 cursor-wait"
                   : shortenState === "done"
@@ -120,7 +120,7 @@ export function LinkTabContent({
                 <button
                   onClick={onCopyShortUrl}
                   aria-label="Copy shortened link"
-                  className="shrink-0 px-3 py-2 rounded border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-mono font-semibold tracking-wider hover:bg-green-500/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="shrink-0 px-3 py-2 rounded border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-mono font-semibold tracking-wider hover:bg-green-500/20 transition-colors focus-ring"
                 >
                   <span aria-live="polite">
                     {copyState === "copied" ? "Copied!" : copyState === "error" ? "Failed" : "Copy"}
@@ -188,7 +188,7 @@ export function FileTabContent({ subject, onDownload }: FileTabContentProps) {
       <button
         onClick={onDownload}
         title="Download subject JSON file"
-        className="w-full py-2.5 rounded border border-primary/40 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="w-full py-2.5 rounded border border-primary/40 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-ring"
       >
         Download {subject.id}.json
       </button>

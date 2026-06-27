@@ -40,7 +40,40 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
 
   // Trap focus inside overlay
   useEffect(() => {
-    overlayRef.current?.focus()
+    const overlay = overlayRef.current
+    const activeElementBeforeOpen = document.activeElement as HTMLElement | null
+    if (overlay) overlay.focus()
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !overlay) return
+
+      const focusable = overlay.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const firstElement = focusable[0]
+      const lastElement = focusable[focusable.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus()
+          e.preventDefault()
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+      if (activeElementBeforeOpen) activeElementBeforeOpen.focus()
+    }
   }, [])
 
   // ── Encode on mount ──────────────────────────────────────────────────────
@@ -127,7 +160,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
           <button
             onClick={onClose}
             aria-label="Close share modal"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded p-1"
+            className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded p-1"
           >
             <CloseIcon aria-hidden="true" />
           </button>
@@ -140,7 +173,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
               key={t}
               onClick={() => setTab(t)}
               className={cn(
-                "flex-1 py-2.5 text-xs font-mono tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-1 focus-visible:ring-ring",
+                "flex-1 py-2.5 text-xs font-mono tracking-wider uppercase transition-colors focus-ring",
                 tab === t
                   ? "text-primary border-b-2 border-primary -mb-px"
                   : "text-muted-foreground hover:text-foreground"
