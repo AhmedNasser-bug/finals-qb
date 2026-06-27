@@ -1,0 +1,11 @@
+# Cloud Infrastructure Targets
+
+This document maps the cloud infra targets and multi-tenant sandboxes.
+
+## Multi-Tenant Sandbox
+The multi-tenant sandbox environment leverages Docker.
+- `docker-compose.yml`: Defines the local developer multi-tenant containers via `node:alpine`. Instances like `tenant-a` and `tenant-b` boot Next.js in development mode.
+- Persistent volumes are mapped to Next.js host environments avoiding direct container lock-ins.
+
+## Component Interaction Mapping
+- **Docker Multi-Tenant Sandbox**: Containerized tenants mount isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) avoiding state bleeding across the local orchestrator environments.
