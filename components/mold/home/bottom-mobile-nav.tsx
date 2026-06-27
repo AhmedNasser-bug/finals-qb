@@ -36,48 +36,53 @@ export function BottomMobileNav({
           setView("home")
           handleModeSelect("speedrun")
         }}
+        aria-label="Dashboard"
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
       >
-        <TerminalIcon className="w-4 h-4" />
-        <span className="font-mono text-[8px] font-bold">CORE</span>
+        <TerminalIcon className="w-4 h-4" aria-hidden="true" />
+        <span className="font-mono text-[8px] font-bold" aria-hidden="true">CORE</span>
       </button>
 
       <button
         onClick={() => setView("stats")}
+        aria-label="Statistics"
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "stats" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
       >
-        <BarChart3 className="w-4 h-4" />
-        <span className="font-mono text-[8px] font-bold">STATS</span>
+        <BarChart3 className="w-4 h-4" aria-hidden="true" />
+        <span className="font-mono text-[8px] font-bold" aria-hidden="true">STATS</span>
       </button>
 
       <button
         onClick={() => setShowEncyclopedia(true)}
-        className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
+        aria-label="Encyclopedia"
+        className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors focus-ring cursor-pointer p-1"
       >
-        <BookOpen className="w-4 h-4" />
-        <span className="font-mono text-[8px] font-bold">DATA</span>
+        <BookOpen className="w-4 h-4" aria-hidden="true" />
+        <span className="font-mono text-[8px] font-bold" aria-hidden="true">DATA</span>
       </button>
 
       <button
         onClick={() => setShowGallery(true)}
-        className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
+        aria-label="Achievements"
+        className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors focus-ring cursor-pointer p-1"
       >
-        <Trophy className="w-4 h-4" />
-        <span className="font-mono text-[8px] font-bold">ACHS</span>
+        <Trophy className="w-4 h-4" aria-hidden="true" />
+        <span className="font-mono text-[8px] font-bold" aria-hidden="true">ACHS</span>
       </button>
 
       <button
         onClick={onChangeSubject}
-        className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
+        aria-label="Switch Subject"
+        className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors focus-ring cursor-pointer p-1"
       >
-        <RotateCcw className="w-4 h-4" />
-        <span className="font-mono text-[8px] font-bold">SWITCH</span>
+        <RotateCcw className="w-4 h-4" aria-hidden="true" />
+        <span className="font-mono text-[8px] font-bold" aria-hidden="true">SWITCH</span>
       </button>
     </footer>
   )
