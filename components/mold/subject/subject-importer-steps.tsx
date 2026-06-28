@@ -99,6 +99,8 @@ export function Step1PresetTopic({
               <button
                 key={p.id}
                 type="button"
+                role="radio"
+                aria-checked={isSelected}
                 onClick={() => onPresetSelect(p.id)}
                 className={cn(
                   "flex flex-col text-left p-4 border transition-all duration-300 ease-out focus-ring cursor-pointer min-h-[110px] justify-between rounded-none hover:-translate-y-0.5 hover:bg-zinc-800/20 hover:border-zinc-700/80",
@@ -155,6 +157,8 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
         {/* Theoretical Card */}
         <button
           type="button"
+          role="radio"
+          aria-checked={subjectType === "theoretical"}
           onClick={() => setSubjectType("theoretical")}
           className={cn(
             "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-[#121318]/50",
@@ -180,6 +184,8 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
         {/* Technical Card */}
         <button
           type="button"
+          role="radio"
+          aria-checked={subjectType === "technical"}
           onClick={() => setSubjectType("technical")}
           className={cn(
             "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-[#121318]/50",
@@ -280,6 +286,8 @@ export function Step3QuestionCount({
                 <button
                   key={num}
                   type="button"
+                  role="radio"
+                  aria-checked={isSelected}
                   onClick={() => onCustomPresetClick(num)}
                   className={cn(
                     "text-xs font-mono px-3.5 py-1.5 border transition-all duration-300 ease-out cursor-pointer rounded-none min-h-[32px] hover:scale-[1.02]",

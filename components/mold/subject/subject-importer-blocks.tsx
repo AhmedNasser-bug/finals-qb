@@ -154,6 +154,8 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                 <button
                   key={num}
                   type="button"
+                  role="radio"
+                  aria-checked={isSelected}
                   onClick={() => {
                     setQuestionCount(num)
                     setSelectedPreset("custom")

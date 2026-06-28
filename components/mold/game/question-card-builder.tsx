@@ -389,6 +389,7 @@ function OptionButton({
     <button
       role="radio"
       {...checkedProps}
+      aria-disabled={isRevealed}
       disabled={isRevealed}
       onClick={onSelect}
       className={cn(
