@@ -250,15 +250,18 @@ function autoFixSingleQuestion(
   } else {
     qObj.answer = qObj.answer.toUpperCase().trim();
     let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+
     if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
+      const resolveMissingLabel = () => {
+        const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+        if (matchedOpt) {
+          const oldAnswer = qObj.answer;
+          qObj.answer = matchedOpt.label;
+          warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+          qFixed = true;
+          return;
+        }
+
         // Check for "True" / "False" maps to A / B
         if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
           const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
@@ -268,16 +271,17 @@ function autoFixSingleQuestion(
             qObj.answer = isTrueMatch ? "A" : "B";
             warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
             qFixed = true;
-            hasLabel = true;
+            return;
           }
         }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
-      }
+
+        const oldAnswer = qObj.answer;
+        qObj.answer = normalizedOptions[0].label;
+        warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+        qFixed = true;
+      };
+
+      resolveMissingLabel();
     }
   }
 
@@ -678,6 +682,8 @@ function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
   let escaped = false
+  let braceCount = 0
+  let bracketCount = 0
   
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
@@ -696,24 +702,35 @@ function balanceJsonStack(str: string): string {
 
     if (inString) continue;
 
+    const handleClosure = (target: "{" | "[", count: number) => {
+      if (stack[stack.length - 1] === target) {
+        stack.pop()
+        return count - 1;
+      }
+      if (count > 0) {
+        let idx = stack.length - 1;
+        while (idx >= 0) {
+          if (stack[idx] === target) break;
+          idx--;
+        }
+        if (idx !== -1) {
+          stack.length = idx; // O(1) array truncation
+          return count - 1;
+        }
+      }
+      return count;
+    };
+
     if (char === '{') {
       stack.push('{')
+      braceCount++
     } else if (char === '[') {
       stack.push('[')
+      bracketCount++
     } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
-      }
+      braceCount = handleClosure('{', braceCount)
     } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
-      }
+      bracketCount = handleClosure('[', bracketCount)
     }
   }
   
@@ -772,7 +789,9 @@ function processEscapeSequence(
     nextChar === "t"
   ) {
     return { addition: "\\" + nextChar, charsConsumed: 2, wasFixed: false };
-  } else if (nextChar === "u") {
+  }
+
+  if (nextChar === "u") {
     const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c);
     if (
       isHex(str[i + 2]) &&
@@ -785,12 +804,10 @@ function processEscapeSequence(
         charsConsumed: 6,
         wasFixed: false,
       };
-    } else {
-      return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
     }
-  } else {
-    return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
   }
+
+  return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {

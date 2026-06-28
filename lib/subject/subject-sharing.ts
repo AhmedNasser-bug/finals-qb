@@ -1087,9 +1087,7 @@ export function downloadSubjectPdf(subject: FullSubjectData): void {
   const iframeDoc = iframe.contentWindow?.document
   if (!iframeDoc) {
     console.error("Failed to create print iframe document")
-    if (iframe.parentNode) {
-      document.body.removeChild(iframe)
-    }
+    if (iframe.parentNode) document.body.removeChild(iframe)
     return
   }
   
