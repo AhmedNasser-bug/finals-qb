@@ -49,8 +49,24 @@ async function processComponent(filePath) {
 
   const isClient = content.includes('"use client"') || content.includes("'use client'");
   const hasChildren = content.includes('children') || content.includes('ReactNode');
-  const usesRouting = content.includes('useRouter') || content.includes('next/navigation') || content.includes('next/link');
+
+  let routingState = 'None';
+  if (content.includes('next/navigation') || content.includes('next/link') || content.includes('useRouter')) {
+    routingState = 'Next.js App Router (next/navigation / next/link)';
+  } else if (content.includes('hash=') || content.includes('location.hash')) {
+    routingState = 'Hash Routing / URL Fragments';
+  }
+
   const isLazyLoaded = content.includes('next/dynamic') || content.includes('lazy(');
+
+  let assetDelivery = 'None';
+  if (content.includes('next/image')) {
+    assetDelivery = 'Optimized (next/image)';
+  } else if (content.includes('lucide-react')) {
+    assetDelivery = 'Inlined Icons (lucide-react)';
+  } else if (content.match(/<img|<svg/)) {
+    assetDelivery = 'Native (<img/> / <svg>)';
+  }
 
   const hooksMatch = content.match(/use[A-Z]\w+/g);
   const hooks = hooksMatch ? Array.from(new Set(hooksMatch)).sort() : [];
@@ -95,6 +111,9 @@ async function processComponent(filePath) {
   if (content.includes('mermaid')) {
     edgeCases.push("Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.");
   }
+  if (content.includes('react-hook-form') || content.includes('zod') || content.includes('Zod')) {
+    edgeCases.push("Uses forms/schemas; requires explicit Zod validation rules and react-hook-form error handling to prevent malformed submissions.");
+  }
   if (edgeCases.length === 0) {
     edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
   }
@@ -113,8 +132,9 @@ async function processComponent(filePath) {
 **Characteristics:**
 - Client Component: \`${isClient ? 'Yes' : 'No'}\`
 - Supports Slots (children): \`${hasChildren ? 'Yes' : 'No'}\`
-- Uses Routing: \`${usesRouting ? 'Yes' : 'No'}\`
+- Routing State: \`${routingState}\`
 - Dynamic Lazy-Loading: \`${isLazyLoaded ? 'Yes' : 'No'}\`
+- Asset Delivery: \`${assetDelivery}\`
 
 **State Dependencies (Hooks):**
 ${stateHooks.length > 0 ? stateHooks.join(', ') : 'None'}
