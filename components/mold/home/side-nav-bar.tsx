@@ -50,7 +50,7 @@ export function SideNavBar({
       <div className="mb-6 px-3 border-b border-zinc-800/60 pb-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded bg-[var(--tw-hex-fecc17)]/5 border border-[var(--tw-hex-fecc17)]/20 flex items-center justify-center text-primary border-glow">
-            <TerminalIcon className="w-4 h-4" />
+            <TerminalIcon aria-hidden="true" className="w-4 h-4" />
           </div>
           <div className="min-w-0">
             <div className="font-mono text-[10px] uppercase tracking-widest text-[#fecc17] font-bold">STUDY PROFILE</div>
@@ -73,7 +73,7 @@ export function SideNavBar({
               : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
           )}
         >
-          <TerminalIcon className="w-3.5 h-3.5" /> <span>Dashboard</span>
+          <TerminalIcon aria-hidden="true" className="w-3.5 h-3.5" /> <span>Dashboard</span>
         </button>
 
         <button 
@@ -92,14 +92,14 @@ export function SideNavBar({
           onClick={onShowEncyclopedia}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <BookOpen className="w-3.5 h-3.5" /> <span>Encyclopedia</span>
+          <BookOpen aria-hidden="true" className="w-3.5 h-3.5" /> <span>Encyclopedia</span>
         </button>
 
         <button 
           onClick={onShowGallery}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <Trophy className="w-3.5 h-3.5" /> <span>Achievements</span>
+          <Trophy aria-hidden="true" className="w-3.5 h-3.5" /> <span>Achievements</span>
         </button>
         <button 
           onClick={onChangeSubject}
@@ -123,7 +123,7 @@ export function SideNavBar({
           onClick={onDownloadHtml}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <Download className="w-3.5 h-3.5" /> <span>Download Q&A Sheet</span>
+          <Download aria-hidden="true" className="w-3.5 h-3.5" /> <span>Download Q&A Sheet</span>
         </button>
         <button 
           onClick={onDownloadPdf}

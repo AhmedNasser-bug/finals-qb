@@ -327,7 +327,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-ring cursor-pointer"
             aria-label="Close"
           >
-            <CloseIcon />
+            <CloseIcon aria-hidden="true" />
           </button>
         </div>
 

@@ -40,7 +40,37 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
 
   // Trap focus inside overlay
   useEffect(() => {
+    const prevActiveElement = document.activeElement as HTMLElement
     overlayRef.current?.focus()
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "Tab") return
+      const focusable = overlayRef.current?.querySelectorAll(
+        'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select, [tabindex]:not([tabindex="-1"])'
+      )
+      if (!focusable || focusable.length === 0) return
+
+      const first = focusable[0] as HTMLElement
+      const last = focusable[focusable.length - 1] as HTMLElement
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+      prevActiveElement?.focus()
+    }
   }, [])
 
   // ── Encode on mount ──────────────────────────────────────────────────────
@@ -127,7 +157,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
           <button
             onClick={onClose}
             aria-label="Close share modal"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded p-1"
+            className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded p-1"
           >
             <CloseIcon aria-hidden="true" />
           </button>
@@ -140,7 +170,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
               key={t}
               onClick={() => setTab(t)}
               className={cn(
-                "flex-1 py-2.5 text-xs font-mono tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-1 focus-visible:ring-ring",
+                "flex-1 py-2.5 text-xs font-mono tracking-wider uppercase transition-colors focus-ring",
                 tab === t
                   ? "text-primary border-b-2 border-primary -mb-px"
                   : "text-muted-foreground hover:text-foreground"

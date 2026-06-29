@@ -56,7 +56,7 @@ export function Step1PresetTopic({
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="E.g., Theory of Computation, Data Structures, Human Anatomy..."
-          className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
+          className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono placeholder:text-zinc-600 focus-ring transition-all min-h-[40px]"
           autoComplete="off"
         />
       </div>
@@ -266,7 +266,7 @@ export function Step3QuestionCount({
             onChange={(e) => {
               setQuestionCount(Math.max(1, parseInt(e.target.value) || 0))
             }}
-            className="w-full sm:w-36 bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-center text-xl font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
+            className="w-full sm:w-36 bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-center text-xl font-mono text-white focus-ring transition-all min-h-[40px]"
           />
         </div>
 
@@ -642,7 +642,7 @@ ${bundledSourceMaterial}
                 value={userMaterial}
                 onChange={(e) => setUserMaterial(e.target.value)}
                 placeholder="Enter specific instructions for the Socratic AI (e.g., 'Prioritize Chapter 4 terminology', 'Avoid code blocks in Section B', or paste additional explicit guidelines)..."
-                className="w-full bg-[#07080a] border border-border px-3.5 py-2.5 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[140px] resize-y"
+                className="w-full bg-[#07080a] border border-border px-3.5 py-2.5 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-ring transition-all min-h-[140px] resize-y"
               />
             </div>
 

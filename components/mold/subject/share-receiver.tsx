@@ -109,7 +109,7 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
               <button
                 onClick={handleDecline}
                 aria-label="Dismiss error"
-                className="w-full py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="w-full py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors focus-ring"
               >
                 Dismiss
               </button>
@@ -139,14 +139,14 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
                 <button
                   onClick={handleDecline}
                   title="Decline and dismiss subject"
-                  className="flex-1 py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="flex-1 py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-ring"
                 >
                   Decline
                 </button>
                 <button
                   onClick={handleAccept}
                   title="Accept and add subject to your local library"
-                  className="flex-1 py-2.5 rounded border border-primary/50 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="flex-1 py-2.5 rounded border border-primary/50 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-ring"
                 >
                   Add to Library
                 </button>

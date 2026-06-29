@@ -16,7 +16,7 @@ export function ExampleModuleCard({
 }: ExampleModuleCardProps) {
   return (
     <div
-      className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#121318]/50 focus-within:ring-2 focus-within:ring-primary/60 focus-within:ring-offset-2 focus-within:ring-offset-background"
+      aria-busy={isLoading} className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#121318]/50 focus-within:ring-2 focus-within:ring-primary/60 focus-within:ring-offset-2 focus-within:ring-offset-background"
     >
       {/* Main card body layout (pure presentation, z-0 relative) */}
       <div className="flex flex-col gap-5 p-6 text-left flex-1 relative z-0">
@@ -26,11 +26,11 @@ export function ExampleModuleCard({
             <button
               onClick={(e) => { e.stopPropagation(); if (!isLoading) onShare(e, entry) }}
               disabled={isLoading}
-              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-ring"
               aria-label={`Share ${entry.name}`}
               title={isLoading ? "Loading module..." : "Share subject"}
             >
-              <ShareIcon />
+              <ShareIcon aria-hidden="true" />
             </button>
             <span className="text-[10px] font-mono px-1.5 py-0.5 border border-primary/30 text-primary/70 bg-primary/5">
               EXAMPLE
@@ -64,13 +64,13 @@ export function ExampleModuleCard({
         <span className="text-[10px] font-mono text-muted-foreground">{entry.id}</span>
         {isLoading ? (
           <div className="flex items-center gap-2 text-[10px] font-mono text-primary">
-            <SpinnerIcon />
+            <SpinnerIcon aria-hidden="true" />
             LOADING...
           </div>
         ) : (
           <button
             onClick={() => onLoad(entry)}
-            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-ring"
           >
             LOAD_MODULE →
           </button>

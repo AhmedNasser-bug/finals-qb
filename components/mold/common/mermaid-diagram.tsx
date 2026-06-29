@@ -316,7 +316,7 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
         aria-label="Diagram error"
       >
         <div className="flex items-start gap-3">
-          <WarningIcon className="w-5 h-5 text-[#ff4d4d] mt-0.5 shrink-0" />
+          <WarningIcon aria-hidden="true" className="w-5 h-5 text-[#ff4d4d] mt-0.5 shrink-0" />
           <div className="flex-1 min-w-0 space-y-1">
             <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#ff4d4d] font-bold">
               DIAGRAM_ERR: {error.code.replace(/_/g, " ")}

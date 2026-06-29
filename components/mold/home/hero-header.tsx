@@ -81,7 +81,7 @@ export function HeroHeader({
               <span className="text-border select-none opacity-40">|</span>
               <Show when="signed-out">
                 <SignInButton mode="modal">
-                  <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                  <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-ring cursor-pointer">
                     SIGN IN
                   </button>
                 </SignInButton>
@@ -91,7 +91,7 @@ export function HeroHeader({
                   appearance={{
                     elements: {
                       userButtonAvatarBox: "w-5 h-5 border border-primary/30 rounded-none",
-                      userButtonTrigger: "focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
+                      userButtonTrigger: "focus-visible:ring-1 focus-visible:ring-primary focus-ring"
                     }
                   }} 
                 />
@@ -132,12 +132,12 @@ export function HeroHeader({
                 unlocked === total
                   ? "border-primary/40 bg-primary/10 text-primary"
                   : "border-border bg-secondary text-muted-foreground",
-                "cursor-pointer hover:border-primary/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                "cursor-pointer hover:border-primary/60 transition-colors focus-ring"
               )}
               title={`${unlocked} of ${total} achievements unlocked — click to view`}
               aria-label="View achievements gallery"
             >
-              <TrophyIcon className="w-6 h-6" />
+              <TrophyIcon aria-hidden="true" className="w-6 h-6" />
             </button>
           ) : (
             <div
@@ -149,7 +149,7 @@ export function HeroHeader({
               )}
               title={`${unlocked} of ${total} achievements unlocked`}
             >
-              <TrophyIcon className="w-6 h-6" />
+              <TrophyIcon aria-hidden="true" className="w-6 h-6" />
             </div>
           )}
         </div>

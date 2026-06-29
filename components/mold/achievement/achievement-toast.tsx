@@ -90,7 +90,7 @@ function AchievementToastItem({
       role="alert"
     >
       <div className="shrink-0 w-8 h-8 rounded border border-primary/30 bg-primary/10 flex items-center justify-center">
-        <TrophyIcon className="w-4 h-4 text-primary" />
+        <TrophyIcon aria-hidden="true" className="w-4 h-4 text-primary" />
       </div>
       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
         <p className="text-[10px] font-mono text-primary tracking-wider uppercase">Achievement Unlocked</p>
@@ -99,10 +99,10 @@ function AchievementToastItem({
       </div>
       <button
         onClick={handleDismiss}
-        className="shrink-0 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
+        className="shrink-0 text-muted-foreground hover:text-foreground transition-colors focus-ring rounded"
         aria-label="Dismiss notification"
       >
-        <XSmallIcon className="w-3.5 h-3.5" />
+        <XSmallIcon aria-hidden="true" className="w-3.5 h-3.5" />
       </button>
     </div>
   )

@@ -41,7 +41,7 @@ export function BottomMobileNav({
           view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
       >
-        <TerminalIcon className="w-4 h-4" />
+        <TerminalIcon aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">CORE</span>
       </button>
 
@@ -60,7 +60,7 @@ export function BottomMobileNav({
         onClick={() => setShowEncyclopedia(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <BookOpen className="w-4 h-4" />
+        <BookOpen aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">DATA</span>
       </button>
 
@@ -68,7 +68,7 @@ export function BottomMobileNav({
         onClick={() => setShowGallery(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <Trophy className="w-4 h-4" />
+        <Trophy aria-hidden="true" className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">ACHS</span>
       </button>
 

@@ -123,7 +123,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             "px-2 py-1 flex items-center gap-1 border-l-2 bg-[#201f1f]",
             streak >= 10 ? "border-[#930013]" : streak >= 5 ? "border-orange-500" : "border-[#fecc17]"
           )}>
-            <BoltIcon className={cn(
+            <BoltIcon aria-hidden="true" className={cn(
               "w-3.5 h-3.5 shrink-0",
               streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
             )} />
@@ -138,8 +138,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
               return (
-                <HeartIcon
-                  key={i}
+                <HeartIcon aria-hidden="true" key={i}
                   filled={alive}
                   className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
                 />
@@ -213,7 +212,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                   ? "border-orange-500 shadow-[0px_0px_15px_rgba(251,146,60,0.2)]"
                   : "border-[#fecc17] shadow-[0px_0px_15px_rgba(254,204,23,0.15)]"
             )}>
-              <BoltIcon className={cn(
+              <BoltIcon aria-hidden="true" className={cn(
                 "w-3.5 h-3.5 shrink-0",
                 streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
               )} />
@@ -237,8 +236,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
               return (
-                <HeartIcon
-                  key={i}
+                <HeartIcon aria-hidden="true" key={i}
                   filled={alive}
                   className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
                 />

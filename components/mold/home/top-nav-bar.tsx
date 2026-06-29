@@ -49,7 +49,7 @@ export function TopNavBar({
       <nav className="flex justify-between items-center w-full px-6 h-16 bg-[#0d0e11] fixed top-0 z-50 border-b border-border/50 shadow-[0_0_15px_rgba(254,204,23,0.02)] select-none">
         {/* Left branding block */}
         <div className="flex items-center gap-2.5">
-          <ProtocolIcon className="w-5 h-5 text-primary shrink-0" />
+          <ProtocolIcon aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
           <div>
             <p className="text-[10px] font-mono font-bold tracking-widest text-[#fecc17] uppercase leading-none">FINALIST</p>
             <p className="text-[9px] font-mono text-muted-foreground tracking-wider leading-none mt-1">STUDY SYSTEM</p>
@@ -64,7 +64,7 @@ export function TopNavBar({
             title="Click to cycle next study tip"
             aria-label="Cycle next study tip"
             type="button"
-            className="flex items-center text-left gap-3 bg-black/90 border border-[#fecc17]/35 hover:border-[#fecc17]/60 px-3.5 py-2 flex-1 min-w-0 cursor-pointer select-none group transition-all duration-300 shadow-[0_0_12px_rgba(254,204,23,0.03)] hover:shadow-[0_0_20px_rgba(254,204,23,0.12)] border-glow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+            className="flex items-center text-left gap-3 bg-black/90 border border-[#fecc17]/35 hover:border-[#fecc17]/60 px-3.5 py-2 flex-1 min-w-0 cursor-pointer select-none group transition-all duration-300 shadow-[0_0_12px_rgba(254,204,23,0.03)] hover:shadow-[0_0_20px_rgba(254,204,23,0.12)] border-glow focus-ring"
           >
             <div className="flex items-center gap-2 shrink-0">
               <span className="w-2 h-2 bg-[#fecc17] rounded-full animate-pulse shadow-[0_0_8px_rgba(254,204,23,0.4)]" />
@@ -138,7 +138,7 @@ export function TopNavBar({
             <div className="flex items-center border-l border-zinc-800/60 pl-3 min-h-[28px]">
               <Show when="signed-out">
                 <SignInButton mode="modal">
-                  <button className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                  <button className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-ring cursor-pointer">
                     SIGN IN
                   </button>
                 </SignInButton>
@@ -148,7 +148,7 @@ export function TopNavBar({
                   appearance={{
                     elements: {
                       userButtonAvatarBox: "w-6 h-6 border border-primary/30 rounded-none",
-                      userButtonTrigger: "focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer"
+                      userButtonTrigger: "focus-visible:ring-1 focus-visible:ring-primary focus-ring cursor-pointer"
                     }
                   }}
                 />

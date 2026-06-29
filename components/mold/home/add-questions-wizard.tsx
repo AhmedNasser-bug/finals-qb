@@ -309,10 +309,10 @@ CRITICAL RULES:
           </div>
           <button
             onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-ring cursor-pointer"
             aria-label="Close wizard"
           >
-            <X className="w-4 h-4" />
+            <X aria-hidden="true" className="w-4 h-4" />
           </button>
         </div>
 
@@ -436,7 +436,7 @@ CRITICAL RULES:
                         max={50}
                         value={questionCount}
                         onChange={(e) => setQuestionCount(Math.min(50, Math.max(5, parseInt(e.target.value) || 0)))}
-                        className="w-16 bg-[#07080a] border border-border rounded-none py-1.5 text-center text-sm font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                        className="w-16 bg-[#07080a] border border-border rounded-none py-1.5 text-center text-sm font-mono text-white focus-ring"
                       />
                     </div>
                   </div>
@@ -469,7 +469,7 @@ CRITICAL RULES:
                         max={50}
                         value={flashcardCount}
                         onChange={(e) => setFlashcardCount(Math.min(50, Math.max(5, parseInt(e.target.value) || 0)))}
-                        className="w-16 bg-[#07080a] border border-border rounded-none py-1.5 text-center text-sm font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                        className="w-16 bg-[#07080a] border border-border rounded-none py-1.5 text-center text-sm font-mono text-white focus-ring"
                       />
                     </div>
                   </div>
@@ -630,7 +630,7 @@ CRITICAL RULES:
                         id="existing-category-select"
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary min-h-[40px] cursor-pointer"
+                        className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono focus-ring min-h-[40px] cursor-pointer"
                       >
                         {existingCategories.map((cat) => (
                           <option key={cat} value={cat}>
@@ -658,7 +658,7 @@ CRITICAL RULES:
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
                       placeholder="E.g., Lexical Analysis, Socratic Dialogues, Heart Anatomy..."
-                      className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary min-h-[40px]"
+                      className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono placeholder:text-zinc-600 focus-ring min-h-[40px]"
                       autoComplete="off"
                     />
                     {newCategoryName.trim() && (
@@ -718,12 +718,12 @@ CRITICAL RULES:
                   >
                     {promptCopied ? (
                       <>
-                        <Check className="w-3 h-3" />
+                        <Check aria-hidden="true" className="w-3 h-3" />
                         <span>COPIED</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3 h-3" />
+                        <Copy aria-hidden="true" className="w-3 h-3" />
                         <span>COPY PROMPT</span>
                       </>
                     )}
@@ -777,7 +777,7 @@ CRITICAL RULES:
                   onChange={handleJsonChange}
                   placeholder="Paste your JSON here (e.g. { 'questions': [ ... ] })"
                   className={cn(
-                    "w-full bg-[#07080a] border px-4 py-3 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-visible:outline-none transition-all min-h-[160px] resize-y",
+                    "w-full bg-[#07080a] border px-4 py-3 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-ring transition-all min-h-[160px] resize-y",
                     validationState === "valid" ? "border-emerald-500/50 focus-visible:ring-1 focus-visible:ring-emerald-500" :
                     validationState === "error" ? "border-red-500/50 focus-visible:ring-1 focus-visible:ring-red-500" : "border-border focus-visible:ring-1 focus-visible:ring-primary"
                   )}
@@ -859,14 +859,14 @@ CRITICAL RULES:
           {step === 1 ? (
             <button
               onClick={onCancel}
-              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
+              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-ring min-h-[40px] cursor-pointer"
             >
               Cancel
             </button>
           ) : (
             <button
               onClick={() => setStep((prev) => prev - 1)}
-              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
+              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-ring min-h-[40px] cursor-pointer"
             >
               ← BACK
             </button>
@@ -878,7 +878,7 @@ CRITICAL RULES:
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
               className={cn(
-                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-visible:outline-none min-h-[40px] cursor-pointer rounded-none",
+                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-ring min-h-[40px] cursor-pointer rounded-none",
                 isNextDisabled
                   ? "border-border text-zinc-600 cursor-not-allowed opacity-40 bg-transparent"
                   : "border-primary bg-primary text-black hover:bg-primary/90 border-glow"
@@ -891,7 +891,7 @@ CRITICAL RULES:
               onClick={handleConfirmMerge}
               disabled={isNextDisabled}
               className={cn(
-                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-visible:outline-none min-h-[40px] cursor-pointer rounded-none",
+                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-ring min-h-[40px] cursor-pointer rounded-none",
                 isNextDisabled
                   ? "border-border text-zinc-600 cursor-not-allowed opacity-40 bg-transparent"
                   : "border-emerald-500 bg-emerald-500 text-white hover:bg-emerald-600 border-glow-success"

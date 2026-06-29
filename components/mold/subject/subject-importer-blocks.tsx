@@ -119,7 +119,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="E.g., World War II, Data Structures, Human Anatomy..."
-            className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono placeholder:text-muted-foreground/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all"
+            className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono placeholder:text-muted-foreground/30 focus-ring transition-all"
           />
         </div>
 
@@ -144,7 +144,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
               setQuestionCount(Math.max(1, parseInt(e.target.value) || 0))
               setSelectedPreset("custom")
             }}
-            className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all"
+            className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-foreground font-mono focus-ring transition-all"
           />
           {/* Question Count presets buttons */}
           <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
@@ -183,7 +183,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             setUseReferenceBank(e.target.checked)
             setSelectedPreset("custom")
           }}
-          className="accent-primary mt-0.5 w-3.5 h-3.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+          className="accent-primary mt-0.5 w-3.5 h-3.5 focus-ring"
         />
         <label
           htmlFor="prompt-ref-bank"
@@ -218,7 +218,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                 aria-checked={isSelected}
                 onClick={() => handlePresetSelect(p.id)}
                 className={cn(
-                  "flex flex-col text-left p-2.5 rounded border transition-all duration-150 relative overflow-hidden focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-panel",
+                  "flex flex-col text-left p-2.5 rounded border transition-all duration-150 relative overflow-hidden focus-ring",
                   isSelected
                     ? "border-primary bg-primary/5 text-foreground border-glow"
                     : "border-border bg-background/50 hover:bg-background/80 text-muted-foreground hover:text-foreground"
@@ -235,7 +235,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             aria-checked={selectedPreset === "custom"}
             onClick={() => handlePresetSelect("custom")}
             className={cn(
-              "flex flex-col text-left p-2.5 rounded border transition-all duration-150 relative overflow-hidden focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-panel",
+              "flex flex-col text-left p-2.5 rounded border transition-all duration-150 relative overflow-hidden focus-ring",
               selectedPreset === "custom"
                 ? "border-primary bg-primary/5 text-foreground border-glow"
                 : "border-border bg-background/50 hover:bg-background/80 text-muted-foreground hover:text-foreground"
@@ -261,7 +261,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
           type="button"
           aria-expanded={showAdvanced}
           onClick={() => setShowAdvanced((prev) => !prev)}
-          className="flex items-center gap-1 text-[10px] font-mono text-muted-foreground hover:text-foreground tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded px-1"
+          className="flex items-center gap-1 text-[10px] font-mono text-muted-foreground hover:text-foreground tracking-wider uppercase transition-colors focus-ring rounded px-1"
         >
           <span>{showAdvanced ? "▼ Hide" : "▶ Show"} Advanced Pedagogical Blocks</span>
         </button>
@@ -291,7 +291,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                       name="persona-selection"
                       checked={persona === item.id}
                       onChange={() => handlePersonaChange(item.id as PersonaType)}
-                      className="accent-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                      className="accent-primary focus-ring"
                     />
                     <div className="flex flex-col">
                       <span>{item.name}</span>
@@ -340,7 +340,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => handleScaffoldingToggle(item.id as ScaffoldingType)}
-                        className="accent-primary mt-0.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                        className="accent-primary mt-0.5 focus-ring"
                       />
                       <div className="flex flex-col">
                         <span>{item.name}</span>
@@ -385,7 +385,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => handleFormatToggle(item.id as FormatOption)}
-                        className="accent-primary mt-0.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                        className="accent-primary mt-0.5 focus-ring"
                       />
                       <div className="flex flex-col">
                         <span>{item.name}</span>
@@ -409,7 +409,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             type="button"
             aria-expanded={showRawPrompt}
             onClick={() => setShowRawPrompt((prev) => !prev)}
-            className="text-[10px] font-mono text-muted-foreground hover:text-foreground tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded px-1"
+            className="text-[10px] font-mono text-muted-foreground hover:text-foreground tracking-wider uppercase transition-colors focus-ring rounded px-1"
           >
             {showRawPrompt ? "[-] Hide Raw Prompt" : "[+] Show Raw Prompt"}
           </button>
@@ -419,7 +419,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             onClick={() => onCopyPrompt(compiledPrompt)}
             title="Copy customized pedagogical prompt"
             className={cn(
-              "text-xs font-mono font-semibold tracking-wider uppercase px-4 py-2 rounded border transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-panel border-glow",
+              "text-xs font-mono font-semibold tracking-wider uppercase px-4 py-2 rounded border transition-all duration-200 focus-ring border-glow",
               promptCopied
                 ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-400"
                 : "border-primary bg-primary text-primary-foreground hover:bg-primary/95"
@@ -480,7 +480,7 @@ export function DropZoneSection({
             disabled={state === "pasting"}
             title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
             className={cn(
-              "text-xs font-mono px-5 py-2.5 rounded-none border font-semibold tracking-widest uppercase transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[44px] cursor-pointer",
+              "text-xs font-mono px-5 py-2.5 rounded-none border font-semibold tracking-widest uppercase transition-all duration-200 focus-ring min-h-[44px] cursor-pointer",
               state === "pasting"
                 ? "border-primary/50 bg-primary/10 text-primary opacity-60 cursor-wait"
                 : "border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.01]"

@@ -68,7 +68,7 @@ export function YourSubjectsSection({
           onClick={onShowImporter}
           title="Import a subject via JSON"
           className={cn(
-            "flex flex-col items-center justify-center gap-3 p-6 border border-dashed border-border text-muted-foreground bg-panel transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary hover:bg-[#121318]/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[140px]",
+            "flex flex-col items-center justify-center gap-3 p-6 border border-dashed border-border text-muted-foreground bg-panel transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary hover:bg-[#121318]/50 focus-ring min-h-[140px]",
             subjects.length % 2 === 0 && "sm:col-span-2"
           )}
         >
@@ -108,7 +108,7 @@ export function ExampleModulesSection({
       )}
 
       {examplesLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div aria-busy={true} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="bg-panel border border-border h-40 animate-pulse" />
           ))}

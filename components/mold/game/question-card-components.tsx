@@ -25,7 +25,7 @@ export function OptionButton({
       onClick={onSelect}
       className={cn(
         "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
+        "focus-ring",
         !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
         !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
         isRevealed && isCorrect && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
@@ -56,10 +56,10 @@ export function OptionButton({
         </span>
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
-        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
-        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
+        {isRevealed && isCorrect && <CheckCircleIcon aria-hidden="true" className="w-5 h-5 text-[#fecc17]" />}
+        {isRevealed && isWrong && <XIcon aria-hidden="true" className="w-5 h-5 text-[#ffb4ab]" />}
+        {!isRevealed && isSelected && <CheckCircleIcon aria-hidden="true" className="w-5 h-5 text-[#fecc17]" />}
+        {!isRevealed && !isSelected && <RadioIcon aria-hidden="true" className="w-5 h-5 text-zinc-700" />}
       </div>
     </button>
   )

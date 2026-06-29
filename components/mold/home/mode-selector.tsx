@@ -11,13 +11,13 @@ interface ModeSelectorProps {
 }
 
 const MODE_ICONS: Record<GameModeId, React.ReactNode> = {
-  speedrun:      <SpeedrunIcon />,
-  blitz:         <BlitzIcon />,
-  hardcore:      <HardcoreIcon />,
-  survival:      <SurvivalIcon />,
-  practice:      <PracticeIcon />,
-  flashcards:    <FlashcardsIcon />,
-  "full-revision": <FullRevisionIcon />,
+  speedrun:      <SpeedrunIcon aria-hidden="true" />,
+  blitz:         <BlitzIcon aria-hidden="true" />,
+  hardcore:      <HardcoreIcon aria-hidden="true" />,
+  survival:      <SurvivalIcon aria-hidden="true" />,
+  practice:      <PracticeIcon aria-hidden="true" />,
+  flashcards:    <FlashcardsIcon aria-hidden="true" />,
+  "full-revision": <FullRevisionIcon aria-hidden="true" />,
 }
 
 export function ModeSelector({ selected, onSelect, onLaunch, className }: ModeSelectorProps) {

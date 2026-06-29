@@ -143,7 +143,7 @@ export function FlashcardDossierCard({
       <button
         onClick={onFlip}
         aria-label={flipped ? "Show term" : "Show definition"}
-        className="absolute inset-0 z-20 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="absolute inset-0 z-20 w-full h-full cursor-pointer focus-ring"
       />
     </div>
   )
@@ -163,7 +163,7 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "border-red-400/40 bg-red-400/5 text-red-400",
           "hover:bg-red-400/10 hover:border-red-400/50",
           "transition-all duration-150",
-          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400",
+          "focus-ring",
           "btn-depress"
         )}
       >
@@ -176,7 +176,7 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "border-emerald-400/40 bg-emerald-400/5 text-emerald-400",
           "hover:bg-emerald-400/10 hover:border-emerald-400/50",
           "transition-all duration-150",
-          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400",
+          "focus-ring",
           "btn-depress"
         )}
       >
@@ -253,13 +253,13 @@ export function SessionEndScreen({
             onClick={onReturnHome}
             aria-label="Return to home screen"
             title="Return to home screen"
-            className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground hover:border-border/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground hover:border-border/60 transition-colors focus-ring"
           >
             HOME
           </button>
           <button
             onClick={onComplete}
-            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-ring"
           >
             NEW SESSION
           </button>
@@ -356,13 +356,13 @@ export function RoundEndScreen({
             onClick={onEndSession}
             aria-label="End current flashcard session"
             title="End current session"
-            className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground transition-colors focus-ring"
           >
             END SESSION
           </button>
           <button
             onClick={onContinue}
-            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-ring"
           >
             CONTINUE — ROUND {round + 1}
           </button>

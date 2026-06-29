@@ -38,7 +38,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
         {/* Top bar */}
         <header className="border-b border-border px-6 py-4 flex items-center justify-between bg-panel">
           <div className="flex items-center gap-3">
-            <ProtocolIcon />
+            <ProtocolIcon aria-hidden="true" />
             <div>
               <p className="text-xs font-mono font-semibold tracking-widest text-primary uppercase">
                 FINALIST
@@ -60,7 +60,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
               {/* Hero */}
               <div className="flex flex-col items-center text-center gap-4 max-w-xl">
                 <div className="w-14 h-14 rounded border border-primary/30 bg-primary/10 flex items-center justify-center text-primary scanlines">
-                  <TargetIcon />
+                  <TargetIcon aria-hidden="true" />
                 </div>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-balance text-foreground">
@@ -96,7 +96,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                   onClick={() => setStep("add-subject")}
                   aria-label="Get Started"
                   title="Get Started"
-                  className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-ring"
                 >
                   Get Started
                 </button>
@@ -115,9 +115,9 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                   onClick={() => setStep("welcome")}
                   aria-label="Go back to welcome screen"
                   title="Go back to welcome screen"
-                  className="flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
+                  className="flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-ring rounded"
                 >
-                  <ChevronLeftIcon />
+                  <ChevronLeftIcon aria-hidden="true" />
                   Back
                 </button>
               </div>
@@ -153,7 +153,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                 onClick={() => setShowImporter(true)}
                 aria-label="Import JSON Subject"
                 title="Import JSON Subject"
-                className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-ring"
               >
                 Import JSON Subject
               </button>

@@ -76,7 +76,7 @@ export function AchievementsPanel({
         {hasMoreAchievements && (
           <button 
             onClick={onShowGallery}
-            className="text-[9px] font-mono text-primary/70 hover:text-primary transition-colors text-center w-full font-bold pt-2 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+            className="text-[9px] font-mono text-primary/70 hover:text-primary transition-colors text-center w-full font-bold pt-2 uppercase tracking-widest focus-ring"
           >
             View All {totalCount} Achievements →
           </button>

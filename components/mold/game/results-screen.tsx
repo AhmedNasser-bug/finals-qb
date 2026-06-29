@@ -211,7 +211,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               onClick={onReturnHome}
               aria-label="Return home"
               title="Return home"
-              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
+              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-ring rounded"
             >
               RETURN TO HOME
             </button>
@@ -219,7 +219,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               onClick={onPlayAgain}
               aria-label="Play again"
               title="Play again"
-              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded border-glow"
+              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-ring rounded border-glow"
             >
               PLAY AGAIN
             </button>

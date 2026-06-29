@@ -53,7 +53,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
             onClick={onReturnHome}
             className="flex items-center gap-2 text-zinc-400 hover:text-[#fecc17] transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft aria-hidden="true" className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
             <span>Return to core</span>
           </button>
           <h1 className="text-3xl font-display font-black tracking-tight text-white flex items-center gap-3">
@@ -69,7 +69,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         {/* Total Runs Card */}
         <div className="p-5 border border-border bg-[#101115] rounded relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
           <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
-            <Trophy className="w-5 h-5" />
+            <Trophy aria-hidden="true" className="w-5 h-5" />
           </div>
           <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">QUIZZES COMPLETED</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
@@ -103,7 +103,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         {/* Peak Correctness Streak Card */}
         <div className="p-5 border border-border bg-[#101115] rounded relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
           <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
-            <Zap className="w-5 h-5" />
+            <Zap aria-hidden="true" className="w-5 h-5" />
           </div>
           <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">BEST ANSWER STREAK</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
@@ -217,7 +217,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   {/* Subtle completed background check icon */}
                   {milestone.completed && (
                     <div className="absolute -bottom-2 -right-2 text-[#fecc17]/5">
-                      <Trophy className="w-16 h-16" />
+                      <Trophy aria-hidden="true" className="w-16 h-16" />
                     </div>
                   )}
 
