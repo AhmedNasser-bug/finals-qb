@@ -395,18 +395,18 @@ export function Step4PromptBuild({
             const page = await pdf.getPage(pageNum)
             const textContent = await page.getTextContent()
             let lastY = -1
-            let pageText = ""
+            const pageTextArr: string[] = []
 
             for (const item of textContent.items as any[]) {
               if (lastY !== -1 && Math.abs(item.transform[5] - lastY) > 5) {
-                pageText += "\n"
-              } else if (pageText.length > 0) {
-                pageText += " "
+                pageTextArr.push("\n")
+              } else if (pageTextArr.length > 0) {
+                pageTextArr.push(" ")
               }
-              pageText += item.str
+              pageTextArr.push(item.str)
               lastY = item.transform[5]
             }
-            fullText += pageText + "\n"
+            fullText += pageTextArr.join("") + "\n"
           }
 
           setConvertedMaterial((prev) => {

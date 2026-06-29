@@ -814,25 +814,37 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
     "uparrow", "underbar", "usebox", "underbrace", "under", "Uparrow"
   ])
 
+  const chunks: string[] = []
+  let lastIndex = 0
+
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (char === '"' && str[i - 1] !== '\\') {
-      repaired += '"'
       inString = !inString
       continue
     }
 
     if (inString && char === '\\') {
         const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repaired += addition;
+
+        if (addition !== str.substring(i, i + charsConsumed) || wasFixed) {
+          if (i > lastIndex) {
+            chunks.push(str.substring(lastIndex, i))
+          }
+          chunks.push(addition)
+          lastIndex = i + charsConsumed
+        }
+
         fixed = fixed || wasFixed;
         i += charsConsumed - 1; // loop naturally increments i
-    } else {
-      repaired += char
     }
   }
 
-  return { repaired, fixed }
+  if (lastIndex < str.length) {
+    chunks.push(str.substring(lastIndex))
+  }
+
+  return { repaired: chunks.join(""), fixed }
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
