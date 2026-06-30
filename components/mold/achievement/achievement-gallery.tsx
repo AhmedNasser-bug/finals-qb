@@ -37,7 +37,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded focus-ring"
             aria-label="Close achievement gallery"
           >
             <XIcon className="w-4 h-4" />
@@ -78,7 +78,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
             onClick={reset}
             title="Reset all achievements"
             aria-label="Reset all achievements"
-            className="text-xs font-mono text-muted-foreground hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
+            className="text-xs font-mono text-muted-foreground hover:text-destructive transition-colors focus-ring rounded px-1"
           >
             RESET ALL
           </button>

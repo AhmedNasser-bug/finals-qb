@@ -591,7 +591,7 @@ ${bundledSourceMaterial}
               )}
             >
               {isConverting ? (
-                <div className="flex items-center gap-3 py-1">
+                <div className="flex items-center gap-3 py-1" role="status" aria-busy="true">
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   <span className="text-xs text-primary font-mono tracking-wider font-bold uppercase animate-pulse">
                     Converting study materials...
@@ -650,7 +650,6 @@ ${bundledSourceMaterial}
               type="button"
               onClick={downloadStudyPackage}
               disabled={!hasMaterial}
-              aria-disabled={!hasMaterial}
               className={cn(
                 "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2",
                 hasMaterial

@@ -28,7 +28,39 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
 
   // Trap focus inside overlay
   useEffect(() => {
-    overlayRef.current?.focus()
+    const overlay = overlayRef.current
+    if (!overlay) return
+    const previousFocus = document.activeElement as HTMLElement
+    const focusableElements = overlay.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus()
+    } else {
+      overlay.focus()
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        const focusable = overlay.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    overlay.addEventListener("keydown", handleKeyDown)
+    return () => {
+      overlay.removeEventListener("keydown", handleKeyDown)
+      previousFocus?.focus()
+    }
   }, [])
 
   const entries = terminology?.[activeCategory] ?? []
@@ -66,7 +98,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             onClick={onClose}
             aria-label="Close encyclopedia overlay"
             title="Close encyclopedia overlay"
-            className="mt-6 font-mono text-xs px-4 py-2 border border-border rounded hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="mt-6 font-mono text-xs px-4 py-2 border border-border rounded hover:border-primary/40 hover:text-primary transition-colors focus-ring"
           >
             CLOSE
           </button>
@@ -103,7 +135,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             onClick={onClose}
             aria-label="Close encyclopedia"
             title="Close encyclopedia"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
+            className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded"
           >
             <CloseIcon className="w-4 h-4" />
           </button>
@@ -121,7 +153,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
                 onClick={() => { setActiveCategory(cat); setSearch("") }}
                 aria-current={activeCategory === cat ? "page" : undefined}
                 className={cn(
-                  "text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                  "text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate focus-ring",
                   activeCategory === cat
                     ? "bg-primary/10 text-primary border border-primary/20"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/60 border border-transparent"

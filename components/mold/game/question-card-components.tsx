@@ -18,7 +18,6 @@ export function OptionButton({
     <button
       role="radio"
       aria-checked={isSelected}
-      aria-disabled={isRevealed}
       disabled={isRevealed}
       aria-label={`Select Option ${label}`}
       title={`Select Option ${label}`}

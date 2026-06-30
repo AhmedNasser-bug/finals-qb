@@ -294,7 +294,7 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
         role="status"
         aria-label="Loading diagram"
       >
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-3" role="status" aria-busy="true">
           <div
             className="mx-auto w-8 h-8 border-2 border-[#fecc17] border-t-transparent rounded-full animate-spin"
             aria-hidden="true"

@@ -29,7 +29,7 @@ export function Header({
         </div>
         <button
           onClick={onQuit}
-          className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-transparent hover:border-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-transparent hover:border-border focus-ring"
         >
           QUIT
         </button>

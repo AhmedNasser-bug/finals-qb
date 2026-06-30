@@ -41,7 +41,7 @@ export function UserSubjectCard({
             {!isConfirming && (
               <button
                 onClick={() => onShare(full)}
-                className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-ring"
                 aria-label={`Share ${full.name}`}
                 title="Share subject"
               >
@@ -85,7 +85,7 @@ export function UserSubjectCard({
             <button
               onClick={onDeleteCancel}
               aria-label={`Cancel deletion of ${full.name}`}
-              className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-ring"
             >No</button>
           </div>
         ) : (

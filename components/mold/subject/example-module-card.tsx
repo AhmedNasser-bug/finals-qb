@@ -26,7 +26,7 @@ export function ExampleModuleCard({
             <button
               onClick={(e) => { e.stopPropagation(); if (!isLoading) onShare(e, entry) }}
               disabled={isLoading}
-              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-ring"
               aria-label={`Share ${entry.name}`}
               title={isLoading ? "Loading module..." : "Share subject"}
             >
@@ -70,7 +70,7 @@ export function ExampleModuleCard({
         ) : (
           <button
             onClick={() => onLoad(entry)}
-            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-ring"
           >
             LOAD_MODULE →
           </button>

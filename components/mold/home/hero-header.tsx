@@ -132,7 +132,7 @@ export function HeroHeader({
                 unlocked === total
                   ? "border-primary/40 bg-primary/10 text-primary"
                   : "border-border bg-secondary text-muted-foreground",
-                "cursor-pointer hover:border-primary/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                "cursor-pointer hover:border-primary/60 transition-colors focus-ring"
               )}
               title={`${unlocked} of ${total} achievements unlocked — click to view`}
               aria-label="View achievements gallery"

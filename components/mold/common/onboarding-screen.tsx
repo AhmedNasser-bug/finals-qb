@@ -96,7 +96,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                   onClick={() => setStep("add-subject")}
                   aria-label="Get Started"
                   title="Get Started"
-                  className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-ring"
                 >
                   Get Started
                 </button>
@@ -115,7 +115,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                   onClick={() => setStep("welcome")}
                   aria-label="Go back to welcome screen"
                   title="Go back to welcome screen"
-                  className="flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
+                  className="flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-ring rounded"
                 >
                   <ChevronLeftIcon />
                   Back
@@ -153,7 +153,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                 onClick={() => setShowImporter(true)}
                 aria-label="Import JSON Subject"
                 title="Import JSON Subject"
-                className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="font-mono text-sm font-semibold tracking-widest uppercase px-8 py-3 rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-ring"
               >
                 Import JSON Subject
               </button>

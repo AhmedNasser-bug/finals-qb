@@ -57,7 +57,7 @@ export function GameFooter({
             aria-label={buttonTitle}
             title={buttonTitle}
             className={cn(
-              "h-full px-4 font-mono text-xs font-black tracking-[0.15em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded flex items-center justify-center gap-2 shrink-0 w-28 sm:w-36 transition-all duration-150",
+              "h-full px-4 font-mono text-xs font-black tracking-[0.15em] uppercase transition-all btn-depress focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded flex items-center justify-center gap-2 shrink-0 w-28 sm:w-36 transition-all duration-150",
               canHint
                 ? "border-[#fecc17] bg-[var(--tw-hex-fecc17)]/10 text-[#fecc17] hover:bg-[var(--tw-hex-fecc17)]/20 border-glow"
                 : initialLockRemaining > 0
@@ -80,7 +80,7 @@ export function GameFooter({
               aria-label="Submit sequence"
               title={!canSubmit ? "Select an option first" : "Submit sequence"}
               className={cn(
-                "w-full h-full font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded",
+                "w-full h-full font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded",
                 canSubmit
                   ? "cta-gradient"
                   : "bg-[#2a2a2a] text-zinc-600 cursor-not-allowed"
@@ -93,7 +93,7 @@ export function GameFooter({
               onClick={nextQuestion}
               aria-label={isLast ? "View results" : "Continue session"}
               title={isLast ? "View results" : "Continue session"}
-              className="w-full h-full cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded"
+              className="w-full h-full cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded"
             >
               {isLast ? "VIEW_RESULTS" : "CONTINUE_SESSION"}
             </button>
@@ -115,7 +115,7 @@ export function GameFooter({
           <button
             onClick={nextQuestion}
             aria-label="Skip question"
-            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[var(--tw-hex-fecc17)]/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-[#fecc17] hover:border-[var(--tw-hex-fecc17)]/40 transition-all focus-ring rounded"
           >
             <SkipIcon className="w-4 h-4" aria-hidden="true" />
             SKIP

@@ -24,7 +24,39 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
 
   // Trap focus inside overlay
   useEffect(() => {
-    overlayRef.current?.focus()
+    const overlay = overlayRef.current
+    if (!overlay) return
+    const previousFocus = document.activeElement as HTMLElement
+    const focusableElements = overlay.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus()
+    } else {
+      overlay.focus()
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        const focusable = overlay.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    overlay.addEventListener("keydown", handleKeyDown)
+    return () => {
+      overlay.removeEventListener("keydown", handleKeyDown)
+      previousFocus?.focus()
+    }
   }, [])
 
   useEffect(() => {
@@ -92,7 +124,7 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
         {/* Body */}
         <div className="px-5 py-4 flex flex-col gap-4">
           {state === "decoding" && (
-            <div role="status" aria-live="polite" className="flex items-center gap-3 text-xs font-mono text-muted-foreground animate-pulse py-2">
+            <div role="status" aria-busy="true" aria-live="polite" className="flex items-center gap-3 text-xs font-mono text-muted-foreground animate-pulse py-2">
               <SpinnerIcon aria-hidden="true" />
               Decompressing and validating data...
             </div>
@@ -109,7 +141,7 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
               <button
                 onClick={handleDecline}
                 aria-label="Dismiss error"
-                className="w-full py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="w-full py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors focus-ring"
               >
                 Dismiss
               </button>
@@ -139,14 +171,14 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
                 <button
                   onClick={handleDecline}
                   title="Decline and dismiss subject"
-                  className="flex-1 py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="flex-1 py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-ring"
                 >
                   Decline
                 </button>
                 <button
                   onClick={handleAccept}
                   title="Accept and add subject to your local library"
-                  className="flex-1 py-2.5 rounded border border-primary/50 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="flex-1 py-2.5 rounded border border-primary/50 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-ring"
                 >
                   Add to Library
                 </button>
