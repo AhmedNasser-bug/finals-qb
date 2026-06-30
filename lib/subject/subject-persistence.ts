@@ -676,6 +676,8 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
+  let curlyCount = 0
+  let squareCount = 0
   let inString = false
   let escaped = false
   
@@ -698,39 +700,65 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
+      curlyCount++
     } else if (char === '[') {
       stack.push('[')
+      squareCount++
     } else if (char === '}') {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        curlyCount--
+      } else if (curlyCount > 0) {
+        let idx = stack.length - 1
+        while (idx >= 0) {
+          if (stack[idx] === '{') {
+            break
+          }
+          if (stack[idx] === '[') squareCount--
+          idx--
+        }
+        if (idx !== -1) {
+          stack.length = idx
+          curlyCount--
+        }
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        squareCount--
+      } else if (squareCount > 0) {
+        let idx = stack.length - 1
+        while (idx >= 0) {
+          if (stack[idx] === '[') {
+            break
+          }
+          if (stack[idx] === '{') curlyCount--
+          idx--
+        }
+        if (idx !== -1) {
+          stack.length = idx
+          squareCount--
+        }
       }
     }
   }
   
-  let balanced = str.trim()
-  if (inString) balanced += '"'
+  const balancedChunks: string[] = [str.trim()]
+  if (inString) balancedChunks.push('"')
   
+  let balanced = balancedChunks.join('')
   if (balanced.endsWith(",")) {
     balanced = balanced.slice(0, -1)
   }
   
+  const tailChunks: string[] = []
   while (stack.length > 0) {
     const top = stack.pop()
-    if (top === '{') balanced += '}'
-    else if (top === '[') balanced += ']'
+    if (top === '{') tailChunks.push('}')
+    else if (top === '[') tailChunks.push(']')
   }
   
-  return balanced
+  return balanced + tailChunks.join('')
 }
 
 function processEscapeSequence(
@@ -747,12 +775,11 @@ function processEscapeSequence(
   // Check if it's a LaTeX command starting with b, f, n, r, t, u
   if (/[bfnrtu]/i.test(nextChar)) {
     // Extract the alphabetical word starting at nextChar
-    let word = "";
     let j = i + 1;
     while (j < str.length && /[a-zA-Z]/.test(str[j])) {
-      word += str[j];
       j++;
     }
+    const word = str.substring(i + 1, j);
 
     // If the extracted word is a known LaTeX command, double escape the backslash!
     if (LATEX_WORDS.has(word.toLowerCase())) {
@@ -794,7 +821,7 @@ function processEscapeSequence(
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
-  let repaired = ""
+  const repairedChunks: string[] = []
   let inString = false
   let fixed = false
 
@@ -817,22 +844,22 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (char === '"' && str[i - 1] !== '\\') {
-      repaired += '"'
+      repairedChunks.push('"')
       inString = !inString
       continue
     }
 
     if (inString && char === '\\') {
         const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repaired += addition;
+        repairedChunks.push(addition);
         fixed = fixed || wasFixed;
         i += charsConsumed - 1; // loop naturally increments i
     } else {
-      repaired += char
+      repairedChunks.push(char)
     }
   }
 
-  return { repaired, fixed }
+  return { repaired: repairedChunks.join(''), fixed }
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
