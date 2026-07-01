@@ -244,42 +244,43 @@ function autoFixSingleQuestion(
   qObj.options = normalizedOptions;
 
   // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
-  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-    qObj.answer = "A";
-    qFixed = true;
-  } else {
+  const resolveAnswer = () => {
+    if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+      qObj.answer = "A";
+      qFixed = true;
+      return;
+    }
     qObj.answer = qObj.answer.toUpperCase().trim();
     let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
+    if (hasLabel) return;
+
+    const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+    if (matchedOpt) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = matchedOpt.label;
+      warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+      qFixed = true;
+      return;
+    }
+
+    if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+      const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+      const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+      if (isTrueMatch || isFalseMatch) {
         const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+        qObj.answer = isTrueMatch ? "A" : "B";
+        warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
         qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
+        return;
       }
     }
-  }
+
+    const oldAnswer = qObj.answer;
+    qObj.answer = normalizedOptions[0].label;
+    warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+    qFixed = true;
+  };
+  resolveAnswer();
 
   // 8. Auto-Fix Explanation and Hint
   if (typeof qObj.explanation !== "string" || qObj.explanation.trim() === "") {
@@ -704,15 +705,17 @@ function balanceJsonStack(str: string): string {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '{') idx--
+        if (idx !== -1) stack.length = idx
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '[') idx--
+        if (idx !== -1) stack.length = idx
       }
     }
   }
