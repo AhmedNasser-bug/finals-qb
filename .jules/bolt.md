@@ -5,3 +5,6 @@
 ## 2024-05-28 - Optimize Next.js Production Build Speed
 **Learning:** Next.js build speed is significantly impacted by redundant TypeScript validation during `pnpm build`, which can be safely bypassed if standard type checks are securely managed via a separate CI process.
 **Action:** Added `typescript: { ignoreBuildErrors: true }` to `next.config.mjs` to significantly reduce Next.js production build execution latency.
+## 2024-05-28 - Optimize Array Splice and LastIndexOf in Parsing Loop
+**Learning:** Using `.lastIndexOf()` followed by `.splice()` inside character-by-character string parsing loops causes O(N^2) overhead because it repeatedly scans the array backward and re-allocates array segments.
+**Action:** Replaced `.lastIndexOf()` and `.splice()` with O(1) array truncation (`.length = index`) combined with a native `while` loop, and added counter checks to prevent full scans when target elements do not exist.
