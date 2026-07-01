@@ -3,8 +3,8 @@ type RedactReplacement = string | ((match: string, ...args: any[]) => string);
 const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
-    pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-    replacement: '[REDACTED]'
+    pattern: /(^|[^a-zA-Z0-9._%+-])([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    replacement: '$1[REDACTED]'
   },
   {
     // Bearer tokens
