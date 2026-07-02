@@ -107,7 +107,7 @@ interface ModeCardProps {
 }
 
 function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, accentClass }: ModeCardProps) {
-  const pressedProps = isSelected ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const };
+  const pressedProps = isSelected ? { "aria-pressed": true } : { "aria-pressed": false };
   
   // Custom tag styling based on mode category and ID
   let tagBg = "bg-zinc-800 text-zinc-400 border-zinc-700"

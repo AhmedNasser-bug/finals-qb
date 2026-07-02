@@ -24,7 +24,41 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
 
   // Trap focus inside overlay
   useEffect(() => {
-    overlayRef.current?.focus()
+    const previousFocus = document.activeElement as HTMLElement | null
+    const container = overlayRef.current
+    if (container) {
+      container.focus()
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return
+      const focusableElements = container?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (!focusableElements || focusableElements.length === 0) return
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus()
+          e.preventDefault()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      if (previousFocus) {
+        previousFocus.focus()
+      }
+    }
   }, [])
 
   useEffect(() => {

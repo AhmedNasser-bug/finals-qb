@@ -30,8 +30,10 @@ export function BottomMobileNav({
   onChangeSubject,
 }: BottomMobileNavProps) {
   return (
-    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
+    <footer role="tablist" className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
       <button
+        role="tab"
+        aria-selected={view === "home"}
         onClick={() => {
           setView("home")
           handleModeSelect("speedrun")
@@ -46,6 +48,8 @@ export function BottomMobileNav({
       </button>
 
       <button
+        role="tab"
+        aria-selected={view === "stats"}
         onClick={() => setView("stats")}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",

@@ -91,7 +91,7 @@ export function QuestionCountGroup({ options = QUESTION_COUNT_OPTIONS }: { optio
       <div className="flex flex-wrap items-center gap-1.5 justify-end">
         {options.map((n) => {
           const isPressed = config.questionCount === n
-          const pressedProps = isPressed ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const }
+          const pressedProps = isPressed ? { "aria-pressed": true } : { "aria-pressed": false }
           return (
             <button
               key={n}
@@ -206,7 +206,7 @@ export function Toggle({
   inactiveLabel: string
   ariaLabel?: string
 }) {
-  const checkedProps = checked ? { "aria-checked": "true" as const } : { "aria-checked": "false" as const }
+  const checkedProps = checked ? { "aria-checked": true } : { "aria-checked": false }
   return (
     <button
       role="switch"
@@ -240,7 +240,7 @@ export interface CategoryTileProps {
 }
 
 export function CategoryTile({ name, questionCount, selected, onSelect }: CategoryTileProps) {
-  const pressedProps = selected ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const }
+  const pressedProps = selected ? { "aria-pressed": true } : { "aria-pressed": false }
   return (
     <button
       onClick={onSelect}
