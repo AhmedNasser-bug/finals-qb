@@ -71,6 +71,12 @@ async function processComponent(filePath) {
   const propsStr = extractInterface(content, moduleName);
 
   let edgeCases = [];
+  if (content.includes('next/image')) {
+    edgeCases.push("Utilizes Next.js optimized Image component for asset delivery.");
+  }
+  if (content.includes('zod') || content.includes('Zod')) {
+    edgeCases.push("Implements strict structural validation via Zod schemas to ensure input integrity.");
+  }
   if (content.includes('className')) {
     edgeCases.push("Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.");
   }
