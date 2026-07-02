@@ -32,6 +32,8 @@ export function BottomMobileNav({
   return (
     <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
       <button
+        aria-label="Core Dashboard"
+        aria-current={view === "home" ? "page" : undefined}
         onClick={() => {
           setView("home")
           handleModeSelect("speedrun")
@@ -46,6 +48,8 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Statistics"
+        aria-current={view === "stats" ? "page" : undefined}
         onClick={() => setView("stats")}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
@@ -57,6 +61,7 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Data Encyclopedia"
         onClick={() => setShowEncyclopedia(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
@@ -65,6 +70,7 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Achievements Gallery"
         onClick={() => setShowGallery(true)}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
@@ -73,6 +79,7 @@ export function BottomMobileNav({
       </button>
 
       <button
+        aria-label="Switch Subject"
         onClick={onChangeSubject}
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
