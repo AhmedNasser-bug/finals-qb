@@ -389,25 +389,27 @@ export function Step4PromptBuild({
 
           const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) })
           const pdf = await loadingTask.promise
-          let fullText = ""
+          const fullTextChunks: string[] = []
 
           for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
             const page = await pdf.getPage(pageNum)
             const textContent = await page.getTextContent()
             let lastY = -1
-            let pageText = ""
+            const pageTextChunks: string[] = []
 
             for (const item of textContent.items as any[]) {
               if (lastY !== -1 && Math.abs(item.transform[5] - lastY) > 5) {
-                pageText += "\n"
-              } else if (pageText.length > 0) {
-                pageText += " "
+                pageTextChunks.push("\n")
+              } else if (pageTextChunks.length > 0) {
+                pageTextChunks.push(" ")
               }
-              pageText += item.str
+              pageTextChunks.push(item.str)
               lastY = item.transform[5]
             }
-            fullText += pageText + "\n"
+            fullTextChunks.push(pageTextChunks.join("") + "\n")
           }
+
+          const fullText = fullTextChunks.join("")
 
           setConvertedMaterial((prev) => {
             const trimmed = prev.trim()

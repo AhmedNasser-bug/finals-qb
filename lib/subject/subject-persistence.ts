@@ -724,13 +724,15 @@ function balanceJsonStack(str: string): string {
     balanced = balanced.slice(0, -1)
   }
   
+  const balancedChunks: string[] = [balanced]
+
   while (stack.length > 0) {
     const top = stack.pop()
-    if (top === '{') balanced += '}'
-    else if (top === '[') balanced += ']'
+    if (top === '{') balancedChunks.push('}')
+    else if (top === '[') balancedChunks.push(']')
   }
   
-  return balanced
+  return balancedChunks.join("")
 }
 
 function processEscapeSequence(
@@ -794,7 +796,7 @@ function processEscapeSequence(
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
-  let repaired = ""
+  const repairedChunks: string[] = []
   let inString = false
   let fixed = false
 
@@ -817,22 +819,22 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (char === '"' && str[i - 1] !== '\\') {
-      repaired += '"'
+      repairedChunks.push('"')
       inString = !inString
       continue
     }
 
     if (inString && char === '\\') {
         const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repaired += addition;
+        repairedChunks.push(addition);
         fixed = fixed || wasFixed;
         i += charsConsumed - 1; // loop naturally increments i
     } else {
-      repaired += char
+      repairedChunks.push(char)
     }
   }
 
-  return { repaired, fixed }
+  return { repaired: repairedChunks.join(""), fixed }
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
