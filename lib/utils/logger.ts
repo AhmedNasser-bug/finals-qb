@@ -3,22 +3,22 @@ type RedactReplacement = string | ((match: string, ...args: any[]) => string);
 const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
-    pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    pattern: /\b([a-zA-Z0-9._%+-]{1,255}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,255})\b/g,
     replacement: '[REDACTED]'
   },
   {
     // Bearer tokens
-    pattern: /(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
+    pattern: /\b(Bearer\s{1,255})([A-Za-z0-9\-\._~\+\/]{1,4096}={0,2})/g,
     replacement: '$1[REDACTED]'
   },
   {
     // Private keys
-    pattern: /(-----BEGIN[A-Z0-9-\s]+PRIVATE KEY-----)([\s\S]+?)(-----END[A-Z0-9-\s]+PRIVATE KEY-----)/g,
+    pattern: /(-----BEGIN[A-Z0-9-\s]{1,255}PRIVATE KEY-----)([\s\S]{1,8192}?)(-----END[A-Z0-9-\s]{1,255}PRIVATE KEY-----)/g,
     replacement: '$1\n[REDACTED]\n$3'
   },
   {
     // Common secrets and PII
-    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(")([^"]*)(")|(')([^']*)(')|([^,\]\}\s]+))/gi,
+    pattern: /\b((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s{0,255}[:=]\s{0,255})(?:(")([^"]{0,4096})(")|(')([^']{0,4096})(')|([^,\]\}\s]{1,4096}))/gi,
     replacement: (match: string, p1: string, p2: string, p3: string, p4: string, p5: string, p6: string, p7: string, p8: string) => {
       if (p8 && (p8.startsWith('[') || p8.startsWith('{'))) {
         return match;
@@ -30,7 +30,7 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // JWTs
-    pattern: /(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
+    pattern: /\b(eyJ[A-Za-z0-9_-]{10,2048}\.[A-Za-z0-9_-]{10,2048}\.[A-Za-z0-9_-]{10,2048})/g,
     replacement: '[REDACTED]'
   }
 ];
