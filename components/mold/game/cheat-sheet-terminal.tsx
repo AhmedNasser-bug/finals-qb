@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
+import { useRef } from "react"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
 import { renderMath } from "@/lib/utils/math-renderer"
@@ -23,6 +24,15 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   }, [toggleCheatSheet])
 
   // Reverse entries so the most recently flagged questions appear at the top
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      panelRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
 
   return (
@@ -30,6 +40,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
       {/* Overlay Backdrop */}
       {isOpen && (
         <div
+          aria-hidden="true"
           onClick={() => setIsOpen(false)}
           className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-fade-in"
         />
@@ -37,9 +48,14 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cheat-sheet-title"
+        tabIndex={-1}
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
+          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text outline-none",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -49,7 +65,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-4 shrink-0 flex justify-between items-start font-mono">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider text-zinc-300 font-bold">
+              <span id="cheat-sheet-title" className="text-xs uppercase tracking-wider text-zinc-300 font-bold">
                 STUDY DECK // REVIEW PANEL
               </span>
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-[#fecc17]/10 text-[#fecc17] border border-[#fecc17]/20 rounded">
