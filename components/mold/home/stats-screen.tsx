@@ -52,8 +52,8 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           <button 
             onClick={onReturnHome}
             className="flex items-center gap-2 text-zinc-400 hover:text-[#fecc17] transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+           title="Return to core">
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true" />
             <span>Return to core</span>
           </button>
           <h1 className="text-3xl font-display font-black tracking-tight text-white flex items-center gap-3">
@@ -267,7 +267,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
             <div className="border border-destructive/20 bg-destructive/5 rounded p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <p className="font-mono text-xs font-bold text-white flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-destructive" />
+                  <AlertTriangle className="w-4 h-4 text-destructive" aria-hidden="true" />
                   <span>RESET ALL STUDY DATA</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 max-w-md">
@@ -289,14 +289,14 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                     onClick={handleReset}
                     aria-label="Confirm wipe all data"
                     className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
-                  >
+                   title="Confirm Wipe Data">
                     CONFIRM
                   </button>
                   <button 
                     onClick={() => setShowConfirmReset(false)}
                     aria-label="Cancel wipe all data"
                     className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
-                  >
+                   title="Cancel Wipe Data">
                     CANCEL
                   </button>
                 </div>

@@ -1,0 +1,75 @@
+
+> my-v0-project@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 536ms
+
+○ Compiling /subjects ...
+ GET /subjects 200 in 8.4s (next.js: 7.2s, proxy.ts: 334ms, application-code: 860ms)
+ POST /subjects 200 in 262ms (next.js: 17ms, proxy.ts: 31ms, application-code: 214ms)
+  └─ ƒ getExamplesManifest() in 95ms actions.ts
+ POST /subjects 200 in 80ms (next.js: 10ms, proxy.ts: 25ms, application-code: 45ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+○ Compiling / ...
+ GET /?subject=mock_id 200 in 8.1s (next.js: 6.3s, proxy.ts: 42ms, application-code: 1675ms)
+ GET /examples/mock_id.json 404 in 963ms (next.js: 884ms, proxy.ts: 9ms, application-code: 70ms)
+ GET /subjects 200 in 50ms (next.js: 5ms, proxy.ts: 7ms, application-code: 39ms)
+ POST /subjects 200 in 20ms (next.js: 4ms, proxy.ts: 6ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 20ms (next.js: 4ms, proxy.ts: 5ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET /subjects 200 in 88ms (next.js: 7ms, proxy.ts: 7ms, application-code: 73ms)
+ GET /?subject=mock_id 200 in 71ms (next.js: 5ms, proxy.ts: 5ms, application-code: 61ms)
+ GET /examples/mock_id.json 404 in 70ms (next.js: 8ms, proxy.ts: 9ms, application-code: 54ms)
+ GET /subjects 200 in 36ms (next.js: 4ms, proxy.ts: 7ms, application-code: 24ms)
+ POST /subjects 200 in 21ms (next.js: 4ms, proxy.ts: 6ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 23ms (next.js: 7ms, proxy.ts: 7ms, application-code: 9ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET /subjects 200 in 73ms (next.js: 4ms, proxy.ts: 5ms, application-code: 64ms)
+ GET /?subject=mock_id 200 in 64ms (next.js: 4ms, proxy.ts: 5ms, application-code: 56ms)
+ GET /examples/mock_id.json 404 in 70ms (next.js: 8ms, proxy.ts: 4ms, application-code: 58ms)
+ GET /subjects 200 in 34ms (next.js: 3ms, proxy.ts: 4ms, application-code: 27ms)
+ POST /subjects 200 in 27ms (next.js: 4ms, proxy.ts: 7ms, application-code: 17ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 38ms (next.js: 11ms, proxy.ts: 5ms, application-code: 23ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET /subjects 200 in 92ms (next.js: 5ms, proxy.ts: 6ms, application-code: 81ms)
+ GET /?subject=mock_id 200 in 71ms (next.js: 7ms, proxy.ts: 4ms, application-code: 59ms)
+ GET /examples/mock_id.json 404 in 67ms (next.js: 8ms, proxy.ts: 6ms, application-code: 53ms)
+ GET /subjects 200 in 41ms (next.js: 4ms, proxy.ts: 7ms, application-code: 31ms)
+ POST /subjects 200 in 33ms (next.js: 4ms, proxy.ts: 7ms, application-code: 22ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 58ms (next.js: 23ms, proxy.ts: 5ms, application-code: 30ms)
+  └─ ƒ getExamplesManifest() in 4ms actions.ts
+ GET /subjects 200 in 73ms (next.js: 4ms, proxy.ts: 5ms, application-code: 65ms)
+ GET /?subject=mock_id 200 in 64ms (next.js: 4ms, proxy.ts: 4ms, application-code: 56ms)
+ GET /examples/mock_id.json 404 in 63ms (next.js: 8ms, proxy.ts: 4ms, application-code: 52ms)
+ GET /subjects 200 in 42ms (next.js: 4ms, proxy.ts: 6ms, application-code: 32ms)
+ POST /subjects 200 in 19ms (next.js: 6ms, proxy.ts: 5ms, application-code: 9ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 27ms (next.js: 3ms, proxy.ts: 11ms, application-code: 13ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET /subjects 200 in 65ms (next.js: 3ms, proxy.ts: 4ms, application-code: 58ms)
+ GET / 200 in 93ms (next.js: 5ms, proxy.ts: 4ms, application-code: 84ms)
+ GET /subjects 200 in 45ms (next.js: 4ms, proxy.ts: 5ms, application-code: 36ms)
+ POST /subjects 200 in 25ms (next.js: 9ms, proxy.ts: 5ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 21ms (next.js: 8ms, proxy.ts: 4ms, application-code: 9ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET /subjects 200 in 86ms (next.js: 5ms, proxy.ts: 6ms, application-code: 76ms)
+ GET /?subject=mock_id 200 in 83ms (next.js: 4ms, proxy.ts: 4ms, application-code: 75ms)
+⨯ Error: aborted
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+ GET /examples/mock_id.json 404 in 77ms (next.js: 12ms, proxy.ts: 4ms, application-code: 60ms)
+ GET /subjects 200 in 118ms (next.js: 17ms, proxy.ts: 17ms, application-code: 84ms)
+ POST /subjects 200 in 34ms (next.js: 7ms, proxy.ts: 10ms, application-code: 17ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 29ms (next.js: 7ms, proxy.ts: 10ms, application-code: 13ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET /?subject=advanced-programming 200 in 62ms (next.js: 5ms, proxy.ts: 6ms, application-code: 52ms)
