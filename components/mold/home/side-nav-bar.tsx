@@ -73,7 +73,7 @@ export function SideNavBar({
               : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
           )}
         >
-          <TerminalIcon className="w-3.5 h-3.5" /> <span>Dashboard</span>
+          <TerminalIcon className="w-3.5 h-3.5" aria-hidden="true" /> <span>Dashboard</span>
         </button>
 
         <button 
@@ -85,57 +85,57 @@ export function SideNavBar({
               : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
           )}
         >
-          <BarChart3 className="w-3.5 h-3.5" /> <span>Statistics</span>
+          <BarChart3 className="w-3.5 h-3.5" aria-hidden="true" /> <span>Statistics</span>
         </button>
 
         <button 
           onClick={onShowEncyclopedia}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <BookOpen className="w-3.5 h-3.5" /> <span>Encyclopedia</span>
+          <BookOpen className="w-3.5 h-3.5" aria-hidden="true" /> <span>Encyclopedia</span>
         </button>
 
         <button 
           onClick={onShowGallery}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <Trophy className="w-3.5 h-3.5" /> <span>Achievements</span>
+          <Trophy className="w-3.5 h-3.5" aria-hidden="true" /> <span>Achievements</span>
         </button>
         <button 
           onClick={onChangeSubject}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <RotateCcw className="w-3.5 h-3.5" /> <span>Switch Subject</span>
+          <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> <span>Switch Subject</span>
         </button>
         <button 
           onClick={onImportNew}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <Plus className="w-3.5 h-3.5" /> <span>Import JSON</span>
+          <Plus className="w-3.5 h-3.5" aria-hidden="true" /> <span>Import JSON</span>
         </button>
         <button 
           onClick={onAddQuestions}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> <span>Add questions</span>
+          <Sparkles className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> <span>Add questions</span>
         </button>
         <button 
           onClick={onDownloadHtml}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <Download className="w-3.5 h-3.5" /> <span>Download Q&A Sheet</span>
+          <Download className="w-3.5 h-3.5" aria-hidden="true" /> <span>Download Q&A Sheet</span>
         </button>
         <button 
           onClick={onDownloadPdf}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <FileText className="w-3.5 h-3.5 text-primary" /> <span>Questions PDF</span>
+          <FileText className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> <span>Questions PDF</span>
         </button>
         <button 
           onClick={onDownloadSolvedPdf}
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
-          <FileText className="w-3.5 h-3.5 text-emerald-400" /> <span>Solved Questions PDF</span>
+          <FileText className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> <span>Solved Questions PDF</span>
         </button>
       </nav>
 

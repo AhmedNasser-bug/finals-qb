@@ -69,7 +69,7 @@ export function SequenceMap({ pixels, total, pixelCount, score, wrongCountVal, s
             grid-template-columns: repeat(${Math.min(pixelCount, 20)}, 1fr);
           }
         `}</style>
-        <div className="grid gap-[4px] seq-map-grid">
+        <div className="grid gap-[4px] seq-map-grid" role="img" aria-label="Question sequence results map">
           {pixels.map((state, i) => (
             <div
               key={i}
