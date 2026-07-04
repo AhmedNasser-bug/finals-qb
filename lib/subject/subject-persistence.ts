@@ -32,33 +32,32 @@ export interface ValidationResult {
 function normalizeFlashcards(obj: Record<string, unknown>, warnings: string[]) {
   if (!Array.isArray(obj.flashcards)) return;
 
-  let legacyKeys = false
-  const newFlashcards = new Array(obj.flashcards.length)
-  for (let i = 0; i < obj.flashcards.length; i++) {
-    const fc = obj.flashcards[i]
-    if (typeof fc !== "object" || fc === null) {
-      newFlashcards[i] = fc
-      continue
-    }
-    const card = { ...(fc as Record<string, unknown>) }
+  let legacyKeys = false;
+
+  const processFlashcard = (fc: unknown) => {
+    if (typeof fc !== "object" || fc === null) return fc;
+
+    const card = { ...(fc as Record<string, unknown>) };
     if ("front" in card && !("term" in card)) {
-      card.term = card.front
-      delete card.front
-      legacyKeys = true
+      card.term = card.front;
+      delete card.front;
+      legacyKeys = true;
     }
     if ("back" in card && !("definition" in card)) {
-      card.definition = card.back
-      delete card.back
-      legacyKeys = true
+      card.definition = card.back;
+      delete card.back;
+      legacyKeys = true;
     }
     if (typeof card.category !== "string" || card.category.trim() === "") {
-      card.category = "_general"
+      card.category = "_general";
     }
-    newFlashcards[i] = card
-  }
-  obj.flashcards = newFlashcards
+    return card;
+  };
+
+  obj.flashcards = obj.flashcards.map(processFlashcard);
+
   if (legacyKeys) {
-    warnings.push('"flashcards": legacy "front"/"back" keys remapped to "term"/"definition".')
+    warnings.push('"flashcards": legacy "front"/"back" keys remapped to "term"/"definition".');
   }
 }
 
@@ -74,34 +73,33 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
   }
 
   const termObj = obj.terminology as Record<string, unknown>
-  if (Object.keys(termObj).length > 0) {
-    const firstVal = Object.values(termObj)[0]
-    if (typeof firstVal === "string") {
-      // Entire map is flat strings — lift into a single _general bucket
-      const entries = Object.entries(termObj)
-      const lifted = new Array(entries.length)
-      for (let i = 0; i < entries.length; i++) {
-        lifted[i] = {
-          term: entries[i][0],
-          definition: entries[i][1] as string,
-        }
-      }
-      obj.terminology = { _general: lifted }
-      warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
-    }
-  }
 
-  // Auto-generate empty terminology keys for any categories used by questions
+  const checkAndLiftFlatFormat = () => {
+    if (Object.keys(termObj).length === 0) return;
+    const firstVal = Object.values(termObj)[0];
+    if (typeof firstVal !== "string") return;
+
+    const lifted = Object.entries(termObj).map(([term, definition]) => ({
+      term,
+      definition: definition as string,
+    }));
+
+    obj.terminology = { _general: lifted };
+    warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.');
+  };
+
+  checkAndLiftFlatFormat();
+
   if (Array.isArray(obj.questions)) {
-    const termDict = obj.terminology as Record<string, unknown>
-    obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
+    const termDict = obj.terminology as Record<string, unknown>;
+    const addQuestionCategory = (q: any) => {
+      if (!q || typeof q.category !== "string") return;
+      const cat = q.category.trim();
+      if (cat !== "" && !Array.isArray(termDict[cat])) {
+        termDict[cat] = [];
       }
-    })
+    };
+    obj.questions.forEach(addQuestionCategory);
   }
 }
 
@@ -333,21 +331,22 @@ function autoFixTerminology(obj: Record<string, unknown>, warnings: string[]) {
 
   const termDict = obj.terminology as Record<string, unknown>
 
+  if (!Array.isArray(obj.questions)) return;
+
   // Auto-generate empty terminology keys for any categories used by questions
-  if (Array.isArray(obj.questions)) {
-    obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
-      }
-    })
-  }
+  const addCategory = (q: any) => {
+    if (!q || typeof q.category !== "string") return;
+    const cat = q.category.trim();
+    if (cat === "") return;
+    if (!Array.isArray(termDict[cat])) {
+      termDict[cat] = [];
+    }
+  };
+
+  obj.questions.forEach(addCategory);
 }
 
 function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
-  // Only treat as a subject and auto-fix if it has at least one subject signature key
   const hasSignature = 
     Array.isArray(obj.questions) || 
     Array.isArray(obj.flashcards) || 
@@ -357,46 +356,45 @@ function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
 
   if (!hasSignature) return;
 
-  // 1. Recover Name and ID
-  if (typeof obj.name !== "string" || obj.name.trim() === "") {
-    obj.name = "Imported Subject"
-    warnings.push(`"name" was missing or invalid; defaulted to "Imported Subject".`)
-  }
-  
-  if (typeof obj.id !== "string" || obj.id.trim() === "") {
-    const slug = (obj.name as string).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
-    obj.id = slug || "imported-subject"
-    warnings.push(`"id" was missing or invalid; automatically generated "${obj.id}" based on subject name.`)
-  }
+  const recoverNameAndId = () => {
+    if (typeof obj.name !== "string" || obj.name.trim() === "") {
+      obj.name = "Imported Subject"
+      warnings.push(`"name" was missing or invalid; defaulted to "Imported Subject".`)
+    }
+    if (typeof obj.id !== "string" || obj.id.trim() === "") {
+      const slug = (obj.name as string).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+      obj.id = slug || "imported-subject"
+      warnings.push(`"id" was missing or invalid; automatically generated "${obj.id}" based on subject name.`)
+    }
+  };
 
-  // 2. Recover Config Block
-  if (typeof obj.config !== "object" || obj.config === null || Array.isArray(obj.config)) {
-    obj.config = {
-      title: obj.name,
-      description: `Pedagogical study subject generated for ${obj.name}.`
+  const recoverConfig = () => {
+    if (typeof obj.config !== "object" || obj.config === null || Array.isArray(obj.config)) {
+      obj.config = {
+        title: obj.name,
+        description: `Pedagogical study subject generated for ${obj.name}.`
+      }
+      warnings.push(`"config" block was missing or invalid; generated default config block.`)
+    } else {
+      const config = obj.config as Record<string, unknown>
+      if (typeof config.title !== "string" || config.title.trim() === "") {
+        config.title = obj.name
+        warnings.push(`"config.title" was missing; defaulted to subject name.`)
+      }
+      if (typeof config.description !== "string" || config.description.trim() === "") {
+        config.description = `Study subject generated for ${obj.name}.`
+        warnings.push(`"config.description" was missing; generated placeholder description.`)
+      }
     }
-    warnings.push(`"config" block was missing or invalid; generated default config block.`)
-  } else {
-    const config = obj.config as Record<string, unknown>
-    if (typeof config.title !== "string" || config.title.trim() === "") {
-      config.title = obj.name
-      warnings.push(`"config.title" was missing; defaulted to subject name.`)
-    }
-    if (typeof config.description !== "string" || config.description.trim() === "") {
-      config.description = `Study subject generated for ${obj.name}.`
-      warnings.push(`"config.description" was missing; generated placeholder description.`)
-    }
-  }
+  };
 
-  // 3. Recover Questions Array
-  if (!Array.isArray(obj.questions)) {
-    obj.questions = []
-    warnings.push(`"questions" array was missing or invalid; initialized as empty array.`)
-  }
-  
-  if (obj.questions.length === 0) {
-    obj.questions = [
-      {
+  const recoverQuestions = () => {
+    if (!Array.isArray(obj.questions)) {
+      obj.questions = []
+      warnings.push(`"questions" array was missing or invalid; initialized as empty array.`)
+    }
+    if (obj.questions.length === 0) {
+      obj.questions = [{
         id: "q-default-1",
         type: "MCQ",
         difficulty: "Medium",
@@ -409,30 +407,31 @@ function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
         answer: "A",
         explanation: "Placeholder question generated during import validation recovery.",
         hint: "Select option A to proceed."
-      }
-    ]
-    warnings.push(`"questions" array was empty; seeded a default placeholder question to ensure subject remains playable.`)
-  }
+      }]
+      warnings.push(`"questions" array was empty; seeded a default placeholder question to ensure subject remains playable.`)
+    }
+  };
 
-  // 4. Recover Flashcards Array
-  if (!Array.isArray(obj.flashcards)) {
-    obj.flashcards = []
-    warnings.push(`"flashcards" array was missing or invalid; initialized as empty array.`)
-  }
+  const recoverOtherArrays = () => {
+    if (!Array.isArray(obj.flashcards)) {
+      obj.flashcards = []
+      warnings.push(`"flashcards" array was missing or invalid; initialized as empty array.`)
+    }
+    if (typeof obj.terminology !== "object" || obj.terminology === null || Array.isArray(obj.terminology)) {
+      obj.terminology = {}
+      warnings.push(`"terminology" dictionary was missing or invalid; initialized as empty object.`)
+    }
+    if (!Array.isArray(obj.achievements)) {
+      obj.achievements = []
+      warnings.push(`"achievements" array was missing or invalid; initialized as empty array.`)
+    }
+  };
 
-  // 5. Recover Terminology Object
-  if (typeof obj.terminology !== "object" || obj.terminology === null || Array.isArray(obj.terminology)) {
-    obj.terminology = {}
-    warnings.push(`"terminology" dictionary was missing or invalid; initialized as empty object.`)
-  }
+  recoverNameAndId();
+  recoverConfig();
+  recoverQuestions();
+  recoverOtherArrays();
 
-  // 6. Recover Achievements Array
-  if (!Array.isArray(obj.achievements)) {
-    obj.achievements = []
-    warnings.push(`"achievements" array was missing or invalid; initialized as empty array.`)
-  }
-
-  // 7. Invoke deeply nested corrections
   autoFixQuestions(obj, warnings)
   autoFixTerminology(obj, warnings)
 }
@@ -462,63 +461,56 @@ function validateSingleQuestion(
 ) {
   const prefix = `questions[${i}]`;
 
-  if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
-    errors.push(`${prefix}: missing "id".`);
-  } else if (seenIds.has(qObj.id)) {
-    errors.push(`${prefix}: duplicate id "${qObj.id}".`);
-  } else {
-    seenIds.add(qObj.id);
-  }
-
-  if (!VALID_TYPES.has(qObj.type as string)) {
-    errors.push(`${prefix}: "type" must be "MCQ" or "TrueFalse", got "${qObj.type}".`);
-  }
-  if (!VALID_DIFFICULTIES.has(qObj.difficulty as string)) {
-    errors.push(`${prefix}: "difficulty" must be "Easy", "Medium", or "Hard", got "${qObj.difficulty}".`);
-  }
-  if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
-    errors.push(`${prefix}: missing "category".`);
-  }
-  if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
-    errors.push(`${prefix}: missing "question" text.`);
-  }
-  if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
-    errors.push(`${prefix}: "options" must be an array with at least 2 entries.`);
-  }
-  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-    errors.push(`${prefix}: missing "answer".`);
-  }
-
-  // diagramPosition must be a known value if present
-  if (qObj.diagramPosition != null && qObj.diagramPosition !== "right" && qObj.diagramPosition !== "below") {
-    errors.push(`${prefix}: "diagramPosition" must be "right" or "below", got "${qObj.diagramPosition}".`);
-  }
-
-  // answer label must exist in options
-  if (!Array.isArray(qObj.options) || qObj.options.length === 0 || typeof qObj.answer !== "string") {
-    return;
-  }
-
-  let labelExists = false;
-  for (let j = 0; j < qObj.options.length; j++) {
-    const opt = qObj.options[j] as Record<string, unknown>;
-    if (opt.label === qObj.answer) {
-      labelExists = true;
-      break;
+  const checkBasicProps = () => {
+    if (typeof qObj.id !== "string" || qObj.id.trim() === "") {
+      errors.push(`${prefix}: missing "id".`);
+    } else if (seenIds.has(qObj.id)) {
+      errors.push(`${prefix}: duplicate id "${qObj.id}".`);
+    } else {
+      seenIds.add(qObj.id);
     }
-  }
 
-  if (!labelExists) {
+    if (!VALID_TYPES.has(qObj.type as string)) {
+      errors.push(`${prefix}: "type" must be "MCQ" or "TrueFalse", got "${qObj.type}".`);
+    }
+    if (!VALID_DIFFICULTIES.has(qObj.difficulty as string)) {
+      errors.push(`${prefix}: "difficulty" must be "Easy", "Medium", or "Hard", got "${qObj.difficulty}".`);
+    }
+    if (typeof qObj.category !== "string" || qObj.category.trim() === "") {
+      errors.push(`${prefix}: missing "category".`);
+    }
+    if (typeof qObj.question !== "string" || qObj.question.trim() === "") {
+      errors.push(`${prefix}: missing "question" text.`);
+    }
+    if (!Array.isArray(qObj.options) || qObj.options.length < 2) {
+      errors.push(`${prefix}: "options" must be an array with at least 2 entries.`);
+    }
+    if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
+      errors.push(`${prefix}: missing "answer".`);
+    }
+
+    if (qObj.diagramPosition != null && qObj.diagramPosition !== "right" && qObj.diagramPosition !== "below") {
+      errors.push(`${prefix}: "diagramPosition" must be "right" or "below", got "${qObj.diagramPosition}".`);
+    }
+  };
+
+  const checkOptions = () => {
+    if (!Array.isArray(qObj.options) || qObj.options.length === 0 || typeof qObj.answer !== "string") return;
+
     const options = qObj.options as Record<string, unknown>[];
-    const labels = new Array(options.length);
-    for (let j = 0; j < options.length; j++) {
-      labels[j] = options[j].label;
+    const labelExists = options.some(opt => opt.label === qObj.answer);
+
+    if (!labelExists) {
+      const labels = options.map(opt => opt.label);
+      errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`);
     }
-    errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`);
-  }
-  if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
-    errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`);
-  }
+    if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
+      errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`);
+    }
+  };
+
+  checkBasicProps();
+  checkOptions();
 }
 
 function validateQuestionsArray(obj: Record<string, unknown>, errors: string[]) {
@@ -562,23 +554,24 @@ function validateFlashcardsArray(obj: Record<string, unknown>, errors: string[],
     return;
   }
 
-  for (let i = 0; i < obj.flashcards.length; i++) {
-    const fc = obj.flashcards[i];
+  const validateFlashcard = (fc: unknown, i: number) => {
     if (typeof fc !== "object" || fc === null) {
-      errors.push(`flashcards[${i}]: must be an object.`)
-      continue
+      errors.push(`flashcards[${i}]: must be an object.`);
+      return;
     }
-    const fcObj = fc as Record<string, unknown>
+    const fcObj = fc as Record<string, unknown>;
     if (typeof fcObj.id !== "string" || fcObj.id.trim() === "") {
-      errors.push(`flashcards[${i}]: missing "id".`)
+      errors.push(`flashcards[${i}]: missing "id".`);
     }
     if (typeof fcObj.term !== "string" || fcObj.term.trim() === "") {
-      errors.push(`flashcards[${i}]: missing "term" (or legacy "front").`)
+      errors.push(`flashcards[${i}]: missing "term" (or legacy "front").`);
     }
     if (typeof fcObj.definition !== "string" || fcObj.definition.trim() === "") {
-      errors.push(`flashcards[${i}]: missing "definition" (or legacy "back").`)
+      errors.push(`flashcards[${i}]: missing "definition" (or legacy "back").`);
     }
-  }
+  };
+
+  obj.flashcards.forEach(validateFlashcard);
 }
 
 function validateTerminologyDict(obj: Record<string, unknown>, warnings: string[]) {
@@ -596,27 +589,32 @@ function validateTerminologyDict(obj: Record<string, unknown>, warnings: string[
     return;
   }
 
-  for (const [catKey, entries] of Object.entries(obj.terminology as Record<string, unknown>)) {
+  const validateEntry = (catKey: string, entry: unknown, i: number) => {
+    if (typeof entry !== "object" || entry === null) {
+      warnings.push(`terminology["${catKey}"][${i}]: not an object — entry skipped.`);
+      return;
+    }
+    const e = entry as Record<string, unknown>;
+    if (typeof e.term !== "string" || e.term.trim() === "") {
+      warnings.push(`terminology["${catKey}"][${i}]: missing "term" — entry skipped.`);
+      return;
+    }
+    if (typeof e.definition !== "string" || e.definition.trim() === "") {
+      warnings.push(`terminology["${catKey}"][${i}]: missing "definition" — entry skipped.`);
+    }
+  };
+
+  const validateCategory = (catKey: string, entries: unknown) => {
     if (!Array.isArray(entries)) {
-      warnings.push(`terminology["${catKey}"]: expected an array of {term, definition} objects — category skipped.`)
-      continue
+      warnings.push(`terminology["${catKey}"]: expected an array of {term, definition} objects — category skipped.`);
+      return;
     }
-    for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i];
-      if (typeof entry !== "object" || entry === null) {
-        warnings.push(`terminology["${catKey}"][${i}]: not an object — entry skipped.`)
-        continue
-      }
-      const e = entry as Record<string, unknown>
-      if (typeof e.term !== "string" || e.term.trim() === "") {
-        warnings.push(`terminology["${catKey}"][${i}]: missing "term" — entry skipped.`)
-        continue
-      }
-      if (typeof e.definition !== "string" || e.definition.trim() === "") {
-        warnings.push(`terminology["${catKey}"][${i}]: missing "definition" — entry skipped.`)
-      }
-    }
-  }
+    entries.forEach((entry, i) => validateEntry(catKey, entry, i));
+  };
+
+  Object.entries(obj.terminology as Record<string, unknown>).forEach(([catKey, entries]) => {
+    validateCategory(catKey, entries);
+  });
 }
 
 function validateAchievementsArray(obj: Record<string, unknown>, warnings: string[]) {
@@ -676,6 +674,8 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
+  let curlyCount = 0;
+  let squareCount = 0;
   let inString = false
   let escaped = false
   
@@ -698,21 +698,35 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
+      curlyCount++
     } else if (char === '[') {
       stack.push('[')
+      squareCount++
     } else if (char === '}') {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        curlyCount--
+      } else if (curlyCount > 0) {
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '{') {
+          if (stack[idx] === '[') squareCount--
+          idx--
+        }
+        stack.length = idx
+        curlyCount--
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        squareCount--
+      } else if (squareCount > 0) {
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '[') {
+          if (stack[idx] === '{') curlyCount--
+          idx--
+        }
+        stack.length = idx
+        squareCount--
       }
     }
   }
