@@ -704,15 +704,31 @@ function balanceJsonStack(str: string): string {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        let count = 0;
+        let idx = stack.length - 1;
+        while (idx >= 0) {
+          if (stack[idx] === "{") {
+             count++;
+             break;
+          }
+          idx--;
+        }
+        if (count > 0) stack.length = idx;
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        let count = 0;
+        let idx = stack.length - 1;
+        while (idx >= 0) {
+          if (stack[idx] === "[") {
+             count++;
+             break;
+          }
+          idx--;
+        }
+        if (count > 0) stack.length = idx;
       }
     }
   }
@@ -794,7 +810,7 @@ function processEscapeSequence(
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
-  let repaired = ""
+  const repairedChunks: string[] = []
   let inString = false
   let fixed = false
 
@@ -814,25 +830,31 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
     "uparrow", "underbar", "usebox", "underbrace", "under", "Uparrow"
   ])
 
+  let chunkStart = 0
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (char === '"' && str[i - 1] !== '\\') {
-      repaired += '"'
       inString = !inString
-      continue
-    }
+    } else if (inString && char === '\\') {
+      const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
 
-    if (inString && char === '\\') {
-        const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repaired += addition;
-        fixed = fixed || wasFixed;
-        i += charsConsumed - 1; // loop naturally increments i
-    } else {
-      repaired += char
+      if (addition.length !== charsConsumed || wasFixed) {
+        if (i > chunkStart) {
+          repairedChunks.push(str.substring(chunkStart, i))
+        }
+        repairedChunks.push(addition)
+        chunkStart = i + charsConsumed
+        fixed = fixed || wasFixed
+      }
+      i += charsConsumed - 1; // loop naturally increments i
     }
   }
 
-  return { repaired, fixed }
+  if (chunkStart < str.length) {
+    repairedChunks.push(str.substring(chunkStart, str.length))
+  }
+
+  return { repaired: repairedChunks.join(""), fixed }
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
