@@ -69,3 +69,7 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2024-07-05 - Missing titles and aria states on secondary interactive elements
+**Learning:** Found instances where secondary interactive UI (like empty state CTAs, functional toggles, or contextual list actions) lack contextual `title` tooltips for hover, lack explicit `aria-expanded` bindings on toggles, or miss `aria-busy` when awaiting network responses.
+**Action:** When adding functional toggles or dynamically disabled async buttons, always enforce complete ARIA sets (`aria-expanded`, `aria-busy`) and standard `title` properties in addition to screen reader labels to support dual-mode (mouse and screen reader) accessibility equally.

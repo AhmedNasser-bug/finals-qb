@@ -70,6 +70,8 @@ export function ExampleModuleCard({
         ) : (
           <button
             onClick={() => onLoad(entry)}
+            title="Load this module"
+            aria-label={`Load module ${entry.name}`}
             className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             LOAD_MODULE →

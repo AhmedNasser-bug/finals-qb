@@ -88,6 +88,8 @@ function AchievementToastItem({
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       )}
       role="alert"
+      aria-live="polite"
+      aria-atomic="true"
     >
       <div className="shrink-0 w-8 h-8 rounded border border-primary/30 bg-primary/10 flex items-center justify-center">
         <TrophyIcon className="w-4 h-4 text-primary" />

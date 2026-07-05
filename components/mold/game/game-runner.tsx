@@ -117,7 +117,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   } = useGameEngine()
   const { onGameComplete } = useAchievements()
   const { recordSession } = useStreak()
-  const { addEntry, toggleCheatSheet, clearEntries } = useCheatSheet()
+  const { addEntry, toggleCheatSheet, clearEntries, isOpen: isCheatSheetOpen } = useCheatSheet()
   
   const processedQuestionsRef = useRef<Record<number, boolean>>({})
   const [showHint, setShowHint] = useState(false)
@@ -327,10 +327,12 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       <button
         onClick={toggleCheatSheet}
         className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#121212] hover:bg-[#1c1b1b] border-y border-l border-zinc-800 hover:border-[#fecc17]/50 text-[#fecc17] font-mono text-[10px] font-bold py-3 px-2 rounded-l shadow-lg transition-all flex flex-col items-center gap-1.5 focus-ring uppercase tracking-widest cursor-pointer group"
-        title="Open Review Deck (Ctrl + `)"
+        title="Toggle Review Deck (Ctrl + `)"
+        aria-label="Toggle Review Deck"
+        aria-expanded={isCheatSheetOpen}
       >
-        <span className="text-[12px] group-hover:scale-110 transition-transform">📚</span>
-        <span className="[writing-mode:vertical-lr] tracking-widest text-[9px]">REVIEW DECK</span>
+        <span aria-hidden="true" className="text-[12px] group-hover:scale-110 transition-transform">📚</span>
+        <span aria-hidden="true" className="[writing-mode:vertical-lr] tracking-widest text-[9px]">REVIEW DECK</span>
       </button>
 
       {/* Side Terminal Drawer */}

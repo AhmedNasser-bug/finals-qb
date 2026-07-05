@@ -478,6 +478,7 @@ export function DropZoneSection({
           <button
             onClick={onPaste}
             disabled={state === "pasting"}
+            aria-busy={state === "pasting"}
             title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
             className={cn(
               "text-xs font-mono px-5 py-2.5 rounded-none border font-semibold tracking-widest uppercase transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[44px] cursor-pointer",
