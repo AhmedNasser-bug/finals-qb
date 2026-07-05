@@ -69,3 +69,6 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+## 2024-07-05 - Add ARIA Labels and Focus Rings to Mobile Bottom Navigation
+**Learning:** Found that bottom navigation icons on mobile often lack both aria-labels and clear focus indicators in this application's custom style components, leading to confusing screen reader experiences and invisible keyboard navigation. The `focus-ring` class exists but is inconsistently applied.
+**Action:** Always add aria-labels and apply the `focus-ring` utility class to standalone icon buttons or icon/text combo buttons in custom navigation components to ensure accessible keyboard navigation and proper screen reader announcements.
