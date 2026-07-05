@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 
 const UI_DIR = path.join(__dirname, '../components');
@@ -21,8 +22,8 @@ function scanDirectory(dir, fileList = []) {
 
 function extractInterface(content, componentName) {
   // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
+  const interfaceMatch = content.match(/interface\s+\w{0,255}(?:Props)?\s*\{([\s\S]{0,4096}?)\n\}/) ||
+                         content.match(/type\s+\w{0,255}(?:Props)?\s*=\s*\{([\s\S]{0,4096}?)\n\}/);
   if (interfaceMatch) {
     return interfaceMatch[1].trim();
   }
@@ -30,12 +31,7 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await fsPromises.readFile(filePath, 'utf-8');
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
@@ -52,9 +48,19 @@ async function processComponent(filePath) {
   const usesRouting = content.includes('useRouter') || content.includes('next/navigation') || content.includes('next/link');
   const isLazyLoaded = content.includes('next/dynamic') || content.includes('lazy(');
 
-  const hooksMatch = content.match(/use[A-Z]\w+/g);
-  const hooks = hooksMatch ? Array.from(new Set(hooksMatch)).sort() : [];
-  const stateHooks = hooks.filter(h => h !== 'useMemo' && h !== 'useCallback');
+  const hooksMatch = content.match(/use[A-Z]\w{1,255}/g);
+  const stateHooksSet = new Set();
+  const stateHooks = [];
+  if (hooksMatch) {
+    for (let i = 0; i < hooksMatch.length; i++) {
+      const h = hooksMatch[i];
+      if (h !== 'useMemo' && h !== 'useCallback' && !stateHooksSet.has(h)) {
+        stateHooksSet.add(h);
+        stateHooks.push(h);
+      }
+    }
+  }
+  stateHooks.sort();
 
   const hasUseMemo = content.includes('useMemo');
   const hasUseCallback = content.includes('useCallback');
@@ -155,6 +161,11 @@ This registry outlines the exact properties, slots, state dependencies, and perf
 - **App Router:** Utilizes Next.js App Router for strict server-components by default.
 - **Client Hydration:** Interactive islands and global state providers are explicitly marked with \`"use client"\` to cleanly split static and hydrated content.
 - **Hash Routing:** The \`/subjects\` route handles subject selection, importation, and processes share links via URL hash detection (\`#share=...\`).
+
+### Content Hydration Pipelines
+- **Static HTML Generation:** Next.js prerenders pages into static HTML for rapid initial loads.
+- **Client Hydration:** Interactive components marked with \`"use client"\` hydrate dynamically on the client post-load, attaching event listeners and state (e.g., hooks).
+- **State Restoration:** Upon hydration, components re-initialize state dependencies, establishing necessary client-side context.
 
 ### Client-Side Lazy-Loading & Asset Delivery
 - Next.js dynamic imports (\`next/dynamic\`) are employed for complex or heavy UI segments (e.g., Mermaid diagram visualizers) to optimize initial paint payload sizes.
