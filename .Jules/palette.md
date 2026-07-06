@@ -69,3 +69,7 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2024-07-06 - Enhancing Accessible State Context in Mobile Navigation
+**Learning:** Decorative icons placed inside functionally labeled interactive elements (e.g., a "STATS" button that includes a chart icon) will often cause screen readers to redundantly announce the visual element if not explicitly hidden. Furthermore, navigation bars that conditionally style their active state often fail to provide programmatic active state (`aria-current="page"`) and keyboard focus outlines (`focus-visible` / `focus-ring`) to all buttons equally.
+**Action:** When updating a navigation bar component, ensure `aria-hidden="true"` is applied to inner SVG icons if they accompany visible text labels, explicitly bind `aria-current="page"` to the active route conditionally, and verify standard `focus-ring` classes exist on all clickable elements to ensure consistent keyboard focus visibility.
