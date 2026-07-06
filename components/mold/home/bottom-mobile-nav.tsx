@@ -36,6 +36,7 @@ export function BottomMobileNav({
           setView("home")
           handleModeSelect("speedrun")
         }}
+        aria-current={view === "home" ? "page" : undefined}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
@@ -47,6 +48,7 @@ export function BottomMobileNav({
 
       <button
         onClick={() => setView("stats")}
+        aria-current={view === "stats" ? "page" : undefined}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "stats" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"

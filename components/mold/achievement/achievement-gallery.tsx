@@ -39,6 +39,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             aria-label="Close achievement gallery"
+            title="Close achievement gallery"
           >
             <XIcon className="w-4 h-4" />
           </button>

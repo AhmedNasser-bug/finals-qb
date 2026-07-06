@@ -16,6 +16,7 @@ export function ExampleModuleCard({
 }: ExampleModuleCardProps) {
   return (
     <div
+      aria-busy={isLoading}
       className="group relative flex flex-col bg-panel border border-border hover:border-border/80 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#121318]/50 focus-within:ring-2 focus-within:ring-primary/60 focus-within:ring-offset-2 focus-within:ring-offset-background"
     >
       {/* Main card body layout (pure presentation, z-0 relative) */}

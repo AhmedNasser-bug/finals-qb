@@ -69,3 +69,7 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2024-05-24 - [UX: A11y Polish]
+**Learning:** Many elements had duplicate `aria-disabled` alongside native `disabled` attributes, which can cause confusing double-announcements for screen readers. Using `aria-current={isActive ? 'page' : undefined}` is essential for robust navigation accessibility without DOM clutter.
+**Action:** Always favor native HTML constraints (like `disabled`) over ARIA equivalents when both achieve the same effect to keep the accessibility tree clean. Use `undefined` for inactive ARIA boolean states in React.
