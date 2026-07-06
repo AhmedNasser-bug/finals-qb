@@ -157,6 +157,35 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
   }
 }
 
+function applyAnswerFix(qObj: Record<string, unknown>, i: number, normalizedOptions: any[], warnings: string[]): boolean {
+  const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+  if (hasLabel) return false;
+
+  const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+  if (matchedOpt) {
+    const oldAnswer = qObj.answer;
+    qObj.answer = matchedOpt.label;
+    warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+    return true;
+  }
+
+  if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+    const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+    const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+    if (isTrueMatch || isFalseMatch) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = isTrueMatch ? "A" : "B";
+      warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+      return true;
+    }
+  }
+
+  const oldAnswer = qObj.answer;
+  qObj.answer = normalizedOptions[0].label;
+  warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+  return true;
+}
+
 function autoFixSingleQuestion(
   qObj: Record<string, unknown>,
   i: number,
@@ -249,36 +278,7 @@ function autoFixSingleQuestion(
     qFixed = true;
   } else {
     qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
-      }
-    }
+    qFixed = applyAnswerFix(qObj, i, normalizedOptions, warnings) || qFixed;
   }
 
   // 8. Auto-Fix Explanation and Hint
@@ -704,15 +704,17 @@ function balanceJsonStack(str: string): string {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        let idx = stack.length - 1;
+        while (idx >= 0 && stack[idx] !== '{') idx--;
+        if (idx !== -1) stack.length = idx;
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        let idx = stack.length - 1;
+        while (idx >= 0 && stack[idx] !== '[') idx--;
+        if (idx !== -1) stack.length = idx;
       }
     }
   }
@@ -772,7 +774,9 @@ function processEscapeSequence(
     nextChar === "t"
   ) {
     return { addition: "\\" + nextChar, charsConsumed: 2, wasFixed: false };
-  } else if (nextChar === "u") {
+  }
+
+  if (nextChar === "u") {
     const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c);
     if (
       isHex(str[i + 2]) &&
@@ -785,12 +789,11 @@ function processEscapeSequence(
         charsConsumed: 6,
         wasFixed: false,
       };
-    } else {
-      return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
     }
-  } else {
-    return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
   }
+
+  // Fallback to fixing the escape
+  return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
