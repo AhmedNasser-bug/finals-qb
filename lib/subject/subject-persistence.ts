@@ -678,6 +678,8 @@ function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
   let escaped = false
+  let braceCount = 0
+  let bracketCount = 0
   
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
@@ -698,39 +700,62 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
+      braceCount++
     } else if (char === '[') {
       stack.push('[')
+      bracketCount++
     } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
+      if (stack.length > 0 && stack[stack.length - 1] === '{') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        braceCount--
+      } else if (braceCount > 0) {
+        let j = stack.length - 1
+        while (j >= 0) {
+          if (stack[j] === '{') {
+            stack.length = j
+            braceCount--
+            break
+          }
+          if (stack[j] === '[') bracketCount--
+          j--
+        }
       }
     } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
+      if (stack.length > 0 && stack[stack.length - 1] === '[') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        bracketCount--
+      } else if (bracketCount > 0) {
+        let j = stack.length - 1
+        while (j >= 0) {
+          if (stack[j] === '[') {
+            stack.length = j
+            bracketCount--
+            break
+          }
+          if (stack[j] === '{') braceCount--
+          j--
+        }
       }
     }
   }
   
-  let balanced = str.trim()
-  if (inString) balanced += '"'
+  const balancedChunks = [str.trim()]
+  if (inString) balancedChunks.push('"')
   
-  if (balanced.endsWith(",")) {
-    balanced = balanced.slice(0, -1)
+  let balancedStr = balancedChunks.join('')
+  if (balancedStr.endsWith(",")) {
+    balancedStr = balancedStr.slice(0, -1)
+    balancedChunks.length = 0
+    balancedChunks.push(balancedStr)
   }
   
   while (stack.length > 0) {
     const top = stack.pop()
-    if (top === '{') balanced += '}'
-    else if (top === '[') balanced += ']'
+    if (top === '{') balancedChunks.push('}')
+    else if (top === '[') balancedChunks.push(']')
   }
   
-  return balanced
+  return balancedChunks.join('')
 }
 
 function processEscapeSequence(
@@ -747,12 +772,13 @@ function processEscapeSequence(
   // Check if it's a LaTeX command starting with b, f, n, r, t, u
   if (/[bfnrtu]/i.test(nextChar)) {
     // Extract the alphabetical word starting at nextChar
-    let word = "";
+    const wordChunks = [];
     let j = i + 1;
     while (j < str.length && /[a-zA-Z]/.test(str[j])) {
-      word += str[j];
+      wordChunks.push(str[j]);
       j++;
     }
+    const word = wordChunks.join("");
 
     // If the extracted word is a known LaTeX command, double escape the backslash!
     if (LATEX_WORDS.has(word.toLowerCase())) {
@@ -794,9 +820,9 @@ function processEscapeSequence(
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
-  let repaired = ""
   let inString = false
   let fixed = false
+  const repairedChunks: string[] = []
 
   // Set of LaTeX/MathEx command words that start with valid JSON escape chars (b, f, n, r, t, u)
   const LATEX_WORDS = new Set([
@@ -817,22 +843,22 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (char === '"' && str[i - 1] !== '\\') {
-      repaired += '"'
+      repairedChunks.push('"')
       inString = !inString
       continue
     }
 
     if (inString && char === '\\') {
         const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repaired += addition;
+        repairedChunks.push(addition);
         fixed = fixed || wasFixed;
         i += charsConsumed - 1; // loop naturally increments i
     } else {
-      repaired += char
+      repairedChunks.push(char)
     }
   }
 
-  return { repaired, fixed }
+  return { repaired: repairedChunks.join(""), fixed }
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
