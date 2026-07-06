@@ -5,3 +5,7 @@
 ## 2024-05-28 - Optimize Next.js Production Build Speed
 **Learning:** Next.js build speed is significantly impacted by redundant TypeScript validation during `pnpm build`, which can be safely bypassed if standard type checks are securely managed via a separate CI process.
 **Action:** Added `typescript: { ignoreBuildErrors: true }` to `next.config.mjs` to significantly reduce Next.js production build execution latency.
+
+## 2024-05-28 - Optimize lucide-react Imports in Next.js Turbopack
+**Learning:** Next.js build times and cold starts are severely impacted by massive barrel files in UI libraries like `lucide-react`, which can load thousands of modules unnecessarily.
+**Action:** Added `lucide-react` to `experimental.optimizePackageImports` in `next.config.mjs` to instruct Turbopack to only load the imported icons instead of resolving the entire library's barrel file.
