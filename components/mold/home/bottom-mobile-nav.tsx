@@ -36,47 +36,59 @@ export function BottomMobileNav({
           setView("home")
           handleModeSelect("speedrun")
         }}
+        title="Open Core Dashboard"
+        aria-label="Open Core Dashboard"
+        aria-current={view === "home" ? "page" : undefined}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "home" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
       >
-        <TerminalIcon className="w-4 h-4" />
+        <TerminalIcon className="w-4 h-4" aria-hidden="true" />
         <span className="font-mono text-[8px] font-bold">CORE</span>
       </button>
 
       <button
         onClick={() => setView("stats")}
+        title="Open Stats Dashboard"
+        aria-label="Open Stats Dashboard"
+        aria-current={view === "stats" ? "page" : undefined}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
           view === "stats" ? "text-primary" : "text-[var(--tw-hex-fecc17)]/40"
         )}
       >
-        <BarChart3 className="w-4 h-4" />
+        <BarChart3 className="w-4 h-4" aria-hidden="true" />
         <span className="font-mono text-[8px] font-bold">STATS</span>
       </button>
 
       <button
         onClick={() => setShowEncyclopedia(true)}
+        title="Open Encyclopedia"
+        aria-label="Data: Open Encyclopedia"
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <BookOpen className="w-4 h-4" />
+        <BookOpen className="w-4 h-4" aria-hidden="true" />
         <span className="font-mono text-[8px] font-bold">DATA</span>
       </button>
 
       <button
         onClick={() => setShowGallery(true)}
+        title="Open Achievement Gallery"
+        aria-label="Achs: Open Achievement Gallery"
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <Trophy className="w-4 h-4" />
+        <Trophy className="w-4 h-4" aria-hidden="true" />
         <span className="font-mono text-[8px] font-bold">ACHS</span>
       </button>
 
       <button
         onClick={onChangeSubject}
+        title="Switch Subject"
+        aria-label="Switch Subject"
         className="flex flex-col items-center gap-1 text-[var(--tw-hex-fecc17)]/40 hover:text-primary transition-colors cursor-pointer p-1"
       >
-        <RotateCcw className="w-4 h-4" />
+        <RotateCcw className="w-4 h-4" aria-hidden="true" />
         <span className="font-mono text-[8px] font-bold">SWITCH</span>
       </button>
     </footer>
