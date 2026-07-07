@@ -679,6 +679,9 @@ function balanceJsonStack(str: string): string {
   let inString = false
   let escaped = false
   
+  let braceCount = 0;
+  let bracketCount = 0;
+
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (escaped) {
@@ -698,21 +701,39 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
+      braceCount++
     } else if (char === '[') {
       stack.push('[')
+      bracketCount++
     } else if (char === '}') {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+        braceCount--
+      } else if (braceCount > 0) {
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '{') {
+          if (stack[idx] === '[') bracketCount--
+          idx--
+        }
+        if (idx >= 0) {
+          stack.length = idx
+          braceCount--
+        }
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        bracketCount--
+      } else if (bracketCount > 0) {
+        let idx = stack.length - 1
+        while (idx >= 0 && stack[idx] !== '[') {
+          if (stack[idx] === '{') braceCount--
+          idx--
+        }
+        if (idx >= 0) {
+          stack.length = idx
+          bracketCount--
+        }
       }
     }
   }
@@ -794,7 +815,7 @@ function processEscapeSequence(
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
-  let repaired = ""
+  const repairedChunks: string[] = []
   let inString = false
   let fixed = false
 
@@ -817,22 +838,22 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (char === '"' && str[i - 1] !== '\\') {
-      repaired += '"'
+      repairedChunks.push('"')
       inString = !inString
       continue
     }
 
     if (inString && char === '\\') {
         const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repaired += addition;
+        repairedChunks.push(addition);
         fixed = fixed || wasFixed;
         i += charsConsumed - 1; // loop naturally increments i
     } else {
-      repaired += char
+      repairedChunks.push(char)
     }
   }
 
-  return { repaired, fixed }
+  return { repaired: repairedChunks.join(''), fixed }
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
