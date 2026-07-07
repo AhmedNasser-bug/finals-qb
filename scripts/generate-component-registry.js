@@ -21,8 +21,8 @@ function scanDirectory(dir, fileList = []) {
 
 function extractInterface(content, componentName) {
   // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
+  const interfaceMatch = content.match(/interface\s{1,255}\w{1,255}(?:Props)?\s{0,255}\{([\s\S]{1,8192}?)\n\}/) ||
+                         content.match(/type\s{1,255}\w{1,255}(?:Props)?\s{0,255}=\s{0,255}\{([\s\S]{1,8192}?)\n\}/);
   if (interfaceMatch) {
     return interfaceMatch[1].trim();
   }
@@ -94,6 +94,12 @@ async function processComponent(filePath) {
   }
   if (content.includes('mermaid')) {
     edgeCases.push("Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.");
+  }
+  if (content.includes('next/image')) {
+    edgeCases.push("Relies on Next.js Image component for optimized asset delivery; ensure remote patterns are configured if using external URLs.");
+  }
+  if (content.includes('useRouter') || content.includes('useSearchParams')) {
+    edgeCases.push("Interacts with Next.js App Router navigation state; requires client-side hydration for dynamic query parameter reading.");
   }
   if (edgeCases.length === 0) {
     edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
