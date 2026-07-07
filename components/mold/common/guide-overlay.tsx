@@ -115,6 +115,35 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
   const [activeStep, setActiveStep] = useState(0)
   const contentRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<Partial<Record<SectionId, HTMLElement | null>>>({})
+  const overlayRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!open) return
+    const el = overlayRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [open])
 
   // Close on Escape
   useEffect(() => {
@@ -168,10 +197,12 @@ export function GuideOverlay({ open, onClose }: GuideOverlayProps) {
 
   return (
     <div
+      ref={overlayRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-label="User Guide"
-      className="fixed inset-0 z-[60] bg-background flex flex-col animate-fade-in"
+      className="fixed inset-0 z-[60] bg-background flex flex-col animate-fade-in outline-none"
     >
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <header className="flex-none flex items-center justify-between px-6 h-14 bg-panel border-b-2 border-primary/40 shrink-0 z-10">
