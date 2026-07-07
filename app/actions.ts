@@ -18,6 +18,42 @@ export interface ExampleManifestEntry {
 
 let manifestCache: ExampleManifestEntry[] | null = null
 
+async function processExampleFile(filePath: string, fileStem: string, file: string, manifestResults: ExampleManifestEntry[]) {
+  try {
+    const stream = fs.createReadStream(filePath)
+    const chunks: Buffer[] = []
+    for await (const chunk of stream) {
+      chunks.push(chunk)
+    }
+    const content = Buffer.concat(chunks).toString("utf-8")
+    const data = JSON.parse(content)
+
+    // Calculate categories
+    const categories = new Set<string>()
+    const questions = Array.isArray(data.questions) ? data.questions : []
+    for (const q of questions) {
+      if (q.category) categories.add(q.category)
+    }
+
+    const tags: string[] = []
+    if (data.config?.difficulty) {
+      tags.push(data.config.difficulty)
+    }
+
+    manifestResults.push({
+      id: data.id || fileStem,
+      filename: fileStem,   // always the actual file name, not the subject id
+      name: data.name || fileStem,
+      description: data.config?.description || "",
+      questionCount: data.questions?.length || 0,
+      categoryCount: categories.size,
+      tags: data.tags || tags
+    })
+  } catch (err) {
+    logger.error(`Failed to parse Example Example: ${file}`, err)
+  }
+}
+
 export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
   if (manifestCache) {
     return manifestCache
@@ -34,39 +70,7 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
     for (const file of jsonFiles) {
       const filePath = path.join(examplesDir, file)
       const fileStem = file.replace(/\.json$/i, "")
-      try {
-        const stream = fs.createReadStream(filePath)
-        const chunks: Buffer[] = []
-        for await (const chunk of stream) {
-          chunks.push(chunk)
-        }
-        const content = Buffer.concat(chunks).toString("utf-8")
-        const data = JSON.parse(content)
-
-        // Calculate categories
-        const categories = new Set<string>()
-        const questions = Array.isArray(data.questions) ? data.questions : []
-        for (const q of questions) {
-          if (q.category) categories.add(q.category)
-        }
-
-        const tags: string[] = []
-        if (data.config?.difficulty) {
-          tags.push(data.config.difficulty)
-        }
-
-        manifestResults.push({
-          id: data.id || fileStem,
-          filename: fileStem,   // always the actual file name, not the subject id
-          name: data.name || fileStem,
-          description: data.config?.description || "",
-          questionCount: data.questions?.length || 0,
-          categoryCount: categories.size,
-          tags: data.tags || tags
-        })
-      } catch (err) {
-        logger.error(`Failed to parse Example Example: ${file}`, err)
-      }
+      await processExampleFile(filePath, fileStem, file, manifestResults)
     }
 
     manifestCache = manifestResults
