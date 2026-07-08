@@ -4,6 +4,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    // ⚡ Bolt Optimization: Bypass loading unused modules from the lucide-react barrel file
+    // to significantly reduce memory usage and Turbopack build latency.
+    optimizePackageImports: ['lucide-react'],
+  },
 }
 
 export default nextConfig
