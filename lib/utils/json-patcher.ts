@@ -15,29 +15,52 @@ export function findDeformedBlockRange(json: string, errorPos: number): [number,
   let escaped = false
 
   for (let i = 0; i < json.length; i++) {
-    const char = json[i]
+    const charCode = json.charCodeAt(i)
 
     if (escaped) {
       escaped = false
       continue
     }
-    if (char === '\\') {
+    if (charCode === 92) { // 92 is "\"
       escaped = true
       continue
     }
-    if (char === '"') {
+    if (charCode === 34) { // 34 is '"'
       inString = !inString
       continue
     }
 
-    if (inString) continue;
+    if (inString) {
+      // fast-forward the execution pointer to optimize long quoted string parsing
+      const nextQuote = json.indexOf('"', i)
+      if (nextQuote !== -1) {
+        // Need to check if the found quote is escaped
+        let backslashCount = 0;
+        let j = nextQuote - 1;
+        while (j >= i && json.charCodeAt(j) === 92) {
+          backslashCount++;
+          j--;
+        }
+        if (backslashCount % 2 === 0) {
+          // Not escaped, valid end of string
+          i = nextQuote - 1; // -1 because the loop will i++ next iteration
+        } else {
+          // Escaped, continue from nextQuote
+          i = nextQuote;
+        }
+      } else {
+        // Prevent O(N^2) evaluation latency if closing quote is missing
+        i = json.length;
+      }
+      continue
+    }
 
-    if (char === '{' || char === '[') {
-      stack.push({ type: char, index: i })
-    } else if (char === '}' || char === ']') {
+    if (charCode === 123 || charCode === 91) { // 123 is "{", 91 is "["
+      stack.push({ type: charCode === 123 ? "{" : "[", index: i })
+    } else if (charCode === 125 || charCode === 93) { // 125 is "}", 93 is "]"
       const top = stack.pop()
       if (top) {
-        const matchingClose = char === '}' ? '{' : '['
+        const matchingClose = charCode === 125 ? "{" : "["
         if (top.type === matchingClose && top.index <= errorPos && i >= errorPos) {
           return [top.index, i + 1]
         }
