@@ -7,6 +7,7 @@ import type { FullSubjectData } from "@/lib/mold-types"
 import type { ValidationResult } from "@/lib/subject-persistence"
 import { DropZoneSection, ValidationFeedbackSection } from "./subject-importer-blocks"
 import { InfoToolbox } from "./subject-importer-components"
+import { logger } from "@/lib/utils/logger"
 
 // ─── Step 1 Component ────────────────────────────────────────────────────────
 interface Step1PresetTopicProps {
@@ -432,7 +433,7 @@ export function Step4PromptBuild({
         }
       }
     } catch (err: any) {
-      console.error("Error converting files:", err)
+      logger.error("Error converting files:", err)
       alert(`Conversion Failed: ${err.message || "An unknown error occurred during conversion."}`)
     } finally {
       setIsConverting(false)
