@@ -209,12 +209,19 @@ CRITICAL RULES:
     const combinedQuestions = [...existingQuestions]
     const seenIds = new Set(existingQuestions.map((q) => q.id))
 
+    const qCounterMap = new Map<string, number>()
     incomingQuestions.forEach((q) => {
       let finalId = q.id
-      let counter = 1
-      while (seenIds.has(finalId)) {
-        finalId = `${q.id}-gen-${counter}`
-        counter++
+      if (seenIds.has(finalId)) {
+        let counter = qCounterMap.get(q.id) || 1
+        while (true) {
+          finalId = `${q.id}-gen-${counter}`
+          if (!seenIds.has(finalId)) {
+            qCounterMap.set(q.id, counter + 1)
+            break
+          }
+          counter++
+        }
       }
       seenIds.add(finalId)
       combinedQuestions.push({ ...q, id: finalId })
@@ -224,12 +231,19 @@ CRITICAL RULES:
     const combinedFlashcards = [...existingFlashcards]
     const seenFcIds = new Set(existingFlashcards.map((f) => f.id))
 
+    const fcCounterMap = new Map<string, number>()
     incomingFlashcards.forEach((f) => {
       let finalId = f.id
-      let counter = 1
-      while (seenFcIds.has(finalId)) {
-        finalId = `${f.id}-gen-${counter}`
-        counter++
+      if (seenFcIds.has(finalId)) {
+        let counter = fcCounterMap.get(f.id) || 1
+        while (true) {
+          finalId = `${f.id}-gen-${counter}`
+          if (!seenFcIds.has(finalId)) {
+            fcCounterMap.set(f.id, counter + 1)
+            break
+          }
+          counter++
+        }
       }
       seenFcIds.add(finalId)
       combinedFlashcards.push({ ...f, id: finalId })

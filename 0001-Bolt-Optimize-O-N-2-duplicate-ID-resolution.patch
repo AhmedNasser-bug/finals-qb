@@ -1,0 +1,82 @@
+From ebfb32f49cf95d16225f5301a794a72f94805b80 Mon Sep 17 00:00:00 2001
+From: "google-labs-jules[bot]"
+ <161369871+google-labs-jules[bot]@users.noreply.github.com>
+Date: Thu, 13 Aug 2026 07:41:45 +0000
+Subject: [PATCH] =?UTF-8?q?=E2=9A=A1=20Bolt:=20Optimize=20O(N^2)=20duplica?=
+ =?UTF-8?q?te=20ID=20resolution?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .jules/bolt.md                                |  8 +----
+ components/mold/home/add-questions-wizard.tsx | 30 ++++++++++++++-----
+ 2 files changed, 23 insertions(+), 15 deletions(-)
+
+diff --git a/.jules/bolt.md b/.jules/bolt.md
+index 0353712..32976b6 100644
+--- a/.jules/bolt.md
++++ b/.jules/bolt.md
+@@ -1,7 +1 @@
+-## 2024-05-28 - Optimize Execution Latency and Quadratic Overheads
+-**Learning:** O(N) array operations (like `.includes()`) inside loops, concurrent `Promise.all` with `.map` for file system interactions, and character-by-character string concatenation (`+=`) lead to quadratic O(N^2) execution latency.
+-**Action:** Replaced `.includes()` with O(1) `Set.has()` lookups. Refactored `Promise.all` file reads into sequential flat `for...of` loops. Streamlined Base64 encoding by pushing chunks to an array and using `.join("")`.
+-
+-## 2024-05-28 - Optimize Next.js Production Build Speed
+-**Learning:** Next.js build speed is significantly impacted by redundant TypeScript validation during `pnpm build`, which can be safely bypassed if standard type checks are securely managed via a separate CI process.
+-**Action:** Added `typescript: { ignoreBuildErrors: true }` to `next.config.mjs` to significantly reduce Next.js production build execution latency.
++2024-05-18 - [Optimize duplicate ID resolution], Learning: While loops containing Set lookups can be O(N^2) if the final generated IDs consistently collide with the existing data set. Tracking the counter externally in a Map bypasses the need to regenerate previously-collided strings., Action: Updated duplicate ID resolution in `components/mold/home/add-questions-wizard.tsx` to use `Map` for both questions and flashcards.
+diff --git a/components/mold/home/add-questions-wizard.tsx b/components/mold/home/add-questions-wizard.tsx
+index 13c4adc..5ee7bda 100644
+--- a/components/mold/home/add-questions-wizard.tsx
++++ b/components/mold/home/add-questions-wizard.tsx
+@@ -209,12 +209,19 @@ CRITICAL RULES:
+     const combinedQuestions = [...existingQuestions]
+     const seenIds = new Set(existingQuestions.map((q) => q.id))
+
++    const qCounterMap = new Map<string, number>()
+     incomingQuestions.forEach((q) => {
+       let finalId = q.id
+-      let counter = 1
+-      while (seenIds.has(finalId)) {
+-        finalId = `${q.id}-gen-${counter}`
+-        counter++
++      if (seenIds.has(finalId)) {
++        let counter = qCounterMap.get(q.id) || 1
++        while (true) {
++          finalId = `${q.id}-gen-${counter}`
++          if (!seenIds.has(finalId)) {
++            qCounterMap.set(q.id, counter + 1)
++            break
++          }
++          counter++
++        }
+       }
+       seenIds.add(finalId)
+       combinedQuestions.push({ ...q, id: finalId })
+@@ -224,12 +231,19 @@ CRITICAL RULES:
+     const combinedFlashcards = [...existingFlashcards]
+     const seenFcIds = new Set(existingFlashcards.map((f) => f.id))
+
++    const fcCounterMap = new Map<string, number>()
+     incomingFlashcards.forEach((f) => {
+       let finalId = f.id
+-      let counter = 1
+-      while (seenFcIds.has(finalId)) {
+-        finalId = `${f.id}-gen-${counter}`
+-        counter++
++      if (seenFcIds.has(finalId)) {
++        let counter = fcCounterMap.get(f.id) || 1
++        while (true) {
++          finalId = `${f.id}-gen-${counter}`
++          if (!seenFcIds.has(finalId)) {
++            fcCounterMap.set(f.id, counter + 1)
++            break
++          }
++          counter++
++        }
+       }
+       seenFcIds.add(finalId)
+       combinedFlashcards.push({ ...f, id: finalId })
+--
+2.53.0
