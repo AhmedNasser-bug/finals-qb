@@ -52,6 +52,8 @@ function maskString(str: string): string {
   return masked;
 }
 
+const SENSITIVE_KEYS_REGEX = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
+
 function isPlainObject(value: any): boolean {
   if (typeof value !== 'object' || value === null) return false;
   const proto = Object.getPrototypeOf(value);
@@ -103,12 +105,14 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
   }
 
   const maskedObj: Record<string, any> = {};
-  const sensitiveKeys = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
-  for (const key of Object.keys(data)) {
-    if (sensitiveKeys.test(key) && (typeof data[key] === 'string' || typeof data[key] === 'number' || typeof data[key] === 'boolean')) {
-      maskedObj[key] = '[REDACTED]';
-    } else {
-      maskedObj[key] = maskData(data[key], seen);
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const val = data[key];
+      if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
+        maskedObj[key] = '[REDACTED]';
+      } else {
+        maskedObj[key] = maskData(val, seen);
+      }
     }
   }
 
