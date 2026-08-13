@@ -1,0 +1,13 @@
+🎯 **What:**
+Removed the leftover `console.error('Mermaid render error:', err);` statement in the generated HTML from both `generateSubjectHtml` and `generateSubjectSolvedHtml` functions in `lib/subject/subject-sharing.ts`.
+
+💡 **Why:**
+These error logs are printed into the client-side browser console when Mermaid diagrams fail to parse or render. Since there is already a robust fallback UI (the `[Diagram Render Fault]` box) that clearly displays the error directly in the DOM, the raw `console.error` is redundant noise in production. Removing it improves code health and cleanliness without altering user-facing behavior.
+
+✅ **Verification:**
+- Validated via `git diff` that the correct lines inside `lines.push()` were surgicaly removed.
+- Executed `pnpm install` and the full test suite via `pnpm test`. All 141 tests across 20 suites passed successfully, confirming no regressions.
+- Received a #Correct# rating from the code review tool.
+
+✨ **Result:**
+Cleaner generated HTML and a cleaner client browser console without noisy, redundant error logs during diagram rendering faults.
