@@ -93,3 +93,28 @@ test("calculateDayStreak: last run 2 days ago returns 0 (streak completely broke
   const runs = [{ date: twoDaysAgoStr }]
   assert.equal(calculateDayStreak(runs), 0)
 })
+
+
+test("calculateDayStreak: array with only invalid dates returns 0", () => {
+  const runs = [
+    { date: "invalid-date" },
+    { date: "not-a-date" }
+  ]
+  assert.equal(calculateDayStreak(runs), 0)
+})
+
+test("calculateDayStreak: ignores invalid dates and calculates streak for valid dates", () => {
+  const todayStr = new Date().toISOString()
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString()
+
+  const runs = [
+    { date: "invalid-date" },
+    { date: yesterdayStr },
+    { date: "not-a-date" },
+    { date: todayStr },
+    { date: "hello-world" }
+  ]
+  assert.equal(calculateDayStreak(runs), 2)
+})
