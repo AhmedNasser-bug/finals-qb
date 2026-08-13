@@ -12,6 +12,8 @@ import {
 } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
 
+const exampleFetchCache = new Map<string, Promise<any>>()
+
 /**
  * Root page — responsible only for the active study session.
  *
@@ -54,15 +56,22 @@ function HomeContent() {
       let active = true
       const fetchExample = async () => {
         try {
-          const res = await fetch(`/examples/${decodedId}.json`)
-          if (res.ok) {
-            const raw = await res.json()
-            const result = validateSubjectData(raw)
-            if (result.valid && result.subject && active) {
-              setActiveSubjectState(result.subject)
-              setReady(true)
-              return
-            }
+          const url = `/examples/${decodedId}.json`
+          let fetchPromise = exampleFetchCache.get(url)
+          if (!fetchPromise) {
+            fetchPromise = fetch(url).then(res => {
+              if (!res.ok) throw new Error("Not OK")
+              return res.json()
+            })
+            exampleFetchCache.set(url, fetchPromise)
+          }
+
+          const raw = await fetchPromise
+          const result = validateSubjectData(raw)
+          if (result.valid && result.subject && active) {
+            setActiveSubjectState(result.subject)
+            setReady(true)
+            return
           }
         } catch {
           // ignore fetch/validation error, fall through to fallback
