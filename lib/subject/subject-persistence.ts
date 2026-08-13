@@ -746,7 +746,6 @@ function balanceJsonStack(str: string): string {
         }
       }
     }
-    }
   }
   
   let balanced = str.trim()
