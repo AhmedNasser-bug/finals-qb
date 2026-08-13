@@ -78,6 +78,7 @@ export function SideNavBar({
 
         <button 
           onClick={onShowStats}
+          title="Open Statistics"
           aria-label="Statistics"
           className={cn(
             "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
@@ -91,6 +92,7 @@ export function SideNavBar({
 
         <button 
           onClick={onShowEncyclopedia}
+          title="Open Encyclopedia"
           aria-label="Encyclopedia"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -99,6 +101,7 @@ export function SideNavBar({
 
         <button 
           onClick={onShowGallery}
+          title="Open Achievements"
           aria-label="Achievements"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -106,6 +109,7 @@ export function SideNavBar({
         </button>
         <button 
           onClick={onChangeSubject}
+          title="Switch Subject"
           aria-label="Switch Subject"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -113,6 +117,7 @@ export function SideNavBar({
         </button>
         <button 
           onClick={onImportNew}
+          title="Import JSON"
           aria-label="Import JSON"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -120,6 +125,7 @@ export function SideNavBar({
         </button>
         <button 
           onClick={onAddQuestions}
+          title="Add questions"
           aria-label="Add questions"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -127,6 +133,7 @@ export function SideNavBar({
         </button>
         <button 
           onClick={onDownloadHtml}
+          title="Download Q&A Sheet"
           aria-label="Download Q&A Sheet"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -134,6 +141,7 @@ export function SideNavBar({
         </button>
         <button 
           onClick={onDownloadPdf}
+          title="Questions PDF"
           aria-label="Questions PDF"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -141,6 +149,7 @@ export function SideNavBar({
         </button>
         <button 
           onClick={onDownloadSolvedPdf}
+          title="Solved Questions PDF"
           aria-label="Solved Questions PDF"
           className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
         >
@@ -151,6 +160,7 @@ export function SideNavBar({
       <div className="mt-auto pt-4 border-t border-zinc-800/60">
         <button 
           onClick={onInitialize}
+          title="Start Quiz"
           aria-label="Start Quiz"
           className="w-full bg-[#131313] hover:bg-[var(--tw-hex-fecc17)]/5 text-primary hover:border-primary/60 border border-zinc-800 font-mono text-[10px] py-3.5 tracking-[0.2em] transition-all font-bold cursor-pointer hover-scale-premium"
         >
