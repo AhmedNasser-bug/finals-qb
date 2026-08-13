@@ -113,3 +113,12 @@ test("evaluateMilestones: completes Overclock Ascent at 8 peak question streak",
   assert.equal(milestones[3].completed, true)
   assert.equal(milestones[3].current, 8)
 })
+
+test("evaluateDailyMissions: handles invalid date strings gracefully", () => {
+  const today = new Date()
+  const runs = [createRun("invalid-date", 10, 100)]
+  const missions = evaluateDailyMissions(runs, today)
+
+  assert.equal(missions[0].completed, false)
+  assert.equal(missions[0].current, 0)
+})
