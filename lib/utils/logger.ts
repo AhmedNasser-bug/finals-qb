@@ -3,22 +3,22 @@ type RedactReplacement = string | ((match: string, ...args: any[]) => string);
 const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> = [
   {
     // Emails
-    pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    pattern: /([a-zA-Z0-9._%+-]{1,255}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,64})/g,
     replacement: '[REDACTED]'
   },
   {
     // Bearer tokens
-    pattern: /(Bearer\s+)([A-Za-z0-9\-\._~\+\/]+=*)/g,
+    pattern: /(Bearer\s{1,10})([A-Za-z0-9\-\._~\+\/]{1,4096}={0,2})/g,
     replacement: '$1[REDACTED]'
   },
   {
     // Private keys
-    pattern: /(-----BEGIN[A-Z0-9-\s]+PRIVATE KEY-----)([\s\S]+?)(-----END[A-Z0-9-\s]+PRIVATE KEY-----)/g,
+    pattern: /(-----BEGIN[A-Z0-9-\s]{1,128}PRIVATE KEY-----)([\s\S]{1,8192}?)(-----END[A-Z0-9-\s]{1,128}PRIVATE KEY-----)/g,
     replacement: '$1\n[REDACTED]\n$3'
   },
   {
     // Common secrets and PII
-    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s*[:=]\s*)(?:(")([^"]*)(")|(')([^']*)(')|([^,\]\}\s]+))/gi,
+    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s{0,10}[:=]\s{0,10})(?:(")([^"]{0,4096})(")|(')([^']{0,4096})(')|([^,\]\}\s]{1,4096}))/gi,
     replacement: (match: string, p1: string, p2: string, p3: string, p4: string, p5: string, p6: string, p7: string, p8: string) => {
       if (p8 && (p8.startsWith('[') || p8.startsWith('{'))) {
         return match;
@@ -30,7 +30,7 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // JWTs
-    pattern: /(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})/g,
+    pattern: /(eyJ[A-Za-z0-9_-]{10,4096}\.[A-Za-z0-9_-]{10,4096}\.[A-Za-z0-9_-]{10,4096})/g,
     replacement: '[REDACTED]'
   }
 ];
@@ -51,6 +51,8 @@ function maskString(str: string): string {
   }
   return masked;
 }
+
+const SENSITIVE_KEYS_REGEX = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
 
 function isPlainObject(value: any): boolean {
   if (typeof value !== 'object' || value === null) return false;
@@ -103,12 +105,14 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
   }
 
   const maskedObj: Record<string, any> = {};
-  const sensitiveKeys = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
-  for (const key of Object.keys(data)) {
-    if (sensitiveKeys.test(key) && (typeof data[key] === 'string' || typeof data[key] === 'number' || typeof data[key] === 'boolean')) {
-      maskedObj[key] = '[REDACTED]';
-    } else {
-      maskedObj[key] = maskData(data[key], seen);
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const val = data[key];
+      if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
+        maskedObj[key] = '[REDACTED]';
+      } else {
+        maskedObj[key] = maskData(val, seen);
+      }
     }
   }
 

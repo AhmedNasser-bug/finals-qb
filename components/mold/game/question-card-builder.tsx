@@ -257,7 +257,7 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
             <div 
               className="bg-[#131313] border border-zinc-800 p-4 text-center rounded overflow-auto text-[#e5e2e1] w-full h-full flex items-center justify-center"
               dangerouslySetInnerHTML={{
-                __html: renderMath(`$$${currentQuestion.visualLatex}$$`)
+                __html: DOMPurify.sanitize(renderMath(`$$${currentQuestion.visualLatex}$$`))
               }}
             />
           </div>

@@ -326,11 +326,10 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       {/* Floating Review Deck toggle button on the right edge */}
       <button
         onClick={toggleCheatSheet}
-        aria-label="Toggle review deck"
         className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#121212] hover:bg-[#1c1b1b] border-y border-l border-zinc-800 hover:border-[#fecc17]/50 text-[#fecc17] font-mono text-[10px] font-bold py-3 px-2 rounded-l shadow-lg transition-all flex flex-col items-center gap-1.5 focus-ring uppercase tracking-widest cursor-pointer group"
         title="Open Review Deck (Ctrl + `)"
       >
-        <span aria-hidden="true" className="text-[12px] group-hover:scale-110 transition-transform">📚</span>
+        <span className="text-[12px] group-hover:scale-110 transition-transform">📚</span>
         <span className="[writing-mode:vertical-lr] tracking-widest text-[9px]">REVIEW DECK</span>
       </button>
 

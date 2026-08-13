@@ -6,8 +6,40 @@ import { useAchievements } from "@/lib/achievement-engine"
 import type { Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 
+import { useRef, useEffect } from "react"
+
 export function AchievementGallery({ onClose }: { onClose: () => void }) {
   const { achievements, reset } = useAchievements()
+
+  const overlayRef = useRef<HTMLDivElement>(null)
+  // Trap focus inside overlay
+  useEffect(() => {
+    const el = overlayRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [])
 
   const { unlocked, locked } = useMemo(() => {
     const u: Achievement[] = []
@@ -23,12 +55,19 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
   }, [achievements])
 
   return (
-    <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+    <div
+      ref={overlayRef}
+      tabIndex={-1}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gallery-title"
+      className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in outline-none"
+    >
       <div className="w-full max-w-lg bg-panel border border-border rounded flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex flex-col gap-0.5">
-            <h2 className="text-sm font-mono font-bold text-foreground tracking-wider uppercase">
+            <h2 id="gallery-title" className="text-sm font-mono font-bold text-foreground tracking-wider uppercase">
               Achievement Log
             </h2>
             <p className="text-xs font-mono text-muted-foreground">

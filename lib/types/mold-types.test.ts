@@ -6,7 +6,8 @@ import {
   getStreakTierProgress,
   formatTime,
   computeAggregateStats,
-  formatLabel
+  formatLabel,
+  calculateAccuracy
 } from "./mold-types.ts"
 
 test("getStreakTier", () => {
@@ -108,4 +109,28 @@ test("formatLabel converts kebab-case to Title Case", () => {
   assert.strictEqual(formatLabel(""), "");
   assert.strictEqual(formatLabel("a-b-c"), "A B C");
   assert.strictEqual(formatLabel("a"), "A");
+});
+
+test('calculateAccuracy utility', async (t) => {
+  await t.test('handles zero division edge case (0 answered)', () => {
+    assert.strictEqual(calculateAccuracy(0, 0), 0);
+  });
+
+  await t.test('calculates 100% accuracy correctly', () => {
+    assert.strictEqual(calculateAccuracy(10, 0), 100);
+  });
+
+  await t.test('calculates exactly 50% accuracy correctly', () => {
+    assert.strictEqual(calculateAccuracy(5, 5), 50);
+  });
+
+  await t.test('handles rounding properly (rounds up)', () => {
+    // 2 / 3 = 66.666... -> 67
+    assert.strictEqual(calculateAccuracy(2, 1), 67);
+  });
+
+  await t.test('handles rounding properly (rounds down)', () => {
+    // 1 / 3 = 33.333... -> 33
+    assert.strictEqual(calculateAccuracy(1, 2), 33);
+  });
 });
