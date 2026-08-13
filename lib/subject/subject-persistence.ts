@@ -675,46 +675,93 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 }
 
 function balanceJsonStack(str: string): string {
-  const stack: ("{" | "[")[] = []
-  let inString = false
-  let escaped = false
+  const stack: (123 | 91)[] = []; // 123 is '{', 91 is '['
+  let inString = false;
+  let validBraceCount = 0;
+  let validBracketCount = 0;
   
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (escaped) {
-      escaped = false
-      continue
-    }
-    if (char === '\\') {
-      escaped = true
-      continue
-    }
-    if (char === '"') {
-      inString = !inString
-      continue
+  const len = str.length;
+  let i = 0;
+
+  while (i < len) {
+    let charCode = str.charCodeAt(i);
+
+    if (charCode === 92) { // '\\'
+      i += 2; // skip the escaped character entirely
+      continue;
     }
 
-    if (inString) continue;
+    if (charCode === 34) { // '"'
+      inString = !inString;
+      i++;
+      continue;
+    }
 
-    if (char === '{') {
-      stack.push('{')
-    } else if (char === '[') {
-      stack.push('[')
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-      } else {
-        const idx = stack.lastIndexOf('{')
-        if (idx !== -1) stack.splice(idx)
+    if (inString) {
+      // Fast forward scanning using indexOf for standard strings
+      const nextQuote = str.indexOf('"', i);
+      if (nextQuote === -1) {
+        i = len;
+        break;
       }
-    } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
+
+      // If we found a quote, check if it's escaped by counting backslashes
+      let backslashCount = 0;
+      let j = nextQuote - 1;
+      while (j >= i && str.charCodeAt(j) === 92) {
+        backslashCount++;
+        j--;
+      }
+
+      if (backslashCount % 2 === 0) {
+        // Not escaped
+        inString = false;
+        i = nextQuote + 1;
       } else {
-        const idx = stack.lastIndexOf('[')
-        if (idx !== -1) stack.splice(idx)
+        // Escaped, continue from right after the quote
+        i = nextQuote + 1;
+      }
+      continue;
+    }
+
+    if (charCode === 123) { // '{'
+      stack.push(123);
+      validBraceCount++;
+    } else if (charCode === 91) { // '['
+      stack.push(91);
+      validBracketCount++;
+    } else if (charCode === 125) { // '}'
+      const last = stack.length - 1;
+      if (last >= 0 && stack[last] === 123) {
+        stack.pop();
+        validBraceCount--;
+      } else if (validBraceCount > 0) {
+        let idx = last;
+        while (idx >= 0) {
+          if (stack[idx] === 123) break;
+          if (stack[idx] === 91) validBracketCount--;
+          idx--;
+        }
+        validBraceCount--;
+        if (idx >= 0) stack.length = idx;
+      }
+    } else if (charCode === 93) { // ']'
+      const last = stack.length - 1;
+      if (last >= 0 && stack[last] === 91) {
+        stack.pop();
+        validBracketCount--;
+      } else if (validBracketCount > 0) {
+        let idx = last;
+        while (idx >= 0) {
+          if (stack[idx] === 91) break;
+          if (stack[idx] === 123) validBraceCount--;
+          idx--;
+        }
+        validBracketCount--;
+        if (idx >= 0) stack.length = idx;
       }
     }
+    i++;
   }
   
   let balanced = str.trim()
@@ -724,10 +771,11 @@ function balanceJsonStack(str: string): string {
     balanced = balanced.slice(0, -1)
   }
   
-  while (stack.length > 0) {
-    const top = stack.pop()
-    if (top === '{') balanced += '}'
-    else if (top === '[') balanced += ']'
+  let endIdx = stack.length - 1;
+  while (endIdx >= 0) {
+    if (stack[endIdx] === 123) balanced += '}'
+    else if (stack[endIdx] === 91) balanced += ']'
+    endIdx--;
   }
   
   return balanced
