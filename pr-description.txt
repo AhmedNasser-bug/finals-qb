@@ -1,0 +1,6 @@
+Title: 🧹 [code health] Replace console.error with logger utility in subject-importer-steps.tsx
+Description:
+🎯 **What:** Replaced a leftover `console.error` with the application's existing `logger.error` utility in `components/mold/subject/subject-importer-steps.tsx` and added the necessary `logger` import.
+💡 **Why:** Standardizes error logging across the codebase by routing client-side errors through the centralized logger rather than polluting the raw console. This improves maintainability and observability.
+✅ **Verification:** Verified the exact replacement using `git diff` and ran the full test suite (`pnpm test`) to ensure no regressions were introduced.
+✨ **Result:** A cleaner component file that adheres to the established logging conventions of the project.

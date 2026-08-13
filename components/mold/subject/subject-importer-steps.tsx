@@ -2,6 +2,7 @@
 
 import React, { type DragEvent } from "react"
 import { cn } from "@/lib/utils"
+import { logger } from "@/lib/logger"
 import { PEDAGOGICAL_PRESETS } from "@/lib/prompt-builder"
 import type { FullSubjectData } from "@/lib/mold-types"
 import type { ValidationResult } from "@/lib/subject-persistence"
@@ -432,7 +433,7 @@ export function Step4PromptBuild({
         }
       }
     } catch (err: any) {
-      console.error("Error converting files:", err)
+      logger.error("Error converting files:", err)
       alert(`Conversion Failed: ${err.message || "An unknown error occurred during conversion."}`)
     } finally {
       setIsConverting(false)
