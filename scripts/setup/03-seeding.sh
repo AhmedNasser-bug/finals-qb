@@ -8,10 +8,10 @@ mkdir -p docs
 # Create a mock database seed structure as per orchestration requirements
 mkdir -p .data/seeds
 if [ ! -f .data/seeds/default-tenant.json ]; then
-cat <<EOF3 > .data/seeds/default-tenant.json
+cat << 'EOF3' > .data/seeds/default-tenant.json
 {
   "tenants": ["tenant-a", "tenant-b"],
-  "initializedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  "initializedAt": "2023-10-01T12:00:00Z"
 }
 EOF3
 echo "Mock database seeded."

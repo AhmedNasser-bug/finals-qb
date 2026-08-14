@@ -29,6 +29,6 @@ The multi-tenant sandbox environment leverages Docker.
 3. Persistent states sync down into `localStorage` leveraging persistence controllers.
 
 ### Component Interaction Mapping
-- **Frontend App ↔ Local Storage**: Client components read/write to `localStorage` using hooks like `useSubjectStore` and persistent state managers to ensure offline availability.
-- **Backend Services**: Next.js Server Components handle secure, pre-rendered HTML delivery. Server Actions (if any) provide structured API points.
-- **Docker Multi-Tenant Sandbox**: Containerized tenants mount isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) avoiding state bleeding across the local orchestrator environments.
+- **Frontend App ↔ Local Storage**: Client components read/write to `localStorage` using hooks like `useSubjectStore` and persistent state managers to ensure offline availability. Data flows via unidirectional reducers in the game engine.
+- **Backend Services**: Next.js Server Components handle secure, pre-rendered HTML delivery. Server Actions (if any) provide structured API points. API routes are strictly typed utilizing schemas imported from `lib/types/mold-types.ts`.
+- **Docker Multi-Tenant Sandbox**: Containerized tenants mount isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) utilizing `NEXT_DIST_DIR` to avoiding state bleeding across the local orchestrator environments. Local databases are spun up dynamically.

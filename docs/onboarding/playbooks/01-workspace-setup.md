@@ -4,15 +4,15 @@
 
 **Follow these steps to initialize your local workspace and start the multi-tenant development sandbox:**
 
-1. **Enable Package Manager:**
-   Run the following command to enable `pnpm` safely using Corepack:
-   ```bash
-   corepack enable pnpm
-   ```
+### 1. Enable Package Manager:
+**Run the following command to enable `pnpm` safely using Corepack:**
+```bash
+corepack enable pnpm
+```
 
-2. **Bootstrap the Environment:**
-   Run the idempotent setup script to seed mock data and spin up Docker containers for multi-tenant setups via Docker Compose:
-   ```bash
-   ./scripts/setup/setup.sh --multi-tenant
-   ```
-   **Note:** This script automatically creates `.data/seeds/default-tenant.json` idempotently and mounts isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) dynamically via `NEXT_DIST_DIR`.
+### 2. Bootstrap the Environment:
+**Run the idempotent setup script to seed mock data and spin up Docker containers for multi-tenant setups via Docker Compose:**
+```bash
+./scripts/setup/setup.sh --multi-tenant
+```
+**Note:** This script automatically creates `.data/seeds/default-tenant.json` idempotently and mounts isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) dynamically via `NEXT_DIST_DIR`.

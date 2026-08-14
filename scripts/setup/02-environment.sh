@@ -6,8 +6,10 @@ if [ ! -f .env.local ]; then
     echo "Creating .env.local from .env.example (if exists)..."
     if [ -f .env.example ]; then
         cp .env.example .env.local
+        echo ".env.local created."
     else
         touch .env.local
+        echo ".env.local touched (empty)."
     fi
 else
     echo ".env.local already exists."

@@ -15,7 +15,7 @@ fi
 
 if ! command -v node &> /dev/null; then
     echo "Error: Node.js is required but not installed."
-    # skip exit for agent compatibility
+    exit 1
 fi
 
 echo "=> Installing dependencies..."

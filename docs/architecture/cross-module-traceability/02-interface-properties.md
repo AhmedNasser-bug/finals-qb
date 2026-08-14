@@ -13,5 +13,6 @@ Defined heavily in `lib/types/mold-types.ts`, the principal models dictating the
 - `Terminology`: Used for learning modes, detailing specific concepts or terms (`TerminologyEntry`).
 
 ### Interface Properties
-- **Subject Validation Interface (`SubjectSchema`)**: Validates inbound JSON to ensure the structure strictly conforms to the `FullSubjectData` type, guaranteeing stability across the persistence layer.
-- **Game Engine Dispatch Interface**: Component interactions dispatch structured objects (e.g. `{ type: 'ANSWER', payload: ... }`) ensuring predictability within the reducer pipeline.
+- **Subject Validation Interface (`SubjectSchema`)**: Validates inbound JSON to ensure the structure strictly conforms to the `FullSubjectData` type, guaranteeing stability across the persistence layer. Decoupled auto-fix strategies resolve minor schema violations gracefully.
+- **Game Engine Dispatch Interface**: Component interactions dispatch structured objects (e.g. `{ type: 'ANSWER', payload: ... }`) ensuring predictability within the reducer pipeline. Side-effects operate securely behind context boundaries.
+- **Data Persistence Boundary**: Abstractions within `lib/subject/subject-persistence.ts` dictate strict async boundaries, separating active UI memory from local storage and future API state synchronization.
