@@ -69,3 +69,6 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+## 2024-05-30 - Contextual titles vs aria-labels on action buttons
+**Learning:** Action buttons with short text like "IMPORT" or "SIGN IN" rely on visual context. Adding an `aria-label` provides a longer, more descriptive readout for screen readers (e.g. "Import New Subject JSON").
+**Action:** When a button's text is extremely brief or stylized, add an `aria-label` that includes the visible text as a substring to comply with WCAG (e.g. `aria-label="Sign in to your account"` on a "SIGN IN" button).

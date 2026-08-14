@@ -117,6 +117,7 @@ export function TopNavBar({
             <button
               onClick={onImportNew}
               title="Import New Subject JSON"
+              aria-label="Import New Subject JSON"
               className="p-1.5 border border-zinc-800 text-[#fecc17]/60 hover:text-primary hover:bg-zinc-800/40 hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[28px] hidden sm:flex items-center justify-center shrink-0"
             >
               <span className="font-mono text-[9px] font-bold px-1 uppercase tracking-wider">IMPORT</span>
@@ -138,7 +139,7 @@ export function TopNavBar({
             <div className="flex items-center border-l border-zinc-800/60 pl-3 min-h-[28px]">
               <Show when="signed-out">
                 <SignInButton mode="modal">
-                  <button className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                  <button aria-label="Sign in to your account" className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
                     SIGN IN
                   </button>
                 </SignInButton>

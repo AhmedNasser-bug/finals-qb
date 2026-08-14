@@ -81,7 +81,7 @@ export function HeroHeader({
               <span className="text-border select-none opacity-40">|</span>
               <Show when="signed-out">
                 <SignInButton mode="modal">
-                  <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                  <button aria-label="Sign in to your account" className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
                     SIGN IN
                   </button>
                 </SignInButton>
