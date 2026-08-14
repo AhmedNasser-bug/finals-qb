@@ -117,6 +117,7 @@ export function TopNavBar({
             <button
               onClick={onImportNew}
               title="Import New Subject JSON"
+              aria-label="Import New Subject JSON"
               className="p-1.5 border border-zinc-800 text-[#fecc17]/60 hover:text-primary hover:bg-zinc-800/40 hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[28px] hidden sm:flex items-center justify-center shrink-0"
             >
               <span className="font-mono text-[9px] font-bold px-1 uppercase tracking-wider">IMPORT</span>

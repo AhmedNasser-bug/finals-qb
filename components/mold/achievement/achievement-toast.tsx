@@ -99,8 +99,9 @@ function AchievementToastItem({
       </div>
       <button
         onClick={handleDismiss}
-        className="shrink-0 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
+        className="shrink-0 text-muted-foreground hover:text-foreground transition-colors focus-ring focus-visible:outline-none rounded"
         aria-label="Dismiss notification"
+        title="Dismiss notification"
       >
         <XSmallIcon className="w-3.5 h-3.5" />
       </button>
