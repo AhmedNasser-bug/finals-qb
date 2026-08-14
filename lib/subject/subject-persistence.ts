@@ -674,77 +674,75 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   }
 }
 
-function processStackClosure(stack: ("{" | "[")[], char: string) {
+function processStackClosure(stack: ("{" | "[")[], char: string, counts: { braces: number, brackets: number }) {
   const expectedOpen = char === '}' ? '{' : '[';
   if (stack[stack.length - 1] === expectedOpen) {
     stack.pop();
+    if (expectedOpen === '{') counts.braces--;
+    else counts.brackets--;
     return;
   }
-  const idx = stack.lastIndexOf(expectedOpen);
-  if (idx !== -1) stack.splice(idx);
+
+  const relevantCount = expectedOpen === '{' ? counts.braces : counts.brackets;
+  if (relevantCount > 0) {
+    let idx = stack.length - 1;
+    while (idx >= 0 && stack[idx] !== expectedOpen) {
+      if (stack[idx] === '{') counts.braces--;
+      else if (stack[idx] === '[') counts.brackets--;
+      idx--;
+    }
+    if (idx >= 0) {
+      stack.length = idx;
+      if (expectedOpen === '{') counts.braces--;
+      else counts.brackets--;
+    }
+  }
 }
 
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
-  let inString = false
-  let escaped = false
   
-  let braceCount = 0;
-  let bracketCount = 0;
+  const counts = { braces: 0, brackets: 0 };
+  let inString = false;
 
   for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (escaped) {
-      escaped = false
-      continue
-    }
-    if (char === '\\') {
-      escaped = true
-      continue
-    }
-    if (char === '"') {
-      inString = !inString
-      continue
+    const charCode = str.charCodeAt(i)
+
+    if (charCode === 34) {
+      inString = true;
+      let nextQuote = i + 1;
+      while (true) {
+        nextQuote = str.indexOf('"', nextQuote);
+        if (nextQuote === -1) {
+          i = str.length;
+          break;
+        }
+        let backslashCount = 0;
+        let bIdx = nextQuote - 1;
+        while (bIdx >= 0 && str.charCodeAt(bIdx) === 92) {
+          backslashCount++;
+          bIdx--;
+        }
+        if (backslashCount % 2 === 0) {
+          i = nextQuote;
+          inString = false;
+          break;
+        }
+        nextQuote++;
+      }
+      continue;
     }
 
-    if (inString) continue;
-
-    if (char === '{') {
+    if (charCode === 123) {
       stack.push('{')
-      braceCount++
-    } else if (char === '[') {
+      counts.braces++
+    } else if (charCode === 91) {
       stack.push('[')
-      bracketCount++
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-        braceCount--
-      } else if (braceCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          braceCount--
-        }
-      }
-    } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-        bracketCount--
-      } else if (bracketCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
-        }
-      }
+      counts.brackets++
+    } else if (charCode === 125) {
+      processStackClosure(stack, '}', counts);
+    } else if (charCode === 93) {
+      processStackClosure(stack, ']', counts);
     }
   }
   
