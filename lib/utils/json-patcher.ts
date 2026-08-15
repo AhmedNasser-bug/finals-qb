@@ -10,34 +10,44 @@ export function findDeformedBlockRange(json: string, errorPos: number): [number,
     return [0, json.length]
   }
 
-  const stack: { type: "{" | "["; index: number }[] = []
-  let inString = false
-  let escaped = false
+  const stack: { type: number; index: number }[] = []
 
   for (let i = 0; i < json.length; i++) {
-    const char = json[i]
+    const code = json.charCodeAt(i)
 
-    if (escaped) {
-      escaped = false
-      continue
-    }
-    if (char === '\\') {
-      escaped = true
-      continue
-    }
-    if (char === '"') {
-      inString = !inString
-      continue
+    if (code === 34) { // '"'
+      // Fast-forward past the string block using indexOf to prevent character-by-character string iteration
+      let nextQuote = i + 1;
+      while (nextQuote < json.length) {
+        nextQuote = json.indexOf('"', nextQuote);
+        if (nextQuote === -1) {
+          i = json.length;
+          break;
+        }
+
+        // Count trailing backslashes to see if it's escaped
+        let backslashCount = 0;
+        let p = nextQuote - 1;
+        while (p >= 0 && json.charCodeAt(p) === 92) {
+          backslashCount++;
+          p--;
+        }
+
+        if (backslashCount % 2 === 0) {
+          i = nextQuote;
+          break;
+        }
+        nextQuote++;
+      }
+      continue;
     }
 
-    if (inString) continue;
-
-    if (char === '{' || char === '[') {
-      stack.push({ type: char, index: i })
-    } else if (char === '}' || char === ']') {
+    if (code === 123 || code === 91) { // '{' or '['
+      stack.push({ type: code, index: i })
+    } else if (code === 125 || code === 93) { // '}' or ']'
       const top = stack.pop()
       if (top) {
-        const matchingClose = char === '}' ? '{' : '['
+        const matchingClose = code === 125 ? 123 : 91 // '}' matches '{', ']' matches '['
         if (top.type === matchingClose && top.index <= errorPos && i >= errorPos) {
           return [top.index, i + 1]
         }
