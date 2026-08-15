@@ -11,6 +11,13 @@ test('redacts object keys', () => {
   assert.strictEqual(result.secret, '[REDACTED]');
 });
 
+test('redacts object keys with prefixes and suffixes', () => {
+  const result = maskData({ stripe_api_key: 'sk_test_123', my_token: 'abc', other_secret: 'def' });
+  assert.strictEqual(result.stripe_api_key, '[REDACTED]');
+  assert.strictEqual(result.my_token, '[REDACTED]');
+  assert.strictEqual(result.other_secret, '[REDACTED]');
+});
+
 test('redacts raw JSON string', () => {
   const result = maskData('{"api_key": "12345", "nested": {"secret": "supersecret"}}');
   assert.strictEqual(result, '{"api_key":"[REDACTED]","nested":{"secret":"[REDACTED]"}}');
@@ -27,6 +34,13 @@ test('ignores matches starting with [ or { in regex', () => {
 test('conditionally wraps unquoted primitive replacements in quotes to ensure valid JSON', () => {
   const result = maskData('api_key=12345');
   assert.strictEqual(result, 'api_key="[REDACTED]"');
+});
+
+test('redacts keys with prefixes and suffixes in stringified logs', () => {
+  const result = maskData('stripe_api_key="sk_test_123" my_token: "abc" other_secret=def');
+  assert.strictEqual(result.includes('stripe_api_key="[REDACTED]"'), true);
+  assert.strictEqual(result.includes('my_token: "[REDACTED]"'), true);
+  assert.strictEqual(result.includes('other_secret="[REDACTED]"'), true);
 });
 
 test('handles primitive values', () => {
