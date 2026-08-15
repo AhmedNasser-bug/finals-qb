@@ -29,13 +29,10 @@ function extractInterface(content, componentName) {
   return 'None specified or inline props';
 }
 
+const { text } = require('node:stream/consumers');
+
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await text(fs.createReadStream(filePath, { encoding: 'utf-8' }));
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
