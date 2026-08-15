@@ -279,6 +279,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 <button 
                   onClick={() => setShowConfirmReset(true)}
                   aria-label="Wipe all local telemetry and run data"
+                  title="Initiate reset of all study data"
                   className="bg-transparent hover:bg-destructive/10 text-destructive hover:text-red-400 border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
                 >
                    RESET_DATA
@@ -288,6 +289,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   <button 
                     onClick={handleReset}
                     aria-label="Confirm wipe all data"
+                    title="Confirm deletion of all study data"
                     className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
                   >
                     CONFIRM
@@ -295,6 +297,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   <button 
                     onClick={() => setShowConfirmReset(false)}
                     aria-label="Cancel wipe all data"
+                    title="Cancel reset and keep study data"
                     className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
                   >
                     CANCEL

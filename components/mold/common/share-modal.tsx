@@ -150,6 +150,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
           <button
             onClick={onClose}
             aria-label="Close share modal"
+            title="Close share modal"
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded p-1"
           >
             <CloseIcon aria-hidden="true" />
