@@ -35,21 +35,23 @@ export function ModeSelector({ selected, onSelect, onLaunch, className }: ModeSe
       <div className="flex flex-col gap-3">
         {/* Challenge group */}
         <ModeGroup
-          label="Challenge Modes"
+          label="Challenge Regimes"
           modes={challengeModes}
           selected={selected}
           onSelect={onSelect}
           onLaunch={onLaunch}
           accent="danger"
+          startIndex={1}
         />
         {/* Learning group */}
         <ModeGroup
-          label="Learning Modes"
+          label="Learning & Practice Modules"
           modes={learningModes}
           selected={selected}
           onSelect={onSelect}
           onLaunch={onLaunch}
           accent="success"
+          startIndex={challengeModes.length + 1}
         />
       </div>
     </section>
@@ -63,17 +65,25 @@ interface ModeGroupProps {
   onSelect: (id: GameModeId) => void
   onLaunch?: () => void
   accent: "danger" | "success"
+  startIndex: number
 }
 
-function ModeGroup({ label, modes, selected, onSelect, onLaunch, accent }: ModeGroupProps) {
-  const accentClass = accent === "danger" ? "text-red-400" : "text-emerald-400"
+function ModeGroup({ label, modes, selected, onSelect, onLaunch, accent, startIndex }: ModeGroupProps) {
+  const accentClass = accent === "danger" ? "text-destructive" : "text-emerald-400"
   const borderSelectedClass = accent === "danger"
-    ? "border-red-400/60 bg-red-400/5"
+    ? "border-destructive/60 bg-destructive/5"
     : "border-emerald-400/60 bg-emerald-400/5"
 
   return (
     <div className="flex flex-col gap-2">
-      <p className={cn("text-xs font-mono tracking-wider", accentClass)}>{label}</p>
+      <div className="flex items-center justify-between">
+        <p className={cn("text-xs font-mono tracking-wider font-semibold", accentClass)}>
+          {label}
+        </p>
+        <span className="text-[10px] font-mono text-muted-foreground">
+          {modes.length} MODES
+        </span>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {modes.map((mode, idx) => {
           const isLastAndOdd = idx === modes.length - 1 && modes.length % 2 !== 0
@@ -81,6 +91,7 @@ function ModeGroup({ label, modes, selected, onSelect, onLaunch, accent }: ModeG
             <div key={mode.id} className={cn(isLastAndOdd && "sm:col-span-2")}>
               <ModeCard
                 mode={mode}
+                indexNumber={startIndex + idx}
                 icon={MODE_ICONS[mode.id]}
                 isSelected={selected === mode.id}
                 onSelect={onSelect}
@@ -98,6 +109,7 @@ function ModeGroup({ label, modes, selected, onSelect, onLaunch, accent }: ModeG
 
 interface ModeCardProps {
   mode: GameMode
+  indexNumber: number
   icon: React.ReactNode
   isSelected: boolean
   onSelect: (id: GameModeId) => void
@@ -106,20 +118,35 @@ interface ModeCardProps {
   accentClass: string
 }
 
-function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, accentClass }: ModeCardProps) {
-  const pressedProps = isSelected ? { "aria-pressed": "true" as const } : { "aria-pressed": "false" as const };
-  
-  // Custom tag styling based on mode category and ID
-  let tagBg = "bg-zinc-800 text-zinc-400 border-zinc-700"
+function ModeCard({
+  mode,
+  indexNumber,
+  icon,
+  isSelected,
+  onSelect,
+  onLaunch,
+  selectedClass,
+  accentClass,
+}: ModeCardProps) {
+  // Custom tag styling based on semantic tokens
+  let tagBg = "bg-secondary text-muted-foreground border-border"
   if (mode.id === "practice") {
-    tagBg = "bg-[var(--tw-hex-fecc17)]/10 text-primary border-[var(--tw-hex-fecc17)]/20"
+    tagBg = "bg-primary/10 text-primary border-primary/30"
   } else if (mode.id === "flashcards") {
-    tagBg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+    tagBg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
   } else if (mode.category === "challenge") {
-    tagBg = "bg-red-500/10 text-red-400 border-red-500/20"
+    tagBg = "bg-destructive/10 text-destructive border-destructive/30"
   } else {
-    tagBg = "bg-purple-500/10 text-purple-400 border-purple-500/20"
+    tagBg = "bg-purple-500/10 text-purple-400 border-purple-500/30"
   }
+
+  const tooltipTitle = `Mode: ${mode.label} (${mode.tag.toUpperCase()}) — ${mode.description}. ${
+    isSelected ? "Currently selected. Click again or double-click to start immediately." : "Click to select this mode."
+  }`
+
+  const ariaLabel = `${mode.label} mode, ${mode.tag} tag, index ${indexNumber}. ${mode.description}. ${
+    isSelected ? "Active mode. Press Enter to launch." : "Click to select."
+  }`
 
   return (
     <button
@@ -134,31 +161,49 @@ function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, a
         onSelect(mode.id)
         if (onLaunch) onLaunch()
       }}
-      {...pressedProps}
+      aria-pressed={isSelected}
+      aria-label={ariaLabel}
+      title={tooltipTitle}
       className={cn(
         "group relative flex flex-col gap-4 p-5 rounded border text-left transition-all duration-200 focus-ring min-h-[160px] justify-between cursor-pointer w-full",
         isSelected
-          ? "border-primary bg-[#0f1013] border-glow shadow-[0_0_18px_hsla(var(--primary),0.08)]"
-          : "border-border bg-[#101115] hover:border-zinc-700 hover:bg-[#15161b]"
+          ? "border-primary bg-panel border-glow shadow-[0_0_18px_hsla(var(--primary),0.08)]"
+          : "border-border bg-panel/60 hover:border-border/80 hover:bg-panel"
       )}
     >
       <div className="flex items-start justify-between gap-2 w-full select-none">
-        <span className={cn("shrink-0 p-1.5 rounded bg-zinc-900 border border-zinc-800/80 group-hover:scale-110 transition-transform duration-200", isSelected ? "text-primary border-primary/20" : "text-muted-foreground")} aria-hidden="true">
-          {icon}
-        </span>
-        <span className={cn(
-          "text-[9px] font-mono px-2 py-0.5 border leading-none shrink-0 font-bold uppercase tracking-wider",
-          tagBg
-        )}>
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "shrink-0 p-1.5 rounded bg-secondary border border-border group-hover:scale-110 transition-transform duration-200",
+              isSelected ? "text-primary border-primary/30" : "text-muted-foreground"
+            )}
+            aria-hidden="true"
+          >
+            {icon}
+          </span>
+          <span className="text-[10px] font-mono font-bold text-muted-foreground/60 border border-border/50 px-1 py-0.2 rounded" aria-hidden="true">
+            [{indexNumber}]
+          </span>
+        </div>
+        <span
+          className={cn(
+            "text-[9px] font-mono px-2 py-0.5 border leading-none shrink-0 font-bold uppercase tracking-wider rounded-sm",
+            tagBg
+          )}
+          title={`Tag: ${mode.tag}`}
+        >
           {mode.tag.toUpperCase()}
         </span>
       </div>
-      
+
       <div className="space-y-1.5">
-        <p className={cn(
-          "text-base font-bold leading-tight font-display uppercase tracking-tight",
-          isSelected ? "text-white" : "text-zinc-200 group-hover:text-white transition-colors"
-        )}>
+        <p
+          className={cn(
+            "text-base font-bold leading-tight font-display uppercase tracking-tight",
+            isSelected ? "text-foreground" : "text-foreground/90 group-hover:text-foreground transition-colors"
+          )}
+        >
           {mode.label}
         </p>
         <p className="text-xs text-muted-foreground leading-relaxed font-sans font-medium line-clamp-2">
@@ -166,12 +211,14 @@ function ModeCard({ mode, icon, isSelected, onSelect, onLaunch, selectedClass, a
         </p>
       </div>
 
-      <div className={cn(
-        "font-mono text-[9px] uppercase tracking-widest border-t border-zinc-800/60 pt-2.5 w-full transition-all duration-200 font-bold flex items-center justify-between",
-        isSelected ? "text-primary animate-pulse" : "text-zinc-500 group-hover:text-zinc-400"
-      )}>
+      <div
+        className={cn(
+          "font-mono text-[9px] uppercase tracking-widest border-t border-border/60 pt-2.5 w-full transition-all duration-200 font-bold flex items-center justify-between",
+          isSelected ? "text-primary animate-pulse" : "text-muted-foreground group-hover:text-foreground"
+        )}
+      >
         <span>{isSelected ? "⚡ CLICK AGAIN TO START" : "SELECT MODE"}</span>
-        <span>➔</span>
+        <span aria-hidden="true">➔</span>
       </div>
     </button>
   )
