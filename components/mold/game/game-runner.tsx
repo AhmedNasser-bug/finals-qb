@@ -193,6 +193,77 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     }
   }, [state.currentIndex, state.isRevealed])
 
+  // In-Game Keyboard Navigation Engine (1-4, A-D, Enter, Space, H)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+        return
+      }
+
+      if (state.phase !== "playing") return
+
+      // 1. Numerical & Alphabetical Option Selection (1..4 / A..D)
+      if (!state.isRevealed && currentQuestion?.options) {
+        const num = parseInt(e.key, 10)
+        if (!isNaN(num) && num >= 1 && num <= currentQuestion.options.length) {
+          e.preventDefault()
+          selectOption(currentQuestion.options[num - 1].label)
+          return
+        }
+
+        const keyUpper = e.key.toUpperCase()
+        const optionIndex = currentQuestion.options.findIndex((opt) => opt.label.toUpperCase() === keyUpper)
+        if (optionIndex !== -1) {
+          e.preventDefault()
+          selectOption(currentQuestion.options[optionIndex].label)
+          return
+        }
+      }
+
+      // 2. Submit / Continue on Enter or Space
+      if (e.key === "Enter" || e.key === " ") {
+        if (!state.isRevealed && state.selectedOption !== null) {
+          e.preventDefault()
+          revealAnswer()
+          return
+        }
+        if (state.isRevealed) {
+          e.preventDefault()
+          nextQuestion()
+          return
+        }
+      }
+
+      // 3. Hint Shortcut (H / h)
+      if ((e.key === "h" || e.key === "H") && config.hintsEnabled && !state.isRevealed) {
+        if (initialLockRemaining === 0 && !hintUsedThisQuestion && !showHint) {
+          e.preventDefault()
+          useHint()
+          setShowHint(true)
+          setHintUsedThisQuestion(true)
+          return
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [
+    state.phase,
+    state.isRevealed,
+    state.selectedOption,
+    currentQuestion,
+    config.hintsEnabled,
+    initialLockRemaining,
+    hintUsedThisQuestion,
+    showHint,
+    selectOption,
+    revealAnswer,
+    nextQuestion,
+    useHint,
+  ])
+
   // Build RunRecord and evaluate achievements exactly once when the game transitions to complete.
   useEffect(() => {
     if (state.phase === "complete" && !completionProcessedRef.current) {

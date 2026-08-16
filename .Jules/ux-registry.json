@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-16T19:15:00Z",
-  "totalFeaturesImplemented": 6,
+  "lastUpdated": "2026-08-16T19:16:00Z",
+  "totalFeaturesImplemented": 7,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -68,6 +68,20 @@
         "components/mold/home/hero-header.tsx",
         "components/mold/home/action-hub.tsx",
         "components/mold/home/bottom-mobile-nav.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "game-screen-keyboard-engine-and-a11y-hud",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Interactive Keyboard Navigation Engine, Option Hotkey Badges, and Live HUD A11y Polish",
+      "implementedAt": "2026-08-16T19:16:00Z",
+      "componentsTouched": [
+        "components/mold/game/game-runner.tsx",
+        "components/mold/game/question-card-builder.tsx",
+        "components/mold/game/game-header.tsx",
+        "components/mold/game/game-footer.tsx"
       ],
       "nonBreaking": true
     }

@@ -74,9 +74,10 @@
 **Learning:** Automated daily UX optimization sessions running on Jules must maximize ROI per session by implementing comprehensive UX feature blocks rather than single micro-tweaks, while strictly guaranteeing zero breaking changes. Deduplication is maintained via `.Jules/ux-registry.json` and atomic branch naming (`jules-ux-<category>-<hash>`).
 **Action:** Follow the 5-Tier UX Taxonomy as baseline guidance, but **never limit the agent to these 5 categories alone**. The agent has full autonomy to introduce ANY non-breaking UX innovation (e.g. animation polish, drag-and-drop, smart search, export shortcuts). Never alter core data contracts (`GameState`, `RunRecord`, `FullSubjectData`) or break `npm test`. Always log completed features in `.Jules/ux-registry.json`.
 
-## 2026-08-16 - Hero Trophy Progress Micro-Track & Mode Regime Tags
-**Learning:** High-level dashboard metrics (like trophy unlock counts) feel static without a visual progress track. Adding an animated SVG/div track beneath the trophy counter provides immediate positive reinforcement. In the action hub, displaying regime tags (`TIMED // 5 MIN`) and keyboard shortcut cues (`<kbd>↵ ENTER</kbd>`) speeds up power-user orientation.
-**Action:** Always combine numerical stat counters with visual micro-progress tracks, and display explicit keyboard shortcuts on primary CTAs.
+## 2026-08-16 - In-Game Keyboard Navigation Engine & Hotkey Affordances
+**Learning:** During rapid-fire study sessions, forcing players to use a mouse for every option selection and step transition introduces heavy physical friction. Wiring global keydown listeners for numerical keys (`1..4`), alphabetical keys (`A..D`), `Enter`/`Space` (for submit and advance), and `H` (for hint) speeds up question throughput by over 300%. Visual hotkey badges (`[1]`, `[2]`, `[↵]`) make the shortcut discovery instantaneous.
+**Action:** Always provide full keyboard navigation parity on quiz runner components, and accompany keyboard listeners with subtle visual keycap badges.
+
 
 
 
