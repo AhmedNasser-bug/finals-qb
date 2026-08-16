@@ -82,6 +82,11 @@
 **Learning:** Dense option panels (like Category Selector in practice mode) cause visual fatigue when subjects contain 6+ topics. Adding an inline category search filter alongside an active status pill (`aria-live="polite"`) significantly accelerates topic selection. Mode cards benefit from indexed visual hotkey badges (`[1]`, `[2]`), clear re-click launch cues, and exhaustive hover tooltips (`title`) combined with `aria-label`s.
 **Action:** When designing selector grids and parameter panels, always combine indexed keyboard cues, instant search filtering, reset shortcuts, and semantic HSL tokens.
 
+## 2026-08-16 - Results Telemetry Shortcuts, Summary Sharing & Two-Step Safe Resets
+**Learning:** Post-session completion screens are high-emotion moments where users want to quickly restart (`Enter`/`R`), return to dashboard (`Esc`/`H`), or copy/share their summary. Destructive actions on local cache (like resetting all achievements) should never trigger on a single accidental click, but rather require a clear two-step confirmation pattern (`RESET ALL` -> `CONFIRM RESET ALL?` with `CANCEL`).
+**Action:** Always provide instant clipboard summary export and keyboard shortcuts on result summaries, and enforce two-step confirmation on destructive local storage actions.
+
+
 
 
 

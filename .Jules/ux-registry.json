@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-16T19:17:00Z",
-  "totalFeaturesImplemented": 8,
+  "lastUpdated": "2026-08-16T19:18:00Z",
+  "totalFeaturesImplemented": 9,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -94,6 +94,19 @@
       "componentsTouched": [
         "components/mold/home/mode-selector.tsx",
         "components/mold/home/setup-panel-blocks.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "performance-results-shortcuts-safe-reset",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Performance Table Mode Filters, Results Screen Shortcuts & Copy Button, and Gallery Safe Reset",
+      "implementedAt": "2026-08-16T19:18:00Z",
+      "componentsTouched": [
+        "components/mold/home/performance-table.tsx",
+        "components/mold/game/results-screen.tsx",
+        "components/mold/achievement/achievement-gallery.tsx"
       ],
       "nonBreaking": true
     }

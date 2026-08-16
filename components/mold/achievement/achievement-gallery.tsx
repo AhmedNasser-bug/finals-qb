@@ -54,6 +54,17 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
     return { unlocked: u, locked: l }
   }, [achievements])
 
+  const [confirmReset, setConfirmReset] = React.useState(false)
+
+  const handleResetClick = () => {
+    if (!confirmReset) {
+      setConfirmReset(true)
+      return
+    }
+    reset()
+    setConfirmReset(false)
+  }
+
   return (
     <div
       ref={overlayRef}
@@ -112,15 +123,37 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-border flex justify-end">
-          <button
-            onClick={reset}
-            title="Reset all achievements"
-            aria-label="Reset all achievements"
-            className="text-xs font-mono text-muted-foreground hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
-          >
-            RESET ALL
-          </button>
+        <div className="px-5 py-3 border-t border-border flex items-center justify-between">
+          <span className="text-[10px] font-mono text-muted-foreground">
+            LOCAL DATA CACHE
+          </span>
+          {confirmReset ? (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setConfirmReset(false)}
+                className="text-xs font-mono text-muted-foreground hover:text-foreground px-2 py-1 rounded border border-border"
+                aria-label="Cancel achievement reset"
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={handleResetClick}
+                className="text-xs font-mono text-destructive bg-destructive/10 border border-destructive/30 hover:bg-destructive hover:text-destructive-foreground transition-colors px-2 py-1 rounded font-bold"
+                aria-label="Confirm reset of all achievements"
+              >
+                CONFIRM RESET ALL?
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleResetClick}
+              title="Reset all achievements progress"
+              aria-label="Reset all achievements"
+              className="text-xs font-mono text-muted-foreground hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1"
+            >
+              RESET ALL
+            </button>
+          )}
         </div>
       </div>
     </div>

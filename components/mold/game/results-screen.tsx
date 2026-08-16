@@ -83,7 +83,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   const pixelCount = pixels.length
 
   return (
-    <div className="flex-1 bg-[#131313] overflow-y-auto animate-fade-in">
+    <div className="flex-1 bg-background overflow-y-auto animate-fade-in">
       <style>{`
         .grade-text-dynamic {
           color: ${gradeHex};
@@ -101,33 +101,33 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
       <div className="max-w-6xl mx-auto p-4 md:p-8 lg:p-12 flex flex-col gap-8 md:gap-12">
 
         {/* ── Header ── */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[var(--tw-hex-4e4632)]/30 pb-8">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-8">
           <div className="flex flex-col gap-2 min-w-0 flex-1">
-            <span className="font-mono text-xs tracking-[0.3em] text-[#4ae176] uppercase">
-              QUIZ COMPLETE // {mode} // {config.difficulty}
+            <span className="font-mono text-xs tracking-[0.3em] text-emerald-400 uppercase font-bold">
+              QUIZ COMPLETE // {mode.toUpperCase()} // {config.difficulty ?? "STANDARD"}
             </span>
-            <h1 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter text-[#e5e2e1] uppercase break-words break-all">
+            <h1 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter text-foreground uppercase break-words">
               QUIZ RESULTS
             </h1>
           </div>
           <div className="flex flex-col items-start md:items-end gap-1">
-            <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">FINAL GRADE</span>
+            <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">FINAL GRADE</span>
             <div className="flex items-center gap-4">
               <span className="font-mono text-6xl md:text-7xl font-black leading-none drop-shadow-[0_0_20px_rgba(254,204,23,0.2)] grade-text-dynamic">
                 {grade}
               </span>
               <div className="flex flex-col">
-                <span className="font-mono text-xl text-[#e5e2e1] font-bold">{accuracyPct}%</span>
-                <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">ACCURACY</span>
+                <span className="font-mono text-xl text-foreground font-bold">{accuracyPct}%</span>
+                <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">ACCURACY</span>
               </div>
             </div>
           </div>
         </header>
 
-        {/* ── Result header ── */}
+        {/* ── Result header & Grade spotlight ── */}
         <section className="flex flex-col items-center gap-6">
-          <span className="font-mono text-[10px] tracking-[0.4em] text-[#fecc17] uppercase">
-            QUIZ RESULTS
+          <span className="font-mono text-[10px] tracking-[0.4em] text-primary uppercase font-bold">
+            PERFORMANCE TELEMETRY
           </span>
 
           {/* Grade box */}
@@ -135,10 +135,10 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
             <div
               className="absolute inset-0 blur-3xl opacity-40 pointer-events-none grade-spotlight-dynamic"
             />
-            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-[#1c1b1b] flex items-center justify-center overflow-hidden grade-glow-dynamic">
+            <div className="relative w-48 h-48 md:w-64 md:h-64 bg-panel border border-border flex items-center justify-center overflow-hidden grade-glow-dynamic rounded">
               <div className="scanlines absolute inset-0 pointer-events-none opacity-20" />
               <span
-                className="font-sans font-black leading-none tracking-tighter z-10 select-none text-[#ffedc2] grade-letter-dynamic"
+                className="font-sans font-black leading-none tracking-tighter z-10 select-none grade-letter-dynamic grade-text-dynamic"
               >
                 {grade}
               </span>
@@ -148,7 +148,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           {/* Accuracy coefficient + segmented bar */}
           <div className="w-full max-w-2xl space-y-2">
             <div className="flex justify-between items-end">
-              <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
+              <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
                 ACCURACY RATE
               </span>
               <span className="font-mono text-2xl font-black grade-text-dynamic">
@@ -160,10 +160,10 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
                 <div
                   key={i}
                   className={cn(
-                    "flex-1 h-full transition-all duration-300",
+                    "flex-1 h-full transition-all duration-300 rounded-sm",
                     i < filledSegments
-                      ? "bg-[#4ae176] shadow-[0_0_8px_rgba(74,225,118,0.3)]"
-                      : "bg-[#353534]"
+                      ? "bg-emerald-500 shadow-[0_0_8px_rgba(74,225,118,0.3)]"
+                      : "bg-secondary"
                   )}
                 />
               ))}
@@ -171,12 +171,18 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
           </div>
         </section>
 
-        {/* ── 12-col grid: stat block + sequence map ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* ── Telemetry and Sequence map ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <StatsGrid
-            elapsedSeconds={elapsedSeconds}
-            avgTimeSec={avgTimeSec}
+            score={score}
+            total={total}
+            accuracyPct={accuracyPct}
+            gradeHex={gradeHex}
+            filledSegments={filledSegments}
             bestStreak={bestStreak}
+            elapsedSeconds={elapsedSeconds}
+            hintsUsedTotal={hintsUsedTotal}
+            avgTimeSec={avgTimeSec}
             xpYield={xpYield}
           />
 
@@ -197,31 +203,41 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
         />
 
         {/* ── Bottom action HUD ── */}
-        <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-[var(--tw-hex-4e4632)]/10">
-          <div className="flex flex-col">
-            <span className="font-mono text-[10px] tracking-[0.2em] text-zinc-500 uppercase">
-              NEXT ACTION
-            </span>
-            <span className="font-sans text-sm font-medium text-[#e5e2e1]">
-              Ready to continue?
+        <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-border">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleCopySummary}
+              aria-label="Copy performance summary to clipboard"
+              title="Copy formatted results to clipboard"
+              className={cn(
+                "px-4 py-2.5 rounded border font-mono text-xs transition-colors focus-ring flex items-center gap-2",
+                copiedSummary
+                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold"
+                  : "border-border bg-secondary text-muted-foreground hover:text-foreground hover:border-border/80"
+              )}
+            >
+              <span>{copiedSummary ? "COPIED SUMMARY ✓" : "📋 COPY SUMMARY"}</span>
+            </button>
+            <span className="hidden sm:inline font-mono text-[10px] text-muted-foreground">
+              [↵ / R] Play Again • [ESC / H] Home
             </span>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
               onClick={onReturnHome}
-              aria-label="Return home"
-              title="Return home"
-              className="flex-1 md:flex-none px-8 py-3 bg-[#353534] text-[#fecc17] font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-[#3d3c3b] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded"
+              aria-label="Return home (Esc or H)"
+              title="Return to core dashboard (Press Esc or H)"
+              className="flex-1 md:flex-none px-8 py-3 bg-secondary text-foreground font-mono text-xs font-black tracking-widest uppercase btn-depress hover:bg-secondary/80 transition-colors focus-ring rounded"
             >
-              RETURN TO HOME
+              RETURN TO HOME [ESC]
             </button>
             <button
               onClick={onPlayAgain}
-              aria-label="Play again"
-              title="Play again"
-              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1b1b] rounded border-glow"
+              aria-label="Play again (Enter or R)"
+              title="Start a new session in this mode (Press Enter or R)"
+              className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-ring rounded border-glow"
             >
-              PLAY AGAIN
+              PLAY AGAIN [↵]
             </button>
           </div>
         </footer>
