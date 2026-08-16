@@ -674,48 +674,48 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   }
 }
 
-function processStackClosure(stack: ("{" | "[")[], char: string) {
-  const expectedOpen = char === '}' ? '{' : '[';
-  if (stack[stack.length - 1] === expectedOpen) {
-    stack.pop();
-    return;
-  }
-  const idx = stack.lastIndexOf(expectedOpen);
-  if (idx !== -1) stack.splice(idx);
-}
-
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
-  let escaped = false
   
   let braceCount = 0;
   let bracketCount = 0;
 
   for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (escaped) {
-      escaped = false
-      continue
-    }
-    if (char === '\\') {
-      escaped = true
-      continue
-    }
-    if (char === '"') {
-      inString = !inString
-      continue
+    const charCode = str.charCodeAt(i)
+
+    if (charCode === 34) { // '"'
+      inString = true
+      let nextQuote = i + 1;
+      while (nextQuote < str.length) {
+        nextQuote = str.indexOf('"', nextQuote);
+        if (nextQuote === -1) {
+          i = str.length;
+          break;
+        }
+        let backslashCount = 0;
+        let bIdx = nextQuote - 1;
+        while (bIdx >= 0 && str.charCodeAt(bIdx) === 92) {
+          backslashCount++;
+          bIdx--;
+        }
+        if (backslashCount % 2 === 0) {
+          i = nextQuote;
+          inString = false
+          break;
+        }
+        nextQuote++;
+      }
+      continue;
     }
 
-    if (inString) continue;
-
-    if (char === '{') {
+    if (charCode === 123) { // '{'
       stack.push('{')
       braceCount++
-    } else if (char === '[') {
+    } else if (charCode === 91) { // '['
       stack.push('[')
       bracketCount++
-    } else if (char === '}') {
+    } else if (charCode === 125) { // '}'
       if (stack[stack.length - 1] === '{') {
         stack.pop()
         braceCount--
@@ -730,7 +730,7 @@ function balanceJsonStack(str: string): string {
           braceCount--
         }
       }
-    } else if (char === ']') {
+    } else if (charCode === 93) { // ']'
       if (stack[stack.length - 1] === '[') {
         stack.pop()
         bracketCount--

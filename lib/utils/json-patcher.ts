@@ -11,33 +11,40 @@ export function findDeformedBlockRange(json: string, errorPos: number): [number,
   }
 
   const stack: { type: "{" | "["; index: number }[] = []
-  let inString = false
-  let escaped = false
-
   for (let i = 0; i < json.length; i++) {
-    const char = json[i]
+    const charCode = json.charCodeAt(i)
 
-    if (escaped) {
-      escaped = false
-      continue
-    }
-    if (char === '\\') {
-      escaped = true
-      continue
-    }
-    if (char === '"') {
-      inString = !inString
-      continue
+    if (charCode === 34) { // '"'
+      // Fast-forward string blocks
+      let nextQuote = i + 1;
+      while (nextQuote < json.length) {
+        nextQuote = json.indexOf('"', nextQuote);
+        if (nextQuote === -1) {
+          i = json.length;
+          break;
+        }
+        // Check if escaped (count backslashes)
+        let backslashCount = 0;
+        let bIdx = nextQuote - 1;
+        while (bIdx >= 0 && json.charCodeAt(bIdx) === 92) {
+          backslashCount++;
+          bIdx--;
+        }
+        if (backslashCount % 2 === 0) {
+          i = nextQuote;
+          break;
+        }
+        nextQuote++;
+      }
+      continue;
     }
 
-    if (inString) continue;
-
-    if (char === '{' || char === '[') {
-      stack.push({ type: char, index: i })
-    } else if (char === '}' || char === ']') {
+    if (charCode === 123 || charCode === 91) { // '{' or '['
+      stack.push({ type: charCode === 123 ? "{" : "[", index: i })
+    } else if (charCode === 125 || charCode === 93) { // '}' or ']'
       const top = stack.pop()
       if (top) {
-        const matchingClose = char === '}' ? '{' : '['
+        const matchingClose = charCode === 125 ? "{" : "["
         if (top.type === matchingClose && top.index <= errorPos && i >= errorPos) {
           return [top.index, i + 1]
         }
