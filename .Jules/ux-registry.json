@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-16T18:34:00Z",
-  "totalFeaturesImplemented": 5,
+  "lastUpdated": "2026-08-16T19:15:00Z",
+  "totalFeaturesImplemented": 6,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -55,6 +55,19 @@
       "implementedAt": "2026-08-13T08:05:00Z",
       "componentsTouched": [
         "app/globals.css"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "hero-action-hub-telemetry-micro-ux",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Hero Trophy Progress Micro-bar, Action Hub Regime Badges & WCAG Mobile Nav",
+      "implementedAt": "2026-08-16T19:15:00Z",
+      "componentsTouched": [
+        "components/mold/home/hero-header.tsx",
+        "components/mold/home/action-hub.tsx",
+        "components/mold/home/bottom-mobile-nav.tsx"
       ],
       "nonBreaking": true
     }

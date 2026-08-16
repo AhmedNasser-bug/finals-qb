@@ -107,7 +107,7 @@ export function HeroHeader({
           <p className="text-xs font-mono tracking-widest text-primary uppercase">
             SUBJECT_LOADED
           </p>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground text-balance leading-tight font-display break-words break-all">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground text-balance leading-tight font-display break-words">
             {subject.name}
           </h1>
           <p className="text-sm text-muted-foreground text-pretty max-w-xl leading-relaxed">
@@ -117,25 +117,35 @@ export function HeroHeader({
 
         {/* Trophy counter */}
         <div className="flex items-center gap-3 mt-4 sm:mt-0 shrink-0">
-          <div className="flex flex-col items-end gap-0.5">
-            <p className="text-xs font-mono text-muted-foreground tracking-wider">ACHIEVEMENTS</p>
-            <p className="text-2xl font-mono font-bold text-primary">
+          <div className="flex flex-col items-end gap-1" role="status" aria-live="polite">
+            <p className="text-[10px] font-mono text-muted-foreground tracking-wider uppercase">ACHIEVEMENTS</p>
+            <p className="text-xl sm:text-2xl font-mono font-bold text-primary leading-none">
               {unlocked}
-              <span className="text-muted-foreground text-base font-normal">/{total}</span>
+              <span className="text-muted-foreground text-sm font-normal">/{total}</span>
             </p>
+            {/* Visual Progress Track */}
+            <div 
+              className="w-20 sm:w-24 h-1 bg-secondary border border-border/50 rounded-full overflow-hidden mt-0.5" 
+              aria-hidden="true"
+            >
+              <div 
+                className="h-full bg-primary transition-all duration-500 ease-out" 
+                style={{ width: `${total > 0 ? (unlocked / total) * 100 : 0}%` }} 
+              />
+            </div>
           </div>
           {onTrophyClick ? (
             <button
               onClick={onTrophyClick}
               className={cn(
-                "w-12 h-12 rounded border flex items-center justify-center text-xl",
+                "w-12 h-12 rounded border flex items-center justify-center text-xl transition-all duration-150 active:scale-95",
                 unlocked === total
-                  ? "border-primary/40 bg-primary/10 text-primary"
-                  : "border-border bg-secondary text-muted-foreground",
-                "cursor-pointer hover:border-primary/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  ? "border-primary/40 bg-primary/10 text-primary shadow-[0_0_12px_hsl(var(--primary)/0.2)]"
+                  : "border-border bg-secondary text-muted-foreground hover:border-primary/60 hover:text-primary",
+                "cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               )}
-              title={`${unlocked} of ${total} achievements unlocked — click to view`}
-              aria-label="View achievements gallery"
+              title={`${unlocked} of ${total} achievements unlocked — click to view gallery`}
+              aria-label={`View achievements gallery (${unlocked} of ${total} unlocked)`}
             >
               <TrophyIcon className="w-6 h-6" />
             </button>
