@@ -1,0 +1,14 @@
+{
+  "id": "tooltip-a11y-polish",
+  "category": "tooltips",
+  "tier": 2,
+  "title": "Added missing title and aria-label attributes to nav and game header buttons",
+  "implementedAt": "2026-08-16T16:14:57+00:00",
+  "componentsTouched": [
+    "components/mold/home/side-nav-bar.tsx",
+    "components/mold/home/top-nav-bar.tsx",
+    "components/mold/game/cheat-sheet-terminal.tsx",
+    "components/mold/game/game-header.tsx"
+  ],
+  "nonBreaking": true
+}
