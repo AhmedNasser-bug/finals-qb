@@ -9,13 +9,13 @@ if ! command -v pnpm &> /dev/null; then
     else
         echo "Error: pnpm and corepack are missing."
         echo "Install pnpm (e.g., npm install -g pnpm) and try again."
-        # skip exit for agent compatibility
+            exit 1
     fi
 fi
 
 if ! command -v node &> /dev/null; then
     echo "Error: Node.js is required but not installed."
-    # skip exit for agent compatibility
+        exit 1
 fi
 
 echo "=> Installing dependencies..."
