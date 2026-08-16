@@ -43,7 +43,7 @@ export function ActionHub({
         disabled={disabled}
         aria-disabled={disabled}
         title={disabled ? "Action not available" : `Launch ${selectedMode} session`}
-        aria-label={disabled ? "Action not available" : `Launch ${selectedMode} session`}
+        aria-label={disabled ? "Action not available" : `Launch ${selectedMode} session: START QUIZ`}
         className={cn(
           "relative w-full flex flex-col sm:flex-row items-center justify-between p-5 rounded border transition-all duration-200 focus-ring group min-h-[72px] text-left",
           disabled
@@ -57,7 +57,7 @@ export function ActionHub({
             "w-10 h-10 rounded border flex items-center justify-center shrink-0 transition-colors",
             disabled ? "border-border text-zinc-500" : "border-primary/30 bg-primary/15 text-primary group-hover:border-background/30 group-hover:bg-background/15 group-hover:text-background"
           )}>
-            <PlayIcon className="w-4 h-4 fill-current" />
+            <PlayIcon aria-hidden="true" className="w-4 h-4 fill-current" />
           </div>
 
           <div className="flex flex-col">
@@ -87,9 +87,9 @@ export function ActionHub({
   )
 }
 
-function PlayIcon({ className }: { className?: string }) {
+function PlayIcon({ className, 'aria-hidden': ariaHidden }: { className?: string, 'aria-hidden'?: string | boolean }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="currentColor">
       <polygon points="5 3 19 12 5 21 5 3" />
     </svg>
   )

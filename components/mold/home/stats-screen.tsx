@@ -51,9 +51,10 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         <div>
           <button 
             onClick={onReturnHome}
+            title="Return to core"
             className="flex items-center gap-2 text-zinc-400 hover:text-[#fecc17] transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft aria-hidden="true" className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
             <span>Return to core</span>
           </button>
           <h1 className="text-3xl font-display font-black tracking-tight text-white flex items-center gap-3">
@@ -278,7 +279,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
               {!showConfirmReset ? (
                 <button 
                   onClick={() => setShowConfirmReset(true)}
-                  aria-label="Wipe all local telemetry and run data"
+                  aria-label="Wipe all local telemetry and run data: RESET_DATA"
                   className="bg-transparent hover:bg-destructive/10 text-destructive hover:text-red-400 border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
                 >
                    RESET_DATA
@@ -287,14 +288,14 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 <div className="flex items-center gap-2 shrink-0">
                   <button 
                     onClick={handleReset}
-                    aria-label="Confirm wipe all data"
+                    aria-label="Confirm wipe all data: CONFIRM"
                     className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
                   >
                     CONFIRM
                   </button>
                   <button 
                     onClick={() => setShowConfirmReset(false)}
-                    aria-label="Cancel wipe all data"
+                    aria-label="Cancel wipe all data: CANCEL"
                     className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
                   >
                     CANCEL

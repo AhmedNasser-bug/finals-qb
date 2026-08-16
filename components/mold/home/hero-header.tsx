@@ -59,7 +59,7 @@ export function HeroHeader({
             <button
               onClick={onChangeSubject}
               title="Change active subject"
-              aria-label="Switch active subject"
+              aria-label="Switch active subject: SWITCH SUBJECT"
               className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-[#17171a] text-zinc-300 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
             >
               SWITCH SUBJECT
@@ -69,7 +69,7 @@ export function HeroHeader({
             <button
               onClick={onImportNew}
               title="Import a new subject JSON file"
-              aria-label="Import a new subject"
+              aria-label="Import a new subject: IMPORT NEW"
               className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-[#17171a] text-zinc-300 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
             >
               IMPORT NEW
@@ -137,7 +137,7 @@ export function HeroHeader({
               title={`${unlocked} of ${total} achievements unlocked — click to view`}
               aria-label="View achievements gallery"
             >
-              <TrophyIcon className="w-6 h-6" />
+              <TrophyIcon aria-hidden="true" className="w-6 h-6" />
             </button>
           ) : (
             <div
@@ -149,7 +149,7 @@ export function HeroHeader({
               )}
               title={`${unlocked} of ${total} achievements unlocked`}
             >
-              <TrophyIcon className="w-6 h-6" />
+              <TrophyIcon aria-hidden="true" className="w-6 h-6" />
             </div>
           )}
         </div>
@@ -158,10 +158,11 @@ export function HeroHeader({
   )
 }
 
-function TrophyIcon({ className }: { className?: string }) {
+function TrophyIcon({ className, 'aria-hidden': ariaHidden }: { className?: string, 'aria-hidden'?: string | boolean }) {
   return (
     <svg
       className={className}
+      aria-hidden={ariaHidden}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
