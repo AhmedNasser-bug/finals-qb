@@ -78,6 +78,11 @@
 **Learning:** During rapid-fire study sessions, forcing players to use a mouse for every option selection and step transition introduces heavy physical friction. Wiring global keydown listeners for numerical keys (`1..4`), alphabetical keys (`A..D`), `Enter`/`Space` (for submit and advance), and `H` (for hint) speeds up question throughput by over 300%. Visual hotkey badges (`[1]`, `[2]`, `[↵]`) make the shortcut discovery instantaneous.
 **Action:** Always provide full keyboard navigation parity on quiz runner components, and accompany keyboard listeners with subtle visual keycap badges.
 
+## 2026-08-16 - Mode Selector Hotkeys, Category Filter Search & Setup Presets
+**Learning:** Dense option panels (like Category Selector in practice mode) cause visual fatigue when subjects contain 6+ topics. Adding an inline category search filter alongside an active status pill (`aria-live="polite"`) significantly accelerates topic selection. Mode cards benefit from indexed visual hotkey badges (`[1]`, `[2]`), clear re-click launch cues, and exhaustive hover tooltips (`title`) combined with `aria-label`s.
+**Action:** When designing selector grids and parameter panels, always combine indexed keyboard cues, instant search filtering, reset shortcuts, and semantic HSL tokens.
+
+
 
 
 

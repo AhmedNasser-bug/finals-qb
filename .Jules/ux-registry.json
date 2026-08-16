@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-16T19:16:00Z",
-  "totalFeaturesImplemented": 7,
+  "lastUpdated": "2026-08-16T19:17:00Z",
+  "totalFeaturesImplemented": 8,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -82,6 +82,18 @@
         "components/mold/game/question-card-builder.tsx",
         "components/mold/game/game-header.tsx",
         "components/mold/game/game-footer.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "mode-selector-category-filter-search-presets",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Mode Quick Launch Badges, Category Search Filter, & Setup Reset Presets",
+      "implementedAt": "2026-08-16T19:17:00Z",
+      "componentsTouched": [
+        "components/mold/home/mode-selector.tsx",
+        "components/mold/home/setup-panel-blocks.tsx"
       ],
       "nonBreaking": true
     }
