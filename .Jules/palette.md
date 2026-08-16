@@ -86,6 +86,11 @@
 **Learning:** Post-session completion screens are high-emotion moments where users want to quickly restart (`Enter`/`R`), return to dashboard (`Esc`/`H`), or copy/share their summary. Destructive actions on local cache (like resetting all achievements) should never trigger on a single accidental click, but rather require a clear two-step confirmation pattern (`RESET ALL` -> `CONFIRM RESET ALL?` with `CANCEL`).
 **Action:** Always provide instant clipboard summary export and keyboard shortcuts on result summaries, and enforce two-step confirmation on destructive local storage actions.
 
+## 2026-08-16 - Encyclopedia Global Slash Search Focus & Category Counters
+**Learning:** In extensive reference panels (like Encyclopedia), users often open the overlay to immediately search for a specific keyword. Binding the global `/` key to automatically focus the search input eliminates the manual click. Providing an instant `✕` button and showing per-category term counters on the sidebar gives immediate visual orientation.
+**Action:** In reference and encyclopedia overlays, bind `/` to search focus, render an instant clear button, and display count badges on category filters.
+
+
 
 
 

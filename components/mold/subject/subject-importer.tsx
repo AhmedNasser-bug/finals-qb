@@ -310,29 +310,30 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
 
   return (
     <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
-      <div className="w-full max-w-6xl h-[92vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
+      <div className="w-full max-w-6xl h-[92vh] flex flex-col gap-0 border border-border bg-background rounded-none overflow-hidden border-glow transition-all duration-300">
 
         {/* Modal Main Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
-            <h2 className="text-sm font-display font-bold tracking-wider uppercase text-white">
+            <h2 className="text-sm font-display font-bold tracking-wider uppercase text-foreground">
               Import Subject Wizard
             </h2>
-            <p className="text-[11px] font-mono text-zinc-400 mt-0.5 tracking-wider uppercase">
+            <p className="text-[11px] font-mono text-muted-foreground mt-0.5 tracking-wider uppercase">
               Step {step} of 5 — {steps[step - 1].label}
             </p>
           </div>
           <button
             onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-ring cursor-pointer"
-            aria-label="Close"
+            className="w-8 h-8 flex items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:border-border transition-colors focus-ring cursor-pointer"
+            aria-label="Close wizard"
+            title="Cancel and close import wizard"
           >
             <CloseIcon />
           </button>
         </div>
 
         {/* Progress Breadcrumbs Bar */}
-        <div className="px-8 py-4 border-b border-border/50 bg-[#0d0e11] flex items-center justify-between">
+        <div className="px-8 py-4 border-b border-border/50 bg-secondary/30 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-5 w-full justify-between sm:justify-start">
             {steps.map((s, idx) => {
               const isActive = step === s.num
@@ -345,18 +346,18 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
                       isActive
                         ? "border-primary bg-primary text-primary-foreground border-glow"
                         : isPast
-                        ? "border-zinc-500 bg-zinc-800 text-zinc-200"
-                        : "border-border text-zinc-600 bg-transparent"
+                        ? "border-primary/40 bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground/60 bg-transparent"
                     )}>
                       {s.num}
                     </span>
                     <span className={cn(
                       "text-[10px] font-display uppercase hidden md:inline-block tracking-wider",
                       isActive
-                        ? "text-white font-bold"
+                        ? "text-foreground font-bold"
                         : isPast
-                        ? "text-zinc-300 font-semibold"
-                        : "text-zinc-600 font-medium"
+                        ? "text-foreground/80 font-semibold"
+                        : "text-muted-foreground font-medium"
                     )}>
                       {s.label}
                     </span>
@@ -364,7 +365,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
                   {idx < steps.length - 1 && (
                     <span className={cn(
                       "text-xs font-sans select-none hidden md:inline-block",
-                      isPast ? "text-zinc-500" : "text-zinc-800"
+                      isPast ? "text-primary/40" : "text-muted-foreground/30"
                     )}>➔</span>
                   )}
                 </React.Fragment>
@@ -374,7 +375,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
         </div>
 
         {/* Wizard Main Content Pane */}
-        <div className="flex-1 px-8 py-6 sm:px-10 sm:py-7 overflow-y-auto min-h-0 bg-[#0a0b0d]">
+        <div className="flex-1 px-8 py-6 sm:px-10 sm:py-7 overflow-y-auto min-h-0 bg-background">
 
           {/* STEP 1: Select Preset & Topic */}
           {step === 1 && (
