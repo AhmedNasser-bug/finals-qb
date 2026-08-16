@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { 
-  Terminal as TerminalIcon, 
-  BookOpen, 
-  Trophy, 
-  RotateCcw, 
+import {
+  Terminal as TerminalIcon,
+  BookOpen,
+  Trophy,
+  RotateCcw,
   Plus,
   BarChart3,
   Sparkles,
   Download,
-  FileText
-} from "lucide-react"
+  FileText,
+} from "lucide-react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface SideNavBarProps {
-  subjectId: string
-  activeView: "home" | "stats"
-  onShowDashboard: () => void
-  onShowStats: () => void
-  onShowEncyclopedia: () => void
-  onShowGallery: () => void
-  onChangeSubject: () => void
-  onImportNew: () => void
-  onAddQuestions: () => void
-  onInitialize: () => void
-  onDownloadHtml: () => void
-  onDownloadPdf: () => void
-  onDownloadSolvedPdf: () => void
+  subjectId: string;
+  activeView: "home" | "stats";
+  onShowDashboard: () => void;
+  onShowStats: () => void;
+  onShowEncyclopedia: () => void;
+  onShowGallery: () => void;
+  onChangeSubject: () => void;
+  onImportNew: () => void;
+  onAddQuestions: () => void;
+  onInitialize: () => void;
+  onDownloadHtml: () => void;
+  onDownloadPdf: () => void;
+  onDownloadSolvedPdf: () => void;
 }
 
 export function SideNavBar({
@@ -53,7 +53,9 @@ export function SideNavBar({
             <TerminalIcon className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-[#fecc17] font-bold">STUDY PROFILE</div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-[#fecc17] font-bold">
+              STUDY PROFILE
+            </div>
             <div className="font-mono text-[8px] text-zinc-500 uppercase tracking-tighter truncate">
               ID: {subjectId.substring(0, 8).toUpperCase()}
             </div>
@@ -62,101 +64,124 @@ export function SideNavBar({
       </div>
 
       <nav className="flex flex-col gap-1.5">
-        <button 
+        <button
           onClick={onShowDashboard}
           title="Dashboard"
           aria-label="Dashboard"
           className={cn(
-            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
-            activeView === "home" 
-              ? "bg-[#fecc17] text-black font-bold border-glow" 
-              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
+            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all focus-ring",
+            activeView === "home"
+              ? "bg-[#fecc17] text-black font-bold border-glow"
+              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white",
           )}
         >
-          <TerminalIcon className="w-3.5 h-3.5" aria-hidden="true" /> <span>Dashboard</span>
+          <TerminalIcon className="w-3.5 h-3.5" aria-hidden="true" />{" "}
+          <span>Dashboard</span>
         </button>
 
-        <button 
+        <button
           onClick={onShowStats}
+          title="Statistics"
           aria-label="Statistics"
           className={cn(
-            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
-            activeView === "stats" 
-              ? "bg-[#fecc17] text-black font-bold border-glow" 
-              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
+            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all focus-ring",
+            activeView === "stats"
+              ? "bg-[#fecc17] text-black font-bold border-glow"
+              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white",
           )}
         >
-          <BarChart3 className="w-3.5 h-3.5" aria-hidden="true" /> <span>Statistics</span>
+          <BarChart3 className="w-3.5 h-3.5" aria-hidden="true" />{" "}
+          <span>Statistics</span>
         </button>
 
-        <button 
+        <button
           onClick={onShowEncyclopedia}
+          title="Encyclopedia"
           aria-label="Encyclopedia"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <BookOpen className="w-3.5 h-3.5" aria-hidden="true" /> <span>Encyclopedia</span>
+          <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />{" "}
+          <span>Encyclopedia</span>
         </button>
 
-        <button 
+        <button
           onClick={onShowGallery}
+          title="Achievements"
           aria-label="Achievements"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <Trophy className="w-3.5 h-3.5" aria-hidden="true" /> <span>Achievements</span>
+          <Trophy className="w-3.5 h-3.5" aria-hidden="true" />{" "}
+          <span>Achievements</span>
         </button>
-        <button 
+        <button
           onClick={onChangeSubject}
+          title="Switch Subject"
           aria-label="Switch Subject"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> <span>Switch Subject</span>
+          <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />{" "}
+          <span>Switch Subject</span>
         </button>
-        <button 
+        <button
           onClick={onImportNew}
+          title="Import JSON"
           aria-label="Import JSON"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <Plus className="w-3.5 h-3.5" aria-hidden="true" /> <span>Import JSON</span>
+          <Plus className="w-3.5 h-3.5" aria-hidden="true" />{" "}
+          <span>Import JSON</span>
         </button>
-        <button 
+        <button
           onClick={onAddQuestions}
+          title="Add questions"
           aria-label="Add questions"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <Sparkles className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> <span>Add questions</span>
+          <Sparkles className="w-3.5 h-3.5 text-primary" aria-hidden="true" />{" "}
+          <span>Add questions</span>
         </button>
-        <button 
+        <button
           onClick={onDownloadHtml}
+          title="Download Q&A Sheet"
           aria-label="Download Q&A Sheet"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <Download className="w-3.5 h-3.5" aria-hidden="true" /> <span>Download Q&A Sheet</span>
+          <Download className="w-3.5 h-3.5" aria-hidden="true" />{" "}
+          <span>Download Q&A Sheet</span>
         </button>
-        <button 
+        <button
           onClick={onDownloadPdf}
+          title="Questions PDF"
           aria-label="Questions PDF"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <FileText className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> <span>Questions PDF</span>
+          <FileText className="w-3.5 h-3.5 text-primary" aria-hidden="true" />{" "}
+          <span>Questions PDF</span>
         </button>
-        <button 
+        <button
           onClick={onDownloadSolvedPdf}
+          title="Solved Questions PDF"
           aria-label="Solved Questions PDF"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm focus-ring"
         >
-          <FileText className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> <span>Solved Questions PDF</span>
+          <FileText
+            className="w-3.5 h-3.5 text-emerald-400"
+            aria-hidden="true"
+          />{" "}
+          <span>Solved Questions PDF</span>
         </button>
       </nav>
 
       <div className="mt-auto pt-4 border-t border-zinc-800/60">
-        <button 
+        <button
           onClick={onInitialize}
+          title="Start Quiz"
           aria-label="Start Quiz"
-          className="w-full bg-[#131313] hover:bg-[var(--tw-hex-fecc17)]/5 text-primary hover:border-primary/60 border border-zinc-800 font-mono text-[10px] py-3.5 tracking-[0.2em] transition-all font-bold cursor-pointer hover-scale-premium"
+          className="w-full bg-[#131313] hover:bg-[var(--tw-hex-fecc17)]/5 text-primary hover:border-primary/60 border border-zinc-800 font-mono text-[10px] py-3.5 tracking-[0.2em] transition-all font-bold cursor-pointer hover-scale-premium focus-ring"
         >
           START QUIZ
         </button>
       </div>
     </aside>
-  )
+  );
 }
