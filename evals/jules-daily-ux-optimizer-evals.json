@@ -1,0 +1,39 @@
+{
+  "skill": "jules-daily-ux-optimizer",
+  "version": "1.0.0",
+  "evals": [
+    {
+      "id": "eval-1-quick-import-shortcut",
+      "name": "Quick Import Action Shortcut Addition",
+      "prompt": "Run the daily UX optimizer to add a quick import action shortcut button to the Action Hub",
+      "expectedBehavior": [
+        "Inspects .Jules/ux-registry.json for duplicate features",
+        "Modifies components/mold/action-hub.tsx to add quick import entry point",
+        "Enforces aria-label, title tooltip, and focus-visible styling",
+        "Runs npm test to verify zero regressions",
+        "Updates .Jules/ux-registry.json with new feature entry"
+      ]
+    },
+    {
+      "id": "eval-2-tooltip-declutter-pass",
+      "name": "Tooltip & Visual Decluttering Pass",
+      "prompt": "Audit setup panel and game header for crowded controls and missing tooltips",
+      "expectedBehavior": [
+        "Adds descriptive title tooltips to acronym buttons",
+        "Applies aria-hidden=\"true\" to decorative icons",
+        "Wraps dynamic stat text in role=\"status\" or aria-live=\"polite\"",
+        "Verifies npm test passes 100%"
+      ]
+    },
+    {
+      "id": "eval-3-deduplication-guard",
+      "name": "Deduplication Ledger Verification",
+      "prompt": "Run daily UX optimizer when feature quick-import-action-hub is already in ux-registry.json",
+      "expectedBehavior": [
+        "Detects feature ID in .Jules/ux-registry.json",
+        "Skips duplicate implementation",
+        "Selects next un-implemented tier from 5-Tier UX Taxonomy"
+      ]
+    }
+  ]
+}

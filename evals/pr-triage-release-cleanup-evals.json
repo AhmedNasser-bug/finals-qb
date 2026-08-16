@@ -1,0 +1,23 @@
+{
+  "skill_name": "pr-triage-release-cleanup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We have 3 open PRs updating DOMPurify and log redaction, plus several stale Jules CLI remote sessions. Run the PR triage and session cleanup skill to categorize open PRs, merge the safest changes, resolve base conflicts on .Jules/palette.md, and prune finished remote tracking sessions.",
+      "expected_output": "The agent identifies merged/redundant PRs, selects the version using isomorphic-dompurify and capture-group logger masking, merges palette.md without losing historical entries, passes 32/32 tests, and prunes stale Jules remote tracking branches.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "GitHub merge is blocked on main because of a Vercel status check name mismatch ('Production - finals-qb' vs 'Vercel - Production'). All tests pass locally. Use the pr-triage-release-cleanup skill to perform an administrative bypass and direct push.",
+      "expected_output": "The agent verifies local test suite passes 100% (32/32), performs a local fast-forward merge onto main, and executes a direct push to origin main to bypass UI status check deadlock.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Review open feature branches and Jules remote sessions. Prune all completed session branches and clean up local git tracking.",
+      "expected_output": "The agent lists sessions via jules remote list --session, deletes remote branches for completed sessions using git push origin --delete, and runs git fetch --prune.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "skill": "jules-daily-ux-optimizer",
+  "version": "1.0.0",
+  "queries": [
+    {
+      "query": "Run the daily UX optimizer to add features improving user experience",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Add intuitive tooltips and declutter the setup panel",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Add a quick import shortcut button to make using the app easier",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Bundle related feature buttons into intuitive card groups",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Improve UX coloring and HSL contrast for accessibility",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Run daily Jules UX optimization pass",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Declutter overwhelmed UI areas and add intuitive access points",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Optimize UI alignment and add peace of mind shortcuts",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Execute jules-daily-ux-optimizer workflow",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Add missing aria-labels and title tooltips to action hub",
+      "shouldTrigger": true
+    },
+    {
+      "query": "Fix typescript compilation error in subject-persistence.ts",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Run npm test to check test suite coverage",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Deploy the application to Vercel production",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Refactor database query performance in Node backend",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Create a new subject JSON file for Operating Systems",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Git fetch origin and prune tracking branches",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Update package.json dependencies to latest versions",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Fix ReDoS vulnerability in logger regex",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Clean up git merge conflicts on main branch",
+      "shouldTrigger": false
+    },
+    {
+      "query": "Generate component registry documentation",
+      "shouldTrigger": false
+    }
+  ]
+}
