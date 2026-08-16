@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-16T19:18:00Z",
-  "totalFeaturesImplemented": 9,
+  "lastUpdated": "2026-08-16T19:20:00Z",
+  "totalFeaturesImplemented": 10,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -107,6 +107,18 @@
         "components/mold/home/performance-table.tsx",
         "components/mold/game/results-screen.tsx",
         "components/mold/achievement/achievement-gallery.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "encyclopedia-importer-shortcuts-and-token-polish",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Encyclopedia Search Shortcut (/), Clear Button, Category Counters & Importer Token Polish",
+      "implementedAt": "2026-08-16T19:20:00Z",
+      "componentsTouched": [
+        "components/mold/common/encyclopedia-overlay.tsx",
+        "components/mold/subject/subject-importer.tsx"
       ],
       "nonBreaking": true
     }

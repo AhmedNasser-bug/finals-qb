@@ -98,6 +98,20 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
     )
   }
 
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // Focus search on '/' key
+  useEffect(() => {
+    function onGlobalKey(e: KeyboardEvent) {
+      if (e.key === "/" && document.activeElement !== searchInputRef.current) {
+        e.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+    window.addEventListener("keydown", onGlobalKey)
+    return () => window.removeEventListener("keydown", onGlobalKey)
+  }, [])
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in"
@@ -115,7 +129,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono tracking-widest text-muted-foreground uppercase">
+            <span className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-bold">
               Encyclopedia
             </span>
             <span className="text-xs font-mono text-primary border border-primary/30 bg-primary/10 px-2 py-0.5 rounded">
@@ -125,8 +139,8 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
           <button
             onClick={onClose}
             aria-label="Close encyclopedia"
-            title="Close encyclopedia"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
+            title="Close encyclopedia (Esc)"
+            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded p-1"
           >
             <CloseIcon className="w-4 h-4" aria-hidden="true" />
           </button>
@@ -135,38 +149,57 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
         <div className="flex flex-1 min-h-0">
           {/* Category sidebar */}
           <nav
-            className="w-40 shrink-0 border-r border-border flex flex-col gap-0.5 p-2 overflow-y-auto"
+            className="w-44 shrink-0 border-r border-border flex flex-col gap-0.5 p-2 overflow-y-auto"
             aria-label="Terminology categories"
           >
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => { setActiveCategory(cat); setSearch("") }}
-                aria-current={activeCategory === cat ? "page" : undefined}
-                className={cn(
-                  "text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
-                  activeCategory === cat
-                    ? "bg-primary/10 text-primary border border-primary/20"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/60 border border-transparent"
-                )}
-              >
-                {formatLabel(cat)}
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const count = terminology?.[cat]?.length ?? 0
+              return (
+                <button
+                  key={cat}
+                  onClick={() => { setActiveCategory(cat); setSearch("") }}
+                  aria-current={activeCategory === cat ? "page" : undefined}
+                  title={`${formatLabel(cat)} (${count} terms)`}
+                  className={cn(
+                    "flex items-center justify-between text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                    activeCategory === cat
+                      ? "bg-primary/10 text-primary border border-primary/20 font-bold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/60 border border-transparent"
+                  )}
+                >
+                  <span className="truncate">{formatLabel(cat)}</span>
+                  <span className="text-[9px] font-mono text-muted-foreground/60 shrink-0 ml-1">
+                    {count}
+                  </span>
+                </button>
+              )
+            })}
           </nav>
 
           {/* Term list */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Search */}
-            <div className="px-4 py-2.5 border-b border-border shrink-0">
+            <div className="px-4 py-2.5 border-b border-border shrink-0 relative">
               <input
+                ref={searchInputRef}
                 type="search"
                 aria-label={`Search ${formatLabel(activeCategory)}`}
-                placeholder={`Search ${formatLabel(activeCategory)}…`}
+                placeholder={`Search ${formatLabel(activeCategory)} (Press '/' to focus)…`}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-background border border-border rounded px-3 py-1.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                className="w-full bg-background border border-border rounded px-3 py-1.5 pr-8 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  aria-label="Clear term search"
+                  title="Clear term search"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground hover:text-foreground"
+                >
+                  ✕
+                </button>
+              )}
             </div>
 
             {/* Entries */}
@@ -192,10 +225,13 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             </ul>
 
             {/* Footer count */}
-            <div className="px-5 py-2 border-t border-border shrink-0">
+            <div className="px-5 py-2 border-t border-border shrink-0 flex justify-between items-center">
               <span className="text-[10px] font-mono text-muted-foreground">
                 {filtered.length} {filtered.length === 1 ? "TERM" : "TERMS"}
                 {search && ` MATCHING "${search.toUpperCase()}"`}
+              </span>
+              <span className="text-[10px] font-mono text-muted-foreground/60 hidden sm:inline">
+                Press [/] to search • [ESC] to close
               </span>
             </div>
           </div>
