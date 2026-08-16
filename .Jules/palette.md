@@ -69,3 +69,9 @@
 ## 2026-05-25 - Contextual Titles for Modal Actions
 **Learning:** Actions within modal interfaces (like import, accept, decline, or reset) are often represented by generic text like "Yes", "No", "Cancel", or "RESET ALL" without broader context. Adding a `title` attribute providing an explicit description of the resulting system action (e.g., `title="Cancel import and close"`) improves clarity for users relying on tooltips and assistive technologies.
 **Action:** When adding functional actions that change application state inside modals or overlays, explicitly add a `title` attribute providing concrete context about the action's consequence.
+
+## 2026-08-16 - Daily UX Optimization Agent & Non-Breaking Scope Principles
+**Learning:** Automated daily UX optimization sessions running on Jules must maximize ROI per session by implementing comprehensive UX feature blocks rather than single micro-tweaks, while strictly guaranteeing zero breaking changes. Deduplication is maintained via `.Jules/ux-registry.json` and atomic branch naming (`jules-ux-<category>-<hash>`).
+**Action:** Follow the 5-Tier UX Taxonomy as baseline guidance, but **never limit the agent to these 5 categories alone**. The agent has full autonomy to introduce ANY non-breaking UX innovation (e.g. animation polish, drag-and-drop, smart search, export shortcuts). Never alter core data contracts (`GameState`, `RunRecord`, `FullSubjectData`) or break `npm test`. Always log completed features in `.Jules/ux-registry.json`.
+
+

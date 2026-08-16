@@ -1,0 +1,82 @@
+[
+  {
+    "query": "hey, can you triage the open PRs on GitHub? we have a bunch of PRs from jules remote sessions and some duplicate ones for the logger PII fix",
+    "should_trigger": true
+  },
+  {
+    "query": "our Vercel production status check is stuck on GitHub main branch protection rules ('Production - finals-qb' vs 'Vercel - Production') and blocking the merge. All tests pass locally so please override it and push main directly",
+    "should_trigger": true
+  },
+  {
+    "query": "run the PR triage and session cleanup skill to clean up remote jules tracking branches and resolve conflicts on .Jules/palette.md",
+    "should_trigger": true
+  },
+  {
+    "query": "we need to clean up old jules CLI remote sessions and delete remote feature branches that are already merged into main",
+    "should_trigger": true
+  },
+  {
+    "query": "I have 4 open pull requests in the repo, some of them are redundant SSR XSS fixes using isomorphic-dompurify. Please consolidate them into main and close the duplicate PRs",
+    "should_trigger": true
+  },
+  {
+    "query": "can you check `jules remote list --session` and prune all completed session branches from origin?",
+    "should_trigger": true
+  },
+  {
+    "query": "merge PR #14 into main, resolve base commit conflicts on AGENTS.md and .Jules/palette.md, and run test-runner.mjs before pushing",
+    "should_trigger": true
+  },
+  {
+    "query": "please do a release orchestration pass: audit open PRs, group security and accessibility fixes, verify native node tests pass 100%, and prune stale tracking branches",
+    "should_trigger": true
+  },
+  {
+    "query": "PR #22 is already merged on main manually, can you close it with the standard integrated message and clean up its remote tracking branch?",
+    "should_trigger": true
+  },
+  {
+    "query": "we're preparing a release: pull all safe PRs into main, resolve palette.md conflict blocks by preserving historical entries, and prune completed sessions",
+    "should_trigger": true
+  },
+  {
+    "query": "write a unit test in lib/utils/accuracy.test.ts for the calculateGrade function",
+    "should_trigger": false
+  },
+  {
+    "query": "how do I configure Vercel environment variables in the Vercel project dashboard?",
+    "should_trigger": false
+  },
+  {
+    "query": "fix a typo in the README.md file on the current local working branch",
+    "should_trigger": false
+  },
+  {
+    "query": "explain how isomorphic-dompurify works compared to regular client-side DOMPurify",
+    "should_trigger": false
+  },
+  {
+    "query": "run the local test runner node --experimental-strip-types --import ./test-runner.mjs --test lib/utils/accuracy.test.ts",
+    "should_trigger": false
+  },
+  {
+    "query": "create a new React component for displaying flashcard quiz items in components/mold/flashcard-screen.tsx",
+    "should_trigger": false
+  },
+  {
+    "query": "what is the command to create a new git branch from main?",
+    "should_trigger": false
+  },
+  {
+    "query": "refactor the regex pattern in lib/logger.ts to improve performance without changing behavior",
+    "should_trigger": false
+  },
+  {
+    "query": "add a new achievement definition to the DEMO_FULL_SUBJECT object in lib/subject-store.ts",
+    "should_trigger": false
+  },
+  {
+    "query": "show me the recent git commits using git log -n 5 --oneline",
+    "should_trigger": false
+  }
+]
