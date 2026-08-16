@@ -36,52 +36,82 @@ export function ActionHub({
     "full-revision": "Go through all questions in their original order, like a real exam.",
   }
 
+  const modeTags: Record<GameModeId, string> = {
+    speedrun:       "TIMED // 5 MIN",
+    blitz:          "RAPID // 2 MIN",
+    hardcore:       "HIGH DIFFICULTY",
+    survival:       "PROGRESSIVE PACE",
+    practice:       "UNTIMED STUDY",
+    flashcards:     "TERMINOLOGY",
+    "full-revision": "100% COVERAGE",
+  }
+
   return (
     <div className={cn("w-full flex flex-col gap-2.5", className)}>
       <button
         onClick={onInitialize}
         disabled={disabled}
         aria-disabled={disabled}
-        title={disabled ? "Action not available" : `Launch ${selectedMode} session`}
+        title={disabled ? "Action not available" : `Launch ${selectedMode} session (Press Enter)`}
         aria-label={disabled ? "Action not available" : `Launch ${selectedMode} session`}
         className={cn(
-          "relative w-full flex flex-col sm:flex-row items-center justify-between p-5 rounded border transition-all duration-200 focus-ring group min-h-[72px] text-left",
+          "relative w-full flex flex-col sm:flex-row items-center justify-between p-5 rounded border transition-all duration-200 focus-ring group min-h-[72px] text-left active:scale-[0.99] active:translate-y-0.5",
           disabled
             ? "border-border bg-panel/40 opacity-40 cursor-not-allowed"
-            : "border-primary/80 bg-primary/10 text-foreground hover:bg-primary hover:text-background active:translate-y-0.5"
+            : "border-primary/80 bg-primary/10 text-foreground hover:bg-primary hover:text-background"
         )}
       >
         <div className="flex items-start gap-4">
           {/* Play/Launch Icon */}
           <div className={cn(
             "w-10 h-10 rounded border flex items-center justify-center shrink-0 transition-colors",
-            disabled ? "border-border text-zinc-500" : "border-primary/30 bg-primary/15 text-primary group-hover:border-background/30 group-hover:bg-background/15 group-hover:text-background"
+            disabled ? "border-border text-muted-foreground" : "border-primary/30 bg-primary/15 text-primary group-hover:border-background/30 group-hover:bg-background/15 group-hover:text-background"
           )}>
-            <PlayIcon className="w-4 h-4 fill-current" />
+            <PlayIcon className="w-4 h-4 fill-current" aria-hidden="true" />
           </div>
 
-          <div className="flex flex-col">
-            <span className="font-display text-base font-black tracking-tight uppercase leading-tight">
-              {modeLabels[selectedMode]}
-            </span>
+          <div className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-display text-base font-black tracking-tight uppercase leading-tight">
+                {modeLabels[selectedMode]}
+              </span>
+              <span className={cn(
+                "font-mono text-[9px] font-bold px-1.5 py-0.5 rounded border tracking-wider uppercase",
+                disabled
+                  ? "border-border text-muted-foreground/50"
+                  : "border-primary/30 bg-primary/10 text-primary group-hover:border-background/40 group-hover:bg-background/20 group-hover:text-background"
+              )}>
+                {modeTags[selectedMode]}
+              </span>
+            </div>
             <span className={cn(
-              "text-xs font-sans mt-0.5 leading-snug",
-              disabled ? "text-zinc-500" : "text-zinc-400 group-hover:text-background/85"
+              "text-xs font-sans leading-snug",
+              disabled ? "text-muted-foreground/60" : "text-muted-foreground group-hover:text-background/85"
             )}>
               {modeDescriptions[selectedMode]}
             </span>
           </div>
         </div>
 
-        {/* Action cue label */}
-        <span className={cn(
-          "hidden sm:inline-flex items-center gap-1.5 font-mono text-xs font-bold tracking-widest uppercase border px-3 py-1 rounded shrink-0 transition-all",
-          disabled
-            ? "border-border text-zinc-500"
-            : "border-primary/20 text-primary group-hover:border-background/30 group-hover:text-background"
-        )}>
-          START QUIZ →
-        </span>
+        {/* Action cue + keyboard shortcut badge */}
+        <div className="hidden sm:flex items-center gap-2 shrink-0">
+          <kbd className={cn(
+            "font-mono text-[10px] font-bold px-1.5 py-0.5 rounded border tracking-widest transition-colors",
+            disabled
+              ? "border-border text-muted-foreground/40 bg-panel/30"
+              : "border-border/80 bg-panel text-muted-foreground group-hover:border-background/40 group-hover:bg-background/20 group-hover:text-background"
+          )}>
+            ↵ ENTER
+          </kbd>
+          <span className={cn(
+            "inline-flex items-center gap-1.5 font-mono text-xs font-bold tracking-widest uppercase border px-3 py-1 rounded transition-all",
+            disabled
+              ? "border-border text-muted-foreground/40"
+              : "border-primary/20 text-primary group-hover:border-background/30 group-hover:text-background"
+          )}>
+            START QUIZ →
+          </span>
+        </div>
       </button>
     </div>
   )
