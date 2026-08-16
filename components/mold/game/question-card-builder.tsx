@@ -390,35 +390,45 @@ function OptionButton({
       role="radio"
       {...checkedProps}
       disabled={isRevealed}
+      aria-label={`Option ${label}: ${text ?? label}`}
+      title={`Select Option ${label} (Press ${idx + 1} or ${label})`}
       onClick={onSelect}
       className={cn(
         "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group shrink-0",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
-        !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
-        isRevealed && isCorrect && "bg-[var(--tw-hex-4ae176)]/10 border-l-4 border-[#4ae176]",
-        isRevealed && isWrong && "bg-[var(--tw-hex-930013)]/10 border-l-4 border-[#930013]",
+        !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-primary glow-primary",
+        isRevealed && isCorrect && "bg-emerald-500/10 border-l-4 border-emerald-500",
+        isRevealed && isWrong && "bg-destructive/10 border-l-4 border-destructive",
         isDimmed && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
       )}
     >
       <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-        <span className={cn(
-          "font-mono text-[10px] tracking-widest uppercase",
-          !isRevealed && isSelected ? "text-[#fecc17]" :
-            isRevealed && isCorrect ? "text-[#4ae176]" :
-              isRevealed && isWrong ? "text-[#ffb4ab]" :
-                "text-zinc-500"
-        )}>
-          OPTION_{String(idx + 1).padStart(2, "0")}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={cn(
+            "font-mono text-[10px] tracking-widest uppercase",
+            !isRevealed && isSelected ? "text-primary font-bold" :
+              isRevealed && isCorrect ? "text-emerald-400 font-bold" :
+                isRevealed && isWrong ? "text-destructive font-bold" :
+                  "text-muted-foreground"
+          )}>
+            OPTION_{String(idx + 1).padStart(2, "0")}
+          </span>
+          <span 
+            className="font-mono text-[9px] font-bold px-1 py-0.2 bg-secondary text-muted-foreground border border-border rounded select-none group-hover:border-primary/40 group-hover:text-primary transition-colors" 
+            aria-hidden="true"
+          >
+            [{idx + 1}]
+          </span>
+        </div>
         <span
           className={cn(
             "font-sans text-sm font-bold leading-snug",
-            !isRevealed && isSelected ? "text-[#fecc17]" :
-              isRevealed && isCorrect ? "text-[#4ae176]" :
-                isRevealed && isWrong ? "text-[#ffb4ab]" :
-                  isDimmed ? "text-zinc-600" :
-                    "text-[#e5e2e1]"
+            !isRevealed && isSelected ? "text-primary" :
+              isRevealed && isCorrect ? "text-emerald-400" :
+                isRevealed && isWrong ? "text-destructive" :
+                  isDimmed ? "text-muted-foreground/40" :
+                    "text-foreground"
           )}
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(renderMath(text ?? label))

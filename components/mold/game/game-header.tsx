@@ -65,8 +65,15 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
 
   return (
     <header className="bg-[#131313] flex flex-col">
-      {/* ── Segmented progress bar ── */}
-      <div className="px-6 md:px-10 pt-2.5 pb-0 space-y-0.5">
+      {/* ── SEGMENTED PROGRESS TRACKER (Shared across mobile and desktop) ── */}
+      <div 
+        className="px-6 md:px-10 pt-2.5 pb-0 space-y-0.5"
+        role="progressbar"
+        aria-valuenow={currentIndex + 1}
+        aria-valuemin={1}
+        aria-valuemax={total}
+        aria-label={`Question progress: ${currentIndex + 1} of ${total}`}
+      >
         <div className="flex justify-between items-end">
           <div className="flex items-center">
             <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
@@ -76,21 +83,21 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               <span className={cn(
                 "ml-3 px-2 py-0.5 rounded font-mono text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 transition-all duration-300",
                 streak >= 12 
-                  ? "bg-grade-a/20 text-grade-a border border-grade-a/40 shadow-[0_0_15px_rgba(74,225,118,0.4)] animate-pulse"
+                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_15px_rgba(74,225,118,0.4)] animate-pulse"
                   : streak >= 8
                     ? "bg-destructive/20 text-destructive border border-destructive/40 shadow-[0_0_12px_rgba(239,68,68,0.4)] animate-bounce"
                     : streak >= 5
                       ? "bg-orange-500/20 text-orange-400 border border-orange-500/40 shadow-[0_0_10px_rgba(249,115,22,0.3)]"
                       : streak >= 3
                         ? "bg-primary/20 text-primary border border-primary/40 shadow-[0_0_8px_rgba(254,204,23,0.2)]"
-                        : "bg-[#201f1f] text-zinc-400 border border-zinc-800"
+                        : "bg-[#201f1f] text-muted-foreground border border-border"
               )}>
-                <span className="text-[10px] animate-pulse">🔥</span>
+                <span className="text-[10px] animate-pulse" aria-hidden="true">🔥</span>
                 <span>STREAK ×{streak}</span>
               </span>
             )}
           </div>
-          <span className="font-mono text-[10px] tracking-[0.2em] text-[#4ae176] uppercase">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-emerald-400 uppercase">
             ACCURACY RATING: {accuracyPct >= 80 ? "EXCELLENT" : accuracyPct >= 50 ? "AVERAGE" : "LOW"}
           </span>
         </div>
@@ -98,13 +105,14 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           {segments.map((seg, i) => (
             <div
               key={i}
+              title={`Segment ${i + 1}: ${seg.toUpperCase()}`}
               className={cn(
-                "h-1.5 flex-1",
-                seg === "correct" && "bg-[#4ae176]",
-                seg === "wrong" && "bg-[#930013]",
-                seg === "current" && "bg-[var(--tw-hex-fecc17)]/70",
-                seg === "partial" && "bg-[var(--tw-hex-fecc17)]/30",
-                seg === "unseen" && "bg-[#353534]",
+                "h-1.5 flex-1 transition-colors",
+                seg === "correct" && "bg-emerald-500",
+                seg === "wrong" && "bg-destructive",
+                seg === "current" && "bg-primary/70",
+                seg === "partial" && "bg-primary/30",
+                seg === "unseen" && "bg-secondary",
               )}
             />
           ))}
@@ -114,22 +122,22 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
       {/* ── RESPONSIVE HUD PANEL ── */}
       
       {/* ── Mobile Layout (under md) ── */}
-      <div className="flex md:hidden items-center justify-between gap-3 px-4 py-3 bg-[#131313] border-b border-zinc-800/80 select-none">
+      <div className="flex md:hidden items-center justify-between gap-3 px-4 py-3 bg-panel border-b border-border select-none">
         
         {/* Left: Streak & Lives */}
         <div className="flex items-center gap-2">
           {/* Compact Streak */}
           <div className={cn(
             "px-2 py-1 flex items-center gap-1 border-l-2 bg-[#201f1f]",
-            streak >= 10 ? "border-[#930013]" : streak >= 5 ? "border-orange-500" : "border-[#fecc17]"
+            streak >= 10 ? "border-destructive" : streak >= 5 ? "border-orange-500" : "border-primary"
           )}>
             <BoltIcon className={cn(
               "w-3.5 h-3.5 shrink-0",
-              streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
-            )} />
+              streak >= 10 ? "text-destructive" : streak >= 5 ? "text-orange-400" : "text-primary"
+            )} aria-hidden="true" />
             <span className={cn(
               "font-mono text-sm font-black leading-none",
-              streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
+              streak >= 10 ? "text-destructive" : streak >= 5 ? "text-orange-400" : "text-primary"
             )}>{streak}</span>
           </div>
 
@@ -141,7 +149,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 <HeartIcon
                   key={i}
                   filled={alive}
-                  className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
+                  className={cn("w-3.5 h-3.5", alive ? "text-destructive" : "text-muted-foreground/30")}
                 />
               )
             })}
@@ -149,10 +157,10 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
 
           {/* Streak Shield (Mobile) */}
           {streakShieldActive && (
-            <span className="text-[12px] animate-pulse ml-1 text-cyan-400 select-none" title="Streak Shield Active">🛡️</span>
+            <span className="text-[12px] animate-pulse ml-1 text-cyan-400 select-none" title="Streak Shield Active" aria-hidden="true">🛡️</span>
           )}
           {streakShieldTriggeredThisQuestion && (
-            <span className="text-[12px] animate-bounce ml-1 text-red-500 select-none animate-pulse" title="Shield Shattered!">💥</span>
+            <span className="text-[12px] animate-bounce ml-1 text-destructive select-none animate-pulse" title="Shield Shattered!" aria-hidden="true">💥</span>
           )}
         </div>
 
@@ -160,17 +168,17 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         <div className="flex items-center justify-center">
           <div className={cn(
             "bg-[#0e0e0e] border-x-2 px-3 py-1 text-center flex items-center gap-1.5",
-            isCritical ? "border-[#930013]" : "border-[var(--tw-hex-930013)]/30"
+            isCritical ? "border-destructive" : "border-destructive/30"
           )}>
             <span className={cn(
               "font-mono text-[8px] tracking-wider uppercase",
-              isCritical ? "text-[#930013] font-bold animate-pulse" : "text-muted-foreground/60"
+              isCritical ? "text-destructive font-bold animate-pulse" : "text-muted-foreground/60"
             )}>
-              {isTimedGlobal ? "TIME" : "TIME"}
+              {isTimedGlobal ? "TIME" : "ELAPSED"}
             </span>
             <span className={cn(
               "font-mono text-sm font-black tabular-nums leading-none",
-              isCritical ? "text-[#ffb4ab]" : "text-[#fecc17]",
+              isCritical ? "text-destructive" : "text-primary",
               isUrgent && "motion-safe:animate-pulse"
             )}>
               {formatTime(isTimedGlobal ? globalTimeRemaining : elapsedSeconds)}
