@@ -687,35 +687,53 @@ function processStackClosure(stack: ("{" | "[")[], char: string) {
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
-  let escaped = false
   
   let braceCount = 0;
   let bracketCount = 0;
 
   for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (escaped) {
-      escaped = false
-      continue
-    }
-    if (char === '\\') {
-      escaped = true
-      continue
-    }
-    if (char === '"') {
-      inString = !inString
+    const charCode = str.charCodeAt(i)
+
+    if (charCode === 92) { // '\\'
+      i++
       continue
     }
 
-    if (inString) continue;
+    if (charCode === 34) { // '"'
+      inString = !inString;
+      let nextQuoteIndex = i + 1;
+      while (nextQuoteIndex < str.length) {
+        nextQuoteIndex = str.indexOf('"', nextQuoteIndex);
+        if (nextQuoteIndex === -1) {
+          i = str.length;
+          break;
+        }
 
-    if (char === '{') {
+        let backslashCount = 0;
+        let bIdx = nextQuoteIndex - 1;
+        while (bIdx > i && str.charCodeAt(bIdx) === 92) {
+          backslashCount++;
+          bIdx--;
+        }
+
+        if (backslashCount % 2 === 0) {
+          i = nextQuoteIndex;
+          inString = !inString;
+          break;
+        } else {
+          nextQuoteIndex++;
+        }
+      }
+      continue;
+    }
+
+    if (charCode === 123) { // '{'
       stack.push('{')
       braceCount++
-    } else if (char === '[') {
+    } else if (charCode === 91) { // '['
       stack.push('[')
       bracketCount++
-    } else if (char === '}') {
+    } else if (charCode === 125) { // '}'
       if (stack[stack.length - 1] === '{') {
         stack.pop()
         braceCount--
@@ -730,7 +748,7 @@ function balanceJsonStack(str: string): string {
           braceCount--
         }
       }
-    } else if (char === ']') {
+    } else if (charCode === 93) { // ']'
       if (stack[stack.length - 1] === '[') {
         stack.pop()
         bracketCount--
@@ -846,20 +864,74 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   ])
 
   for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (char === '"' && str[i - 1] !== '\\') {
-      repairedChunks.push('"')
-      inString = !inString
-      continue
+    const charCode = str.charCodeAt(i);
+
+    if (charCode === 34 && (i === 0 || str.charCodeAt(i - 1) !== 92)) { // '"'
+      repairedChunks.push('"');
+      inString = !inString;
+
+      if (inString) {
+          let j = i + 1;
+          while (true) {
+             let nq = str.indexOf('"', j);
+             let nb = str.indexOf('\\', j);
+
+             let ns = -1;
+             if (nq !== -1 && nb !== -1) ns = Math.min(nq, nb);
+             else if (nq !== -1) ns = nq;
+             else if (nb !== -1) ns = nb;
+
+             if (ns === -1) {
+                j = str.length;
+                break;
+             }
+
+             if (ns === nb) {
+                j = ns;
+                break;
+             } else {
+                if (str.charCodeAt(ns - 1) !== 92) {
+                   j = ns;
+                   break;
+                } else {
+                   j = ns + 1;
+                }
+             }
+          }
+          if (j > i + 1) {
+              repairedChunks.push(str.slice(i + 1, j));
+              i = j - 1; // loop will increment to j
+          }
+      } else {
+          let j = i + 1;
+          while (true) {
+             let nq = str.indexOf('"', j);
+             if (nq === -1) {
+                j = str.length;
+                break;
+             }
+             if (str.charCodeAt(nq - 1) !== 92) {
+                j = nq;
+                break;
+             } else {
+                j = nq + 1;
+             }
+          }
+          if (j > i + 1) {
+              repairedChunks.push(str.slice(i + 1, j));
+              i = j - 1;
+          }
+      }
+      continue;
     }
 
-    if (inString && char === '\\') {
+    if (inString && charCode === 92) { // '\\'
         const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
         repairedChunks.push(addition);
         fixed = fixed || wasFixed;
         i += charsConsumed - 1; // loop naturally increments i
     } else {
-      repairedChunks.push(char)
+      repairedChunks.push(str[i])
     }
   }
 
