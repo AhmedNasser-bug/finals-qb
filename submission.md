@@ -1,13 +1,14 @@
-⚡ Bolt: Cache client-side fetches in page.tsx
+🎨 Palette: [Add aria-label to import button in top nav bar]
 
-**What**
-Implemented a module-level `Promise` cache (`exampleFetchCache`) in `app/page.tsx` for client-side fetches of JSON examples. The `fetchExample` function now checks this cache before executing the network request, storing the resulting promise for subsequent calls.
+💡 What:
+Added an explicit `aria-label` to the 'Import New Subject JSON' icon button in the `TopNavBar` component.
 
-**Why**
-In React 18 Strict Mode, components often double-mount on initial load, causing `useEffect` hooks to run twice. Additionally, navigating back to a previously loaded example subject would trigger a duplicate network request and JSON parsing cycle. By caching the fetch promise, we deduplicate these requests, saving network bandwidth and CPU cycles.
+🎯 Why:
+The button only contained visible text when rendered on larger screens (and was otherwise an icon-only button). The `aria-label` provides a consistent, explicit description for screen readers, improving accessibility and adherence to WCAG guidelines.
 
-**Impact**
-Reduces redundant network calls and parsing overhead for identical example fetches. The fix specifically prevents duplicate calls during the React Strict Mode double-render cycle and subsequent client-side navigations to the same example module.
+📸 Before/After:
+Before: `<button title="Import New Subject JSON" ...>`
+After: `<button title="Import New Subject JSON" aria-label="Import New Subject JSON" ...>`
 
-**Measurement**
-Direct benchmarking within the terminal environment is impractical for this specific optimization, as measuring React's double-mounting behavior requires a full browser environment with network interception/mocking to accurately track the deduplication of requests. However, by caching the promise itself (rather than just the response), this change conceptually eliminates all duplicate network requests, ensuring only a single flight for any given example JSON file.
+♿ Accessibility:
+Provides a clear, programmatic label for assistive technologies navigating the top navigation bar.
