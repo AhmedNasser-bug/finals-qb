@@ -674,14 +674,29 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   }
 }
 
-function processStackClosure(stack: ("{" | "[")[], char: string) {
-  const expectedOpen = char === '}' ? '{' : '[';
+function processStackClosure(stack: ("{" | "[")[], expectedOpen: "{" | "[", state: { braceCount: number, bracketCount: number }) {
   if (stack[stack.length - 1] === expectedOpen) {
     stack.pop();
+    if (expectedOpen === '{') state.braceCount--;
+    else state.bracketCount--;
     return;
   }
-  const idx = stack.lastIndexOf(expectedOpen);
-  if (idx !== -1) stack.splice(idx);
+
+  if ((expectedOpen === '{' && state.braceCount > 0) || (expectedOpen === '[' && state.bracketCount > 0)) {
+    let idx = stack.length - 1;
+    while (idx >= 0 && stack[idx] !== expectedOpen) {
+      if (stack[idx] === (expectedOpen === '{' ? '[' : '{')) {
+         if (expectedOpen === '{') state.bracketCount--;
+         else state.braceCount--;
+      }
+      idx--;
+    }
+    if (idx >= 0) {
+      stack.length = idx;
+      if (expectedOpen === '{') state.braceCount--;
+      else state.bracketCount--;
+    }
+  }
 }
 
 function balanceJsonStack(str: string): string {
@@ -689,8 +704,7 @@ function balanceJsonStack(str: string): string {
   let inString = false
   let escaped = false
   
-  let braceCount = 0;
-  let bracketCount = 0;
+  const state = { braceCount: 0, bracketCount: 0 };
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
@@ -711,40 +725,14 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
-      braceCount++
+      state.braceCount++
     } else if (char === '[') {
       stack.push('[')
-      bracketCount++
+      state.bracketCount++
     } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-        braceCount--
-      } else if (braceCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          braceCount--
-        }
-      }
+      processStackClosure(stack, '{', state);
     } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-        bracketCount--
-      } else if (bracketCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
-        }
-      }
+      processStackClosure(stack, '[', state);
     }
   }
   
