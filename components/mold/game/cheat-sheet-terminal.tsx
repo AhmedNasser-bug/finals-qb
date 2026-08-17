@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
@@ -22,6 +22,39 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [toggleCheatSheet])
 
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  // Trap focus inside side panel
+  useEffect(() => {
+    if (!isOpen) return
+
+    const el = panelRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [isOpen])
+
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
 
@@ -37,9 +70,14 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        ref={panelRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cheat-sheet-title"
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
+          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text outline-none",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -49,7 +87,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-4 shrink-0 flex justify-between items-start font-mono">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider text-zinc-300 font-bold">
+              <span id="cheat-sheet-title" className="text-xs uppercase tracking-wider text-zinc-300 font-bold">
                 STUDY DECK // REVIEW PANEL
               </span>
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-[#fecc17]/10 text-[#fecc17] border border-[#fecc17]/20 rounded">
