@@ -2,6 +2,19 @@ import { test } from 'node:test';
 import assert from 'node:assert';
 import { maskData } from './logger.ts';
 
+test('redacts private keys without breaking JSON', () => {
+  const jsonStr = JSON.stringify({
+    key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDK\n-----END PRIVATE KEY-----"
+  });
+  const masked = maskData(jsonStr);
+  JSON.parse(masked); // should not throw
+});
+
+test('redacts prefixed keys like stripe_api_key', () => {
+  const result = maskData({ stripe_api_key: 'sk_test_123' });
+  assert.strictEqual(result.stripe_api_key, '[REDACTED]');
+});
+
 test('redacts object keys', () => {
   const result = maskData({ api_key: '12345', password: 'my-password', safe_key: 'safe_value', token: 1234, secret: true });
   assert.strictEqual(result.api_key, '[REDACTED]');
