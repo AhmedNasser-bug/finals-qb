@@ -74,3 +74,16 @@ test('handles non-plain objects', () => {
   assert.strictEqual(maskData(map), map);
   assert.strictEqual(maskData(set), set);
 });
+
+test('handles prefixed keys in string logs', () => {
+  const result = maskData('stripe_api_key="sk_live_12345" mystripe_apikey=123 token=abc my_secret_token_123="abc"');
+  assert.strictEqual(result, 'stripe_api_key="[REDACTED]" mystripe_apikey="[REDACTED]" token="[REDACTED]" my_secret_token_123="[REDACTED]"');
+});
+
+test('handles private keys with valid JSON', () => {
+  const pkStr = '{"key":"-----BEGIN PRIVATE KEY-----\\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDE\\n-----END PRIVATE KEY-----"}';
+  const maskedPkStr = maskData(pkStr);
+  assert.strictEqual(maskedPkStr, '{"key":"-----BEGIN PRIVATE KEY-----\\\\n[REDACTED]\\\\n-----END PRIVATE KEY-----"}');
+  // Should successfully parse as valid JSON
+  assert.doesNotThrow(() => JSON.parse(maskedPkStr));
+});
