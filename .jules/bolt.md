@@ -1,1 +1,5 @@
 2024-05-18 - [Optimize duplicate ID resolution], Learning: While loops containing Set lookups can be O(N^2) if the final generated IDs consistently collide with the existing data set. Tracking the counter externally in a Map bypasses the need to regenerate previously-collided strings., Action: Updated duplicate ID resolution in `components/mold/home/add-questions-wizard.tsx` to use `Map` for both questions and flashcards.
+
+## 2024-05-19 - [Optimize JSON Parsing Latency]
+**Learning:** High-frequency character-by-character loops over long strings allocating a string per index (`str[i]`) lead to excessive memory allocation and latency. Additionally, parsing strings inside loops can be optimized by using `indexOf` to fast-forward past contiguous string literal blocks instead of evaluating character by character.
+**Action:** Refactored `balanceJsonStack` and `repairBadEscapes` to use `charCodeAt` for comparison and `indexOf` to fast forward the execution pointer past large contiguous blocks of strings, significantly improving latency.

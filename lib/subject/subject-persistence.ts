@@ -693,29 +693,40 @@ function balanceJsonStack(str: string): string {
   let bracketCount = 0;
 
   for (let i = 0; i < str.length; i++) {
-    const char = str[i]
+    const charCode = str.charCodeAt(i)
     if (escaped) {
       escaped = false
       continue
     }
-    if (char === '\\') {
+    if (charCode === 92) { // \
       escaped = true
       continue
     }
-    if (char === '"') {
+    if (charCode === 34) { // "
       inString = !inString
       continue
     }
 
-    if (inString) continue;
+    if (inString) {
+        let nextBackslash = str.indexOf("\\", i);
+        let nextQuote = str.indexOf("\"", i);
+        let endOfFastForward = str.length;
+        if (nextBackslash !== -1 && nextBackslash < endOfFastForward) endOfFastForward = nextBackslash;
+        if (nextQuote !== -1 && nextQuote < endOfFastForward) endOfFastForward = nextQuote;
 
-    if (char === '{') {
+        if (endOfFastForward > i) {
+           i = endOfFastForward - 1;
+        }
+        continue;
+    }
+
+    if (charCode === 123) { // {
       stack.push('{')
       braceCount++
-    } else if (char === '[') {
+    } else if (charCode === 91) { // [
       stack.push('[')
       bracketCount++
-    } else if (char === '}') {
+    } else if (charCode === 125) { // }
       if (stack[stack.length - 1] === '{') {
         stack.pop()
         braceCount--
@@ -730,7 +741,7 @@ function balanceJsonStack(str: string): string {
           braceCount--
         }
       }
-    } else if (char === ']') {
+    } else if (charCode === 93) { // ]
       if (stack[stack.length - 1] === '[') {
         stack.pop()
         bracketCount--
@@ -846,20 +857,35 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
   ])
 
   for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (char === '"' && str[i - 1] !== '\\') {
+    const charCode = str.charCodeAt(i)
+    if (charCode === 34 && (i === 0 || str.charCodeAt(i - 1) !== 92)) { // " is 34, \ is 92
       repairedChunks.push('"')
       inString = !inString
       continue
     }
 
-    if (inString && char === '\\') {
-        const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repairedChunks.push(addition);
-        fixed = fixed || wasFixed;
-        i += charsConsumed - 1; // loop naturally increments i
+    if (inString) {
+        if (charCode === 92) {
+          const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
+          repairedChunks.push(addition);
+          fixed = fixed || wasFixed;
+          i += charsConsumed - 1; // loop naturally increments i
+        } else {
+            let nextBackslash = str.indexOf("\\", i)
+            let nextQuote = str.indexOf("\"", i)
+            let endOfFastForward = str.length;
+            if (nextBackslash !== -1 && nextBackslash < endOfFastForward) endOfFastForward = nextBackslash;
+            if (nextQuote !== -1 && nextQuote < endOfFastForward) endOfFastForward = nextQuote;
+
+            if (endOfFastForward > i) {
+               repairedChunks.push(str.slice(i, endOfFastForward))
+               i = endOfFastForward - 1;
+            } else {
+               repairedChunks.push(str[i])
+            }
+        }
     } else {
-      repairedChunks.push(char)
+      repairedChunks.push(str[i])
     }
   }
 
