@@ -7,11 +7,11 @@ export function StatCell({
   label: string; value: string; accent?: boolean; className?: string
 }) {
   return (
-    <div className={cn("flex flex-col gap-1 p-3 bg-[#201f1f]", className)}>
-      <span className="font-mono text-[9px] text-zinc-500 tracking-widest uppercase">{label}</span>
+    <div className={cn("flex flex-col gap-1 p-3 bg-panel border border-border/40 rounded", className)}>
+      <span className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">{label}</span>
       <span className={cn(
-        "font-mono text-xl font-black",
-        accent ? "text-[#fecc17]" : "text-[#e5e2e1]"
+        "font-mono text-xl font-black tabular-nums",
+        accent ? "text-primary" : "text-foreground"
       )}>
         {value}
       </span>

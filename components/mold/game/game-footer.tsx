@@ -47,7 +47,7 @@ export function GameFooter({
   }
 
   return (
-    <footer className="bg-[#1a1d21] border-t border-[var(--tw-hex-fecc17)]/10 px-4 h-24 flex items-center gap-4">
+    <footer className="bg-panel border-t border-border/80 px-4 h-24 flex items-center gap-4">
       {/* Primary CTA and Hint row — full width */}
       <div className="flex-1 flex items-center gap-3 h-12">
         {config.hintsEnabled && (
@@ -57,14 +57,14 @@ export function GameFooter({
             aria-label={buttonTitle}
             title={buttonTitle}
             className={cn(
-              "h-full px-4 font-mono text-xs font-black tracking-[0.15em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded flex items-center justify-center gap-2 shrink-0 w-28 sm:w-36 transition-all duration-150",
+              "h-full px-4 font-mono text-xs font-black tracking-[0.15em] uppercase transition-all btn-depress focus-ring rounded flex items-center justify-center gap-2 shrink-0 w-28 sm:w-36 transition-all duration-150",
               canHint
-                ? "border-[#fecc17] bg-[var(--tw-hex-fecc17)]/10 text-[#fecc17] hover:bg-[var(--tw-hex-fecc17)]/20 border-glow"
+                ? "border-primary bg-primary/10 text-primary hover:bg-primary/20 border-glow"
                 : initialLockRemaining > 0
-                ? "border-zinc-800 bg-zinc-900/60 text-zinc-500 cursor-not-allowed animate-pulse"
+                ? "border-border bg-secondary/60 text-muted-foreground cursor-not-allowed animate-pulse"
                 : showHint
-                ? "border-[#fecc17] bg-[var(--tw-hex-fecc17)]/25 text-[#fecc17] border-glow animate-pulse"
-                : "border-[#2a2a2a] bg-[#1c1b1b] text-zinc-700 cursor-not-allowed"
+                ? "border-primary bg-primary/25 text-primary border-glow animate-pulse"
+                : "border-border bg-secondary/30 text-muted-foreground/40 cursor-not-allowed"
             )}
           >
             <span className="font-mono text-sm leading-none">{blockSymbol}</span>

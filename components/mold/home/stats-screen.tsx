@@ -133,15 +133,15 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         
         {/* LEFT COLUMN: Streak Ascent Visualizer */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="border-b border-zinc-800 pb-2">
-            <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
+          <div className="border-b border-border pb-2">
+            <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
               01 // STUDY STREAK PROGRESS
             </h2>
           </div>
           <StreakAscent 
             currentStreak={dayStreak} 
             bestStreak={stats.bestStreak || dayStreak}
-            className="w-full bg-[#101115]"
+            className="w-full bg-panel"
           />
         </div>
 
@@ -150,8 +150,8 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
           
           {/* Daily Missions Panel */}
           <div className="space-y-4">
-            <div className="border-b border-zinc-800 pb-2">
-              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
+            <div className="border-b border-border pb-2">
+              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
                 02 // DAILY STUDY GOALS
               </h2>
             </div>

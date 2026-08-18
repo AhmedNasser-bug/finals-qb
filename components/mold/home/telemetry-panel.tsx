@@ -20,12 +20,12 @@ export function TelemetryPanel() {
   }, [averageResponseTimeMs])
 
   return (
-    <section className="bg-[#101115] border border-border p-6 rounded-md space-y-5 select-none">
+    <section className="bg-panel border border-border p-6 rounded space-y-5 select-none">
       <div className="flex justify-between items-center select-none">
-        <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-white/80">
+        <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-foreground">
           PERFORMANCE STATS
         </h2>
-        <span className="text-primary text-xs font-mono font-bold tracking-widest bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">
+        <span className="text-primary text-xs font-mono font-bold tracking-widest bg-secondary border border-border px-2 py-0.5 rounded">
           STATS
         </span>
       </div>
@@ -37,10 +37,10 @@ export function TelemetryPanel() {
           <div className="space-y-2.5">
             <div className="flex justify-between font-mono text-[10px] text-muted-foreground uppercase">
               <span>ACCURACY RATE</span>
-              <span className="text-[#4ae176] font-bold">{roundedAccuracy}%</span>
+              <span className="text-emerald-400 font-bold tabular-nums">{roundedAccuracy}%</span>
             </div>
             
-            <div className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average accuracy is ${roundedAccuracy}%`}>
+            <div className="h-3 bg-secondary/60 border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average accuracy is ${roundedAccuracy}%`}>
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = i < Math.ceil(accuracyPct / 10)
                 return (
@@ -48,7 +48,7 @@ export function TelemetryPanel() {
                     key={i} 
                     className={cn(
                       "h-full flex-1 transition-all duration-300", 
-                      isFilled ? "bg-[#4ae176]" : "bg-zinc-800"
+                      isFilled ? "bg-emerald-500" : "bg-secondary"
                     )} 
                   />
                 )
@@ -56,36 +56,36 @@ export function TelemetryPanel() {
             </div>
 
             {/* Dynamic Milestones under Accuracy Bar */}
-            <div className="flex justify-between font-mono text-[8px] text-zinc-600 px-0.5 pt-0.5 select-none relative">
+            <div className="flex justify-between font-mono text-[8px] text-muted-foreground/60 px-0.5 pt-0.5 select-none relative">
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
-                accuracyPct >= 60 ? "text-[#fecc17] font-bold" : "text-zinc-600"
+                accuracyPct >= 60 ? "text-primary font-bold" : "text-muted-foreground/60"
               )}>
-                <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 60 ? "bg-[#fecc17]" : "bg-zinc-800")} />
+                <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 60 ? "bg-primary" : "bg-secondary")} />
                 60% PASS
               </span>
               
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
-                accuracyPct >= 80 ? "text-[#fecc17] font-bold" : "text-zinc-600"
+                accuracyPct >= 80 ? "text-primary font-bold" : "text-muted-foreground/60"
               )}>
-                <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 80 ? "bg-[#fecc17]" : "bg-zinc-800")} />
+                <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 80 ? "bg-primary" : "bg-secondary")} />
                 80% EXPERT
               </span>
 
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
-                accuracyPct >= 90 ? "text-[#4ae176] font-bold" : "text-zinc-600"
+                accuracyPct >= 90 ? "text-emerald-400 font-bold" : "text-muted-foreground/60"
               )}>
-                <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 90 ? "bg-[#4ae176]" : "bg-zinc-800")} />
+                <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 90 ? "bg-emerald-400" : "bg-secondary")} />
                 90% MASTER
               </span>
 
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
-                accuracyPct >= 97 ? "text-primary font-bold" : "text-zinc-600"
+                accuracyPct >= 97 ? "text-primary font-bold" : "text-muted-foreground/60"
               )}>
-                <span className={cn("w-1 h-1 rounded-full shrink-0", accuracyPct >= 97 ? "bg-primary animate-pulse" : "bg-zinc-800")} />
+                <span className={cn("w-1 h-1 rounded-full shrink-0", accuracyPct >= 97 ? "bg-primary animate-pulse" : "bg-secondary")} />
                 97% S+
               </span>
             </div>

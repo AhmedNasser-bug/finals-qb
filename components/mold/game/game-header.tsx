@@ -329,22 +329,29 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           <div className="md:mt-1.5 flex gap-2">
             <button
               onClick={toggleCheatSheet}
-              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] hover:border-[#fecc17]/50 hover:bg-[#fecc17]/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0 cursor-pointer"
-              title="Open Review Deck (Ctrl + `)"
+              aria-label="Toggle Review Deck terminal to inspect missed and hinted questions"
+              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-primary hover:border-primary/50 hover:bg-primary/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[36px] shrink-0 cursor-pointer rounded"
+              title="Toggle Review Deck terminal to inspect missed and hinted questions (Press Esc)"
             >
               [REVIEW DECK]
             </button>
             <button
               onClick={onForfeit}
-              aria-label="Quit current game session"
-              title="Quit current game session"
-              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-[#930013] hover:bg-[var(--tw-hex-930013)]/10 hover:text-[#ffb4ab] uppercase tracking-widest transition-all duration-150 focus-ring min-h-[32px] shrink-0 cursor-pointer"
+              aria-label="Forfeit active session and view summary results"
+              title="Forfeit active session and view summary results"
+              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-destructive hover:bg-destructive/10 hover:text-destructive uppercase tracking-widest transition-all duration-150 focus-ring min-h-[36px] shrink-0 cursor-pointer rounded"
             >
               QUIT SESSION
             </button>
           </div>
         </div>
       </div>
+      {/* Screen Reader Live Region for Low Time Warning */}
+      {isUrgent && (
+        <div role="alert" aria-live="assertive" className="sr-only">
+          Warning: Less than 10 seconds remaining!
+        </div>
+      )}
     </header>
   )
 }

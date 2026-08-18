@@ -46,31 +46,31 @@ export function SideNavBar({
   onDownloadSolvedPdf,
 }: SideNavBarProps) {
   return (
-    <aside className="hidden md:flex flex-col gap-2 p-4 w-64 h-[calc(100vh-64px)] bg-[#1c1b1b] border-r border-border fixed left-0 top-16 z-40 select-none">
-      <div className="mb-6 px-3 border-b border-zinc-800/60 pb-4">
+    <aside className="hidden md:flex flex-col gap-2 p-4 w-64 h-[calc(100vh-64px)] bg-panel border-r border-border fixed left-0 top-16 z-40 select-none">
+      <div className="mb-6 px-3 border-b border-border/60 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded bg-[var(--tw-hex-fecc17)]/5 border border-[var(--tw-hex-fecc17)]/20 flex items-center justify-center text-primary border-glow">
-            <TerminalIcon className="w-4 h-4" />
+          <div className="w-9 h-9 rounded bg-primary/10 border border-primary/30 flex items-center justify-center text-primary border-glow">
+            <TerminalIcon className="w-4 h-4" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-[#fecc17] font-bold">STUDY PROFILE</div>
-            <div className="font-mono text-[8px] text-zinc-500 uppercase tracking-tighter truncate">
+            <div className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">STUDY PROFILE</div>
+            <div className="font-mono text-[8px] text-muted-foreground uppercase tracking-tighter truncate">
               ID: {subjectId.substring(0, 8).toUpperCase()}
             </div>
           </div>
         </div>
       </div>
 
-      <nav className="flex flex-col gap-1.5">
+      <nav className="flex flex-col gap-1.5" aria-label="Main application navigation">
         <button 
           onClick={onShowDashboard}
-          title="Dashboard"
-          aria-label="Dashboard"
+          title="Navigate to Dashboard (Mode Selection and Session Configuration)"
+          aria-label="Navigate to Dashboard mode selection and session setup"
           className={cn(
-            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
+            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded transition-all focus-ring",
             activeView === "home" 
-              ? "bg-[#fecc17] text-black font-bold border-glow" 
-              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
+              ? "bg-primary text-primary-foreground font-bold border-glow" 
+              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >
           <TerminalIcon className="w-3.5 h-3.5" aria-hidden="true" /> <span>Dashboard</span>
@@ -78,12 +78,13 @@ export function SideNavBar({
 
         <button 
           onClick={onShowStats}
-          aria-label="Statistics"
+          title="View comprehensive study statistics, daily missions, and performance history"
+          aria-label="View comprehensive study statistics, daily missions, and performance history"
           className={cn(
-            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm transition-all",
+            "flex items-center gap-3 p-3 font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded transition-all focus-ring",
             activeView === "stats" 
-              ? "bg-[#fecc17] text-black font-bold border-glow" 
-              : "text-zinc-400 hover:bg-zinc-800/40 hover:text-white"
+              ? "bg-primary text-primary-foreground font-bold border-glow" 
+              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >
           <BarChart3 className="w-3.5 h-3.5" aria-hidden="true" /> <span>Statistics</span>
@@ -91,68 +92,77 @@ export function SideNavBar({
 
         <button 
           onClick={onShowEncyclopedia}
-          aria-label="Encyclopedia"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="Open interactive subject encyclopedia and key terminology definitions"
+          aria-label="Open interactive subject encyclopedia and key terminology definitions"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <BookOpen className="w-3.5 h-3.5" aria-hidden="true" /> <span>Encyclopedia</span>
         </button>
 
         <button 
           onClick={onShowGallery}
-          aria-label="Achievements"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="View unlocked trophies, badges, and mastery achievements"
+          aria-label="View unlocked trophies, badges, and mastery achievements"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <Trophy className="w-3.5 h-3.5" aria-hidden="true" /> <span>Achievements</span>
         </button>
         <button 
           onClick={onChangeSubject}
-          aria-label="Switch Subject"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="Switch to another subject module in your library"
+          aria-label="Switch to another subject module in your library"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> <span>Switch Subject</span>
         </button>
         <button 
           onClick={onImportNew}
-          aria-label="Import JSON"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="Import new custom subject from a JSON document"
+          aria-label="Import new custom subject from a JSON document"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <Plus className="w-3.5 h-3.5" aria-hidden="true" /> <span>Import JSON</span>
         </button>
         <button 
           onClick={onAddQuestions}
-          aria-label="Add questions"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="Open AI Pedagogical Question Generator Wizard"
+          aria-label="Open AI Pedagogical Question Generator Wizard"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <Sparkles className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> <span>Add questions</span>
         </button>
         <button 
           onClick={onDownloadHtml}
-          aria-label="Download Q&A Sheet"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="Export offline interactive HTML study package"
+          aria-label="Export offline interactive HTML study package"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <Download className="w-3.5 h-3.5" aria-hidden="true" /> <span>Download Q&A Sheet</span>
         </button>
         <button 
           onClick={onDownloadPdf}
-          aria-label="Questions PDF"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="Generate clean printable PDF question sheet"
+          aria-label="Generate clean printable PDF question sheet"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <FileText className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> <span>Questions PDF</span>
         </button>
         <button 
           onClick={onDownloadSolvedPdf}
-          aria-label="Solved Questions PDF"
-          className="flex items-center gap-3 text-zinc-400 p-3 hover:bg-zinc-800/40 hover:text-white transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded-sm"
+          title="Generate complete solved PDF with explanations, hints, and diagrams"
+          aria-label="Generate complete solved PDF with explanations, hints, and diagrams"
+          className="flex items-center gap-3 text-muted-foreground p-3 hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
         >
           <FileText className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> <span>Solved Questions PDF</span>
         </button>
       </nav>
 
-      <div className="mt-auto pt-4 border-t border-zinc-800/60">
+      <div className="mt-auto pt-4 border-t border-border/60">
         <button 
           onClick={onInitialize}
-          aria-label="Start Quiz"
-          className="w-full bg-[#131313] hover:bg-[var(--tw-hex-fecc17)]/5 text-primary hover:border-primary/60 border border-zinc-800 font-mono text-[10px] py-3.5 tracking-[0.2em] transition-all font-bold cursor-pointer hover-scale-premium"
+          title="Launch active game session (Press Enter)"
+          aria-label="Start active quiz session"
+          className="w-full bg-secondary/80 hover:bg-primary/15 text-primary hover:border-primary/60 border border-border font-mono text-[10px] py-3.5 tracking-[0.2em] transition-all font-bold cursor-pointer rounded focus-ring"
         >
           START QUIZ
         </button>

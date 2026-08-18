@@ -49,14 +49,14 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-4 shrink-0 flex justify-between items-start font-mono">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider text-zinc-300 font-bold">
+              <span className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
                 STUDY DECK // REVIEW PANEL
               </span>
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-[#fecc17]/10 text-[#fecc17] border border-[#fecc17]/20 rounded">
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded">
                 {entries.length} ITEMS
               </span>
             </div>
-            <p className="font-sans text-[11px] text-zinc-500 max-w-md leading-normal">
+            <p className="font-sans text-[11px] text-muted-foreground max-w-md leading-normal">
               Review full explanations for questions where you requested hints or provided incorrect responses.
             </p>
           </div>
@@ -66,16 +66,16 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               <button
                 onClick={clearEntries}
                 aria-label="Clear Deck"
-                className="text-zinc-400 hover:text-red-400 font-mono text-[10px] uppercase border border-zinc-800 hover:border-red-500/20 bg-zinc-950 px-2.5 py-1 rounded transition-all cursor-pointer"
+                className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
               >
                 Clear Deck
               </button>
             )}
             <button
               onClick={() => setIsOpen(false)}
-              aria-label="Close panel"
-              className="text-zinc-400 hover:text-[#fecc17] font-mono text-[10px] uppercase border border-zinc-800 hover:border-[#fecc17]/20 bg-zinc-950 px-2 py-1 rounded transition-all cursor-pointer"
-              title="Close panel (Ctrl + `)"
+              aria-label="Close review deck panel"
+              className="text-muted-foreground hover:text-primary font-mono text-[10px] uppercase border border-border hover:border-primary/30 bg-secondary/80 px-2 py-1 rounded transition-all cursor-pointer focus-ring"
+              title="Close review deck panel (Press Esc)"
             >
               [X]
             </button>

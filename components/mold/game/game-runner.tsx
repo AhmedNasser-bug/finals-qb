@@ -193,7 +193,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     }
   }, [state.currentIndex, state.isRevealed])
 
-  // In-Game Keyboard Navigation Engine (1-4, A-D, Enter, Space, H)
+  // In-Game Keyboard Navigation Engine (1-4, A-D, Enter, Space, H, Escape)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
@@ -201,10 +201,17 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         return
       }
 
-      if (state.phase !== "playing") return
+      // Escape toggles cheat sheet review deck
+      if (e.key === "Escape") {
+        e.preventDefault()
+        toggleCheatSheet()
+        return
+      }
+
+      if (state.phase !== "playing" && state.phase !== "reviewing") return
 
       // 1. Numerical & Alphabetical Option Selection (1..4 / A..D)
-      if (!state.isRevealed && currentQuestion?.options) {
+      if (!state.isRevealed && currentQuestion?.options && state.phase === "playing") {
         const num = parseInt(e.key, 10)
         if (!isNaN(num) && num >= 1 && num <= currentQuestion.options.length) {
           e.preventDefault()
@@ -221,14 +228,14 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         }
       }
 
-      // 2. Submit / Continue on Enter or Space
+      // 2. Submit on playing (Enter/Space) / Advance on reviewing (Enter/Space)
       if (e.key === "Enter" || e.key === " ") {
-        if (!state.isRevealed && state.selectedOption !== null) {
+        if (!state.isRevealed && state.selectedOption !== null && state.phase === "playing") {
           e.preventDefault()
           revealAnswer()
           return
         }
-        if (state.isRevealed) {
+        if (state.isRevealed || state.phase === "reviewing") {
           e.preventDefault()
           nextQuestion()
           return
@@ -236,7 +243,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       }
 
       // 3. Hint Shortcut (H / h)
-      if ((e.key === "h" || e.key === "H") && config.hintsEnabled && !state.isRevealed) {
+      if ((e.key === "h" || e.key === "H") && config.hintsEnabled && !state.isRevealed && state.phase === "playing") {
         if (initialLockRemaining === 0 && !hintUsedThisQuestion && !showHint) {
           e.preventDefault()
           useHint()
@@ -262,6 +269,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     revealAnswer,
     nextQuestion,
     useHint,
+    toggleCheatSheet,
   ])
 
   // Build RunRecord and evaluate achievements exactly once when the game transitions to complete.

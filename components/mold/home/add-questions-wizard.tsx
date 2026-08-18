@@ -891,11 +891,12 @@ CRITICAL RULES:
             <button
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
+              aria-busy={validationState === "validating"}
               className={cn(
-                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-visible:outline-none min-h-[40px] cursor-pointer rounded-none",
+                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-ring min-h-[44px] cursor-pointer rounded",
                 isNextDisabled
-                  ? "border-border text-zinc-600 cursor-not-allowed opacity-40 bg-transparent"
-                  : "border-primary bg-primary text-black hover:bg-primary/90 border-glow"
+                  ? "border-border text-muted-foreground/40 cursor-not-allowed opacity-40 bg-transparent"
+                  : "border-primary bg-primary text-primary-foreground hover:bg-primary/90 border-glow"
               )}
             >
               CONTINUE →
@@ -904,14 +905,15 @@ CRITICAL RULES:
             <button
               onClick={handleConfirmMerge}
               disabled={isNextDisabled}
+              aria-busy={validationState === "validating"}
               className={cn(
-                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-visible:outline-none min-h-[40px] cursor-pointer rounded-none",
+                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all focus-ring min-h-[44px] cursor-pointer rounded",
                 isNextDisabled
-                  ? "border-border text-zinc-600 cursor-not-allowed opacity-40 bg-transparent"
+                  ? "border-border text-muted-foreground/40 cursor-not-allowed opacity-40 bg-transparent"
                   : "border-emerald-500 bg-emerald-500 text-white hover:bg-emerald-600 border-glow-success"
               )}
             >
-              MERGE & SAVE
+              {validationState === "validating" ? "VALIDATING..." : "MERGE & SAVE"}
             </button>
           )}
         </div>

@@ -120,6 +120,44 @@ export function HomeScreen({
     setView("game")
   }
 
+  // Home Screen Global Hotkeys (1-7 for Modes, Enter to Initialize)
+  useEffect(() => {
+    if (view !== "home" || showGallery || showEncyclopedia || showImporter || showAiWizard) return
+
+    const handleHomeKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+        return
+      }
+
+      const MODES_MAP: GameModeId[] = [
+        "speedrun",
+        "blitz",
+        "hardcore",
+        "survival",
+        "practice",
+        "flashcards",
+        "full-revision",
+      ]
+
+      const keyNum = parseInt(e.key, 10)
+      if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= MODES_MAP.length) {
+        e.preventDefault()
+        handleModeSelect(MODES_MAP[keyNum - 1])
+        return
+      }
+
+      if (e.key === "Enter") {
+        e.preventDefault()
+        handleInitialize()
+        return
+      }
+    }
+
+    window.addEventListener("keydown", handleHomeKeyDown)
+    return () => window.removeEventListener("keydown", handleHomeKeyDown)
+  }, [view, showGallery, showEncyclopedia, showImporter, showAiWizard, selectedMode, config, activeSubject.id])
+
   function handleRunSaved(run: RunRecord) {
     recordSession(run)
   }

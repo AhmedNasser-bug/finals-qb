@@ -34,7 +34,7 @@ export function ConfigControls({
   onChange: (patch: Partial<SetupConfig>) => void
   children: React.ReactNode
 }) {
-  const handleResetDefaults = () => {
+  const handlePresetDefault = () => {
     onChange({
       timeLimitEnabled: true,
       hintsEnabled: false,
@@ -42,23 +42,59 @@ export function ConfigControls({
     })
   }
 
+  const handlePresetMastery = () => {
+    onChange({
+      timeLimitEnabled: false,
+      hintsEnabled: false,
+      questionCount: 0,
+    })
+  }
+
+  const handlePresetSpeedDrill = () => {
+    onChange({
+      timeLimitEnabled: true,
+      hintsEnabled: false,
+      questionCount: 10,
+    })
+  }
+
   return (
     <ConfigControlsContext.Provider value={{ config, onChange }}>
       <div className="flex flex-col gap-4 p-5 rounded border border-border bg-panel">
-        {/* Quick parameter toolbar */}
-        <div className="flex items-center justify-between pb-1 border-b border-border/40">
+        {/* Quick parameter toolbar with one-tap presets */}
+        <div className="flex items-center justify-between pb-2 border-b border-border/40 flex-wrap gap-2">
           <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-            Parameters
+            Parameters // Presets
           </span>
-          <button
-            type="button"
-            onClick={handleResetDefaults}
-            title="Reset parameters to standard defaults (Timer ON, Hints OFF, 20 questions)"
-            aria-label="Reset parameters to defaults"
-            className="text-[10px] font-mono text-muted-foreground hover:text-primary transition-colors focus-ring px-1.5 py-0.5 rounded border border-transparent hover:border-border"
-          >
-            RESET DEFAULTS
-          </button>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              onClick={handlePresetDefault}
+              title="Default preset: Timer ON, Hints OFF, 20 questions"
+              aria-label="Set parameters to standard default preset"
+              className="text-[10px] font-mono text-muted-foreground hover:text-primary transition-colors focus-ring px-2 py-0.5 rounded border border-border/60 hover:border-primary/50 bg-secondary/30"
+            >
+              DEFAULT
+            </button>
+            <button
+              type="button"
+              onClick={handlePresetMastery}
+              title="Mastery preset: Timer OFF, Hints OFF, All questions"
+              aria-label="Set parameters to untimed mastery preset covering all questions"
+              className="text-[10px] font-mono text-muted-foreground hover:text-emerald-400 transition-colors focus-ring px-2 py-0.5 rounded border border-border/60 hover:border-emerald-400/50 bg-secondary/30"
+            >
+              MASTERY
+            </button>
+            <button
+              type="button"
+              onClick={handlePresetSpeedDrill}
+              title="Speed Drill preset: Timer ON, Hints OFF, 10 questions"
+              aria-label="Set parameters to rapid 10-question speed drill preset"
+              className="text-[10px] font-mono text-muted-foreground hover:text-destructive transition-colors focus-ring px-2 py-0.5 rounded border border-border/60 hover:border-destructive/50 bg-secondary/30"
+            >
+              SPEED DRILL
+            </button>
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           {children}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import dynamic from "next/dynamic"
 import { ShareModal } from "@/components/mold/common/share-modal"
@@ -39,15 +39,28 @@ export function SubjectSelector({
   const [showImporter, setShowImporter] = useState(false)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [sharingSubject, setSharingSubject] = useState<FullSubjectData | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   // Example manifest — fetched once, just metadata (fast)
   const [examples, setExamples] = useState<ExampleManifestEntry[]>([])
   const [examplesLoading, setExamplesLoading] = useState(true)
 
-  // Per-example loading state (full JSON fetch on click)
-  const [loadingExampleId, setLoadingExampleId] = useState<string | null>(null)
-  // Per-example error state
-  const [exampleError, setExampleError] = useState<string | null>(null)
+  // Global '/' shortcut to focus search input
+  useEffect(() => {
+    const handleGlobalSearchKey = (e: KeyboardEvent) => {
+      if (e.key === "/" && document.activeElement !== searchInputRef.current) {
+        const target = e.target as HTMLElement | null
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+          return
+        }
+        e.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+    window.addEventListener("keydown", handleGlobalSearchKey)
+    return () => window.removeEventListener("keydown", handleGlobalSearchKey)
+  }, [])
 
   useEffect(() => {
     getExamplesManifest()
@@ -55,6 +68,29 @@ export function SubjectSelector({
       .catch(() => setExamples([]))
       .finally(() => setExamplesLoading(false))
   }, [])
+
+  // Filtered lists based on search query
+  const filteredSubjects = useMemo(() => {
+    if (!searchQuery.trim()) return subjects
+    const q = searchQuery.toLowerCase().trim()
+    return subjects.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.id.toLowerCase().includes(q) ||
+        s.config?.description?.toLowerCase().includes(q)
+    )
+  }, [subjects, searchQuery])
+
+  const filteredExamples = useMemo(() => {
+    if (!searchQuery.trim()) return examples
+    const q = searchQuery.toLowerCase().trim()
+    return examples.filter(
+      (e) =>
+        e.name.toLowerCase().includes(q) ||
+        e.id.toLowerCase().includes(q) ||
+        e.description.toLowerCase().includes(q)
+    )
+  }, [examples, searchQuery])
 
   function handleImport(subject: FullSubjectData) {
     setShowImporter(false)
@@ -129,14 +165,42 @@ export function SubjectSelector({
         <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left Column: Subject Selection Content (8 cols) */}
-          <div className="lg:col-span-8 flex flex-col gap-10">
+          <div className="lg:col-span-8 flex flex-col gap-8">
+            {/* Search filter input with hotkey pill */}
+            <div className="relative w-full">
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search your subjects & example modules..."
+                aria-label="Search subjects and examples (press slash to focus)"
+                className="w-full bg-panel border border-border px-4 py-2.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded pr-14 transition-colors"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
+                {searchQuery ? (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="pointer-events-auto text-[10px] font-mono text-muted-foreground hover:text-foreground mr-1"
+                    title="Clear search"
+                  >
+                    ESC
+                  </button>
+                ) : null}
+                <span className="text-[10px] font-mono font-bold text-muted-foreground bg-secondary/80 border border-border/80 px-1.5 py-0.5 rounded select-none">
+                  [/]
+                </span>
+              </div>
+            </div>
+
             {/* ── Welcome banner — only when no user subjects ── */}
             {!hasUserSubjects && <WelcomeBanner />}
 
             {/* ── Your subjects ── */}
             {hasUserSubjects && (
               <YourSubjectsSection
-                subjects={subjects}
+                subjects={filteredSubjects}
                 confirmDeleteId={confirmDeleteId}
                 onSelect={onSelect}
                 onShare={(f) => setSharingSubject(f)}
@@ -149,7 +213,7 @@ export function SubjectSelector({
 
             {/* ── Example modules ── */}
             <ExampleModulesSection
-              examples={examples}
+              examples={filteredExamples}
               examplesLoading={examplesLoading}
               exampleError={exampleError}
               loadingExampleId={loadingExampleId}

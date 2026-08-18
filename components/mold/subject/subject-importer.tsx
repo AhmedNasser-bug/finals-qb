@@ -473,9 +473,10 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             <button
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
+              aria-busy={loadState === "loading"}
               title={isNextDisabled ? "Please fill required fields to continue" : "Proceed to next step"}
               className={cn(
-                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded-none",
+                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded",
                 isNextDisabled
                   ? "border-border text-muted-foreground cursor-not-allowed opacity-40"
                   : "border-primary bg-primary text-primary-foreground hover:bg-primary/95 border-glow"
@@ -487,15 +488,16 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             <button
               onClick={handleConfirm}
               disabled={isNextDisabled}
+              aria-busy={loadState === "loading"}
               title={isNextDisabled ? "Subject data must be completely valid to import" : "Load verified subject data"}
               className={cn(
-                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded-none",
+                "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded",
                 isNextDisabled
                   ? "border-border text-muted-foreground cursor-not-allowed opacity-40"
                   : "border-emerald-500 bg-emerald-500 text-white hover:bg-emerald-600 border-glow-success"
               )}
             >
-              ADD SUBJECT
+              {loadState === "loading" ? "IMPORTING..." : "ADD SUBJECT"}
             </button>
           )}
         </div>
