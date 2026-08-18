@@ -3,6 +3,7 @@ services:
     # Managed by setup.sh orchestration
     image: node:alpine
     working_dir: /app
+    restart: unless-stopped
     volumes:
       - .:/app
     environment:
@@ -13,6 +14,7 @@ services:
   tenant-b:
     image: node:alpine
     working_dir: /app
+    restart: unless-stopped
     volumes:
       - .:/app
     environment:

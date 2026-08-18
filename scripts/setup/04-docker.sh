@@ -13,6 +13,7 @@ if [ "$1" = "--multi-tenant" ]; then
         docker compose up -d --build --remove-orphans
     else
         echo "Error: docker-compose or docker compose is required for multi-tenant setup."
+        exit 1
     fi
     echo "Multi-tenant sandbox containers are spinning up..."
 fi
