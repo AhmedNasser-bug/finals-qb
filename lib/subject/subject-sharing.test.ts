@@ -35,11 +35,14 @@ describe("subject-sharing", () => {
         question: "Q?",
         answer: "A",
         options: [
-          { id: "o1", label: "A", text: "Option A", isCorrect: true },
-          { id: "o2", label: "B", text: "Option B", isCorrect: false }
+          { label: "A", text: "Option A" },
+          { label: "B", text: "Option B" }
         ]
       }
-    ]
+    ],
+    flashcards: [],
+    terminology: { Cat: [] },
+    achievements: []
   }
 
   describe("encodeSubject and decodeSubject", () => {
@@ -142,7 +145,7 @@ describe("subject-sharing", () => {
       const mockRevokeObjectURL = mock.fn()
       const mockClick = mock.fn()
 
-      global.URL.createObjectURL = mockCreateObjectURL
+      global.URL.createObjectURL = mockCreateObjectURL as any
       global.URL.revokeObjectURL = mockRevokeObjectURL
 
       global.Blob = class Blob {
@@ -183,7 +186,7 @@ describe("subject-sharing", () => {
       const mockRevokeObjectURL = mock.fn()
       const mockClick = mock.fn()
 
-      global.URL.createObjectURL = mockCreateObjectURL
+      global.URL.createObjectURL = mockCreateObjectURL as any
       global.URL.revokeObjectURL = mockRevokeObjectURL
 
       global.Blob = class Blob {

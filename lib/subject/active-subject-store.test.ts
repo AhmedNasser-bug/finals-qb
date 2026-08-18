@@ -32,7 +32,10 @@ describe("active-subject-store", () => {
       title: "Test",
       description: "Desc"
     },
-    questions: []
+    questions: [],
+    flashcards: [],
+    terminology: {},
+    achievements: []
   };
 
   test("setActiveSubject writes to sessionStorage", () => {

@@ -6,8 +6,8 @@
  * coupling to game logic, routing, or state transitions.
  */
 
-import type { CognitiveTelemetryEvent } from "./telemetry-types.ts"
-import { getNamespacedKey } from "../utils/user-storage.ts"
+import type { CognitiveTelemetryEvent } from "./telemetry-types"
+import { getNamespacedKey } from "../utils/user-storage"
 
 const TELEMETRY_BASE_KEY = "mold_v2_telemetry_events"
 const MAX_STORED_EVENTS = 500

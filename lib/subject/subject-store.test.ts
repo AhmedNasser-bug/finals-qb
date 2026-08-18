@@ -10,7 +10,10 @@ describe("subject-store", () => {
         id: "test",
         name: "Test",
         config: { title: "Test", description: "Desc" },
-        questions: []
+        questions: [],
+        flashcards: [],
+        terminology: {},
+        achievements: []
       };
 
       const categories = deriveCategoriesFromSubject(subject);
@@ -26,7 +29,10 @@ describe("subject-store", () => {
           { category: "finite-automata" } as Question,
           { category: "finite-automata" } as Question,
           { category: "finite-automata" } as Question
-        ]
+        ],
+        flashcards: [],
+        terminology: {},
+        achievements: []
       };
 
       const categories = deriveCategoriesFromSubject(subject);
@@ -48,7 +54,10 @@ describe("subject-store", () => {
           { category: "cat-two" } as Question,
           { category: "cat-one" } as Question,
           { category: "cat-three" } as Question
-        ]
+        ],
+        flashcards: [],
+        terminology: {},
+        achievements: []
       };
 
       const categories = deriveCategoriesFromSubject(subject);

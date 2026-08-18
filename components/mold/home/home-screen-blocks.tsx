@@ -7,9 +7,7 @@ import { SessionStatsPanel } from "./session-stats-panel"
 import { HeaderWell } from "./header-well"
 import { PerformanceTable } from "./performance-table"
 
-import type { GameModeId, SetupConfig, CategoryData } from "@/lib/mold-types"
-import type { Achievement } from "@/lib/achievement-engine"
-import type { RunRecord, UserStats } from "@/lib/mold-types"
+import type { GameModeId, SetupConfig, CategoryData, Achievement } from "@/lib/mold-types"
 
 interface MainContentGridProps {
   // Mode Selection

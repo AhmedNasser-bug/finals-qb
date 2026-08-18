@@ -394,7 +394,7 @@ function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
     warnings.push(`"questions" array was missing or invalid; initialized as empty array.`)
   }
   
-  if (obj.questions.length === 0) {
+  if ((obj.questions as unknown[]).length === 0) {
     obj.questions = [
       {
         id: "q-default-1",

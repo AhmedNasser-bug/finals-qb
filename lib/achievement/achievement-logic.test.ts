@@ -20,10 +20,19 @@ function createMockState(overrides: Partial<GameState> = {}): GameState {
     startTime: 0,
     elapsedSeconds: 0,
     perQuestionTimeLimit: 0,
+    perQuestionTimeRemaining: 0,
     globalTimeLimit: 0,
     globalTimeRemaining: 0,
     hintsUsedTotal: 0,
-    config: {} as any,
+    streakShieldActive: false,
+    config: {
+      mode: "practice",
+      timeLimitEnabled: false,
+      hintsEnabled: true,
+      questionCount: 0,
+      selectedCategory: null,
+      subjectId: "subject-1",
+    },
     ...overrides,
   };
 }
@@ -31,16 +40,14 @@ function createMockState(overrides: Partial<GameState> = {}): GameState {
 function createMockRun(overrides: Partial<RunRecord> = {}): RunRecord {
   return {
     id: "run-1",
-    subjectId: "subject-1",
+    date: new Date().toISOString(),
     mode: "practice",
-    score: 0,
-    wrongAnswers: 0,
+    score: 100,
+    correctAnswers: 10,
     totalQuestions: 10,
-    timestamp: 0,
-    elapsedSeconds: 0,
-    bestStreak: 0,
-    hintsUsed: 0,
-    accuracy: 0,
+    timeTaken: 60,
+    streak: 5,
+    grade: "S+",
     ...overrides,
   };
 }

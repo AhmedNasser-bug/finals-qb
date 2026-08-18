@@ -241,7 +241,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
   )
 }
 
-function CloseIcon({ className, 'aria-hidden': ariaHidden }: { className?: string, 'aria-hidden'?: string | boolean }) {
+function CloseIcon({ className, 'aria-hidden': ariaHidden }: { className?: string, 'aria-hidden'?: boolean | "true" | "false" }) {
   return (
     <svg className={className} aria-hidden={ariaHidden} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <line x1="18" y1="6" x2="6" y2="18" />

@@ -87,6 +87,6 @@ describe("TelemetryCollector", () => {
     telemetryCollector.record(event, "user_123")
     const loaded = telemetryCollector.loadStoredEvents("algorithms", "user_123")
     assert.equal(loaded.length, 1)
-    assert.equal(loaded[0].cardId, "card-p1")
+    assert.equal((loaded[0] as CardFlippedEvent).cardId, "card-p1")
   })
 })

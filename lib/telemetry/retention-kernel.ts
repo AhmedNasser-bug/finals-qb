@@ -10,9 +10,9 @@ import type {
   FlashcardRecallQuality,
   RetentionMap,
   CategoryRetentionSummary,
-} from "./telemetry-types.ts"
-import type { Flashcard } from "../types/mold-types.ts"
-import { getNamespacedKey } from "../utils/user-storage.ts"
+} from "./telemetry-types"
+import type { Flashcard } from "../types/mold-types"
+import { getNamespacedKey } from "../utils/user-storage"
 
 const CARD_RETENTION_BASE_KEY = "mold_v2_card_retention"
 

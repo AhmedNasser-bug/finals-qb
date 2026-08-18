@@ -186,7 +186,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                       <p
                         className="font-sans text-xs leading-relaxed text-zinc-300 italic text-pretty"
                         dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(renderMath(entry.explanation))
+                          __html: DOMPurify.sanitize(renderMath(entry.explanation || ""))
                         }}
                       />
                     </div>

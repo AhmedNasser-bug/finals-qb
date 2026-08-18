@@ -15,8 +15,8 @@ import {
 } from "./subject-importer-steps"
 
 // ─── Wizard Types ─────────────────────────────────────────────────────────────
-type ImporterState = "idle" | "validating" | "valid" | "error" | "pasting"
-type SubjectTypeBias = "theoretical" | "technical"
+export type ImporterState = "idle" | "validating" | "valid" | "error" | "pasting" | "importing"
+export type SubjectTypeBias = "theoretical" | "technical"
 
 interface SubjectImporterProps {
   onImport: (subject: FullSubjectData) => void

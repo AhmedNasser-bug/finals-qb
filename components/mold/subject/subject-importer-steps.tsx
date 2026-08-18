@@ -716,7 +716,7 @@ ${bundledSourceMaterial}
 // ─── Step 5 Component ────────────────────────────────────────────────────────
 interface Step5LoadDataProps {
   json: string
-  state: "idle" | "validating" | "valid" | "error" | "pasting"
+  state: "idle" | "validating" | "valid" | "error" | "pasting" | "importing"
   isDragging: boolean
   onPaste: () => void
   onChange: (val: string) => void

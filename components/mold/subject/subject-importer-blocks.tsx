@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import { StatChip } from "@/components/mold/subject/subject-importer-components"
 import type { FullSubjectData } from "@/lib/mold-types"
 import type { ValidationResult } from "@/lib/subject-persistence"
+import type { ImporterState } from "./subject-importer"
 import {
   SubjectPromptBuilder,
   PEDAGOGICAL_PRESETS,
@@ -449,7 +450,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
 
 interface DropZoneSectionProps {
   json: string
-  state: "idle" | "validating" | "valid" | "error" | "pasting"
+  state: ImporterState
   isDragging: boolean
   onPaste: () => void
   onChange: (value: string) => void

@@ -5,9 +5,9 @@
  * by prioritizing cognitive decay, lapsed memory items, and due intervals.
  */
 
-import type { Flashcard } from "../types/mold-types.ts"
-import type { CardRetentionState, RetentionMap } from "./telemetry-types.ts"
-import { createInitialCardState } from "./retention-kernel.ts"
+import type { Flashcard } from "../types/mold-types"
+import type { CardRetentionState, RetentionMap } from "./telemetry-types"
+import { createInitialCardState } from "./retention-kernel"
 
 export type RoutingStrategy = "SMART_ADAPTIVE" | "DUE_ONLY" | "CRITICAL_ONLY" | "SEQUENTIAL"
 

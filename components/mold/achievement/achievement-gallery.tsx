@@ -1,12 +1,9 @@
 "use client"
 
-import { useMemo } from "react"
-
+import { useMemo, useState, useRef, useEffect } from "react"
 import { useAchievements } from "@/lib/achievement-engine"
 import type { Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
-
-import { useRef, useEffect } from "react"
 
 export function AchievementGallery({ onClose }: { onClose: () => void }) {
   const { achievements, reset } = useAchievements()
@@ -54,7 +51,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
     return { unlocked: u, locked: l }
   }, [achievements])
 
-  const [confirmReset, setConfirmReset] = React.useState(false)
+  const [confirmReset, setConfirmReset] = useState(false)
 
   const handleResetClick = () => {
     if (!confirmReset) {

@@ -214,14 +214,8 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
         {/* ── Telemetry and Sequence map ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <StatsGrid
-            score={score}
-            total={total}
-            accuracyPct={accuracyPct}
-            gradeHex={gradeHex}
-            filledSegments={filledSegments}
             bestStreak={bestStreak}
             elapsedSeconds={elapsedSeconds}
-            hintsUsedTotal={hintsUsedTotal}
             avgTimeSec={avgTimeSec}
             xpYield={xpYield}
           />
