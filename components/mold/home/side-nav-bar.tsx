@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { 
   Terminal as TerminalIcon, 
   BookOpen, 
@@ -14,7 +15,8 @@ import {
   FileCheck,
   ChevronDown,
   ChevronRight,
-  FolderDown
+  FolderDown,
+  HelpCircle
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -120,6 +122,15 @@ export function SideNavBar({
           >
             <Trophy className="w-3.5 h-3.5" aria-hidden="true" /> <span>Achievements</span>
           </button>
+
+          <Link
+            href={subjectId ? `/guide?subject=${encodeURIComponent(subjectId)}` : "/guide"}
+            title="Open comprehensive user usage guide, game modes manual, and cognitive strategies"
+            aria-label="Open comprehensive user usage guide"
+            className="flex items-center gap-2.5 px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
+          >
+            <HelpCircle className="w-3.5 h-3.5" aria-hidden="true" /> <span>User Guide</span>
+          </Link>
         </div>
 
         {/* ── Section: Subject & Question Bank ── */}
