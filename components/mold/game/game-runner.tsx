@@ -63,6 +63,7 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete,
             {config.mode === "flashcards" ? (
               <FlashcardScreen
                 flashcards={subject.flashcards}
+                subjectId={subject.id}
                 onComplete={onReturnHome}
                 onReturnHome={onReturnHome}
               />

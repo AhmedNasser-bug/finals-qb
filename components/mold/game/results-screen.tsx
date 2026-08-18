@@ -82,6 +82,46 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
   }
   const pixelCount = pixels.length
 
+  const [copiedSummary, setCopiedSummary] = React.useState(false)
+
+  const handleCopySummary = React.useCallback(() => {
+    const summaryText = [
+      `MOLD V2 // PERFORMANCE SUMMARY`,
+      `Mode: ${mode.toUpperCase()}`,
+      `Grade: ${grade} (${accuracyPct}%)`,
+      `Score: ${score}/${total}`,
+      `Streak: ${bestStreak}`,
+      `Time: ${formatTime(elapsedSeconds)}`,
+      `Hints Used: ${hintsUsedTotal}`,
+      `XP Earned: +${xpYield} XP`,
+    ].join("\n")
+
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(summaryText).then(() => {
+        setCopiedSummary(true)
+        setTimeout(() => setCopiedSummary(false), 2000)
+      }).catch(() => {})
+    }
+  }, [mode, grade, accuracyPct, score, total, bestStreak, elapsedSeconds, hintsUsedTotal, xpYield])
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+        return
+      }
+      if (e.key === "Enter" || e.key === "r" || e.key === "R") {
+        e.preventDefault()
+        onPlayAgain()
+      } else if (e.key === "Escape" || e.key === "h" || e.key === "H") {
+        e.preventDefault()
+        onReturnHome()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [onPlayAgain, onReturnHome])
+
   return (
     <div className="flex-1 bg-background overflow-y-auto animate-fade-in">
       <style>{`

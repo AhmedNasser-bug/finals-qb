@@ -7,7 +7,8 @@ import {
   formatTime,
   computeAggregateStats,
   formatLabel,
-  calculateAccuracy
+  calculateAccuracy,
+  getCategoryAccent
 } from "./mold-types.ts"
 
 test("getStreakTier", () => {
@@ -134,3 +135,19 @@ test('calculateAccuracy utility', async (t) => {
     assert.strictEqual(calculateAccuracy(1, 2), 33);
   });
 });
+
+test('getCategoryAccent dynamic palette generator', () => {
+  const defaultAccent = getCategoryAccent("");
+  assert.strictEqual(defaultAccent.label, "GENERAL");
+  assert.strictEqual(defaultAccent.color, "text-primary");
+
+  const customAccent1 = getCategoryAccent("molecular-biology");
+  assert.strictEqual(customAccent1.label, "MB");
+  assert.ok(customAccent1.color.startsWith("text-"));
+  assert.ok(customAccent1.border.startsWith("border-t-"));
+
+  const customAccent2 = getCategoryAccent("calculus");
+  assert.strictEqual(customAccent2.label, "CALC");
+  assert.ok(customAccent2.color.startsWith("text-"));
+});
+

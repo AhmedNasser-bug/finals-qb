@@ -45,6 +45,8 @@ export function SubjectSelector({
   // Example manifest — fetched once, just metadata (fast)
   const [examples, setExamples] = useState<ExampleManifestEntry[]>([])
   const [examplesLoading, setExamplesLoading] = useState(true)
+  const [exampleError, setExampleError] = useState<string | null>(null)
+  const [loadingExampleId, setLoadingExampleId] = useState<string | null>(null)
 
   // Global '/' shortcut to focus search input
   useEffect(() => {
@@ -65,7 +67,10 @@ export function SubjectSelector({
   useEffect(() => {
     getExamplesManifest()
       .then((data) => setExamples(data))
-      .catch(() => setExamples([]))
+      .catch((err) => {
+        setExamples([])
+        setExampleError(err?.message || "Failed to load examples")
+      })
       .finally(() => setExamplesLoading(false))
   }, [])
 

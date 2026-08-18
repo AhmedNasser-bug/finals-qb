@@ -538,6 +538,17 @@ export function DropZoneSection({
   )
 }
 
+export interface ValidationFeedbackSectionProps {
+  state: ImporterState
+  result: ValidationResult | null
+  preview: FullSubjectData | null
+  questionCount: number
+  flashcardCount: number
+  categories: string[]
+  json: string
+  onChange: (text: string) => void
+}
+
 export function ValidationFeedbackSection({
   state,
   result,

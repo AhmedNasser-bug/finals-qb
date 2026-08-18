@@ -473,7 +473,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             <button
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
-              aria-busy={loadState === "loading"}
+              aria-busy={state === "importing"}
               title={isNextDisabled ? "Please fill required fields to continue" : "Proceed to next step"}
               className={cn(
                 "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded",
@@ -488,7 +488,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             <button
               onClick={handleConfirm}
               disabled={isNextDisabled}
-              aria-busy={loadState === "loading"}
+              aria-busy={state === "importing"}
               title={isNextDisabled ? "Subject data must be completely valid to import" : "Load verified subject data"}
               className={cn(
                 "text-xs font-mono px-6 py-2.5 border font-bold tracking-widest uppercase transition-all duration-150 focus-ring min-h-[44px] cursor-pointer rounded",
@@ -497,7 +497,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
                   : "border-emerald-500 bg-emerald-500 text-white hover:bg-emerald-600 border-glow-success"
               )}
             >
-              {loadState === "loading" ? "IMPORTING..." : "ADD SUBJECT"}
+              {state === "importing" ? "IMPORTING..." : "ADD SUBJECT"}
             </button>
           )}
         </div>

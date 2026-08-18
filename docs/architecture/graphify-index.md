@@ -11,6 +11,7 @@ This index maps the system architecture diagrams for the **MOLD V2 (Mastery Prot
 - [Component Dependency Graph (Dimension 3)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/docs/architecture/dependency-graph.md) — import dependency structures highlighting type/engine hubs.
 - [State Machine Diagram (Dimension 4)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/docs/architecture/state-machines.md) — Unidirectional reducer game-loop phases and transitions.
 - [Sequence Flow Diagram (Dimension 5)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/docs/architecture/sequence-flows.md) — Chronological execution flow of user interactions, context notifications, and persistence.
+- [Cognitive Telemetry & Retention Architecture](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/docs/architecture/cognitive-telemetry.md) — SuperMemo SM-2 kernel, Ebbinghaus decay formulas, and decoupled routing.
 
 ---
 

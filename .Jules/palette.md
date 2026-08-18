@@ -90,6 +90,11 @@
 **Learning:** In extensive reference panels (like Encyclopedia), users often open the overlay to immediately search for a specific keyword. Binding the global `/` key to automatically focus the search input eliminates the manual click. Providing an instant `✕` button and showing per-category term counters on the sidebar gives immediate visual orientation.
 **Action:** In reference and encyclopedia overlays, bind `/` to search focus, render an instant clear button, and display count badges on category filters.
 
+## 2026-08-18 - Sidebar Semantic Grouping & Collapsible Study Exports Bundle
+**Learning:** Cluttering the primary vertical sidebar with individual document export and generator buttons causes visual overwhelm and blurs the distinction between primary navigation and utility tasks. Grouping actions into clear semantic sections (`NAVIGATION`, `SUBJECT BANK`, `STUDY EXPORTS`) and nesting related export triggers (`HTML Sheet`, `Questions PDF`, `Solved PDF`) inside an expandable/collapsible bundle with format badges (`HTML`, `PDF`, `SOLVED`) declutters the interface while keeping one-click actions accessible.
+**Action:** When a toolbar or sidebar has 3+ related utility actions (such as multiple file formats of the same material), bundle them into a grouped accordion or dropdown with distinct color-coded format badges and count indicators.
+
+
 
 
 

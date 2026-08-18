@@ -440,3 +440,54 @@ export interface CheatSheetQuestion extends Question {
   timestamp: number
 }
 
+export interface CategoryAccent {
+  color: string
+  border: string
+  label: string
+}
+
+const ACCENT_COLOR_PALETTES: Array<{ color: string; border: string }> = [
+  { color: "text-primary", border: "border-t-primary" },
+  { color: "text-cyan-400", border: "border-t-cyan-400" },
+  { color: "text-violet-400", border: "border-t-violet-400" },
+  { color: "text-emerald-400", border: "border-t-emerald-400" },
+  { color: "text-amber-400", border: "border-t-amber-400" },
+  { color: "text-rose-400", border: "border-t-rose-400" },
+  { color: "text-sky-400", border: "border-t-sky-400" },
+  { color: "text-purple-400", border: "border-t-purple-400" },
+  { color: "text-teal-400", border: "border-t-teal-400" },
+  { color: "text-orange-400", border: "border-t-orange-400" },
+]
+
+/**
+ * Dynamically derives a deterministic theme accent and short label for ANY category slug
+ * regardless of subject (e.g. "pathophysiology", "corporate-law", "microeconomics", etc.)
+ */
+export function getCategoryAccent(categorySlug: string = ""): CategoryAccent {
+  if (!categorySlug || categorySlug === "_general" || categorySlug === "all") {
+    return { color: "text-primary", border: "border-t-primary", label: "GENERAL" }
+  }
+
+  let hash = 2166136261
+  for (let i = 0; i < categorySlug.length; i++) {
+    hash ^= categorySlug.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  const palette = ACCENT_COLOR_PALETTES[Math.abs(hash) % ACCENT_COLOR_PALETTES.length]
+
+  const words = categorySlug.split(/[-_\s]+/).filter(Boolean)
+  let label = ""
+  if (words.length > 1) {
+    label = words.map((w) => w[0].toUpperCase()).slice(0, 4).join("")
+  } else {
+    label = categorySlug.slice(0, 4).toUpperCase()
+  }
+
+  return {
+    color: palette.color,
+    border: palette.border,
+    label: label || "NODE",
+  }
+}
+
+
