@@ -28,11 +28,16 @@ export function HeaderWell({
               {description}
             </p>
           </div>
-          <div className="flex flex-col items-start md:items-end gap-1.5 shrink-0 bg-zinc-900/50 p-4 border border-zinc-800/80 rounded">
-            <div className="font-mono text-[9px] text-primary uppercase tracking-widest font-bold">
+          <div
+            className="flex flex-col items-start md:items-end gap-1.5 shrink-0 bg-zinc-900/50 p-4 border border-zinc-800/80 rounded focus-ring"
+            tabIndex={0}
+            title="Your historical average accuracy across all runs for this subject"
+            aria-label={`Average accuracy is ${runCount > 0 ? visualAccuracyPct.toFixed(1) : 100.0}%`}
+          >
+            <div className="font-mono text-[9px] text-primary uppercase tracking-widest font-bold" aria-hidden="true">
               AVERAGE ACCURACY
             </div>
-            <div className="text-3xl sm:text-4xl font-headline font-black text-emerald-400">
+            <div className="text-3xl sm:text-4xl font-headline font-black text-emerald-400" aria-hidden="true">
               {runCount > 0 ? `${visualAccuracyPct.toFixed(1)}%` : "100.0%"}
             </div>
           </div>

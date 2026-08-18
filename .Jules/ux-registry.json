@@ -132,6 +132,18 @@
         "components/mold/home/side-nav-bar.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "progressive-setup-and-stat-tooltips",
+      "category": "decluttering|tooltips",
+      "tier": 3,
+      "title": "Progressive Disclosure Advanced Setup Toggle & Accuracy Contextual Tooltips",
+      "implementedAt": "2026-08-18T16:42:49Z",
+      "componentsTouched": [
+        "components/mold/home/header-well.tsx",
+        "components/mold/home/setup-panel.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

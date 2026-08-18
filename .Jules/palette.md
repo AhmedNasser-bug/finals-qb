@@ -101,3 +101,7 @@
 
 
 
+
+## 2026-08-18 - Progressive Disclosure in Setup & Stat Tooltips
+**Learning:** Dense setup panels with many parameter switches overwhelm users. Grouping advanced options under a collapsible toggle (`aria-expanded`) declutters the view. Applying `title` and `aria-label` to abstract stats ensures visual elements convey their historical meaning to screen readers and tooltips.
+**Action:** Implemented progressive disclosure toggle on SetupPanel. Added explicit `aria-label` and `title` contextual tooltips to HeaderWell accuracy counters.
