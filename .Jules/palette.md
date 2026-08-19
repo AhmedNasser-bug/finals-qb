@@ -101,3 +101,7 @@
 
 
 
+
+## 2026-08-19 - Standardizing HSL Color Tokens in Header and Stats Screen
+**Learning:** Hardcoding hex codes (like `#101115`, `#fecc17`, `#0b0c0f`) and zinc/emerald tailwind variants (e.g. `bg-zinc-900`, `text-emerald-400`) within header and stat components leads to inconsistencies and breaks the design system semantic theming (which relies on `hsl(var(--background))` etc).
+**Action:** Replaced raw hex colors and direct tailwind color palettes with standard HSL variables (`bg-panel`, `bg-surface`, `bg-surface-variant`, `text-primary`, `text-foreground`, `text-muted-foreground`, `border-border`) across `header-well.tsx`, `hero-header.tsx`, and `stats-screen.tsx`.

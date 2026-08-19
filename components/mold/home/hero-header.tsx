@@ -29,9 +29,9 @@ export function HeroHeader({
   return (
     <header className={cn("border-b border-border bg-panel", className)}>
       {/* Unified Control Center Top Bar */}
-      <div className="flex flex-wrap items-center gap-4 px-6 py-3 border-b border-border/50 bg-[#0d0e11]">
+      <div className="flex flex-wrap items-center gap-4 px-6 py-3 border-b border-border/50 bg-panel">
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" aria-hidden="true" />
           <Image
             src="/logo.png"
             alt="Finalist"
@@ -40,10 +40,10 @@ export function HeroHeader({
             className="shrink-0 drop-shadow-[0_0_5px_hsl(var(--primary)/0.6)]"
             priority
           />
-          <span className="text-[10px] font-mono tracking-widest text-emerald-400 uppercase font-bold shrink-0">
+          <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold shrink-0">
             MASTERY_PROTOCOL //
           </span>
-          <span className="text-xs font-mono font-bold text-white uppercase truncate max-w-[180px] sm:max-w-[280px]">
+          <span className="text-xs font-mono font-bold text-foreground uppercase truncate max-w-[180px] sm:max-w-[280px]">
             {subject.name}
           </span>
         </div>
@@ -60,7 +60,7 @@ export function HeroHeader({
               onClick={onChangeSubject}
               title="Change active subject"
               aria-label="Switch active subject"
-              className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-[#17171a] text-zinc-300 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
+              className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-surface text-foreground/90 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
             >
               SWITCH SUBJECT
             </button>
@@ -70,7 +70,7 @@ export function HeroHeader({
               onClick={onImportNew}
               title="Import a new subject JSON file"
               aria-label="Import a new subject"
-              className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-[#17171a] text-zinc-300 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
+              className="text-[10px] font-mono font-bold px-3 py-1.5 border border-border bg-surface text-foreground/90 hover:border-primary/80 hover:text-primary transition-all duration-150 focus-ring min-h-[32px] cursor-pointer"
             >
               IMPORT NEW
             </button>
