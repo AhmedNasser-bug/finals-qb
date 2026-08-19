@@ -689,9 +689,6 @@ function balanceJsonStack(str: string): string {
   let inString = false
   let escaped = false
   
-  let braceCount = 0;
-  let bracketCount = 0;
-
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (escaped) {
@@ -711,40 +708,10 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
-      braceCount++
     } else if (char === '[') {
       stack.push('[')
-      bracketCount++
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-        braceCount--
-      } else if (braceCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          braceCount--
-        }
-      }
-    } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-        bracketCount--
-      } else if (bracketCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
-        }
-      }
+    } else if (char === '}' || char === ']') {
+      processStackClosure(stack, char)
     }
   }
   
