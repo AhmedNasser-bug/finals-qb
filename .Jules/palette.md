@@ -101,3 +101,7 @@
 
 
 
+
+## 2026-08-20 - Contextual Tooltips for Condensed Stat Blocks
+**Learning:** When displaying condensed historical statistics or metrics in dense dashboard panels (like Session Stats), users relying on screen readers or visual users needing clarity on how a metric is calculated often lack context. Data-dense rows that just read 'AVG_ACCURACY' or 'DAY_STREAK' benefit significantly from rich `title` attributes for hover states and full `aria-label` text to be read clearly.
+**Action:** Always wrap dense, tabular statistic rows with a `title` explaining the exact metric and a descriptive `aria-label` stating both the label and its current value.
