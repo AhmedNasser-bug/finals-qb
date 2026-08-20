@@ -101,3 +101,6 @@
 
 
 
+## 2026-08-20 - Add aria-busy to Asynchronous Loading Buttons
+**Learning:** Buttons that trigger asynchronous actions and enter a loading state (like fetching an external resource or processing data) often use `disabled={isLoading}` to prevent multiple clicks, but forget to communicate this processing state to screen readers.
+**Action:** When a button disables itself to process an action, always add `aria-busy={isLoading}` so screen readers can explicitly announce the element is currently loading/processing rather than just being generically "disabled".

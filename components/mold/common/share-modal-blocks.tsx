@@ -89,6 +89,7 @@ export function LinkTabContent({
             <button
               onClick={onShorten}
               disabled={shortenState === "loading"}
+              aria-busy={shortenState === "loading"}
               title={shortenState === "loading" ? "Currently shortening link..." : undefined}
               className={cn(
                 "w-full py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
