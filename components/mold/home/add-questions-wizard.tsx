@@ -17,6 +17,37 @@ export function AddQuestionsWizard({
   onMerge,
   onCancel,
 }: AddQuestionsWizardProps) {
+  const overlayRef = useRef<HTMLDivElement>(null)
+
+  // Trap focus inside overlay
+  useEffect(() => {
+    const el = overlayRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [])
+
   // --- Wizard States ---
   const [step, setStep] = useState<number>(1)
   
@@ -307,13 +338,20 @@ CRITICAL RULES:
   }, [step, categoryFocus, newCategoryName, parsedPreview, validationState])
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div
+      ref={overlayRef}
+      tabIndex={-1}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="wizard-title"
+      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none outline-none"
+    >
       <div className="w-full max-w-5xl h-[88vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
-            <h2 className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
+            <h2 id="wizard-title" className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary animate-pulse" aria-hidden="true" />
               <span>Add Questions to Subject Wizard</span>
             </h2>
