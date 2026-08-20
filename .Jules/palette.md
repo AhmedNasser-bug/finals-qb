@@ -101,3 +101,6 @@
 
 
 
+## 2026-08-20 - Ensure purely decorative icons in interactive elements have aria-hidden
+**Learning:** Adding purely decorative icons inside interactive elements like buttons, where the primary meaning is already communicated by either visible text or an explicit aria-label, can cause screen readers to announce the graphic redundantly.
+**Action:** Always append `aria-hidden="true"` to purely decorative icons (like SVGs) that are housed within interactive elements (buttons, links) alongside visible text or screen-reader only labels.
