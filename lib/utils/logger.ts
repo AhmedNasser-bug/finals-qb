@@ -18,7 +18,7 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   },
   {
     // Common secrets and PII
-    pattern: /((?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)["']?\s{0,10}[:=]\s{0,10})(?:(")([^"]{0,4096})(")|(')([^']{0,4096})(')|([^,\]\}\s]{1,4096}))/gi,
+    pattern: /((?:\b[a-zA-Z0-9_]*(?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)[a-zA-Z0-9_]*\b)["']?\s{0,10}[:=]\s{0,10})(?:(")([^"]{0,4096})(")|(')([^']{0,4096})(')|([^,\]\}\s]{1,4096}))/gi,
     replacement: (match: string, p1: string, p2: string, p3: string, p4: string, p5: string, p6: string, p7: string, p8: string) => {
       if (p8 && (p8.startsWith('[') || p8.startsWith('{'))) {
         return match;
@@ -52,7 +52,7 @@ function maskString(str: string): string {
   return masked;
 }
 
-const SENSITIVE_KEYS_REGEX = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
+const SENSITIVE_KEYS_REGEX = /\b[a-zA-Z0-9_]*(?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)[a-zA-Z0-9_]*\b/i;
 
 function isPlainObject(value: any): boolean {
   if (typeof value !== 'object' || value === null) return false;

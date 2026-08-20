@@ -3,12 +3,13 @@ import assert from 'node:assert';
 import { maskData } from './logger.ts';
 
 test('redacts object keys', () => {
-  const result = maskData({ api_key: '12345', password: 'my-password', safe_key: 'safe_value', token: 1234, secret: true });
+  const result = maskData({ api_key: '12345', password: 'my-password', safe_key: 'safe_value', token: 1234, secret: true, stripe_api_key_test: '54321' });
   assert.strictEqual(result.api_key, '[REDACTED]');
   assert.strictEqual(result.password, '[REDACTED]');
   assert.strictEqual(result.safe_key, 'safe_value');
   assert.strictEqual(result.token, '[REDACTED]');
   assert.strictEqual(result.secret, '[REDACTED]');
+  assert.strictEqual(result.stripe_api_key_test, '[REDACTED]');
 });
 
 test('redacts raw JSON string', () => {
