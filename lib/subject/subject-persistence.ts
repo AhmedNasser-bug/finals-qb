@@ -692,6 +692,18 @@ function balanceJsonStack(str: string): string {
   let braceCount = 0;
   let bracketCount = 0;
 
+  const closeUnmatched = (expectedOpen: "{" | "[", decrementOpenCount: () => void, decrementOtherCount: () => void) => {
+    let idx = stack.length - 1;
+    while (idx >= 0 && stack[idx] !== expectedOpen) {
+      if (stack[idx] === (expectedOpen === "{" ? "[" : "{")) decrementOtherCount();
+      idx--;
+    }
+    if (idx >= 0) {
+      stack.length = idx;
+      decrementOpenCount();
+    }
+  };
+
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     if (escaped) {
@@ -720,30 +732,14 @@ function balanceJsonStack(str: string): string {
         stack.pop()
         braceCount--
       } else if (braceCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          braceCount--
-        }
+        closeUnmatched("{", () => braceCount--, () => bracketCount--);
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
         bracketCount--
       } else if (bracketCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
-        }
+        closeUnmatched("[", () => bracketCount--, () => braceCount--);
       }
     }
   }

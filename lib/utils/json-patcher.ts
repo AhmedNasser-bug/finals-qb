@@ -36,11 +36,10 @@ export function findDeformedBlockRange(json: string, errorPos: number): [number,
       stack.push({ type: char, index: i })
     } else if (char === '}' || char === ']') {
       const top = stack.pop()
-      if (top) {
-        const matchingClose = char === '}' ? '{' : '['
-        if (top.type === matchingClose && top.index <= errorPos && i >= errorPos) {
-          return [top.index, i + 1]
-        }
+      if (!top) continue;
+      const matchingClose = char === '}' ? '{' : '['
+      if (top.type === matchingClose && top.index <= errorPos && i >= errorPos) {
+        return [top.index, i + 1]
       }
     }
   }
