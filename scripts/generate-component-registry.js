@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { text } = require('node:stream/consumers');
 
 const UI_DIR = path.join(__dirname, '../components');
 const APP_DIR = path.join(__dirname, '../app');
@@ -31,20 +32,11 @@ function extractInterface(content, componentName) {
 
 async function processComponent(filePath) {
   const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await text(stream);
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
-  const length = parts.length;
-  const words = new Array(length);
-  for (let i = 0; i < length; i++) {
-    const w = parts[i];
-    words[i] = w.charAt(0).toUpperCase() + w.slice(1);
-  }
+  const words = parts.map(w => w.charAt(0).toUpperCase() + w.slice(1));
   const moduleName = words.join('-');
 
   const isClient = content.includes('"use client"') || content.includes("'use client'");
@@ -100,10 +92,7 @@ async function processComponent(filePath) {
   }
 
   const relativePath = path.relative(path.join(__dirname, '..'), filePath).replace(/\\/g, '/');
-  const formattedEdgeCases = new Array(edgeCases.length);
-  for (let i = 0; i < edgeCases.length; i++) {
-    formattedEdgeCases[i] = '- ' + edgeCases[i];
-  }
+  const formattedEdgeCases = edgeCases.map(e => '- ' + e);
 
   return `
 ### \`${relativePath}\`
