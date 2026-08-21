@@ -825,9 +825,11 @@ function processEscapeSequence(
 }
 
 function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
-  const repairedChunks: string[] = []
-  let inString = false
-  let fixed = false
+  const regex = /["\\]/g;
+  let repaired = "";
+  let inString = false;
+  let fixed = false;
+  let lastIndex = 0;
 
   // Set of LaTeX/MathEx command words that start with valid JSON escape chars (b, f, n, r, t, u)
   const LATEX_WORDS = new Set([
@@ -845,25 +847,41 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
     "uparrow", "underbar", "usebox", "underbrace", "under", "Uparrow"
   ])
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (char === '"' && str[i - 1] !== '\\') {
-      repairedChunks.push('"')
-      inString = !inString
-      continue
+  let match;
+  while ((match = regex.exec(str)) !== null) {
+    const i = match.index;
+    const char = match[0];
+
+    if (char === '"') {
+      let backslashCount = 0;
+      let j = i - 1;
+      while (j >= 0 && str[j] === '\\') {
+        backslashCount++;
+        j--;
+      }
+
+      if (backslashCount % 2 === 0) {
+        inString = !inString;
+      }
+      continue;
     }
 
     if (inString && char === '\\') {
-        const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
-        repairedChunks.push(addition);
-        fixed = fixed || wasFixed;
-        i += charsConsumed - 1; // loop naturally increments i
-    } else {
-      repairedChunks.push(char)
+      const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS);
+      if (wasFixed) {
+        repaired += str.substring(lastIndex, i) + addition;
+        lastIndex = i + charsConsumed;
+        fixed = true;
+      }
+      regex.lastIndex = i + charsConsumed;
     }
   }
 
-  return { repaired: repairedChunks.join(''), fixed }
+  if (lastIndex > 0) {
+    repaired += str.substring(lastIndex);
+  }
+
+  return { repaired: lastIndex > 0 ? repaired : str, fixed };
 }
 
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
