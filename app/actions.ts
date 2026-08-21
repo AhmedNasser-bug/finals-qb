@@ -3,6 +3,7 @@
 import fsPromises from "fs/promises"
 import fs from "fs"
 import path from "path"
+import { text } from "node:stream/consumers"
 import { logger } from "@/lib/logger"
 
 export interface ExampleManifestEntry {
@@ -21,11 +22,7 @@ let manifestCache: ExampleManifestEntry[] | null = null
 async function processExampleFile(filePath: string, fileStem: string, file: string, manifestResults: ExampleManifestEntry[]) {
   try {
     const stream = fs.createReadStream(filePath)
-    const chunks: Buffer[] = []
-    for await (const chunk of stream) {
-      chunks.push(chunk)
-    }
-    const content = Buffer.concat(chunks).toString("utf-8")
+    const content = await text(stream)
     const data = JSON.parse(content)
 
     // Calculate categories
