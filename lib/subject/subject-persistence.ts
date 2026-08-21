@@ -157,6 +157,49 @@ function normalizeAchievements(obj: Record<string, unknown>, warnings: string[])
   }
 }
 
+function resolveAnswerLabel(
+  qObj: Record<string, unknown>,
+  normalizedOptions: any[]
+): { newAnswer: string; fixed: boolean; warning?: string } {
+  let answer = typeof qObj.answer === "string" ? qObj.answer.toUpperCase().trim() : "";
+  if (!answer) {
+    return { newAnswer: "A", fixed: true, warning: undefined };
+  }
+
+  const hasLabel = normalizedOptions.some((opt: any) => opt.label === answer);
+  if (hasLabel) {
+    return { newAnswer: answer, fixed: false };
+  }
+
+  const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === answer);
+  if (matchedOpt) {
+    return {
+      newAnswer: matchedOpt.label,
+      fixed: true,
+      warning: `Answer text "${qObj.answer}" automatically remapped to label "${matchedOpt.label}".`
+    };
+  }
+
+  if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+    const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(answer);
+    const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(answer);
+    if (isTrueMatch || isFalseMatch) {
+      const newLabel = isTrueMatch ? "A" : "B";
+      return {
+        newAnswer: newLabel,
+        fixed: true,
+        warning: `Boolean answer "${qObj.answer}" automatically mapped to option label "${newLabel}".`
+      };
+    }
+  }
+
+  return {
+    newAnswer: normalizedOptions[0].label,
+    fixed: true,
+    warning: `Unresolved answer "${qObj.answer}" automatically reset to first option label "${normalizedOptions[0].label}".`
+  };
+}
+
 function autoFixSingleQuestion(
   qObj: Record<string, unknown>,
   i: number,
@@ -244,41 +287,15 @@ function autoFixSingleQuestion(
   qObj.options = normalizedOptions;
 
   // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
-  if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
-    qObj.answer = "A";
+  const { newAnswer, fixed, warning } = resolveAnswerLabel(qObj, normalizedOptions);
+  if (fixed) {
+    qObj.answer = newAnswer;
     qFixed = true;
-  } else {
-    qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
-    if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
-      }
+    if (warning) {
+      warnings.push(`questions[${i}]: ${warning}`);
     }
+  } else {
+    qObj.answer = newAnswer;
   }
 
   // 8. Auto-Fix Explanation and Hint
@@ -688,9 +705,6 @@ function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
   let escaped = false
-  
-  let braceCount = 0;
-  let bracketCount = 0;
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
@@ -709,42 +723,10 @@ function balanceJsonStack(str: string): string {
 
     if (inString) continue;
 
-    if (char === '{') {
-      stack.push('{')
-      braceCount++
-    } else if (char === '[') {
-      stack.push('[')
-      bracketCount++
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-        braceCount--
-      } else if (braceCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          braceCount--
-        }
-      }
-    } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-        bracketCount--
-      } else if (bracketCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
-        }
-      }
+    if (char === '{' || char === '[') {
+      stack.push(char)
+    } else if (char === '}' || char === ']') {
+      processStackClosure(stack, char)
     }
   }
   
