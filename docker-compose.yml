@@ -11,6 +11,7 @@ services:
       - "3001:3000"
     command: sh -c "corepack enable pnpm && pnpm dev --port 3000"
   tenant-b:
+    # Managed by setup.sh orchestration
     image: node:alpine
     working_dir: /app
     volumes:
