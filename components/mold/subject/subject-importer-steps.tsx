@@ -606,6 +606,7 @@ ${bundledSourceMaterial}
                     onChange={handleFileChange}
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     disabled={isConverting}
+                    aria-busy={isConverting}
                     multiple
                   />
                   <span className="text-xs text-zinc-400 font-sans font-medium">
