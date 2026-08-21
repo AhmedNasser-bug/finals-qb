@@ -1,40 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { GAME_MODES } from "@/lib/mold-types"
-import { cn } from "@/lib/utils"
-import dynamic from "next/dynamic"
-import { Footer } from "@/components/mold/common/footer"
-import type { FullSubjectData, GameMode } from "@/lib/mold-types"
+import { useState } from "react";
+import { GAME_MODES } from "@/lib/mold-types";
+import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+import { Footer } from "@/components/mold/common/footer";
+import type { FullSubjectData, GameMode } from "@/lib/mold-types";
 
 const SubjectImporter = dynamic(
-  () => import("@/components/mold/subject/subject-importer").then((mod) => mod.SubjectImporter),
-  { ssr: false }
-)
+  () =>
+    import("@/components/mold/subject/subject-importer").then(
+      (mod) => mod.SubjectImporter,
+    ),
+  { ssr: false },
+);
 
 interface ModeCardProps {
   mode: GameMode;
 }
 
 interface OnboardingScreenProps {
-  onSubjectAdded: (subject: FullSubjectData) => void
+  onSubjectAdded: (subject: FullSubjectData) => void;
 }
 
-type OnboardingStep = "welcome" | "add-subject"
+type OnboardingStep = "welcome" | "add-subject";
 
 export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
-  const [step, setStep] = useState<OnboardingStep>("welcome")
-  const [showImporter, setShowImporter] = useState(false)
+  const [step, setStep] = useState<OnboardingStep>("welcome");
+  const [showImporter, setShowImporter] = useState(false);
 
   function handleImport(subject: FullSubjectData) {
-    setShowImporter(false)
-    onSubjectAdded(subject)
+    setShowImporter(false);
+    onSubjectAdded(subject);
   }
 
   return (
     <>
       <div className="min-h-screen bg-background flex flex-col animate-fade-in">
-
         {/* Top bar */}
         <header className="border-b border-border px-6 py-4 flex items-center justify-between bg-panel">
           <div className="flex items-center gap-3">
@@ -54,7 +56,6 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
         </header>
 
         <main className="flex-1 flex flex-col items-center justify-start max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 gap-12">
-
           {step === "welcome" && (
             <>
               {/* Hero */}
@@ -67,8 +68,9 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                     Welcome to Mastery Protocol
                   </h1>
                   <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
-                    A high-performance, offline-first quiz engine. Import any subject as a JSON
-                    file and master it across 7 distinct study modes — no account, no server, no tracking.
+                    A high-performance, offline-first quiz engine. Import any
+                    subject as a JSON file and master it across 7 distinct study
+                    modes — no account, no server, no tracking.
                   </p>
                 </div>
               </div>
@@ -128,21 +130,31 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
                   Add Your First Subject
                 </h2>
                 <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
-                  Finalist runs entirely in your browser. Subjects are stored as JSON and kept in
-                  local storage — nothing is ever sent to a server.
+                  Finalist runs entirely in your browser. Subjects are stored as
+                  JSON and kept in local storage — nothing is ever sent to a
+                  server.
                 </p>
               </div>
 
               {/* How it works */}
               <div className="w-full max-w-lg flex flex-col gap-3">
                 {ONBOARDING_STEPS.map((s, i) => (
-                  <div key={i} className="flex gap-4 p-4 rounded border border-border bg-panel">
+                  <div
+                    key={i}
+                    className="flex gap-4 p-4 rounded border border-border bg-panel"
+                  >
                     <div className="shrink-0 w-7 h-7 rounded border border-border bg-background flex items-center justify-center">
-                      <span className="text-xs font-mono font-semibold text-primary">{i + 1}</span>
+                      <span className="text-xs font-mono font-semibold text-primary">
+                        {i + 1}
+                      </span>
                     </div>
                     <div className="flex flex-col gap-0.5">
-                      <p className="text-sm font-semibold text-foreground">{s.title}</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{s.body}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {s.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {s.body}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -172,7 +184,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
         />
       )}
     </>
-  )
+  );
 }
 
 // ─── Static data ──────────────────────────────────────────────────────────────
@@ -190,7 +202,7 @@ const ONBOARDING_STEPS = [
     title: "Paste and verify",
     body: "Copy the AI response and paste it into the importer. Finalist validates every field in real time — question count, difficulty spread, achievement conditions — and shows a preview before you confirm.",
   },
-]
+];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -201,22 +213,26 @@ function ModeCard({ mode }: ModeCardProps) {
         "flex gap-3 p-4 rounded border bg-panel",
         mode.category === "challenge"
           ? "border-red-400/20"
-          : "border-emerald-400/20"
+          : "border-emerald-400/20",
       )}
     >
-      <div className={cn(
-        "shrink-0 w-1.5 rounded-full self-stretch",
-        mode.category === "challenge" ? "bg-red-400/40" : "bg-emerald-400/40"
-      )} />
+      <div
+        className={cn(
+          "shrink-0 w-1.5 rounded-full self-stretch",
+          mode.category === "challenge" ? "bg-red-400/40" : "bg-emerald-400/40",
+        )}
+      />
       <div className="flex flex-col gap-1 min-w-0">
         <div className="flex items-center gap-2">
           <p className="text-sm font-semibold text-foreground">{mode.label}</p>
-          <span className={cn(
-            "text-[10px] font-mono px-1.5 py-0.5 rounded-sm border leading-none shrink-0",
-            mode.category === "challenge"
-              ? "border-red-400/30 text-red-400"
-              : "border-emerald-400/30 text-emerald-400"
-          )}>
+          <span
+            className={cn(
+              "text-[10px] font-mono px-1.5 py-0.5 rounded-sm border leading-none shrink-0",
+              mode.category === "challenge"
+                ? "border-red-400/30 text-red-400"
+                : "border-emerald-400/30 text-emerald-400",
+            )}
+          >
             {mode.tag}
           </span>
         </div>
@@ -225,31 +241,62 @@ function ModeCard({ mode }: ModeCardProps) {
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
 function ProtocolIcon() {
   return (
-    <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
+    <svg
+      className="w-5 h-5 text-primary"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+      <path d="M2 17l10 5 10-5" />
+      <path d="M2 12l10 5 10-5" />
     </svg>
-  )
+  );
 }
 
 function TargetIcon() {
   return (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
+    <svg
+      className="w-6 h-6"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
     </svg>
-  )
+  );
 }
 
 function ChevronLeftIcon() {
   return (
-    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      className="w-3.5 h-3.5"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="m15 18-6-6 6-6" />
     </svg>
-  )
+  );
 }

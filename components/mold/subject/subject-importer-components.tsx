@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
+import React, { useState } from "react";
 
 export function StatChip({ label, value }: { label: string; value: number }) {
   return (
@@ -8,22 +8,31 @@ export function StatChip({ label, value }: { label: string; value: number }) {
       <span className="text-muted-foreground">{label}</span>
       <span className="text-foreground font-semibold">{value}</span>
     </div>
-  )
+  );
 }
 
 export function CloseIcon() {
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      className="w-4 h-4"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M18 6 6 18M6 6l12 12" />
     </svg>
-  )
+  );
 }
 
 export function InfoToolbox({ content }: { content: string }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div 
+    <div
       className="relative inline-block ml-2 select-none align-middle"
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
@@ -43,5 +52,5 @@ export function InfoToolbox({ content }: { content: string }) {
         </div>
       )}
     </div>
-  )
+  );
 }
