@@ -9,10 +9,17 @@ export const PAGE_LAYOUTS: PageLayoutMetadata[] = [
     iconName: 'Sidebar',
   },
   {
+    id: 'zen-minimal-dock',
+    name: 'Zen Minimal Dock',
+    label: 'ZEN / FOCUS',
+    description: 'Ultra-clean distraction-free study layout with centered focus container and zero clutter.',
+    iconName: 'Sparkles',
+  },
+  {
     id: 'zen-focus',
-    name: 'Zen Minimal',
-    label: 'ZEN / MINIMAL',
-    description: 'Distraction-free centered layout with collapsed navigation for focused mastery runs.',
+    name: 'Zen Minimal Compact',
+    label: 'ZEN / COMPACT',
+    description: 'Distraction-free compact centered layout for rapid mastery runs.',
     iconName: 'Minimize2',
   },
   {

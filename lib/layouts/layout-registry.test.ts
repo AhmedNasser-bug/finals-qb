@@ -3,10 +3,13 @@ import assert from 'node:assert/strict'
 import { PAGE_LAYOUTS, DEFAULT_LAYOUT_ID, getLayoutById, isValidLayoutId } from './layout-registry'
 
 test('Page Layout Registry: exports registered layouts', () => {
-  assert.ok(PAGE_LAYOUTS.length >= 3, 'Must have at least 3 default layouts')
+  assert.ok(PAGE_LAYOUTS.length >= 4, 'Must have at least 4 registered layouts')
   const defaultLayout = PAGE_LAYOUTS.find((l) => l.id === DEFAULT_LAYOUT_ID)
   assert.ok(defaultLayout, 'Default layout must exist')
   assert.equal(defaultLayout.id, 'default-sidebar')
+
+  const zenMinimal = PAGE_LAYOUTS.find((l) => l.id === 'zen-minimal-dock')
+  assert.ok(zenMinimal, 'Zen Minimal Dock layout must exist')
 })
 
 test('Page Layout Registry: all layouts conform to spec', () => {
@@ -19,9 +22,9 @@ test('Page Layout Registry: all layouts conform to spec', () => {
 })
 
 test('Page Layout Registry: getLayoutById fallback logic', () => {
-  const existing = getLayoutById('zen-focus')
-  assert.equal(existing.id, 'zen-focus')
-  assert.equal(existing.name, 'Zen Minimal')
+  const existing = getLayoutById('zen-minimal-dock')
+  assert.equal(existing.id, 'zen-minimal-dock')
+  assert.equal(existing.name, 'Zen Minimal Dock')
 
   const fallback = getLayoutById('non-existent-layout')
   assert.equal(fallback.id, DEFAULT_LAYOUT_ID)
@@ -32,6 +35,7 @@ test('Page Layout Registry: getLayoutById fallback logic', () => {
 
 test('Page Layout Registry: isValidLayoutId validation', () => {
   assert.equal(isValidLayoutId('default-sidebar'), true)
+  assert.equal(isValidLayoutId('zen-minimal-dock'), true)
   assert.equal(isValidLayoutId('zen-focus'), true)
   assert.equal(isValidLayoutId('split-terminal'), true)
   assert.equal(isValidLayoutId('invalid-layout'), false)

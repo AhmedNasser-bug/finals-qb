@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 
 import React, { useEffect, useRef } from 'react'
 import { usePageLayout } from '@/lib/layouts/layout-context'
-import { LayoutGrid, Check, X, PanelLeft, Minimize2, Columns } from 'lucide-react'
+import { LayoutGrid, Check, X, PanelLeft, Minimize2, Columns, Sparkles } from 'lucide-react'
 
 interface LayoutSwitcherModalProps {
   onClose: () => void
@@ -10,6 +10,8 @@ interface LayoutSwitcherModalProps {
 
 function getLayoutIcon(name: string) {
   switch (name) {
+    case 'Sparkles':
+      return <Sparkles className="w-5 h-5" aria-hidden="true" />
     case 'Minimize2':
       return <Minimize2 className="w-5 h-5" aria-hidden="true" />
     case 'Columns':

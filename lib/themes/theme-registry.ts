@@ -1,9 +1,11 @@
-import type { ColorThemeSpec } from './theme-types'
+﻿import type { ColorThemeSpec } from './theme-types'
 import { amberPhosphorTheme } from './definitions/amber-phosphor'
 import { cyberEmeraldTheme } from './definitions/cyber-emerald'
 import { midnightSapphireTheme } from './definitions/midnight-sapphire'
 import { crimsonDraculaTheme } from './definitions/crimson-dracula'
 import { solarSepiaTheme } from './definitions/solar-sepia'
+import { synthwaveNeonTheme } from './definitions/synthwave-neon'
+import { nordicFrostTheme } from './definitions/nordic-frost'
 
 export const COLOR_THEMES: ColorThemeSpec[] = [
   amberPhosphorTheme,
@@ -11,6 +13,8 @@ export const COLOR_THEMES: ColorThemeSpec[] = [
   midnightSapphireTheme,
   crimsonDraculaTheme,
   solarSepiaTheme,
+  synthwaveNeonTheme,
+  nordicFrostTheme,
 ]
 
 export const DEFAULT_THEME_ID = amberPhosphorTheme.id

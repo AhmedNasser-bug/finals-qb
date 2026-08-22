@@ -1,0 +1,35 @@
+﻿import type { ColorThemeSpec } from '../theme-types'
+
+export const nordicFrostTheme: ColorThemeSpec = {
+  id: 'nordic-frost',
+  name: 'Nordic Frost',
+  label: 'NORDIC / FROST',
+  description: 'Clean arctic polar atmosphere with cool glacial cyan accents and slate crystal panels.',
+  preview: {
+    accent: '#06b6d4',
+    bg: '#071018',
+    surface: '#0f1f2d',
+    border: '#1d3b54',
+  },
+  tokens: {
+    background: '208 50% 5%',
+    foreground: '205 30% 93%',
+    card: '208 40% 8.5%',
+    cardForeground: '205 30% 93%',
+    popover: '208 40% 8.5%',
+    popoverForeground: '205 30% 93%',
+    primary: '189 94% 43%',
+    primaryForeground: '208 60% 4%',
+    secondary: '208 30% 14%',
+    secondaryForeground: '205 30% 93%',
+    muted: '208 25% 11%',
+    mutedForeground: '205 18% 52%',
+    accent: '189 94% 48%',
+    accentForeground: '208 60% 4%',
+    destructive: '0 72% 51%',
+    destructiveForeground: '205 30% 93%',
+    border: '208 30% 20%',
+    input: '208 30% 15%',
+    ring: '189 94% 43%',
+  },
+}
