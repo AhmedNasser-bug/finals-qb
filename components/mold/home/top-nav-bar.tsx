@@ -5,9 +5,11 @@ import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
-import { Palette, LayoutGrid } from "lucide-react"
+import { Palette, LayoutGrid, BookOpen } from "lucide-react"
+import { buildGuideUrl } from "@/lib/navigation/guide-url"
 
 interface TopNavBarProps {
+  activeSubjectId?: string
   activeSubjectName?: string
   loadedSubjectsCount?: number
   onShowEncyclopedia?: () => void
@@ -31,6 +33,7 @@ const GUIDANCE_TIPS = [
 ]
 
 export function TopNavBar({
+  activeSubjectId,
   activeSubjectName,
   loadedSubjectsCount,
   onShowEncyclopedia,
@@ -47,6 +50,14 @@ export function TopNavBar({
     }, 8000)
     return () => clearInterval(timer)
   }, [])
+
+  const guideHref = buildGuideUrl({
+    fromUrl: activeSubjectId ? `/?subject=${encodeURIComponent(activeSubjectId)}` : undefined,
+    fromName: activeSubjectName,
+    subjectId: activeSubjectId,
+    utmSource: "top_nav",
+    utmMedium: "header_button",
+  })
 
   return (
     <nav className="flex justify-between items-center w-full px-6 h-16 bg-panel fixed top-0 z-50 border-b border-border/60 shadow-[0_0_15px_hsla(var(--primary),0.03)] select-none">
@@ -82,7 +93,7 @@ export function TopNavBar({
 
         {/* Pulsating GUIDE link */}
         <Link
-          href="/guide"
+          href={guideHref}
           title="Open comprehensive user guide and learning strategies"
           aria-label="Open comprehensive user guide"
           className="flex items-center gap-1.5 px-2.5 py-2 border border-primary/30 bg-primary/5 hover:bg-primary/15 hover:border-primary/70 transition-all duration-200 group cursor-pointer focus-ring shrink-0 relative rounded"
@@ -151,7 +162,7 @@ export function TopNavBar({
 
         {/* Mobile GUIDE link */}
         <Link
-          href="/guide"
+          href={guideHref}
           title="Open comprehensive user guide"
           aria-label="Open comprehensive user guide"
           className="md:hidden p-2 border border-primary/30 text-primary hover:text-primary hover:border-primary/60 transition-all focus-ring cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center shrink-0 relative rounded"

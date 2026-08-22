@@ -197,6 +197,7 @@ export function HomeScreen({
       <LayoutComponent
         topNav={
           <TopNavBar
+            activeSubjectId={activeSubject.id}
             activeSubjectName={activeSubject.name}
             onShowEncyclopedia={() => setShowEncyclopedia(true)}
             onShowGallery={() => setShowGallery(true)}
@@ -208,6 +209,7 @@ export function HomeScreen({
         sidebar={
           <SideNavBar
             subjectId={activeSubject.id}
+            subjectName={activeSubject.name}
             activeView={view === "stats" ? "stats" : "home"}
             onShowDashboard={() => setView("home")}
             onShowStats={() => setView("stats")}

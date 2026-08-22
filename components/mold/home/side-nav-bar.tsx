@@ -22,9 +22,11 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { buildGuideUrl } from "@/lib/navigation/guide-url"
 
 interface SideNavBarProps {
   subjectId: string
+  subjectName?: string
   activeView: "home" | "stats"
   onShowDashboard: () => void
   onShowStats: () => void
@@ -130,7 +132,13 @@ export function SideNavBar({
           </button>
 
           <Link
-            href={subjectId ? `/guide?subject=${encodeURIComponent(subjectId)}` : "/guide"}
+            href={buildGuideUrl({
+              fromUrl: subjectId ? `/?subject=${encodeURIComponent(subjectId)}` : undefined,
+              fromName: subjectName,
+              subjectId,
+              utmSource: "side_nav",
+              utmMedium: "sidebar_menu",
+            })}
             title="Open comprehensive user usage guide, game modes manual, and cognitive strategies"
             aria-label="Open comprehensive user usage guide"
             className="flex items-center gap-2.5 px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"

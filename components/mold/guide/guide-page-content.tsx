@@ -30,6 +30,7 @@ import {
 } from "lucide-react"
 import { getActiveSubject } from "@/lib/active-subject-store"
 import { loadSubjects } from "@/lib/subject-persistence"
+import { resolveGuideReturnNavigation } from "@/lib/navigation/guide-url"
 
 const STEPS = [
   { num: "01", label: "IMPORT", desc: "Load subject JSON or syllabus" },
@@ -133,8 +134,10 @@ export function GuidePageContent() {
     )
   }, [searchQuery])
 
-  const returnHref = activeSubjectId ? `/?subject=${encodeURIComponent(activeSubjectId)}` : "/subjects"
-  const returnLabel = activeSubjectId ? "RETURN TO CONSOLE" : "RETURN TO SUBJECTS"
+  const nav = useMemo(() => resolveGuideReturnNavigation(searchParams), [searchParams])
+  const returnHref = nav.href
+  const returnLabel = nav.label
+  const displaySourceName = nav.sourceName || activeSubjectName
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary selection:text-primary-foreground">
@@ -144,8 +147,8 @@ export function GuidePageContent() {
         <div className="flex items-center gap-4">
           <Link
             href={returnHref}
-            title={activeSubjectId ? "Return to Study Console" : "Return to Subjects Library"}
-            aria-label={activeSubjectId ? "Return to Study Console" : "Return to Subjects Library"}
+            title={returnLabel}
+            aria-label={returnLabel}
             className="flex items-center gap-2 px-3 py-1.5 border border-primary/40 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 focus-ring rounded"
           >
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
@@ -165,13 +168,13 @@ export function GuidePageContent() {
 
         {/* Right: Active Subject Badge & Shortcuts */}
         <div className="flex items-center gap-3">
-          {activeSubjectName && (
+          {displaySourceName && (
             <span 
               className="hidden md:inline-flex items-center gap-1.5 text-[10px] font-mono text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 uppercase tracking-wider rounded"
-              title={`Active Subject: ${activeSubjectName}`}
+              title={`Originating Context: ${displaySourceName}`}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
-              <span className="truncate max-w-[160px]">{activeSubjectName}</span>
+              <span className="truncate max-w-[160px]">{displaySourceName}</span>
             </span>
           )}
 
@@ -339,10 +342,11 @@ export function GuidePageContent() {
             <div className="pt-3 border-t border-border/50 flex flex-col gap-2 font-mono text-[10px]">
               <Link
                 href={returnHref}
-                className="flex items-center justify-center gap-1.5 py-2 px-3 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/40 font-bold uppercase tracking-wider transition-colors rounded text-center"
+                title={returnLabel}
+                className="flex items-center justify-center gap-1.5 py-2 px-3 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/40 font-bold uppercase tracking-wider transition-colors rounded text-center truncate"
               >
-                <ArrowLeft className="w-3 h-3" aria-hidden="true" />
-                <span>START STUDYING</span>
+                <ArrowLeft className="w-3 h-3 shrink-0" aria-hidden="true" />
+                <span className="truncate">{returnLabel.replace("RETURN TO ", "RESUME ")}</span>
               </Link>
             </div>
           </div>
