@@ -60,6 +60,29 @@ export interface GuideReturnNavigation {
   utmCampaign?: string
 }
 
+function inferNameFromRelativeUrl(url: string): string | undefined {
+  if (url === "/subjects" || url.startsWith("/subjects?")) return "Subjects Library"
+  if (url === "/" || url.startsWith("/?")) {
+    const qIndex = url.indexOf("?")
+    if (qIndex !== -1) {
+      try {
+        const sp = new URLSearchParams(url.slice(qIndex + 1))
+        const sub = sp.get("subject")
+        if (sub) {
+          return sub
+            .split("-")
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" ")
+        }
+      } catch {
+        // safe fallback
+      }
+    }
+    return "Study Console"
+  }
+  return undefined
+}
+
 /**
  * Safely parses search parameters on /guide to determine the originating context.
  * Strictly sanitizes URLs to prevent Open Redirect (CWE-601) vulnerabilities.
@@ -73,7 +96,7 @@ export function resolveGuideReturnNavigation(searchParams: {
     searchParams.get("returnUrl") ||
     searchParams.get("back")
 
-  const fromName =
+  let fromName =
     searchParams.get("from_name") ||
     searchParams.get("name") ||
     searchParams.get("title") ||
@@ -90,6 +113,9 @@ export function resolveGuideReturnNavigation(searchParams: {
   }
 
   if (safeFromUrl) {
+    if (!fromName) {
+      fromName = inferNameFromRelativeUrl(safeFromUrl) || null
+    }
     return {
       href: safeFromUrl,
       label: fromName ? `RETURN TO ${fromName.toUpperCase()}` : "RETURN TO PREVIOUS PAGE",
@@ -100,10 +126,12 @@ export function resolveGuideReturnNavigation(searchParams: {
   }
 
   if (subjectId) {
+    const inferred = inferNameFromRelativeUrl(`/?subject=${subjectId}`)
+    const resolvedName = fromName || inferred || subjectId
     return {
       href: `/?subject=${encodeURIComponent(subjectId)}`,
-      label: fromName ? `RETURN TO ${fromName.toUpperCase()}` : "RETURN TO CONSOLE",
-      sourceName: fromName || subjectId,
+      label: `RETURN TO ${resolvedName.toUpperCase()}`,
+      sourceName: resolvedName,
       utmSource,
       utmCampaign,
     }

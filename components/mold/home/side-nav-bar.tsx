@@ -22,11 +22,10 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { buildGuideUrl } from "@/lib/navigation/guide-url"
+import { GuideLink } from "@/components/mold/common/guide-link"
 
 interface SideNavBarProps {
   subjectId: string
-  subjectName?: string
   activeView: "home" | "stats"
   onShowDashboard: () => void
   onShowStats: () => void
@@ -131,20 +130,14 @@ export function SideNavBar({
             <Trophy className="w-3.5 h-3.5" aria-hidden="true" /> <span>Achievements</span>
           </button>
 
-          <Link
-            href={buildGuideUrl({
-              fromUrl: subjectId ? `/?subject=${encodeURIComponent(subjectId)}` : undefined,
-              fromName: subjectName,
-              subjectId,
-              utmSource: "side_nav",
-              utmMedium: "sidebar_menu",
-            })}
+          <GuideLink
+            source="side_nav"
             title="Open comprehensive user usage guide, game modes manual, and cognitive strategies"
             aria-label="Open comprehensive user usage guide"
             className="flex items-center gap-2.5 px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-all font-mono text-[10px] uppercase tracking-widest text-left w-full cursor-pointer rounded focus-ring"
           >
             <HelpCircle className="w-3.5 h-3.5" aria-hidden="true" /> <span>User Guide</span>
-          </Link>
+          </GuideLink>
         </div>
 
         {/* ── Section: Subject & Question Bank ── */}

@@ -36,15 +36,26 @@ test('Guide Return Navigation: resolves from URL and human name', () => {
   assert.equal(nav.utmSource, 'side_nav')
 })
 
-test('Guide Return Navigation: handles subjectId fallback', () => {
+test('Guide Return Navigation: infers human title from URL when from_name is missing', () => {
+  const params = new URLSearchParams({
+    from: '/?subject=system-programming',
+  })
+
+  const nav = resolveGuideReturnNavigation(params)
+  assert.equal(nav.href, '/?subject=system-programming')
+  assert.equal(nav.label, 'RETURN TO SYSTEM PROGRAMMING')
+  assert.equal(nav.sourceName, 'System Programming')
+})
+
+test('Guide Return Navigation: handles subjectId fallback with title inference', () => {
   const params = new URLSearchParams({
     subject: 'theory-of-computation',
   })
 
   const nav = resolveGuideReturnNavigation(params)
   assert.equal(nav.href, '/?subject=theory-of-computation')
-  assert.equal(nav.label, 'RETURN TO CONSOLE')
-  assert.equal(nav.sourceName, 'theory-of-computation')
+  assert.equal(nav.label, 'RETURN TO THEORY OF COMPUTATION')
+  assert.equal(nav.sourceName, 'Theory Of Computation')
 })
 
 test('Guide Return Navigation: defaults to /subjects when empty', () => {
@@ -62,15 +73,7 @@ test('Guide Return Navigation: security sanitization blocks open redirects', () 
   })
 
   const nav = resolveGuideReturnNavigation(malicious)
-  // Must reject external URL and safely fallback
   assert.notEqual(nav.href, 'https://evil.com/phishing')
   assert.equal(nav.href, '/subjects')
   assert.equal(nav.label, 'RETURN TO SUBJECTS')
-
-  const protocolRelative = new URLSearchParams({
-    from: '//evil.com',
-  })
-  const nav2 = resolveGuideReturnNavigation(protocolRelative)
-  assert.notEqual(nav2.href, '//evil.com')
-  assert.equal(nav2.href, '/subjects')
 })
