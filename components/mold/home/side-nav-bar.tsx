@@ -17,7 +17,8 @@ import {
   ChevronRight,
   FolderDown,
   Palette,
-  LayoutGrid
+  LayoutGrid,
+  HelpCircle
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
