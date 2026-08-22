@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { text } = require('node:stream/consumers');
 
 const UI_DIR = path.join(__dirname, '../components');
 const APP_DIR = path.join(__dirname, '../app');
@@ -31,11 +32,7 @@ function extractInterface(content, componentName) {
 
 async function processComponent(filePath) {
   const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await text(stream);
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
