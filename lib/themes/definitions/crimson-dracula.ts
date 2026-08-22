@@ -1,0 +1,35 @@
+import type { ColorThemeSpec } from '../theme-types'
+
+export const crimsonDraculaTheme: ColorThemeSpec = {
+  id: 'crimson-dracula',
+  name: 'Crimson Obsidian',
+  label: 'CRIMSON / OBSIDIAN',
+  description: 'Neo-gothic deep obsidian surface with vivid blood-red and neon crimson phosphor.',
+  preview: {
+    accent: '#f43f5e',
+    bg: '#110609',
+    surface: '#200c12',
+    border: '#3d1622',
+  },
+  tokens: {
+    background: '345 50% 4%',
+    foreground: '340 25% 93%',
+    card: '345 40% 7.5%',
+    cardForeground: '340 25% 93%',
+    popover: '345 40% 7.5%',
+    popoverForeground: '340 25% 93%',
+    primary: '350 89% 60%',
+    primaryForeground: '345 60% 4%',
+    secondary: '345 30% 13%',
+    secondaryForeground: '340 25% 93%',
+    muted: '345 25% 10%',
+    mutedForeground: '340 15% 52%',
+    accent: '350 89% 62%',
+    accentForeground: '345 60% 4%',
+    destructive: '0 84% 60%',
+    destructiveForeground: '340 25% 93%',
+    border: '345 30% 19%',
+    input: '345 30% 14%',
+    ring: '350 89% 60%',
+  },
+}

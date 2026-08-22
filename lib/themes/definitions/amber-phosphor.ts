@@ -1,0 +1,35 @@
+import type { ColorThemeSpec } from '../theme-types'
+
+export const amberPhosphorTheme: ColorThemeSpec = {
+  id: 'amber-phosphor',
+  name: 'Amber Phosphor',
+  label: 'AMBER / DEFAULT',
+  description: 'Iconic neo-brutalist CRT terminal with high-contrast amber phosphor glow.',
+  preview: {
+    accent: '#f59e0b',
+    bg: '#0b0d11',
+    surface: '#181b22',
+    border: '#2e3440',
+  },
+  tokens: {
+    background: '220 15% 4.5%',
+    foreground: '220 10% 92%',
+    card: '220 10% 8.5%',
+    cardForeground: '220 10% 92%',
+    popover: '220 10% 8.5%',
+    popoverForeground: '220 10% 92%',
+    primary: '43 100% 50%',
+    primaryForeground: '220 20% 5%',
+    secondary: '220 10% 12.5%',
+    secondaryForeground: '220 10% 92%',
+    muted: '220 10% 10%',
+    mutedForeground: '215 12% 45%',
+    accent: '43 96% 52%',
+    accentForeground: '220 20% 5%',
+    destructive: '0 72% 51%',
+    destructiveForeground: '220 10% 92%',
+    border: '220 10% 18%',
+    input: '220 10% 14%',
+    ring: '43 100% 50%',
+  },
+}

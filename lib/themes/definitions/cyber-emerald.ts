@@ -1,0 +1,35 @@
+import type { ColorThemeSpec } from '../theme-types'
+
+export const cyberEmeraldTheme: ColorThemeSpec = {
+  id: 'cyber-emerald',
+  name: 'Cyber Emerald',
+  label: 'CYBER / MATRIX',
+  description: 'High-contrast matrix terminal aesthetic with vivid emerald neon accents.',
+  preview: {
+    accent: '#10b981',
+    bg: '#06130b',
+    surface: '#0d2216',
+    border: '#154128',
+  },
+  tokens: {
+    background: '150 50% 3.5%',
+    foreground: '145 30% 92%',
+    card: '150 40% 7%',
+    cardForeground: '145 30% 92%',
+    popover: '150 40% 7%',
+    popoverForeground: '145 30% 92%',
+    primary: '158 80% 45%',
+    primaryForeground: '150 80% 4%',
+    secondary: '150 30% 12%',
+    secondaryForeground: '145 30% 92%',
+    muted: '150 25% 9%',
+    mutedForeground: '145 15% 50%',
+    accent: '158 90% 48%',
+    accentForeground: '150 80% 4%',
+    destructive: '0 72% 51%',
+    destructiveForeground: '145 30% 92%',
+    border: '150 30% 18%',
+    input: '150 30% 13%',
+    ring: '158 80% 45%',
+  },
+}

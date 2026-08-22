@@ -1,0 +1,35 @@
+import type { ColorThemeSpec } from '../theme-types'
+
+export const solarSepiaTheme: ColorThemeSpec = {
+  id: 'solar-sepia',
+  name: 'Solar Sepia',
+  label: 'SOLAR / SEPIA',
+  description: 'Warm archival parchment aesthetic optimized for daylight study ergonomics.',
+  preview: {
+    accent: '#d97706',
+    bg: '#14110d',
+    surface: '#241e17',
+    border: '#42372a',
+  },
+  tokens: {
+    background: '35 30% 5%',
+    foreground: '35 25% 90%',
+    card: '35 25% 8.5%',
+    cardForeground: '35 25% 90%',
+    popover: '35 25% 8.5%',
+    popoverForeground: '35 25% 90%',
+    primary: '38 92% 50%',
+    primaryForeground: '35 40% 5%',
+    secondary: '35 20% 14%',
+    secondaryForeground: '35 25% 90%',
+    muted: '35 18% 10%',
+    mutedForeground: '35 15% 50%',
+    accent: '38 92% 54%',
+    accentForeground: '35 40% 5%',
+    destructive: '0 72% 51%',
+    destructiveForeground: '35 25% 90%',
+    border: '35 22% 20%',
+    input: '35 22% 14%',
+    ring: '38 92% 50%',
+  },
+}

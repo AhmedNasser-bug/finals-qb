@@ -28,6 +28,9 @@ import { BottomMobileNav } from "@/components/mold/home/bottom-mobile-nav"
 import { HeaderWell } from "@/components/mold/home/header-well"
 import { StatsScreen } from "@/components/mold/home/stats-screen"
 import { useStats } from "@/lib/game/stats-context"
+import { usePageLayout } from "@/lib/layouts/layout-context"
+import { ThemeSwitcherModal } from "@/components/mold/common/theme-switcher-modal"
+import { LayoutSwitcherModal } from "@/components/mold/common/layout-switcher-modal"
 import { MobileBottomNavBar } from "@/components/mold/home/home-screen-components"
 import { MainContentGrid } from "@/components/mold/home/home-screen-blocks"
 import type { AppView } from "@/components/mold/home/home-screen-types"
@@ -66,7 +69,10 @@ export function HomeScreen({
   const [showEncyclopedia, setShowEncyclopedia] = useState(false)
   const [showImporter, setShowImporter]     = useState(false)
   const [showAiWizard, setShowAiWizard]     = useState(false)
+  const [showThemeModal, setShowThemeModal] = useState(false)
+  const [showLayoutModal, setShowLayoutModal] = useState(false)
 
+  const { activeLayout } = usePageLayout()
   const { runs, stats, recordSession } = useStats()
   const { achievements, syncSubjectAchievements } = useAchievements()
 
@@ -184,93 +190,91 @@ export function HomeScreen({
     )
   }
 
+  const LayoutComponent = activeLayout.Component
+
   return (
     <>
-      <div className="min-h-screen bg-[#131313] flex flex-col text-[#e5e2e1] selection:bg-primary/20 selection:text-primary animate-fade-in relative">
-        <div className="scanlines absolute inset-0 opacity-[0.03] pointer-events-none" />
+      <LayoutComponent
+        topNav={
+          <TopNavBar
+            activeSubjectName={activeSubject.name}
+            onShowEncyclopedia={() => setShowEncyclopedia(true)}
+            onShowGallery={() => setShowGallery(true)}
+            onImportNew={() => setShowImporter(true)}
+            onShowThemeModal={() => setShowThemeModal(true)}
+            onShowLayoutModal={() => setShowLayoutModal(true)}
+          />
+        }
+        sidebar={
+          <SideNavBar
+            subjectId={activeSubject.id}
+            activeView={view === "stats" ? "stats" : "home"}
+            onShowDashboard={() => setView("home")}
+            onShowStats={() => setView("stats")}
+            onShowEncyclopedia={() => setShowEncyclopedia(true)}
+            onShowGallery={() => setShowGallery(true)}
+            onChangeSubject={onChangeSubject}
+            onImportNew={() => setShowImporter(true)}
+            onAddQuestions={() => setShowAiWizard(true)}
+            onInitialize={handleInitialize}
+            onDownloadHtml={() => downloadSubjectHtml(activeSubject)}
+            onDownloadPdf={() => downloadSubjectPdf(activeSubject)}
+            onDownloadSolvedPdf={() => downloadSubjectSolvedPdf(activeSubject)}
+            onShowThemeModal={() => setShowThemeModal(true)}
+            onShowLayoutModal={() => setShowLayoutModal(true)}
+          />
+        }
+        mobileNav={
+          <BottomMobileNav
+            view={view}
+            setView={setView}
+            handleModeSelect={handleModeSelect}
+            setShowEncyclopedia={setShowEncyclopedia}
+            setShowGallery={setShowGallery}
+            onChangeSubject={onChangeSubject}
+          />
+        }
+        footer={<Footer rightText="BUILD 2026.06_CC" />}
+      >
+        {view === "stats" ? (
+          <StatsScreen onReturnHome={() => setView("home")} />
+        ) : (
+          <>
+            {/* Header Well */}
+            <HeaderWell
+              subjectName={activeSubject.name}
+              description={activeSubject.config.description}
+              runCount={runs.length}
+              visualAccuracyPct={visualAccuracyPct}
+            />
 
-        {/* ─── TOP NAVIGATION BAR ────────────────────────────────────────────── */}
-        <TopNavBar
-          activeSubjectName={activeSubject.name}
-          onShowEncyclopedia={() => setShowEncyclopedia(true)}
-          onShowGallery={() => setShowGallery(true)}
-          onImportNew={() => setShowImporter(true)}
-        />
+            <MainContentGrid
+              selectedMode={selectedMode}
+              handleModeSelect={handleModeSelect}
+              handleInitialize={handleInitialize}
+              config={config}
+              handleConfigChange={handleConfigChange}
+              categories={subjectData.categories}
+              unlockedCount={unlockedCount}
+              totalAchievementsCount={totalAchievementsCount}
+              topAchievements={topAchievements}
+              achievements={achievements}
+              setShowGallery={setShowGallery}
+            />
 
-        {/* ─── SIDEBAR BAR (DESKTOP ONLY) ──────────────────────────────────────── */}
-        <SideNavBar
-          subjectId={activeSubject.id}
-          activeView={view === "stats" ? "stats" : "home"}
-          onShowDashboard={() => setView("home")}
-          onShowStats={() => setView("stats")}
-          onShowEncyclopedia={() => setShowEncyclopedia(true)}
-          onShowGallery={() => setShowGallery(true)}
-          onChangeSubject={onChangeSubject}
-          onImportNew={() => setShowImporter(true)}
-          onAddQuestions={() => setShowAiWizard(true)}
-          onInitialize={handleInitialize}
-          onDownloadHtml={() => downloadSubjectHtml(activeSubject)}
-          onDownloadPdf={() => downloadSubjectPdf(activeSubject)}
-          onDownloadSolvedPdf={() => downloadSubjectSolvedPdf(activeSubject)}
-        />
+            {/* Performance runs table list below the main grid split */}
+            <div className="flex items-center gap-4 py-8 select-none">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase font-bold">
+                QUIZ HISTORY
+              </span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
 
-        {/* ─── MAIN CANVAS AREA ────────────────────────────────────────────── */}
-        <main className="md:ml-64 pt-24 pb-20 px-4 sm:px-6 lg:px-12 min-h-screen flex-1">
-          
-          {view === "stats" ? (
-            <StatsScreen onReturnHome={() => setView("home")} />
-          ) : (
-            <>
-              {/* Header Well */}
-              <HeaderWell
-                subjectName={activeSubject.name}
-                description={activeSubject.config.description}
-                runCount={runs.length}
-                visualAccuracyPct={visualAccuracyPct}
-              />
-
-              <MainContentGrid
-                selectedMode={selectedMode}
-                handleModeSelect={handleModeSelect}
-                handleInitialize={handleInitialize}
-                config={config}
-                handleConfigChange={handleConfigChange}
-                categories={subjectData.categories}
-                unlockedCount={unlockedCount}
-                totalAchievementsCount={totalAchievementsCount}
-                topAchievements={topAchievements}
-                achievements={achievements}
-                setShowGallery={setShowGallery}
-              />
-
-              {/* Performance runs table list below the main grid split */}
-              <div className="flex items-center gap-4 py-8 select-none">
-                <div className="flex-1 h-px bg-zinc-800" />
-                <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase font-bold">
-                  QUIZ HISTORY
-                </span>
-                <div className="flex-1 h-px bg-zinc-800" />
-              </div>
-
-              <PerformanceTable runs={runs} stats={stats} />
-            </>
-          )}
-
-        </main>
-
-        {/* ─── BOTTOM NAVIGATION BAR (MOBILE ONLY) ────────────────────────────────── */}
-        <BottomMobileNav
-          view={view}
-          setView={setView}
-          handleModeSelect={handleModeSelect}
-          setShowEncyclopedia={setShowEncyclopedia}
-          setShowGallery={setShowGallery}
-          onChangeSubject={onChangeSubject}
-        />
-
-        {/* Desktop base footer */}
-        <Footer rightText="BUILD 2026.06_CC" />
-      </div>
+            <PerformanceTable runs={runs} stats={stats} />
+          </>
+        )}
+      </LayoutComponent>
 
       {showGallery && <AchievementGallery onClose={() => setShowGallery(false)} />}
 
@@ -298,6 +302,14 @@ export function HomeScreen({
           }}
           onCancel={() => setShowAiWizard(false)}
         />
+      )}
+
+      {showThemeModal && (
+        <ThemeSwitcherModal onClose={() => setShowThemeModal(false)} />
+      )}
+
+      {showLayoutModal && (
+        <LayoutSwitcherModal onClose={() => setShowLayoutModal(false)} />
       )}
     </>
   )

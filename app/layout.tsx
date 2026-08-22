@@ -25,17 +25,24 @@ export const metadata: Metadata = {
   generator: "v0.dev",
 }
 
+import { ColorThemeProvider } from "@/lib/themes/theme-context"
+import { PageLayoutProvider } from "@/lib/layouts/layout-context"
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   const content = (
-    <StatsProvider>
-      <AchievementProvider>
-        {children}
-      </AchievementProvider>
-    </StatsProvider>
+    <ColorThemeProvider>
+      <PageLayoutProvider>
+        <StatsProvider>
+          <AchievementProvider>
+            {children}
+          </AchievementProvider>
+        </StatsProvider>
+      </PageLayoutProvider>
+    </ColorThemeProvider>
   )
 
   return (

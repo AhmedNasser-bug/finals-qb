@@ -5,12 +5,16 @@ import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
+import { Palette, LayoutGrid } from "lucide-react"
+
 interface TopNavBarProps {
   activeSubjectName?: string
   loadedSubjectsCount?: number
   onShowEncyclopedia?: () => void
   onShowGallery?: () => void
   onImportNew?: () => void
+  onShowThemeModal?: () => void
+  onShowLayoutModal?: () => void
 }
 
 const GUIDANCE_TIPS = [
@@ -32,6 +36,8 @@ export function TopNavBar({
   onShowEncyclopedia,
   onShowGallery,
   onImportNew,
+  onShowThemeModal,
+  onShowLayoutModal,
 }: TopNavBarProps) {
   const [tipIndex, setTipIndex] = useState(0)
 
@@ -108,6 +114,28 @@ export function TopNavBar({
           <span className="text-[10px] font-mono text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 tracking-widest uppercase shrink-0 rounded">
             {loadedSubjectsCount} SUBJECT{loadedSubjectsCount !== 1 ? "S" : ""} LOADED
           </span>
+        )}
+
+        {onShowThemeModal && (
+          <button
+            onClick={onShowThemeModal}
+            title="Change color theme palette"
+            aria-label="Open color theme switcher"
+            className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] flex items-center justify-center shrink-0 rounded"
+          >
+            <Palette className="w-4 h-4 text-primary" aria-hidden="true" />
+          </button>
+        )}
+
+        {onShowLayoutModal && (
+          <button
+            onClick={onShowLayoutModal}
+            title="Switch workspace page layout"
+            aria-label="Open page layout switcher"
+            className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden sm:flex items-center justify-center shrink-0 rounded"
+          >
+            <LayoutGrid className="w-4 h-4 text-primary" aria-hidden="true" />
+          </button>
         )}
 
         {onImportNew && (

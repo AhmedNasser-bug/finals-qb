@@ -1,0 +1,35 @@
+import type { ColorThemeSpec } from '../theme-types'
+
+export const midnightSapphireTheme: ColorThemeSpec = {
+  id: 'midnight-sapphire',
+  name: 'Midnight Sapphire',
+  label: 'SAPPHIRE / COSMIC',
+  description: 'Deep cosmic space navy with vibrant electric blue and cyan indicators.',
+  preview: {
+    accent: '#38bdf8',
+    bg: '#050b14',
+    surface: '#0d1829',
+    border: '#1c314e',
+  },
+  tokens: {
+    background: '222 55% 4%',
+    foreground: '215 35% 92%',
+    card: '222 45% 7.5%',
+    cardForeground: '215 35% 92%',
+    popover: '222 45% 7.5%',
+    popoverForeground: '215 35% 92%',
+    primary: '199 89% 52%',
+    primaryForeground: '222 60% 4%',
+    secondary: '222 35% 13%',
+    secondaryForeground: '215 35% 92%',
+    muted: '222 30% 10%',
+    mutedForeground: '217 20% 52%',
+    accent: '199 89% 55%',
+    accentForeground: '222 60% 4%',
+    destructive: '0 72% 51%',
+    destructiveForeground: '215 35% 92%',
+    border: '222 35% 19%',
+    input: '222 35% 14%',
+    ring: '199 89% 52%',
+  },
+}
