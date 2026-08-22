@@ -61,7 +61,7 @@ Always target components in their respective subdirectories:
 1. **Implement UI Changes**: Edit target files using `replace_file_content` or `multi_replace_file_content`. Ensure zero breaking changes to data contracts (`GameState`, `RunRecord`, `FullSubjectData`).
 2. **Execute Unit Tests**:
    ```bash
-   npm test
+   pnpm test
    ```
    Must pass with 100% success rate (`fail 0`).
 

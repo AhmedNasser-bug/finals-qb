@@ -89,9 +89,9 @@ When merging branches built on outdated base commits, conflicts may occur in cen
 #### 4.1. Local Test Verification
 - Run the centralized test runner suite before pushing:
   ```bash
-  node --experimental-strip-types --import ./test-runner.mjs --test lib/accuracy.test.ts lib/crypto-utils.test.ts lib/mold-types.test.ts lib/subject-persistence.test.ts
+  pnpm test
   ```
-- **Validation Criteria:** 32/32 tests must pass with `fail 0`.
+- **Validation Criteria:** All 184+ tests must pass with `fail 0`. Run `pnpm run build` to ensure zero compilation or Turbopack regressions.
 
 #### 4.2. Vercel Status Check Override (Administrative Bypass)
 - **The Problem:** Merges on `main` may be blocked in the GitHub UI due to missing status check updates (e.g. mismatched Vercel deployment names like `Production – finals-qb` vs. actual posted checks like `Vercel – Production`).

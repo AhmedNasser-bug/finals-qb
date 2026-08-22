@@ -87,7 +87,7 @@ This document serves as the comprehensive engineering roadmap, architectural cri
 | Property | Specification & Architectural Blueprint |
 | :--- | :--- |
 | **Module** | `components/mold/common/mermaid-diagram.tsx`, `lib/utils/math-renderer.ts`, `package.json` |
-| **Current Architectural Seam** | 1. Mermaid (`~300KB+`) and KaTeX css/fonts add weight to bundles even during text-only questions.<br>2. Node.js typeless CommonJS warning during `npm test`. |
+| **Current Architectural Seam** | 1. Mermaid (`~300KB+`) and KaTeX css/fonts add weight to bundles even during text-only questions.<br>2. Node.js typeless CommonJS warning during `pnpm test`. |
 | **Target Architecture** | **Strict Specimen Dynamic Splitting & Module Harmonization**: |
 | **Optimization Actions** | 1. **Strict Runtime Gating:** Ensure Mermaid and KaTeX chunks are loaded via `next/dynamic` strictly when `hasVisual(question)` returns `true`.<br>2. **ESM Declaration:** Add `"type": "module"` to `package.json` to accelerate module resolution in test runners. |
 
@@ -245,7 +245,7 @@ flowchart LR
 ## 4. Verification & Quality Gates
 
 Every implementation phase must satisfy the following automated quality benchmarks before landing:
-1. **Zero Test Regressions:** All 164+ unit/integration tests must pass via `npm test`.
+1. **Zero Test Regressions:** All 184+ unit/integration tests must pass via `pnpm test`.
 2. **Accessibility Audits:** Automated Lighthouse / axe-core audits must yield **100% a11y compliance** on all active game screens.
 3. **Bundle Budget Checks:** Initial route bundles must remain under 120 KB gzip (excluding dynamic KaTeX/Mermaid assets).
 4. **Offline Isolation:** 100% of quiz taking, scoring, and flashcard active recall must function with zero network connectivity.

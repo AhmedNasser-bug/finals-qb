@@ -100,9 +100,9 @@ Apply this strict, sequential protocol to execute the triage, merge, and cleanup
 #### Step 3.1: Run Local Validations
 - **Action:** Run the official test runner suite inside the local workspace to ensure 100% of tests pass before push:
   ```bash
-  node --experimental-strip-types --import ./test-runner.mjs --test lib/accuracy.test.ts lib/crypto-utils.test.ts lib/mold-types.test.ts lib/subject-persistence.test.ts
+  pnpm test
   ```
-- **Verification Goal:** Terminal reports all 32/32 tests passing successfully with `fail 0`.
+- **Verification Goal:** Terminal reports all 184+ tests passing successfully with `fail 0`. Also verify `pnpm run build` succeeds cleanly.
 
 #### Step 3.2: Execute Administrative Direct Push Bypass
 - **Action:** If GitHub UI merge buttons are blocked due to mismatched environment status checks (e.g. Vercel environment names misalignment):

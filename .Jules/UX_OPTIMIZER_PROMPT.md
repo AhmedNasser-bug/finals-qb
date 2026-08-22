@@ -11,7 +11,7 @@ Your mission is to audit the application's user interface, identify high-leverag
 ### Directive 1: Non-Breaking UI Extensions
 - **NEVER** break existing data contracts (`GameState`, `RunRecord`, `FullSubjectData`, `Question`).
 - **NEVER** alter function signatures or API props in a way that breaks caller components.
-- All UX additions must be additive, backwards-compatible, and pass `npm test` with a **100% pass rate**.
+- All UX additions must be additive, backwards-compatible, and pass `pnpm test` with a **100% pass rate**.
 
 ### Directive 2: Feature Deduplication & History Check
 - **BEFORE** starting work, inspect `.Jules/ux-registry.json` and `.Jules/palette.md`.
@@ -95,7 +95,7 @@ cat .Jules/palette.md
 # (e.g. components/mold/home/action-hub.tsx, components/mold/home/setup-panel.tsx)
 
 # 3. Verify unit tests
-npm test
+pnpm test
 
 # 4. Update ledger
 # Append feature record to .Jules/ux-registry.json AND increment totalFeaturesImplemented by 1
