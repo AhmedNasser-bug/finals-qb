@@ -40,7 +40,7 @@ export function TelemetryPanel() {
               <span className="text-emerald-400 font-bold tabular-nums">{roundedAccuracy}%</span>
             </div>
             
-            <div className="h-3 bg-secondary/60 border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average accuracy is ${roundedAccuracy}%`}>
+            <div className="h-3 bg-secondary/60 border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden" role="progressbar" aria-valuenow={roundedAccuracy} aria-valuemin={0} aria-valuemax={100} aria-label={`Average accuracy is ${roundedAccuracy}%`}>
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = i < Math.ceil(accuracyPct / 10)
                 return (
@@ -56,11 +56,11 @@ export function TelemetryPanel() {
             </div>
 
             {/* Dynamic Milestones under Accuracy Bar */}
-            <div className="flex justify-between font-mono text-[8px] text-muted-foreground/60 px-0.5 pt-0.5 select-none relative">
+            <div className="flex justify-between font-mono text-[8px] text-muted-foreground/60 px-0.5 pt-0.5 select-none relative" title="Accuracy milestones">
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
                 accuracyPct >= 60 ? "text-primary font-bold" : "text-muted-foreground/60"
-              )}>
+              )} title="Achieve 60% accuracy to pass">
                 <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 60 ? "bg-primary" : "bg-secondary")} />
                 60% PASS
               </span>
@@ -68,7 +68,7 @@ export function TelemetryPanel() {
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
                 accuracyPct >= 80 ? "text-primary font-bold" : "text-muted-foreground/60"
-              )}>
+              )} title="Achieve 80% accuracy for Expert rank">
                 <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 80 ? "bg-primary" : "bg-secondary")} />
                 80% EXPERT
               </span>
@@ -76,7 +76,7 @@ export function TelemetryPanel() {
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
                 accuracyPct >= 90 ? "text-emerald-400 font-bold" : "text-muted-foreground/60"
-              )}>
+              )} title="Achieve 90% accuracy for Master rank">
                 <span className={cn("w-1 h-1 rounded-full", accuracyPct >= 90 ? "bg-emerald-400" : "bg-secondary")} />
                 90% MASTER
               </span>
@@ -84,8 +84,8 @@ export function TelemetryPanel() {
               <span className={cn(
                 "flex items-center gap-1 transition-colors duration-200", 
                 accuracyPct >= 97 ? "text-primary font-bold" : "text-muted-foreground/60"
-              )}>
-                <span className={cn("w-1 h-1 rounded-full shrink-0", accuracyPct >= 97 ? "bg-primary animate-pulse" : "bg-secondary")} />
+              )} title="Achieve 97% accuracy for S+ rank">
+                <span className={cn("w-1 h-1 rounded-full shrink-0", accuracyPct >= 97 ? "bg-primary animate-pulse shadow-[0_0_12px_hsl(var(--primary)/0.6)]" : "bg-secondary")} />
                 97% S+
               </span>
             </div>
@@ -100,7 +100,7 @@ export function TelemetryPanel() {
               </span>
             </div>
             
-            <div className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}>
+            <div className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden" role="progressbar" aria-valuenow={averageResponseTimeMs} aria-valuemin={0} aria-valuemax={5000} aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}>
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = averageResponseTimeMs > 0 ? (i < speedSegments) : false
                 return (
@@ -116,10 +116,10 @@ export function TelemetryPanel() {
             </div>
 
             {/* Custom speed calibration legend */}
-            <div className="flex justify-between font-mono text-[8px] text-zinc-600 px-0.5 pt-0.5 select-none">
-              <span>SLOWER (&gt;5s)</span>
-              <span>AVERAGE (2.5s)</span>
-              <span>FAST (&lt;1s)</span>
+            <div className="flex justify-between font-mono text-[8px] text-zinc-600 px-0.5 pt-0.5 select-none" title="Response time speed calibration legend">
+              <span title="Slower than 5 seconds">SLOWER (&gt;5s)</span>
+              <span title="Around 2.5 seconds">AVERAGE (2.5s)</span>
+              <span title="Faster than 1 second">FAST (&lt;1s)</span>
             </div>
           </div>
 

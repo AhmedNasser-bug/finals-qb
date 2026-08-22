@@ -64,8 +64,8 @@ export function ActionHub({
         <div className="flex items-start gap-4">
           {/* Play/Launch Icon */}
           <div className={cn(
-            "w-10 h-10 rounded border flex items-center justify-center shrink-0 transition-colors",
-            disabled ? "border-border text-muted-foreground" : "border-primary/30 bg-primary/15 text-primary group-hover:border-background/30 group-hover:bg-background/15 group-hover:text-background"
+            "w-10 h-10 rounded border flex items-center justify-center shrink-0 transition-all duration-300",
+            disabled ? "border-border text-muted-foreground" : "border-primary/30 bg-primary/15 text-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] group-hover:border-background/30 group-hover:bg-background/15 group-hover:text-background"
           )}>
             <PlayIcon className="w-4 h-4 fill-current" aria-hidden="true" />
           </div>

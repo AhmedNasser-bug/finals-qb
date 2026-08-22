@@ -101,3 +101,7 @@
 
 
 
+
+## 2026-08-22 - Dashboard Telemetry Progressbars & Hover Context
+**Learning:** Dense telemetry dashboard components often convey visual milestones and progress purely through colors and widths, which can leave screen readers without proper context. Adding `role="progressbar"`, `aria-valuenow`, and descriptive `title` attributes on generic stat rows greatly improves both accessibility and standard visual exploration (hover tooltips).
+**Action:** Always wrap dynamically calculated stat charts and bars with standard a11y progressbar roles and add `cursor-help` with `title` context for numerical data rows.

@@ -16,17 +16,17 @@ export function SessionStatsPanel() {
         </h2>
       </div>
       
-      <div className="flex flex-col gap-3 font-mono text-[10px]">
-        <div className="flex justify-between border-b border-border/60 pb-2">
-          <span className="text-muted-foreground uppercase">TOTAL_SESSIONS</span>
+      <div className="flex flex-col gap-3 font-mono text-[10px]" aria-live="polite">
+        <div className="flex justify-between border-b border-border/60 pb-2" title="Total number of quiz sessions completed">
+          <span className="text-muted-foreground uppercase cursor-help">TOTAL_SESSIONS</span>
           <span className="font-bold text-foreground tabular-nums">{stats.totalRuns}</span>
         </div>
-        <div className="flex justify-between border-b border-border/60 pb-2">
-          <span className="text-muted-foreground uppercase">DAY_STREAK</span>
+        <div className="flex justify-between border-b border-border/60 pb-2" title="Consecutive days of active studying">
+          <span className="text-muted-foreground uppercase cursor-help">DAY_STREAK</span>
           <span className="font-bold text-primary tabular-nums">{dayStreak} DAYS</span>
         </div>
-        <div className="flex justify-between border-b border-border/60 pb-2">
-          <span className="text-muted-foreground uppercase">AVG_ACCURACY</span>
+        <div className="flex justify-between border-b border-border/60 pb-2" title="Your overall average quiz accuracy">
+          <span className="text-muted-foreground uppercase cursor-help">AVG_ACCURACY</span>
           <span className="font-bold text-emerald-400 tabular-nums">
             {stats.averageScore ? `${Math.round(stats.averageScore)}%` : "—"}
           </span>
