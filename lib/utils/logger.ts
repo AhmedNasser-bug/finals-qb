@@ -14,7 +14,7 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   {
     // Private keys
     pattern: /(-----BEGIN[A-Z0-9-\s]{1,128}PRIVATE KEY-----)([\s\S]{1,8192}?)(-----END[A-Z0-9-\s]{1,128}PRIVATE KEY-----)/g,
-    replacement: '$1\n[REDACTED]\n$3'
+    replacement: '$1\\n[REDACTED]\\n$3'
   },
   {
     // Common secrets and PII
@@ -52,7 +52,7 @@ function maskString(str: string): string {
   return masked;
 }
 
-const SENSITIVE_KEYS_REGEX = /api_key|apikey|secret|token|password|email|phone|ssn|credit_card/i;
+const SENSITIVE_KEYS_REGEX = /\b[a-zA-Z0-9_]*(?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)/i;
 
 function isPlainObject(value: any): boolean {
   if (typeof value !== 'object' || value === null) return false;
