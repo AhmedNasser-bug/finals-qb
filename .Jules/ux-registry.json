@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-18T07:11:00Z",
-  "totalFeaturesImplemented": 11,
+  "lastUpdated": "2026-08-23T13:07:03.145Z",
+  "totalFeaturesImplemented": 12,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -130,6 +130,18 @@
       "implementedAt": "2026-08-18T07:11:00Z",
       "componentsTouched": [
         "components/mold/home/side-nav-bar.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "wizard-modal-context-a11y",
+      "category": "tooltips",
+      "tier": 2,
+      "title": "Contextual Tooltips & ARIA Decorator Fixes for Modals",
+      "implementedAt": "2026-08-23T13:07:03.145Z",
+      "componentsTouched": [
+        "components/mold/home/add-questions-wizard.tsx",
+        "components/mold/home/stats-screen.tsx"
       ],
       "nonBreaking": true
     }
