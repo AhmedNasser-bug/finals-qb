@@ -46,19 +46,23 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
       if (e.key !== "Tab" || !el) return
 
       const focusable = el.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
       )
       if (focusable.length === 0) return
 
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
+      if (e.shiftKey) {
+        if (document.activeElement === first || document.activeElement === el) {
+          e.preventDefault()
+          last.focus()
+        }
+      } else {
+        if (document.activeElement === last || document.activeElement === el) {
+          e.preventDefault()
+          first.focus()
+        }
       }
     }
 
@@ -157,10 +161,14 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
         </div>
 
         {/* Tab bar */}
-        <div className="flex border-b border-border">
+        <div className="flex border-b border-border" role="tablist" aria-label="Share options">
           {(["link", "file"] as Tab[]).map((t) => (
             <button
               key={t}
+              role="tab"
+              aria-selected={tab === t}
+              {...(tab === t ? { "aria-controls": `tabpanel-${tab}` } : {})}
+              id={`tab-${t}`}
               onClick={() => setTab(t)}
               className={cn(
                 "flex-1 py-2.5 text-xs font-mono tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-1 focus-visible:ring-ring",
@@ -175,7 +183,12 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
         </div>
 
         {/* Tab content */}
-        <div className="p-5 flex flex-col gap-4">
+        <div
+          id={`tabpanel-${tab}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${tab}`}
+          className="p-5 flex flex-col gap-4"
+        >
 
           {tab === "link" && (
             <LinkTabContent
