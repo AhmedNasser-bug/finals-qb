@@ -10,6 +10,7 @@ services:
     ports:
       - "3001:3000"
     command: sh -c "corepack enable pnpm && pnpm dev --port 3000"
+    restart: unless-stopped
   tenant-b:
     image: node:alpine
     working_dir: /app
@@ -20,3 +21,4 @@ services:
     ports:
       - "3002:3000"
     command: sh -c "corepack enable pnpm && pnpm dev --port 3000"
+    restart: unless-stopped

@@ -19,5 +19,4 @@ if ! command -v node &> /dev/null; then
 fi
 
 echo "=> Installing dependencies..."
-# Use strict peer dependencies and ensure idempotent installs
 pnpm install

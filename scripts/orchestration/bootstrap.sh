@@ -7,7 +7,7 @@ echo "=========================================="
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-bash "$DIR/01-dependencies.sh"
-bash "$DIR/02-environment.sh"
-bash "$DIR/03-seeding.sh"
-bash "$DIR/04-docker.sh" "$1"
+bash "$DIR/modules/01-check-deps.sh"
+bash "$DIR/modules/02-setup-env.sh"
+bash "$DIR/modules/03-seed-data.sh"
+bash "$DIR/modules/04-start-docker.sh" "$1"

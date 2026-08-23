@@ -1,4 +1,4 @@
-## 3. Pull Request Validation Rules
+# Pull Request Validation Rules
 
 **Before creating a Pull Request, ensure that the following requirements are met:**
 

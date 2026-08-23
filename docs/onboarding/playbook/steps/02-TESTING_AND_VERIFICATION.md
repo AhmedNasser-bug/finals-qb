@@ -1,4 +1,4 @@
-## 2. Testing Workflows
+# Testing Workflows
 
 **The repository uses the native `node:test` runner.**
 
