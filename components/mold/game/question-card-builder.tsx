@@ -377,7 +377,6 @@ function OptionButton({
 }: OptionButtonProps) {
   const { state: cardState } = useQuestionCard()
   const streak = cardState.streak ?? 0
-  const checkedProps = isSelected ? { "aria-checked": "true" as const } : { "aria-checked": "false" as const }
 
   const getFloatText = () => {
     if (streak >= 10) return `OVERDRIVE ×${streak}! ⚡`
@@ -388,7 +387,7 @@ function OptionButton({
   return (
     <button
       role="radio"
-      {...checkedProps}
+      aria-checked={isSelected}
       disabled={isRevealed}
       aria-label={`Option ${label}: ${text ?? label}`}
       title={`Select Option ${label} (Press ${idx + 1} or ${label})`}
