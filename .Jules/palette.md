@@ -101,3 +101,7 @@
 
 
 
+
+## 2026-08-23 - Add Title to Contextless Modal Actions and Hide Decorative Icons
+**Learning:** In certain wizard flows (e.g. `add-questions-wizard`) or stat pages (`stats-screen`), utility buttons ("Cancel", "BACK") often lack proper hover tooltips for visual context and specific accessibility titles. Furthermore, purely decorative icons (like Lucide `FileText`, `Check`, `Zap`, `Clock`, `Trophy`) accompanying these texts might not be consistently marked as `aria-hidden="true"`, causing screen reader verbosity.
+**Action:** Consistently append contextually explicit `title` attributes on navigation/wizard control buttons. Enforce `aria-hidden="true"` on all decorative icons placed alongside readable labels.
