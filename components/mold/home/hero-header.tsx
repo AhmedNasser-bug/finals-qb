@@ -147,7 +147,7 @@ export function HeroHeader({
               title={`${unlocked} of ${total} achievements unlocked — click to view gallery`}
               aria-label={`View achievements gallery (${unlocked} of ${total} unlocked)`}
             >
-              <TrophyIcon className="w-6 h-6" />
+              <TrophyIcon className="w-6 h-6" aria-hidden="true" />
             </button>
           ) : (
             <div
@@ -159,7 +159,7 @@ export function HeroHeader({
               )}
               title={`${unlocked} of ${total} achievements unlocked`}
             >
-              <TrophyIcon className="w-6 h-6" />
+              <TrophyIcon className="w-6 h-6" aria-hidden="true" />
             </div>
           )}
         </div>
