@@ -74,3 +74,22 @@ test('handles non-plain objects', () => {
   assert.strictEqual(maskData(map), map);
   assert.strictEqual(maskData(set), set);
 });
+
+test('matches prefixed api keys', () => {
+  const result = maskData({ stripe_api_key: '12345', some_secret_value: 'my-password', normal_key: 'safe_value' });
+  assert.strictEqual(result.stripe_api_key, '[REDACTED]');
+  assert.strictEqual(result.some_secret_value, '[REDACTED]');
+  assert.strictEqual(result.normal_key, 'safe_value');
+});
+
+test('handles raw JSON strings with prefixed api keys', () => {
+  const result = maskData('{"stripe_api_key": "12345", "nested": {"my_secret": "supersecret"}, "password_hash": "12345"}');
+  assert.strictEqual(result, '{"stripe_api_key":"[REDACTED]","nested":{"my_secret":"[REDACTED]"},"password_hash":"[REDACTED]"}');
+});
+
+test('redacts private keys without breaking JSON parsing', () => {
+  const rawKey = "-----BEGIN PRIVATE KEY-----\\nMIICXAIBAAKBgQDCr\\n-----END PRIVATE KEY-----";
+  const jsonStr = JSON.stringify({ key: rawKey });
+  const result = maskData(jsonStr);
+  assert.doesNotThrow(() => JSON.parse(result));
+});
