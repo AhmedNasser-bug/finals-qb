@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-18T07:11:00Z",
-  "totalFeaturesImplemented": 11,
+  "lastUpdated": "2026-08-24T16:20:48.617Z",
+  "totalFeaturesImplemented": 12,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -130,6 +130,17 @@
       "implementedAt": "2026-08-18T07:11:00Z",
       "componentsTouched": [
         "components/mold/home/side-nav-bar.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "performance-table-toggle-a11y",
+      "category": "a11y",
+      "tier": 1,
+      "title": "Performance Table Toggle Accessibility",
+      "implementedAt": "2026-08-24T16:20:48.617Z",
+      "componentsTouched": [
+        "components/mold/home/performance-table.tsx"
       ],
       "nonBreaking": true
     }
