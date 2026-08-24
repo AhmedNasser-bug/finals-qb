@@ -30,7 +30,7 @@ export function ExampleModuleCard({
               aria-label={`Share ${entry.name}`}
               title={isLoading ? "Loading module..." : "Share subject"}
             >
-              <ShareIcon />
+              <ShareIcon aria-hidden="true" />
             </button>
             <span className="text-[10px] font-mono px-1.5 py-0.5 border border-primary/30 text-primary/70 bg-primary/5">
               EXAMPLE
