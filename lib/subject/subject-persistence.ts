@@ -692,30 +692,31 @@ function balanceJsonStack(str: string): string {
   let braceCount = 0;
   let bracketCount = 0;
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i]
+  const len = str.length
+  for (let i = 0; i < len; i++) {
+    const charCode = str.charCodeAt(i)
     if (escaped) {
       escaped = false
       continue
     }
-    if (char === '\\') {
+    if (charCode === 92) {
       escaped = true
       continue
     }
-    if (char === '"') {
+    if (charCode === 34) {
       inString = !inString
       continue
     }
 
     if (inString) continue;
 
-    if (char === '{') {
+    if (charCode === 123) {
       stack.push('{')
       braceCount++
-    } else if (char === '[') {
+    } else if (charCode === 91) {
       stack.push('[')
       bracketCount++
-    } else if (char === '}') {
+    } else if (charCode === 125) {
       if (stack[stack.length - 1] === '{') {
         stack.pop()
         braceCount--
@@ -730,7 +731,7 @@ function balanceJsonStack(str: string): string {
           braceCount--
         }
       }
-    } else if (char === ']') {
+    } else if (charCode === 93) {
       if (stack[stack.length - 1] === '[') {
         stack.pop()
         bracketCount--
@@ -845,21 +846,22 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
     "uparrow", "underbar", "usebox", "underbrace", "under", "Uparrow"
   ])
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    if (char === '"' && str[i - 1] !== '\\') {
+  const len = str.length
+  for (let i = 0; i < len; i++) {
+    const charCode = str.charCodeAt(i)
+    if (charCode === 34 && str.charCodeAt(i - 1) !== 92) {
       repairedChunks.push('"')
       inString = !inString
       continue
     }
 
-    if (inString && char === '\\') {
+    if (inString && charCode === 92) {
         const { addition, charsConsumed, wasFixed } = processEscapeSequence(str, i, LATEX_WORDS)
         repairedChunks.push(addition);
         fixed = fixed || wasFixed;
         i += charsConsumed - 1; // loop naturally increments i
     } else {
-      repairedChunks.push(char)
+      repairedChunks.push(str[i])
     }
   }
 
