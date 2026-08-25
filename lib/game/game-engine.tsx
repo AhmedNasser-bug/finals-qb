@@ -251,41 +251,14 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
       return { ...state, elapsedSeconds: newElapsed, globalTimeRemaining: newRemaining }
     }
 
+    // Not playing or no per-question limit
+    if (state.phase !== "playing" || state.perQuestionTimeLimit <= 0) {
+      return { ...state, elapsedSeconds: newElapsed }
+    }
+
     // Per-question timer countdown (Survival)
-    if (state.perQuestionTimeLimit > 0 && state.phase === "playing") {
-      const newPerRemaining = state.perQuestionTimeRemaining - 1
-      if (newPerRemaining <= 0) {
-        // Timer ran out! Mark incorrect, lose a life (survival), reveal answer, transition to "reviewing"
-        const newWrongAnswers = state.wrongAnswers + 1
-        
-        const {
-          streak: newStreak,
-          streakShieldActive,
-          streakShieldTriggeredThisQuestion,
-        } = evaluateStreakAndShield(false, state.streak, state.streakShieldActive)
-
-        const livesRemaining =
-          state.config.mode === "survival"
-            ? Math.max(0, state.livesRemaining - 1)
-            : state.livesRemaining
-
-        const newAnswers = [...state.answers]
-        newAnswers[state.currentIndex] = false
-
-        return {
-          ...state,
-          phase: "reviewing",
-          isRevealed: true,
-          elapsedSeconds: newElapsed,
-          perQuestionTimeRemaining: 0,
-          streak: newStreak,
-          wrongAnswers: newWrongAnswers,
-          livesRemaining,
-          streakShieldActive,
-          streakShieldTriggeredThisQuestion,
-          answers: newAnswers,
-        }
-      }
+    const newPerRemaining = state.perQuestionTimeRemaining - 1
+    if (newPerRemaining > 0) {
       return {
         ...state,
         elapsedSeconds: newElapsed,
@@ -293,7 +266,36 @@ const ACTION_HANDLERS: Record<Action["type"], (state: GameState, action: any) =>
       }
     }
 
-    return { ...state, elapsedSeconds: newElapsed }
+    // Timer ran out! Mark incorrect, lose a life (survival), reveal answer, transition to "reviewing"
+    const newWrongAnswers = state.wrongAnswers + 1
+
+    const {
+      streak: newStreak,
+      streakShieldActive,
+      streakShieldTriggeredThisQuestion,
+    } = evaluateStreakAndShield(false, state.streak, state.streakShieldActive)
+
+    const livesRemaining =
+      state.config.mode === "survival"
+        ? Math.max(0, state.livesRemaining - 1)
+        : state.livesRemaining
+
+    const newAnswers = [...state.answers]
+    newAnswers[state.currentIndex] = false
+
+    return {
+      ...state,
+      phase: "reviewing",
+      isRevealed: true,
+      elapsedSeconds: newElapsed,
+      perQuestionTimeRemaining: 0,
+      streak: newStreak,
+      wrongAnswers: newWrongAnswers,
+      livesRemaining,
+      streakShieldActive,
+      streakShieldTriggeredThisQuestion,
+      answers: newAnswers,
+    }
   },
 
   PER_QUESTION_TICK: (state) => {
