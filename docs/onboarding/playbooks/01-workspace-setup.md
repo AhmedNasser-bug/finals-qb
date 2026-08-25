@@ -13,7 +13,7 @@
 2. **Bootstrap the Environment:**
    Run the idempotent setup script to seed mock data and spin up Docker containers for multi-tenant setups via Docker Compose:
    ```bash
-   ./scripts/setup/setup.sh --multi-tenant
+   ./scripts/orchestration/bootstrap.sh --multi-tenant
    ```
    **Note:** This script automatically creates `.data/seeds/default-tenant.json` idempotently and mounts isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) dynamically via `NEXT_DIST_DIR`.
 
