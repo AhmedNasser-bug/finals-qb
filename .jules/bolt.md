@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2024-08-27 - [Optimize O(N*M) mode filtering]
+**Learning:** Re-iterating a dataset using `filter` within a `map` loop (e.g. `GAME_MODES.map(m => runs.filter(r => r.mode === m.id))`) results in O(N*M) time complexity. Using `reduce` to pre-calculate a frequency map reduces this to O(N + M). Similarly, combining multiple O(N) array traversals (`filter`, `reduce`, `some`) into a single pass can significantly improve performance for large datasets.
+**Action:** Optimized `components/mold/home/performance-table.tsx` to pre-calculate game mode counts using a `Map` and `lib/game/stats-utils.ts` to combine array iterations in a single loop.

@@ -186,7 +186,7 @@ export function SubjectSelector({
                       onSelect(filteredSubjects[0])
                     } else if (filteredSubjects.length === 0 && filteredExamples.length === 1) {
                       e.preventDefault()
-                      handleExampleSelect(filteredExamples[0])
+                        handleExampleLoad(filteredExamples[0])
                     }
                   }
                 }}
