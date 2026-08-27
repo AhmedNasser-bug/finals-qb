@@ -92,7 +92,15 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-secondary">
+        <div
+          className="h-1 bg-secondary cursor-help"
+          role="progressbar"
+          aria-valuenow={unlocked.length}
+          aria-valuemin={0}
+          aria-valuemax={achievements.length}
+          aria-label="Achievement unlock progress"
+          title={`${unlocked.length} of ${achievements.length} achievements unlocked`}
+        >
           <style>{`
             .ach-gallery-progress {
               width: ${achievements.length > 0 ? (unlocked.length / achievements.length) * 100 : 0}%;

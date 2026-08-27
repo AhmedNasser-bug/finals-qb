@@ -209,7 +209,15 @@ export function ResultsScreen({ onReturnHome, onPlayAgain, onReDrillMistakes }: 
                 {accuracyPct}%
               </span>
             </div>
-            <div className="flex w-full gap-1 h-4">
+            <div
+              className="flex w-full gap-1 h-4 cursor-help"
+              role="progressbar"
+              aria-valuenow={accuracyPct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Accuracy rate progress bar"
+              title={`Accuracy rate: ${accuracyPct}%`}
+            >
               {Array.from({ length: 10 }).map((_, i) => (
                 <div
                   key={i}

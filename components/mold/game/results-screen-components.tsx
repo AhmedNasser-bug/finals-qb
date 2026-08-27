@@ -157,7 +157,15 @@ export function ModulePerformance({ modules, resolveGradeColor }: ModulePerforma
                   {mod.grade}
                 </span>
               </div>
-              <div className="h-[2px] w-full bg-[#353534]">
+              <div
+                className="h-[2px] w-full bg-[#353534] cursor-help"
+                role="progressbar"
+                aria-valuenow={mod.pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${mod.name} accuracy progress`}
+                title={`${mod.name} accuracy: ${mod.pct}%`}
+              >
                 <div className={cn("h-full transition-all duration-700 ease-out", `mod-bar-fill-${mod.id}`)} />
               </div>
             </div>
