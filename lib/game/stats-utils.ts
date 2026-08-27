@@ -20,17 +20,25 @@ export interface Milestone {
 
 export function evaluateDailyMissions(runs: RunRecord[], referenceDate: Date = new Date()): DailyMission[] {
   const todayStr = referenceDate.toISOString().split("T")[0]
-  const runsToday = runs.filter((r) => {
-    try {
-      return new Date(r.date).toISOString().split("T")[0] === todayStr
-    } catch {
-      return false
-    }
-  })
 
-  const runsCount = runsToday.length
-  const questionsAnswered = runsToday.reduce((sum, r) => sum + r.totalQuestions, 0)
-  const hasHighAccuracy = runsToday.some((r) => r.score >= 85)
+  let runsCount = 0
+  let questionsAnswered = 0
+  let hasHighAccuracy = false
+
+  for (let i = 0; i < runs.length; i++) {
+    const r = runs[i]
+    try {
+      if (new Date(r.date).toISOString().split("T")[0] === todayStr) {
+        runsCount++
+        questionsAnswered += r.totalQuestions
+        if (r.score >= 85) {
+          hasHighAccuracy = true
+        }
+      }
+    } catch {
+      // ignore invalid dates
+    }
+  }
 
   return [
     {
