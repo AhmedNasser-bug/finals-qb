@@ -44,7 +44,7 @@ export function AchievementsPanel({
             {unlockedCount}/{totalAchievementsCount}
           </div>
         </div>
-        <div className="font-mono text-[9px] text-[var(--tw-hex-fecc17)]/60 tracking-widest font-bold mt-1.5 uppercase">
+        <div className="font-mono text-[9px] text-primary/60 tracking-widest font-bold mt-1.5 uppercase">
           COMPLETED_SYLLABUS_SECTOR
         </div>
       </div>
