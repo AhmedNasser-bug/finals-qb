@@ -15,6 +15,13 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
   const [selectedFilterMode, setSelectedFilterMode] = useState<GameModeId | "all">("all")
   const [showAllRuns, setShowAllRuns] = useState(false)
 
+  const modeCounts = useMemo(() => {
+    return runs.reduce((acc, r) => {
+      acc.set(r.mode, (acc.get(r.mode) || 0) + 1)
+      return acc
+    }, new Map<string, number>())
+  }, [runs])
+
   // Filter runs by mode if selected
   const filteredRuns = useMemo(() => {
     if (selectedFilterMode === "all") return runs
@@ -50,7 +57,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
               ALL ({runs.length})
             </button>
             {GAME_MODES.map((m) => {
-              const count = runs.filter((r) => r.mode === m.id).length
+              const count = modeCounts.get(m.id) || 0
               if (count === 0) return null
               const isSelected = selectedFilterMode === m.id
               return (
