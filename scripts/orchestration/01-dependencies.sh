@@ -18,6 +18,10 @@ if ! command -v node &> /dev/null; then
     # skip exit for agent compatibility
 fi
 
-echo "=> Installing dependencies..."
-# Use strict peer dependencies and ensure idempotent installs
-pnpm install
+if [ -d "node_modules" ]; then
+    echo "=> Dependencies already installed. Skipping pnpm install."
+else
+    echo "=> Installing dependencies..."
+    # Use strict peer dependencies and ensure idempotent installs
+    pnpm install
+fi

@@ -1,8 +1,8 @@
 # State Architecture
 
-## Interfaces and Data Pipelines
+## Interfaces
 
-This document maps the interface properties and data pipelines for the MOLD V2 application.
+This document maps the interface properties for the MOLD V2 application.
 
 ### Core Data Models
 Defined heavily in `lib/types/mold-types.ts`, the principal models dictating the domain boundaries are:

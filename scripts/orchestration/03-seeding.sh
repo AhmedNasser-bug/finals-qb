@@ -16,5 +16,5 @@ cat <<EOF3 > .data/seeds/default-tenant.json
 EOF3
 echo "Mock database seeded."
 else
-    echo "Mock database already seeded."
+    echo "Mock database already seeded. Skipping."
 fi
