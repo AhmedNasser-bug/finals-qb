@@ -311,7 +311,7 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
   if (error) {
     return (
       <div
-        className={`mermaid-container min-h-[200px] bg-[#1a0c0c] border border-[var(--tw-hex-930013)]/50 p-4 space-y-3 ${className ?? ""}`}
+        className={`mermaid-container min-h-[200px] bg-[#1a0c0c] border border-destructive/50 p-4 space-y-3 ${className ?? ""}`}
         role="alert"
         aria-label="Diagram error"
       >
@@ -338,7 +338,7 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
           <summary className="font-mono text-[10px] tracking-widest uppercase text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors select-none">
             VIEW_SOURCE
           </summary>
-          <pre className="mt-2 font-mono text-[11px] bg-[#0e0e0e] border border-[#353534] p-3 overflow-x-auto text-[var(--tw-hex-fecc17)]/70 leading-relaxed">
+          <pre className="mt-2 font-mono text-[11px] bg-[#0e0e0e] border border-[#353534] p-3 overflow-x-auto text-primary/70 leading-relaxed">
             {chart}
           </pre>
         </details>

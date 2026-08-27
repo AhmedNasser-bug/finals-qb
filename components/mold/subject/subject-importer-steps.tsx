@@ -160,7 +160,7 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
           className={cn(
             "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-[#121318]/50",
             subjectType === "theoretical"
-              ? "border-[#4ae176] bg-[var(--tw-hex-4ae176)]/5 border-glow-success"
+              ? "border-[#4ae176] bg-[#4ae176]/5 border-glow-success"
               : "border-border bg-[#111215] text-[#a4acba] hover:border-zinc-700/80 hover:text-white"
           )}
         >

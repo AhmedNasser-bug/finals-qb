@@ -284,7 +284,7 @@ export function SubjectSelector({
             {/* Neural Uptime and Stats Telemetry Panel */}
             <div className="bg-[#101115] border border-border p-5 rounded-md space-y-4 font-mono text-[10px] shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
               <div className="flex items-center gap-2 border-b border-border pb-2.5">
-                <span className="text-[9px] text-[var(--tw-hex-fecc17)]/80 tracking-widest font-bold uppercase">
+                <span className="text-[9px] text-primary/80 tracking-widest font-bold uppercase">
                   INTELLIGENCE_LAYER_TELEMETRY
                 </span>
               </div>

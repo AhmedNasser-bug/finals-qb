@@ -280,19 +280,19 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               {/* Pulsing bg glow — only visible in critical state */}
               <div className={cn(
                 "absolute inset-0 blur-xl animate-pulse transition-opacity duration-500",
-                isCritical ? "bg-[var(--tw-hex-930013)]/20 opacity-100" : "opacity-0"
+                isCritical ? "bg-red-950/40 opacity-100" : "opacity-0"
               )} />
               <div className={cn(
                 "relative bg-[#0e0e0e] border-x-4 px-3 py-1 sm:px-5 sm:py-2 text-center",
-                isCritical ? "border-[#930013]" : "border-[var(--tw-hex-930013)]/30"
+                isCritical ? "border-red-600" : "border-red-950/40"
               )}>
                 <p className={cn(
                   "font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1",
-                  isCritical ? "text-[#930013]" : "text-muted-foreground/80"
+                  isCritical ? "text-red-500" : "text-muted-foreground/80"
                 )}>TIME REMAINING</p>
                 <p className={cn(
                   "font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none",
-                  isCritical ? "text-[#ffb4ab]" : "text-[var(--tw-hex-ffb4ab)]/70",
+                  isCritical ? "text-red-300" : "text-red-200/70",
                   isUrgent && "motion-safe:animate-pulse"
                 )}>
                   {formatTime(globalTimeRemaining)}
@@ -301,7 +301,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             </div>
           ) : (
             <div className="relative group">
-              <div className="relative bg-[#0e0e0e] border-x-4 border-[var(--tw-hex-930013)]/20 px-3 py-1 sm:px-5 sm:py-2 text-center">
+              <div className="relative bg-[#0e0e0e] border-x-4 border-zinc-800 px-3 py-1 sm:px-5 sm:py-2 text-center">
                 <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1 text-muted-foreground/80">ELAPSED</p>
                 <p className="font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none text-[#fecc17]">
                   {formatTime(elapsedSeconds)}
@@ -322,8 +322,8 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           {/* Live indicator dots */}
           <div className="mt-1.5 flex gap-1.5">
             <div className="w-1.5 h-1.5 bg-[#4ae176] animate-pulse" />
-            <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
-            <div className="w-1.5 h-1.5 bg-[var(--tw-hex-4ae176)]/40" />
+            <div className="w-1.5 h-1.5 bg-[#4ae176]/40" />
+            <div className="w-1.5 h-1.5 bg-[#4ae176]/40" />
           </div>
           {/* Review Deck & Quit Buttons */}
           <div className="md:mt-1.5 flex gap-2">
