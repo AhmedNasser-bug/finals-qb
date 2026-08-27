@@ -178,7 +178,18 @@ export function SubjectSelector({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search your subjects & example modules..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (filteredSubjects.length === 1) {
+                      e.preventDefault()
+                      onSelect(filteredSubjects[0])
+                    } else if (filteredSubjects.length === 0 && filteredExamples.length === 1) {
+                      e.preventDefault()
+                      handleExampleSelect(filteredExamples[0])
+                    }
+                  }
+                }}
+                placeholder="Search your subjects & example modules (Press Enter to open)..."
                 aria-label="Search subjects and examples (press slash to focus)"
                 className="w-full bg-panel border border-border px-4 py-2.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded pr-14 transition-colors"
               />

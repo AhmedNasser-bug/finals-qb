@@ -10,12 +10,15 @@ import {
   ModulePerformance,
 } from "@/components/mold/game/results-screen-components"
 
+import type { Question } from "@/lib/mold-types"
+
 export interface ResultsScreenProps {
   onReturnHome: () => void
   onPlayAgain: () => void
+  onReDrillMistakes?: (mistakeQuestions: Question[]) => void
 }
 
-export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps) {
+export function ResultsScreen({ onReturnHome, onPlayAgain, onReDrillMistakes }: ResultsScreenProps) {
   const { state } = useGameEngine()
   const { score, questions, bestStreak, elapsedSeconds, mode, config, hintsUsedTotal } = state
 
@@ -104,13 +107,24 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     }
   }, [mode, grade, accuracyPct, score, total, bestStreak, elapsedSeconds, hintsUsedTotal, xpYield])
 
+  const mistakeQuestions = React.useMemo(() => {
+    return questions.filter((_, idx) => answers[idx] === false)
+  }, [questions, answers])
+
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
         return
       }
-      if (e.key === "Enter" || e.key === "r" || e.key === "R") {
+      if (e.key === "r" || e.key === "R") {
+        e.preventDefault()
+        if (mistakeQuestions.length > 0 && onReDrillMistakes) {
+          onReDrillMistakes(mistakeQuestions)
+        } else {
+          onPlayAgain()
+        }
+      } else if (e.key === "Enter") {
         e.preventDefault()
         onPlayAgain()
       } else if (e.key === "Escape" || e.key === "h" || e.key === "H") {
@@ -120,7 +134,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [onPlayAgain, onReturnHome])
+  }, [onPlayAgain, onReturnHome, onReDrillMistakes, mistakeQuestions])
 
   return (
     <div className="flex-1 bg-background overflow-y-auto animate-fade-in">
@@ -253,10 +267,20 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
               <span>{copiedSummary ? "COPIED SUMMARY ✓" : "📋 COPY SUMMARY"}</span>
             </button>
             <span className="hidden sm:inline font-mono text-[10px] text-muted-foreground">
-              [↵ / R] Play Again • [ESC / H] Home
+              {mistakeQuestions.length > 0 ? "[R] Re-drill Mistakes • [↵] Play Again • [ESC] Home" : "[↵ / R] Play Again • [ESC / H] Home"}
             </span>
           </div>
-          <div className="flex gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap gap-3 w-full md:w-auto">
+            {mistakeQuestions.length > 0 && onReDrillMistakes && (
+              <button
+                onClick={() => onReDrillMistakes(mistakeQuestions)}
+                aria-label={`Re-drill ${mistakeQuestions.length} mistakes (Press R)`}
+                title="Immediately launch remediation session drilling only missed questions"
+                className="flex-1 md:flex-none px-6 py-3 bg-amber-500/10 hover:bg-amber-500/20 text-primary border border-primary/40 font-mono text-xs font-black tracking-widest uppercase btn-depress focus-ring rounded"
+              >
+                ⚡ RE-DRILL {mistakeQuestions.length} MISTAKES [R]
+              </button>
+            )}
             <button
               onClick={onReturnHome}
               aria-label="Return home (Esc or H)"
@@ -267,8 +291,8 @@ export function ResultsScreen({ onReturnHome, onPlayAgain }: ResultsScreenProps)
             </button>
             <button
               onClick={onPlayAgain}
-              aria-label="Play again (Enter or R)"
-              title="Start a new session in this mode (Press Enter or R)"
+              aria-label="Play again (Enter)"
+              title="Start a new session in this mode (Press Enter)"
               className="flex-1 md:flex-none px-10 py-3 cta-gradient font-mono text-xs font-black tracking-widest uppercase btn-depress focus-ring rounded border-glow"
             >
               PLAY AGAIN [↵]

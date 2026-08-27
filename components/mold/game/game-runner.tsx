@@ -6,7 +6,7 @@ import { useStreak } from "@/lib/game/streak-context"
 import { useAchievements } from "@/lib/achievement-engine"
 import { useAchievementToast, AchievementToastContainer } from "@/components/mold/achievement/achievement-toast"
 import { GameErrorBoundary } from "@/components/mold/game/game-error-boundary"
-import type { Achievement, GameConfig, RunRecord, FullSubjectData } from "@/lib/mold-types"
+import type { Achievement, GameConfig, RunRecord, FullSubjectData, Question } from "@/lib/mold-types"
 import { calculateGrade, calculateAccuracy, hasVisual } from "@/lib/mold-types"
 import { GameHeader } from "@/components/mold/game/game-header"
 import { QuestionCard } from "@/components/mold/game/question-card"
@@ -17,6 +17,15 @@ import { CheatSheetProvider, useCheatSheet } from "@/lib/game/cheat-sheet-contex
 import { CheatSheetTerminal } from "@/components/mold/game/cheat-sheet-terminal"
 import { uuid } from "@/lib/crypto-utils"
 import { cn } from "@/lib/utils"
+import {
+  playKeyClick,
+  playCorrectChime,
+  playWrongBuzzer,
+  playShieldEarned,
+  playShieldAbsorbed,
+  playSessionComplete,
+  toggleAudioMute,
+} from "@/lib/audio/sound-engine"
 
 // ─── Props ─────────────────────────────────────────────────────────────
 
@@ -54,13 +63,30 @@ function ToastLayer({
 // ─── GameRunner ───────────────────────────────────────────────────────────────
 
 export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete, onRunSaved }: GameRunnerProps) {
+  const [reDrillQuestions, setReDrillQuestions] = useState<Question[] | null>(null)
+  const [sessionKey, setSessionKey] = useState(0)
+
+  const activeQuestions = reDrillQuestions ?? subject.questions
+  const activeConfig: GameConfig = reDrillQuestions
+    ? { ...config, mode: "practice", questionCount: reDrillQuestions.length }
+    : config
+
+  const handleInstantRestart = () => {
+    setSessionKey((prev) => prev + 1)
+  }
+
+  const handleReDrillMistakes = (mistakes: Question[]) => {
+    setReDrillQuestions(mistakes)
+    setSessionKey((prev) => prev + 1)
+  }
+
   return (
     <ToastLayer>
       {(showUnlocks) => (
         <div className="h-screen bg-background flex flex-col animate-fade-in">
           {/* Error boundary wraps the engine so crashes are recoverable */}
           <GameErrorBoundary onReturnHome={onReturnHome}>
-            {config.mode === "flashcards" ? (
+            {activeConfig.mode === "flashcards" ? (
               <FlashcardScreen
                 flashcards={subject.flashcards}
                 subjectId={subject.id}
@@ -69,15 +95,18 @@ export function GameRunner({ config, subject, runs, onReturnHome, onRunComplete,
               />
             ) : (
               <GameEngineProvider
-                config={config}
-                questions={subject.questions}
+                key={sessionKey}
+                config={activeConfig}
+                questions={activeQuestions}
               >
                 <CheatSheetProvider subjectId={subject.id}>
                   <GameRunnerInner
                     onReturnHome={onReturnHome}
                     onRunComplete={onRunComplete}
                     onRunSaved={onRunSaved}
-                    config={config}
+                    onInstantRestart={handleInstantRestart}
+                    onReDrillMistakes={handleReDrillMistakes}
+                    config={activeConfig}
                     runs={runs}
                     showUnlocks={showUnlocks}
                     subject={subject}
@@ -98,6 +127,8 @@ interface InnerProps {
   onReturnHome: () => void
   onRunComplete?: () => void
   onRunSaved?: (run: RunRecord) => void
+  onInstantRestart?: () => void
+  onReDrillMistakes?: (mistakes: Question[]) => void
   config: GameConfig
   /** Real persisted run history for achievement evaluation. */
   runs: RunRecord[]
@@ -105,7 +136,17 @@ interface InnerProps {
   subject: FullSubjectData
 }
 
-function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs, showUnlocks, subject }: InnerProps) {
+function GameRunnerInner({
+  onReturnHome,
+  onRunComplete,
+  onRunSaved,
+  onInstantRestart,
+  onReDrillMistakes,
+  config,
+  runs,
+  showUnlocks,
+  subject
+}: InnerProps) {
   const {
     state,
     forfeit,
@@ -194,7 +235,39 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     }
   }, [state.currentIndex, state.isRevealed])
 
-  // In-Game Keyboard Navigation Engine (1-4, A-D, Enter, Space, H, Escape)
+  const handleSelectOption = (opt: string) => {
+    playKeyClick()
+    selectOption(opt)
+  }
+
+  const handleRevealAnswer = () => {
+    const isCorrect = state.selectedOption === currentQuestion?.answer
+    if (isCorrect) {
+      playCorrectChime()
+    } else {
+      playWrongBuzzer()
+    }
+    revealAnswer()
+  }
+
+  // Audio cues for streak shield earned and absorbed
+  const prevShieldRef = useRef(state.streakShieldActive)
+  useEffect(() => {
+    if (state.streakShieldActive && !prevShieldRef.current) {
+      playShieldEarned()
+    }
+    prevShieldRef.current = state.streakShieldActive
+  }, [state.streakShieldActive])
+
+  const prevShieldTriggeredRef = useRef(state.streakShieldTriggeredThisQuestion)
+  useEffect(() => {
+    if (state.streakShieldTriggeredThisQuestion && !prevShieldTriggeredRef.current) {
+      playShieldAbsorbed()
+    }
+    prevShieldTriggeredRef.current = state.streakShieldTriggeredThisQuestion
+  }, [state.streakShieldTriggeredThisQuestion])
+
+  // In-Game Keyboard Navigation Engine (1-4, A-D, Enter, Space, H, Escape, R, M)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
@@ -209,6 +282,20 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         return
       }
 
+      // Audio mute toggle shortcut (M / m)
+      if (e.key === "m" || e.key === "M") {
+        e.preventDefault()
+        toggleAudioMute()
+        return
+      }
+
+      // R key for rage-quit instant restart during active playing or reviewing
+      if ((e.key === "r" || e.key === "R") && (state.phase === "playing" || state.phase === "reviewing")) {
+        e.preventDefault()
+        onInstantRestart?.()
+        return
+      }
+
       if (state.phase !== "playing" && state.phase !== "reviewing") return
 
       // 1. Numerical & Alphabetical Option Selection (1..4 / A..D)
@@ -216,7 +303,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         const num = parseInt(e.key, 10)
         if (!isNaN(num) && num >= 1 && num <= currentQuestion.options.length) {
           e.preventDefault()
-          selectOption(currentQuestion.options[num - 1].label)
+          handleSelectOption(currentQuestion.options[num - 1].label)
           return
         }
 
@@ -224,7 +311,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
         const optionIndex = currentQuestion.options.findIndex((opt) => opt.label.toUpperCase() === keyUpper)
         if (optionIndex !== -1) {
           e.preventDefault()
-          selectOption(currentQuestion.options[optionIndex].label)
+          handleSelectOption(currentQuestion.options[optionIndex].label)
           return
         }
       }
@@ -233,7 +320,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       if (e.key === "Enter" || e.key === " ") {
         if (!state.isRevealed && state.selectedOption !== null && state.phase === "playing") {
           e.preventDefault()
-          revealAnswer()
+          handleRevealAnswer()
           return
         }
         if (state.isRevealed || state.phase === "reviewing") {
@@ -266,8 +353,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     initialLockRemaining,
     hintUsedThisQuestion,
     showHint,
-    selectOption,
-    revealAnswer,
+    onInstantRestart,
     nextQuestion,
     useHint,
     toggleCheatSheet,
@@ -277,6 +363,7 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
   useEffect(() => {
     if (state.phase === "complete" && !completionProcessedRef.current) {
       completionProcessedRef.current = true
+      playSessionComplete()
 
       const accuracyPctValue = calculateAccuracy(state.score, state.wrongAnswers)
       const totalQuestions = state.questions.length
@@ -307,7 +394,8 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
     return (
       <ResultsScreen
         onReturnHome={onReturnHome}
-        onPlayAgain={onReturnHome}
+        onPlayAgain={onInstantRestart ?? onReturnHome}
+        onReDrillMistakes={onReDrillMistakes}
       />
     )
   }
@@ -346,8 +434,8 @@ function GameRunnerInner({ onReturnHome, onRunComplete, onRunSaved, config, runs
       streak: state.streak,
     },
     actions: {
-      selectOption,
-      submitAnswer: revealAnswer,
+      selectOption: handleSelectOption,
+      submitAnswer: handleRevealAnswer,
       nextQuestion,
       useHint: () => {
         if (initialLockRemaining > 0 || hintUsedThisQuestion) return

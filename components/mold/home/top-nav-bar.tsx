@@ -5,8 +5,9 @@ import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
-import { Palette, LayoutGrid, BookOpen } from "lucide-react"
+import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX } from "lucide-react"
 import { GuideLink } from "@/components/mold/common/guide-link"
+import { isAudioMuted, toggleAudioMute } from "@/lib/audio/sound-engine"
 
 interface TopNavBarProps {
   activeSubjectName?: string
@@ -41,6 +42,26 @@ export function TopNavBar({
   onShowLayoutModal,
 }: TopNavBarProps) {
   const [tipIndex, setTipIndex] = useState(0)
+  const [muted, setMuted] = useState(false)
+
+  useEffect(() => {
+    setMuted(isAudioMuted())
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+        return
+      }
+      if (e.key === "m" || e.key === "M") {
+        e.preventDefault()
+        setMuted(toggleAudioMute())
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -116,6 +137,19 @@ export function TopNavBar({
             {loadedSubjectsCount} SUBJECT{loadedSubjectsCount !== 1 ? "S" : ""} LOADED
           </span>
         )}
+
+        <button
+          onClick={() => setMuted(toggleAudioMute())}
+          title={muted ? "Unmute audio synthesizer (Press M)" : "Mute audio synthesizer (Press M)"}
+          aria-label={muted ? "Unmute sound effects" : "Mute sound effects"}
+          className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] flex items-center justify-center shrink-0 rounded"
+        >
+          {muted ? (
+            <VolumeX className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+          ) : (
+            <Volume2 className="w-4 h-4 text-primary" aria-hidden="true" />
+          )}
+        </button>
 
         {onShowThemeModal && (
           <button

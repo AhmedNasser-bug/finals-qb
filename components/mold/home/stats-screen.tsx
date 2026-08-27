@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { 
   ArrowLeft, 
   Trophy, 
@@ -16,7 +16,9 @@ import {
 
 import { useStats } from "@/lib/game/stats-context"
 import { StreakAscent } from "./streak-ascent"
-import { calculateGrade, gradeColor, gradeBgColor, formatTime } from "@/lib/mold-types"
+import { calculateGrade, gradeColor, gradeBgColor, formatTime, formatLabel } from "@/lib/mold-types"
+import { getActiveSubject } from "@/lib/active-subject-store"
+import { loadRetentionMap, calculateRetrievability } from "@/lib/telemetry/retention-kernel"
 import { cn } from "@/lib/utils"
 
 interface StatsScreenProps {
@@ -35,6 +37,77 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
   } = useStats()
 
   const [showConfirmReset, setShowConfirmReset] = useState(false)
+
+  const activeSubject = getActiveSubject()
+  const retentionMap = activeSubject ? loadRetentionMap(activeSubject.id) : {}
+
+  // Compute category retrievability
+  const categoryStats = useMemo(() => {
+    if (!activeSubject) return []
+    const catMap: Record<string, { total: number; sumR: number }> = {}
+
+    activeSubject.questions.forEach((q) => {
+      const cat = q.category || "general"
+      if (!catMap[cat]) catMap[cat] = { total: 0, sumR: 0 }
+      catMap[cat].total += 1
+      const itemState = retentionMap[q.id]
+      if (itemState && itemState.lastReviewedAt) {
+        const daysElapsed = (Date.now() - new Date(itemState.lastReviewedAt).getTime()) / (1000 * 60 * 60 * 24)
+        catMap[cat].sumR += calculateRetrievability(itemState.stability, daysElapsed)
+      } else {
+        catMap[cat].sumR += 0.5 // Default unreviewed retrievability estimate
+      }
+    })
+
+    return Object.entries(catMap)
+      .map(([cat, val]) => ({
+        category: cat,
+        retrievabilityPct: Math.round((val.sumR / Math.max(1, val.total)) * 100),
+        totalQuestions: val.total,
+      }))
+      .sort((a, b) => a.retrievabilityPct - b.retrievabilityPct) // Sort lowest (needs review) first
+  }, [activeSubject, retentionMap])
+
+  // Compute Cramming Readiness Index
+  const avgScore = stats.averageScore || 0
+  const avgRetrievability = categoryStats.length > 0
+    ? Math.round(categoryStats.reduce((acc, c) => acc + c.retrievabilityPct, 0) / categoryStats.length)
+    : 50
+
+  const cramScore = Math.min(
+    99,
+    Math.max(15, Math.round(avgScore * 0.55 + avgRetrievability * 0.35 + Math.min(10, stats.totalRuns * 2)))
+  )
+
+  let cramVerdict = {
+    title: "COGNITIVE SPEEDRUN READY",
+    badge: "S-TIER CRAMMER",
+    badgeColor: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+    text: "You'll speedrun this exam while the professor is still handing out papers. Go touch some grass.",
+  }
+
+  if (cramScore < 50) {
+    cramVerdict = {
+      title: "HIGH-RISK PANIC ZONE",
+      badge: "COFFEE OVERDOSE",
+      badgeColor: "text-red-400 border-red-500/30 bg-red-500/10",
+      text: "The exam will humble you. Stop doom-scrolling, chug water, and run a Survival session immediately.",
+    }
+  } else if (cramScore < 75) {
+    cramVerdict = {
+      title: "COIN-TOSS PROBABILITY",
+      badge: "BORDERLINE PASS",
+      badgeColor: "text-amber-400 border-amber-500/30 bg-amber-500/10",
+      text: "50% chance of an A, 50% chance of staring blankly at the ceiling on Question 4. Re-drill your red categories.",
+    }
+  } else if (cramScore < 90) {
+    cramVerdict = {
+      title: "SOLID EXAM PASS",
+      badge: "SECURE GRADE",
+      badgeColor: "text-primary border-primary/30 bg-primary/10",
+      text: "You're passing comfortably, but that lowest-ranked category below will show up. Quick-drill it once.",
+    }
+  }
 
   const avgGrade = calculateGrade(stats.averageScore || 0)
 
@@ -128,21 +201,115 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
 
       </div>
 
+      {/* ─── CRAMMING EXAM READINESS INDEX (FEATURE 4) ────────────────────── */}
+      <div className="border border-border bg-gradient-to-r from-panel via-[#101115] to-panel p-6 rounded-md relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1.5 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground font-bold">
+                DIAGNOSTIC TELEMETRY // 24-HOUR FORECAST
+              </span>
+              <span className={cn("font-mono text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border", cramVerdict.badgeColor)}>
+                {cramVerdict.badge}
+              </span>
+            </div>
+            <h2 className="text-lg font-display font-black text-foreground tracking-tight flex items-center gap-2">
+              <span>EXAM CRAM READINESS:</span>
+              <span className="text-primary font-mono text-xl tabular-nums">{cramScore}%</span>
+            </h2>
+            <p className="text-xs font-mono text-muted-foreground leading-relaxed">
+              {cramVerdict.text}
+            </p>
+          </div>
+
+          <div className="flex flex-col items-end shrink-0 border-t md:border-t-0 md:border-l border-border/60 pt-3 md:pt-0 md:pl-6">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground font-bold">
+              ESTIMATED DECAY
+            </span>
+            <span className="font-mono text-2xl font-black text-foreground tabular-nums mt-0.5">
+              {avgRetrievability}%
+            </span>
+            <span className="font-mono text-[9px] text-muted-foreground/80 mt-0.5">
+              AVERAGE RETRIEVABILITY (DSR)
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* ─── DUAL GRID COLUMN SPLIT ─────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* LEFT COLUMN: Streak Ascent Visualizer */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="border-b border-border pb-2">
-            <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
-              01 // STUDY STREAK PROGRESS
-            </h2>
+        {/* LEFT COLUMN: Streak Ascent & Category Retrievability Ranking */}
+        <div className="lg:col-span-5 space-y-6">
+          
+          <div className="space-y-4">
+            <div className="border-b border-border pb-2">
+              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
+                01 // STUDY STREAK PROGRESS
+              </h2>
+            </div>
+            <StreakAscent 
+              currentStreak={dayStreak} 
+              bestStreak={stats.bestStreak || dayStreak}
+              className="w-full bg-panel"
+            />
           </div>
-          <StreakAscent 
-            currentStreak={dayStreak} 
-            bestStreak={stats.bestStreak || dayStreak}
-            className="w-full bg-panel"
-          />
+
+          {/* Clean Ranked Category Retrievability List */}
+          <div className="space-y-4">
+            <div className="border-b border-border pb-2 flex items-center justify-between">
+              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
+                02 // TOPIC RETENTION RANKING (SM-2 DSR)
+              </h2>
+              <span className="font-mono text-[9px] text-muted-foreground uppercase">
+                LOWEST FIRST
+              </span>
+            </div>
+
+            {categoryStats.length === 0 ? (
+              <div className="p-4 border border-dashed border-border/60 rounded text-center text-xs font-mono text-muted-foreground">
+                No active subject telemetry recorded yet.
+              </div>
+            ) : (
+              <div className="border border-border bg-[#101115] rounded divide-y divide-zinc-800/60 overflow-hidden">
+                {categoryStats.map((item, idx) => {
+                  const isCritical = item.retrievabilityPct < 60
+                  const isDueSoon = item.retrievabilityPct >= 60 && item.retrievabilityPct < 85
+                  return (
+                    <div key={item.category} className="p-3.5 flex items-center justify-between gap-3 hover:bg-secondary/20 transition-colors">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="font-mono text-[10px] text-muted-foreground/60 w-4 tabular-nums">
+                          {idx + 1}.
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-mono text-xs font-bold text-foreground truncate">
+                            {formatLabel(item.category)}
+                          </p>
+                          <p className="font-mono text-[9px] text-muted-foreground">
+                            {item.totalQuestions} questions in pool
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={cn(
+                          "font-mono text-[10px] font-bold px-2 py-0.5 rounded border",
+                          isCritical
+                            ? "bg-red-500/10 text-red-400 border-red-500/20"
+                            : isDueSoon
+                              ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                              : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        )}>
+                          {item.retrievabilityPct}% RETENTION
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
         </div>
 
         {/* RIGHT COLUMN: Missions, Milestones & Settings */}

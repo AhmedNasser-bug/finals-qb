@@ -90,9 +90,18 @@
 **Learning:** In extensive reference panels (like Encyclopedia), users often open the overlay to immediately search for a specific keyword. Binding the global `/` key to automatically focus the search input eliminates the manual click. Providing an instant `✕` button and showing per-category term counters on the sidebar gives immediate visual orientation.
 **Action:** In reference and encyclopedia overlays, bind `/` to search focus, render an instant clear button, and display count badges on category filters.
 
-## 2026-08-18 - Sidebar Semantic Grouping & Collapsible Study Exports Bundle
-**Learning:** Cluttering the primary vertical sidebar with individual document export and generator buttons causes visual overwhelm and blurs the distinction between primary navigation and utility tasks. Grouping actions into clear semantic sections (`NAVIGATION`, `SUBJECT BANK`, `STUDY EXPORTS`) and nesting related export triggers (`HTML Sheet`, `Questions PDF`, `Solved PDF`) inside an expandable/collapsible bundle with format badges (`HTML`, `PDF`, `SOLVED`) declutters the interface while keeping one-click actions accessible.
-**Action:** When a toolbar or sidebar has 3+ related utility actions (such as multiple file formats of the same material), bundle them into a grouped accordion or dropdown with distinct color-coded format badges and count indicators.
+## 2026-08-27 - Zero-Dependency Web Audio Phosphor Synthesizer & Tactile Ergonomics
+**Learning:** Pure visual feedback in high-throughput arcade study modes fails to engage auditory memory pathways and decreases reaction pacing. Using the browser's native `AudioContext` to synthesize mechanical switch keyclicks (15ms high-pass noise burst), ascending harmonic major chords for correct answers, and downward sweeps for streak shield absorption provides instantaneous tactile confirmation without requiring external MP3/WAV network requests. Persisting audio mute states with global shortcut parity (`M`) ensures accessibility for sound-sensitive environments.
+**Action:** Synthesize audio dynamically via Web Audio API rather than bundling media assets, provide an explicit top-nav mute toggle (`M`), and gracefully resume suspended `AudioContext` on user interaction.
+
+## 2026-08-27 - Results Screen Mistake Remediation & In-Game R-Key Instant Restarts
+**Learning:** Forcing learners to reconfigure a full practice session after getting questions wrong delays error consolidation beyond the critical post-failure learning window. Providing a one-click `RE-DRILL MISTAKES` action alongside the `R` key on results screens creates an immediate zero-friction remediation loop. Simultaneously, allowing `R` during active gameplay provides a beloved quality-of-life shortcut for speedrunners and rage-quitters to instantly restart the session.
+**Action:** Wire the `R` key contextually: instant session reset during active gameplay, and instant mistake-only pool re-drill on post-quiz results screens.
+
+## 2026-08-27 - Uncluttered Category Retrievability Ranking & Exam Cramming Index
+**Learning:** Dense 2D radar charts and multi-axis retention graphs introduce excessive cognitive load on statistics dashboards. A simple, vertically ranked list of categories sorted from lowest Retrievability ($R$) to highest (Mastered), paired with a humorous "Exam Cramming Readiness Index", translates complex DSR mathematical models into immediate, actionable study guidance with high emotional resonance.
+**Action:** Present complex memory decay data through ranked linear lists ordered by urgency, and pair diagnostic metrics with engaging, humorous feedback cards.
+
 
 
 
