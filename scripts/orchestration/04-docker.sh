@@ -6,11 +6,20 @@ if [ "$1" = "--multi-tenant" ]; then
     if [ ! -f docker-compose.yml ]; then
         echo "Error: docker-compose.yml not found."
     elif command -v docker-compose &> /dev/null; then
-        # Use idempotent up command, and restart conditionally if needed
-        docker-compose up -d --build --remove-orphans
+        # Check if already running
+        if docker-compose ps | grep -q "Up"; then
+             echo "Containers are already running. Skipping."
+        else
+             # Use idempotent up command, and restart conditionally if needed
+             docker-compose up -d --build --remove-orphans
+        fi
     elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
-        # Use idempotent up command
-        docker compose up -d --build --remove-orphans
+        if docker compose ps | grep -q "Up"; then
+             echo "Containers are already running. Skipping."
+        else
+             # Use idempotent up command
+             docker compose up -d --build --remove-orphans
+        fi
     else
         echo "Error: docker-compose or docker compose is required for multi-tenant setup."
     fi
