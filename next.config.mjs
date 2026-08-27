@@ -7,7 +7,14 @@ const nextConfig = {
   experimental: {
     // ⚡ Bolt Optimization: Bypass loading unused modules from the lucide-react barrel file
     // to significantly reduce memory usage and Turbopack build latency.
-    optimizePackageImports: ['lucide-react'],
+    optimizePackageImports: [
+      'lucide-react',
+      'recharts',
+      'date-fns',
+      '@clerk/nextjs',
+      '@clerk/ui',
+      'tailwind-merge'
+    ],
   },
 }
 
