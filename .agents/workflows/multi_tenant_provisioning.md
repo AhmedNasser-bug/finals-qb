@@ -15,7 +15,7 @@ An orchestration workflow to spin up and validate a multi-tenant developer sandb
 ### Step 1: Execute Setup Script
 - **Action**: Run the setup script with the multi-tenant flag to seed mock data and build containers.
   ```bash
-  ./scripts/setup/setup.sh --multi-tenant
+  ./scripts/orchestration/bootstrap.sh --multi-tenant
   ```
 - **Verification Goal**: Docker compose builds without errors and containers are running (`docker ps`).
 
