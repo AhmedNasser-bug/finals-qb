@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "lastUpdated": "2026-08-28T16:27:39.321Z",
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,17 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "telemetry-panel-a11y-progressbars",
+      "category": "tooltips",
+      "tier": 2,
+      "title": "Accessibility Progressbars and Hover Tooltips for Telemetry Panel",
+      "implementedAt": "2026-08-28T16:27:39.321Z",
+      "componentsTouched": [
+        "components/mold/home/telemetry-panel.tsx"
       ],
       "nonBreaking": true
     }
