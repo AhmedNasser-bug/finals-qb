@@ -155,13 +155,13 @@ function QuestionCardHtmlContent() {
         <span id={currentQuestion.id}>
           {hasDedicatedDiagram ? (
             <span dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(currentQuestion.question)
+              __html: DOMPurify.sanitize(renderMath(currentQuestion.question))
             }} />
           ) : (
             parts.map((part, i) =>
               part.type === "html" ? (
                 <span key={i} dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(part.content)
+                  __html: DOMPurify.sanitize(renderMath(part.content))
                 }} />
               ) : null
             )

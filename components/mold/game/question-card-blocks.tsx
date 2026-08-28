@@ -1,5 +1,6 @@
 import * as React from "react"
 import DOMPurify from "isomorphic-dompurify"
+import { renderMath } from "@/lib/utils/math-renderer"
 import { formatLabel } from "@/lib/mold-types"
 import type { QuestionHeaderProps, QuestionContentProps } from "@/components/mold/game/question-card-types"
 
@@ -43,13 +44,13 @@ export function QuestionContent({
                 <span id={question.id}>
                   {hasDedicatedDiagram ? (
                     <span dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(question.question)
+                      __html: DOMPurify.sanitize(renderMath(question.question))
                     }} />
                   ) : (
                     parts.map((part, i) =>
                       part.type === "html" ? (
                         <span key={i} dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(part.content)
+                          __html: DOMPurify.sanitize(renderMath(part.content))
                         }} />
                       ) : null
                     )
@@ -85,13 +86,13 @@ export function QuestionContent({
           <span id={question.id}>
             {hasDedicatedDiagram ? (
               <span dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(question.question)
+                __html: DOMPurify.sanitize(renderMath(question.question))
               }} />
             ) : (
               parts.map((part, i) =>
                 part.type === "html" ? (
                   <span key={i} dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(part.content)
+                    __html: DOMPurify.sanitize(renderMath(part.content))
                   }} />
                 ) : null
               )
