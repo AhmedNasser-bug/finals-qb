@@ -66,6 +66,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               <button
                 onClick={clearEntries}
                 aria-label="Clear Deck"
+                title="Clear all items in review deck"
                 className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
               >
                 Clear Deck
@@ -85,7 +86,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         {/* Panel Content (Scrollable Deck of Cards) */}
         <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
           {reversedEntries.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
+            <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4" aria-live="polite">
               <div className="text-4xl">📚</div>
               <div className="space-y-1">
                 <p className="font-sans font-bold text-sm text-zinc-300">Your review deck is currently empty</p>
