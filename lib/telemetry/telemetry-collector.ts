@@ -8,6 +8,7 @@
 
 import type { CognitiveTelemetryEvent } from "./telemetry-types"
 import { getNamespacedKey } from "../utils/user-storage"
+import { maskData, logger } from "../utils/logger"
 
 const TELEMETRY_BASE_KEY = "mold_v2_telemetry_events"
 const MAX_STORED_EVENTS = 500
@@ -19,28 +20,30 @@ class TelemetryCollector {
   private listeners: Set<TelemetryListener> = new Set()
 
   public record(event: CognitiveTelemetryEvent, userId?: string | null): void {
+    const maskedEvent = maskData(event)
+
     // Add unique ID if missing
-    if (!event.id) {
-      event.id = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
+    if (!maskedEvent.id) {
+      maskedEvent.id = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
     }
-    if (!event.timestamp) {
-      event.timestamp = new Date().toISOString()
+    if (!maskedEvent.timestamp) {
+      maskedEvent.timestamp = new Date().toISOString()
     }
 
-    this.inMemoryEvents.push(event)
+    this.inMemoryEvents.push(maskedEvent)
     if (this.inMemoryEvents.length > MAX_STORED_EVENTS) {
       this.inMemoryEvents.shift()
     }
 
     // Persist to localStorage safely
-    this.persistEvent(event, userId)
+    this.persistEvent(maskedEvent, userId)
 
     // Notify listeners synchronously
     this.listeners.forEach((listener) => {
       try {
-        listener(event)
+        listener(maskedEvent)
       } catch (err) {
-        console.error("Telemetry listener error:", err)
+        logger.error("Telemetry listener error:", err)
       }
     })
   }
