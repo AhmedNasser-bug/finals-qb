@@ -40,7 +40,15 @@ export function TelemetryPanel() {
               <span className="text-emerald-400 font-bold tabular-nums">{roundedAccuracy}%</span>
             </div>
             
-            <div className="h-3 bg-secondary/60 border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average accuracy is ${roundedAccuracy}%`}>
+            <div
+              className="h-3 bg-secondary/60 border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden cursor-help"
+              role="progressbar"
+              aria-label={`Average accuracy is ${roundedAccuracy}%`}
+              aria-valuenow={roundedAccuracy}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              title={`Accuracy Rate: ${roundedAccuracy}%`}
+            >
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = i < Math.ceil(accuracyPct / 10)
                 return (
@@ -100,7 +108,15 @@ export function TelemetryPanel() {
               </span>
             </div>
             
-            <div className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}>
+            <div
+              className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden cursor-help"
+              role="progressbar"
+              aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}
+              aria-valuenow={averageResponseTimeMs}
+              aria-valuemin={0}
+              aria-valuemax={5000}
+              title={`Average Response Time: ${averageResponseTimeMs}ms`}
+            >
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = averageResponseTimeMs > 0 ? (i < speedSegments) : false
                 return (
