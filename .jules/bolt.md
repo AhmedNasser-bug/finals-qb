@@ -1,4 +1,5 @@
-2024-05-18 - [Optimize duplicate ID resolution], Learning: While loops containing Set lookups can be O(N^2) if the final generated IDs consistently collide with the existing data set. Tracking the counter externally in a Map bypasses the need to regenerate previously-collided strings., Action: Updated duplicate ID resolution in `components/mold/home/add-questions-wizard.tsx` to use `Map` for both questions and flashcards.
-## 2024-06-25 - [Optimize optimizePackageImports]
-**Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
-**Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+# Bolt Performance Learnings
+
+- Replacing unbuffered `fs.readFileSync` with block streaming via `fs.createReadStream` mitigates quadratic latency regressions in large JSON parsing workflows (such as `.test.ts` fixtures).
+- **Asynchronous Testing Beware**: When replacing synchronous reads with asynchronous block streams in Jest tests, always ensure the test function is strictly `async` and uses `await new Promise(...)` to prevent the test suite from exiting prematurely and suppressing hidden failures.
+- In `telemetry-kernel.ts`, combining multiple successive `.reduce()` / `.filter()` / `.forEach()` array iterations over datasets into a single O(N) iterative `for` loop significantly improves computational efficiency and avoids $O(N*M)$ complexity spikes during matrix aggregation.
