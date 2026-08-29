@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,17 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "cheat-sheet-escape-close",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Escape Key Support for Review Deck Panel",
+      "implementedAt": "2026-08-29T16:31:48.475Z",
+      "componentsTouched": [
+        "components/mold/game/cheat-sheet-terminal.tsx"
       ],
       "nonBreaking": true
     }

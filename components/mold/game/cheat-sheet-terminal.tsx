@@ -17,10 +17,14 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         e.preventDefault()
         toggleCheatSheet()
       }
+      if (isOpen && e.key === "Escape") {
+        e.preventDefault()
+        setIsOpen(false)
+      }
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [toggleCheatSheet])
+  }, [toggleCheatSheet, isOpen, setIsOpen])
 
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
