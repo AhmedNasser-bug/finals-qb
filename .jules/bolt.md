@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2024-10-26 - [Optimize Radix and Zod Turbopack build latency]
+**Learning:** Expanding `optimizePackageImports` to include heavy barrel-file and widely used UI/utils dependencies like `@radix-ui/react-*`, `zod`, and `react-hook-form` significantly decreases build times by avoiding unnecessary module traversals.
+**Action:** Configured `optimizePackageImports` in `next.config.mjs` to include `@radix-ui/react-*`, `zod`, `react-hook-form`, and `isomorphic-dompurify`.
