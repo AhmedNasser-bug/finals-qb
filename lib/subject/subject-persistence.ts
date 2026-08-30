@@ -258,26 +258,26 @@ function autoFixSingleQuestion(
         warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
         qFixed = true;
         hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
       }
+    }
+
+    if (!hasLabel && (qObj.type === "TrueFalse" || normalizedOptions.length === 2)) {
+      const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+      const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+      if (isTrueMatch || isFalseMatch) {
+        const oldAnswer = qObj.answer;
+        qObj.answer = isTrueMatch ? "A" : "B";
+        warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+        qFixed = true;
+        hasLabel = true;
+      }
+    }
+
+    if (!hasLabel) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = normalizedOptions[0].label;
+      warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+      qFixed = true;
     }
   }
 
@@ -499,23 +499,14 @@ function validateSingleQuestion(
     return;
   }
 
-  let labelExists = false;
-  for (let j = 0; j < qObj.options.length; j++) {
-    const opt = qObj.options[j] as Record<string, unknown>;
-    if (opt.label === qObj.answer) {
-      labelExists = true;
-      break;
-    }
-  }
+  const options = qObj.options as Record<string, unknown>[];
+  const labelExists = options.some(opt => opt.label === qObj.answer);
 
   if (!labelExists) {
-    const options = qObj.options as Record<string, unknown>[];
-    const labels = new Array(options.length);
-    for (let j = 0; j < options.length; j++) {
-      labels[j] = options[j].label;
-    }
+    const labels = options.map(opt => opt.label);
     errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`);
   }
+
   if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
     errors.push(`${prefix}: TrueFalse answer must be "A" (True) or "B" (False), got "${qObj.answer}".`);
   }
@@ -717,32 +708,36 @@ function balanceJsonStack(str: string): string {
       bracketCount++
     } else if (char === '}') {
       if (stack[stack.length - 1] === '{') {
-        stack.pop()
-        braceCount--
-      } else if (braceCount > 0) {
-        let idx = stack.length - 1
+        stack.pop();
+        braceCount--;
+        continue;
+      }
+      if (braceCount > 0) {
+        let idx = stack.length - 1;
         while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
+          if (stack[idx] === '[') bracketCount--;
+          idx--;
         }
         if (idx >= 0) {
-          stack.length = idx
-          braceCount--
+          stack.length = idx;
+          braceCount--;
         }
       }
     } else if (char === ']') {
       if (stack[stack.length - 1] === '[') {
-        stack.pop()
-        bracketCount--
-      } else if (bracketCount > 0) {
-        let idx = stack.length - 1
+        stack.pop();
+        bracketCount--;
+        continue;
+      }
+      if (bracketCount > 0) {
+        let idx = stack.length - 1;
         while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
+          if (stack[idx] === '{') braceCount--;
+          idx--;
         }
         if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
+          stack.length = idx;
+          bracketCount--;
         }
       }
     }
