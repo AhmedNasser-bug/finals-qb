@@ -53,7 +53,7 @@ function QuestionCardFrame({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col flex-1 min-h-0 animate-slide-up w-full h-full">
       <div 
         className={cn(
-          "relative bg-[#1c1b1b] border flex flex-col flex-1 min-h-0 rounded shadow-xl transition-all duration-300",
+          "relative bg-card border border-border flex flex-col flex-1 min-h-0 rounded shadow-xl transition-all duration-300",
           isSupercharged
             ? "border-red-500 shadow-[0_0_35px_rgba(239,68,68,0.25)] ring-1 ring-red-500/30"
             : isCombustion
@@ -151,7 +151,7 @@ function QuestionCardHtmlContent() {
 
   return (
     <div className="space-y-2 shrink-0">
-      <h2 className="font-sans text-xl md:text-2xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty select-text">
+      <h2 className="font-sans text-xl md:text-2xl font-bold text-foreground leading-tight tracking-tight text-pretty select-text">
         <span id={currentQuestion.id}>
           {hasDedicatedDiagram ? (
             <span dangerouslySetInnerHTML={{
@@ -224,11 +224,11 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
                 ? "flex-1 min-h-0 h-full"
                 : "shrink-0 min-h-[300px] h-[300px]"
           )}>
-            <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
+            <span className="font-mono text-[9px] tracking-wider text-muted-foreground/80 uppercase select-none shrink-0">
               [VISUAL_1: MERMAID_DIAGRAM]
             </span>
             <div 
-              className="bg-[#131313] border border-zinc-800 p-3 flex-1 overflow-auto rounded relative w-full h-full"
+              className="bg-panel border border-border p-3 flex-1 overflow-auto rounded relative w-full h-full"
             >
               <MermaidDiagram
                 chart={chart}
@@ -251,11 +251,11 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
                 ? "flex-1 min-h-0 h-full"
                 : "shrink-0 min-h-[300px] h-[300px]"
           )}>
-            <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
+            <span className="font-mono text-[9px] tracking-wider text-muted-foreground/80 uppercase select-none shrink-0">
               [VISUAL_2: LATEX_FORMULA]
             </span>
             <div 
-              className="bg-[#131313] border border-zinc-800 p-4 text-center rounded overflow-auto text-[#e5e2e1] w-full h-full flex items-center justify-center"
+              className="bg-panel border border-border p-4 text-center rounded overflow-auto text-foreground w-full h-full flex items-center justify-center"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(renderMath(`$$${currentQuestion.visualLatex}$$`))
               }}
@@ -275,11 +275,11 @@ function QuestionCardMermaidDiagram({ mode = "side" }: { mode?: "side" | "below"
                 ? "flex-1 min-h-0 h-full"
                 : "shrink-0 min-h-[300px] h-[300px]"
           )}>
-            <span className="font-mono text-[9px] tracking-wider text-zinc-600 uppercase select-none shrink-0">
+            <span className="font-mono text-[9px] tracking-wider text-muted-foreground/80 uppercase select-none shrink-0">
               [VISUAL_3: SPECIMEN_HTML]
             </span>
             <div 
-              className="bg-[#131313] border border-zinc-800 p-4 rounded text-left text-sm text-[#e5e2e1] overflow-auto font-sans w-full h-full"
+              className="bg-panel border border-border p-4 rounded text-left text-sm text-foreground overflow-auto font-sans w-full h-full"
               dangerouslySetInnerHTML={{
                 __html: renderMath(DOMPurify.sanitize(currentQuestion.visualHtml ?? ""))
               }}
@@ -394,13 +394,13 @@ function OptionButton({
       title={`Select Option ${label} (Press ${idx + 1} or ${label})`}
       onClick={onSelect}
       className={cn(
-        "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group shrink-0",
+        "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group shrink-0 border border-border/50",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-        !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
-        !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-primary glow-primary",
-        isRevealed && isCorrect && "bg-emerald-500/10 border-l-4 border-emerald-500",
-        isRevealed && isWrong && "bg-destructive/10 border-l-4 border-destructive",
-        isDimmed && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
+        !isRevealed && !isSelected && "bg-secondary/70 hover:bg-secondary border-l-4 border-l-transparent hover:border-l-primary/50",
+        !isRevealed && isSelected && "bg-secondary border-l-4 border-l-primary glow-primary",
+        isRevealed && isCorrect && "bg-emerald-500/10 border-l-4 border-l-emerald-500",
+        isRevealed && isWrong && "bg-destructive/10 border-l-4 border-l-destructive",
+        isDimmed && "bg-secondary/40 border-l-4 border-l-transparent",
       )}
     >
       <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -408,7 +408,7 @@ function OptionButton({
           <span className={cn(
             "font-mono text-[10px] tracking-widest uppercase",
             !isRevealed && isSelected ? "text-primary font-bold" :
-              isRevealed && isCorrect ? "text-emerald-400 font-bold" :
+              isRevealed && isCorrect ? "text-emerald-600 dark:text-emerald-400 font-bold" :
                 isRevealed && isWrong ? "text-destructive font-bold" :
                   "text-muted-foreground"
           )}>
@@ -424,10 +424,10 @@ function OptionButton({
         <span
           className={cn(
             "font-sans text-sm font-bold leading-snug",
-            !isRevealed && isSelected ? "text-primary" :
-              isRevealed && isCorrect ? "text-emerald-400" :
-                isRevealed && isWrong ? "text-destructive" :
-                  isDimmed ? "text-muted-foreground/40" :
+            !isRevealed && isSelected ? "text-foreground font-extrabold" :
+              isRevealed && isCorrect ? "text-emerald-600 dark:text-emerald-400 font-extrabold" :
+                isRevealed && isWrong ? "text-destructive font-extrabold" :
+                  isDimmed ? "text-muted-foreground font-medium" :
                     "text-foreground"
           )}
           dangerouslySetInnerHTML={{
@@ -436,10 +436,10 @@ function OptionButton({
         />
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
-        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
-        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
+        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-emerald-500" />}
+        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-destructive" />}
+        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-primary" />}
+        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-muted-foreground/40" />}
       </div>
       {isRevealed && isCorrect && isSelected && (
         <>
@@ -454,7 +454,7 @@ function OptionButton({
               animation: floatUp 1.8s ease-in-out forwards;
             }
           `}</style>
-          <span className="absolute -top-4 right-10 bg-[#fecc17] text-black font-mono text-[9px] font-black px-2 py-0.5 rounded shadow-[0_0_12px_rgba(254,204,23,0.6)] animate-float-up pointer-events-none select-none z-30 uppercase tracking-wider">
+          <span className="absolute -top-4 right-10 bg-primary text-primary-foreground font-mono text-[9px] font-black px-2 py-0.5 rounded shadow-md animate-float-up pointer-events-none select-none z-30 uppercase tracking-wider">
             {getFloatText()}
           </span>
         </>
@@ -481,18 +481,23 @@ function QuestionCardFooter({ showHint = false }: { showHint?: boolean }) {
   const showCountdown = hasHint && !hasExplanation && typeof hintTimeRemaining === "number"
 
   return (
-    <div className="bg-[#0e0e0e] px-6 py-4 flex items-start gap-4 animate-fade-in border-t border-[#2a2a2a] shrink-0" aria-live="polite">
-      <LightbulbIcon className="w-4 h-4 text-[#fecc17] mt-0.5 shrink-0" />
-      <div className="space-y-1 flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-4">
+    <div
+      role="region"
+      aria-label={hasExplanation ? "System Explanation" : "System Hint"}
+      aria-live="polite"
+      className="bg-secondary/70 border border-border rounded p-4 flex items-start gap-3.5 animate-slide-up shadow-sm shrink-0 mt-3"
+    >
+      <LightbulbIcon className="w-5 h-5 text-primary mt-0.5 shrink-0" aria-hidden="true" />
+      <div className="space-y-1.5 flex-1 min-w-0">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/50 pb-1.5">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
+            <span className="font-mono text-[10px] font-bold tracking-widest text-foreground uppercase">
               {hasExplanation ? "SYSTEM_EXPLANATION" : "SYSTEM_HINT"}
             </span>
             {streak >= 3 && (
               <span className={cn(
-                "font-mono text-[9px] font-bold uppercase tracking-wider animate-pulse ml-2",
-                streak >= 12 ? "text-grade-a" : streak >= 8 ? "text-destructive" : streak >= 5 ? "text-orange-400" : "text-primary"
+                "font-mono text-[9px] font-bold uppercase tracking-wider animate-pulse",
+                streak >= 12 ? "text-emerald-600 dark:text-emerald-400" : streak >= 8 ? "text-destructive" : streak >= 5 ? "text-orange-500" : "text-primary"
               )}>
                 {streak >= 12 
                   ? `⚡ MASTERY ACTIVE ×${streak}` 
@@ -505,13 +510,13 @@ function QuestionCardFooter({ showHint = false }: { showHint?: boolean }) {
             )}
           </div>
           {showCountdown && (
-            <span className="font-mono text-[9px] text-[#fecc17] font-bold tracking-widest uppercase animate-pulse">
+            <span className="font-mono text-[9px] text-amber-600 dark:text-amber-400 font-bold tracking-widest uppercase animate-pulse">
               EXPIRING IN {hintTimeRemaining}S
             </span>
           )}
         </div>
         <p
-          className="font-sans text-xs text-[#b8b5b4] leading-relaxed italic"
+          className="font-sans text-xs md:text-sm text-foreground leading-relaxed select-text font-medium"
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(renderMath(hasExplanation ? currentQuestion.explanation ?? "" : currentQuestion.hint ?? ""))
           }}

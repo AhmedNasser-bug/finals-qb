@@ -33,11 +33,11 @@ export function Step1PresetTopic({
         <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
           STEP 01 // PRESET_CONFIG_SELECTION
         </span>
-        <h3 className="text-xl font-bold font-display text-white tracking-tight flex items-center">
+        <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">
           <span>Choose Your Learning Science Preset</span>
           <InfoToolbox content="Pedagogical presets target specific study goals and cognitive workloads. Google's LearnLM rules are dynamically injected to guide prompt generation." />
         </h3>
-        <p className="text-xs text-[#a4acba] leading-relaxed max-w-2xl font-sans font-medium">
+        <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl font-sans font-medium">
           Select an optimized pedagogical preset to align with your study goals, then specify the subject domain name.
         </p>
       </div>
@@ -46,10 +46,10 @@ export function Step1PresetTopic({
       <div className="flex flex-col gap-2">
         <label
           htmlFor="wizard-topic"
-          className="text-xs font-mono font-bold tracking-wider text-white uppercase flex items-center justify-between"
+          className="text-xs font-mono font-bold tracking-wider text-foreground uppercase flex items-center justify-between"
         >
           <span>Enter Subject Topic / Domain Name</span>
-          <span className="text-[10px] text-primary font-mono font-normal">REQUIRED</span>
+          <span className="text-[10px] text-primary font-mono font-bold">REQUIRED</span>
         </label>
         <input
           id="wizard-topic"
@@ -57,13 +57,13 @@ export function Step1PresetTopic({
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="E.g., Theory of Computation, Data Structures, Human Anatomy..."
-          className="w-full bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-sm text-white font-mono placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
+          className="w-full bg-background border border-border rounded px-4 py-2.5 text-sm text-foreground font-mono placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px] shadow-sm"
           autoComplete="off"
         />
       </div>
 
       {/* Reference Checkbox */}
-      <div className="flex items-start gap-3 hover:text-white transition-colors">
+      <div className="flex items-start gap-3 hover:text-foreground transition-colors">
         <input
           id="wizard-ref"
           type="checkbox"
@@ -72,11 +72,11 @@ export function Step1PresetTopic({
           className="accent-primary mt-0.5 w-4 h-4 cursor-pointer focus-ring"
         />
         <label htmlFor="wizard-ref" className="flex flex-col cursor-pointer text-left select-none">
-          <span className="text-xs font-mono font-bold uppercase text-white tracking-wide flex items-center">
+          <span className="text-xs font-mono font-bold uppercase text-foreground tracking-wide flex items-center">
             <span>Align with Attached Question Bank / Syllabus</span>
             <InfoToolbox content="Instructs the AI to strictly align generated questions and terminology with your custom syllabus materials, lectures, or textbook sources." />
           </span>
-          <span className="text-[11px] text-[#a4acba] leading-relaxed mt-0.5 font-sans font-medium">
+          <span className="text-[11px] text-muted-foreground leading-relaxed mt-0.5 font-sans font-medium">
             AI strictly mirrors your attached materials, mapping unique concepts, structures, and difficulties exactly.
           </span>
         </label>
@@ -84,7 +84,7 @@ export function Step1PresetTopic({
 
       {/* Pedagogical Presets Row */}
       <div className="space-y-3">
-        <span className="text-xs font-mono font-bold tracking-wider text-white uppercase">
+        <span className="text-xs font-mono font-bold tracking-wider text-foreground uppercase">
           Select Pedagogical Study Preset
         </span>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
@@ -102,14 +102,14 @@ export function Step1PresetTopic({
                 type="button"
                 onClick={() => onPresetSelect(p.id)}
                 className={cn(
-                  "flex flex-col text-left p-4 border transition-all duration-300 ease-out focus-ring cursor-pointer min-h-[110px] justify-between rounded-none hover:-translate-y-0.5 hover:bg-zinc-800/20 hover:border-zinc-700/80",
+                  "flex flex-col text-left p-4 border transition-all duration-300 ease-out focus-ring cursor-pointer min-h-[110px] justify-between rounded hover:-translate-y-0.5 shadow-sm",
                   isSelected
-                    ? "border-primary bg-primary/5 text-foreground border-glow"
-                    : "border-border bg-[#101115] text-[#a4acba] hover:text-white"
+                    ? "border-primary bg-primary/10 text-foreground border-glow"
+                    : "border-border bg-panel text-muted-foreground hover:text-foreground hover:bg-secondary/40 hover:border-border/80"
                 )}
               >
                 <div>
-                  <span className={cn("text-xs font-mono font-bold font-display uppercase tracking-wide", isSelected ? "text-primary font-bold" : "text-white font-semibold")}>
+                  <span className={cn("text-xs font-mono font-bold font-display uppercase tracking-wide", isSelected ? "text-primary font-bold" : "text-foreground font-semibold")}>
                     {p.name}
                   </span>
                   <span className="text-[10px] leading-snug mt-1 block opacity-95 font-sans font-medium text-foreground">
@@ -140,14 +140,14 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
   return (
     <div className="space-y-8 animate-slide-up">
       <div className="space-y-1.5">
-        <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
+        <span className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 uppercase font-bold">
           STEP 02 // COGNITIVE_BIAS_CALIBRATION
         </span>
-        <h3 className="text-xl font-bold font-display text-white tracking-tight flex items-center">
+        <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">
           <span>Calibrate Subject Bias Profile</span>
           <InfoToolbox content="Structural bias optimizes prompt directives: theoretical sets focus on deep prose, vocab tables, and conceptual clarity, while technical sets pre-seed code blocks, algorithmic comparisons, and detailed Mermaid diagrams." />
         </h3>
-        <p className="text-xs text-[#a4acba] leading-relaxed max-w-2xl font-sans font-medium">
+        <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl font-sans font-medium">
           Select the structural profile of this subject to adapt questions dynamically.
         </p>
       </div>
@@ -158,22 +158,22 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
           type="button"
           onClick={() => setSubjectType("theoretical")}
           className={cn(
-            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-[#121318]/50",
+            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded min-h-[200px] hover:-translate-y-0.5 shadow-sm",
             subjectType === "theoretical"
-              ? "border-[#4ae176] bg-[#4ae176]/5 border-glow-success"
-              : "border-border bg-[#111215] text-[#a4acba] hover:border-zinc-700/80 hover:text-white"
+              ? "border-emerald-500 bg-emerald-500/10 border-glow-success text-foreground"
+              : "border-border bg-panel text-muted-foreground hover:border-border/80 hover:text-foreground hover:bg-secondary/40"
           )}
         >
           <div className="space-y-3">
-            <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">BIAS_PROFILE: TEXT_DICTIONARY</span>
-            <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "theoretical" ? "text-[#4ae176] font-bold" : "text-white font-semibold")}>
+            <span className="text-[9px] font-mono tracking-widest text-muted-foreground uppercase font-bold">BIAS_PROFILE: TEXT_DICTIONARY</span>
+            <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "theoretical" ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-foreground font-semibold")}>
               Theoretical & Prose Focused
             </h4>
-            <p className="text-xs text-[#a4acba] leading-relaxed font-sans mt-2 font-medium">
+            <p className="text-xs text-muted-foreground leading-relaxed font-sans mt-2 font-medium">
               Optimized for descriptive fields, terminology dictionaries, conceptual analysis, and historical relationships. Restricts diagram clutter to maintain focus on literature, definitions, and prose structure.
             </p>
           </div>
-          <div className="text-[10px] font-mono text-[#4ae176] font-bold uppercase tracking-widest border-t border-border/40 pt-2.5">
+          <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-widest border-t border-border/40 pt-2.5">
             {subjectType === "theoretical" ? "✓ SELECTED PROFILE" : "SELECT THEORETICAL"}
           </div>
         </button>
@@ -183,18 +183,18 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
           type="button"
           onClick={() => setSubjectType("technical")}
           className={cn(
-            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-[#121318]/50",
+            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded min-h-[200px] hover:-translate-y-0.5 shadow-sm",
             subjectType === "technical"
-              ? "border-primary bg-primary/5 border-glow"
-              : "border-border bg-[#111215] text-[#a4acba] hover:border-zinc-700/80 hover:text-white"
+              ? "border-primary bg-primary/10 border-glow text-foreground"
+              : "border-border bg-panel text-muted-foreground hover:border-border/80 hover:text-foreground hover:bg-secondary/40"
           )}
         >
           <div className="space-y-3">
-            <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase font-semibold">BIAS_PROFILE: DIAGRAMS_AND_CODE</span>
-            <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "technical" ? "text-primary font-bold" : "text-white font-semibold")}>
+            <span className="text-[9px] font-mono tracking-widest text-muted-foreground uppercase font-bold">BIAS_PROFILE: DIAGRAMS_AND_CODE</span>
+            <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "technical" ? "text-primary font-bold" : "text-foreground font-semibold")}>
               Technical & Analytical Focused
             </h4>
-            <p className="text-xs text-[#a4acba] leading-relaxed font-sans mt-2 font-medium">
+            <p className="text-xs text-muted-foreground leading-relaxed font-sans mt-2 font-medium">
               Optimized for programmatic and analytical subjects. Instructs the AI to pre-seed rich visual Mermaid flowcharts, code syntax styling, state machine transitions, and data comparisons for at least 60% of questions.
             </p>
           </div>
@@ -227,21 +227,21 @@ export function Step3QuestionCount({
         <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
           STEP 03 // QUANTITY_THRESHOLD_CALIBRATION
         </span>
-        <h3 className="text-xl font-bold font-display text-white tracking-tight flex items-center">
+        <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">
           <span>Configure Question Count Threshold</span>
           <InfoToolbox content="Calibrating the question count enables custom learning session pacing. Larger pools provide absolute coverage, while smaller sets prevent learning fatigue." />
         </h3>
-        <p className="text-xs text-[#a4acba] leading-relaxed max-w-2xl font-sans font-medium">
+        <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl font-sans font-medium">
           Choose the volume of practice questions to generate.
         </p>
       </div>
 
       {/* Justification Box */}
-      <div className="p-4 bg-primary/5 border border-primary/20 flex items-start gap-3 rounded-none">
+      <div className="p-4 bg-primary/5 border border-primary/20 flex items-start gap-3 rounded">
         <span className="text-primary font-mono select-none text-sm mt-0.5">ℹ</span>
         <div>
-          <p className="text-xs font-mono font-bold text-white uppercase tracking-wider">PRESET JUSTIFICATION</p>
-          <p className="text-xs text-[#a4acba] leading-relaxed mt-0.5 font-sans font-medium">
+          <p className="text-xs font-mono font-bold text-foreground uppercase tracking-wider">PRESET JUSTIFICATION</p>
+          <p className="text-xs text-muted-foreground leading-relaxed mt-0.5 font-sans font-medium">
             {presetJustification}
           </p>
         </div>
@@ -249,12 +249,12 @@ export function Step3QuestionCount({
 
       {/* Question count input well */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-border/60 bg-[#101115] p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-border bg-panel p-5 rounded shadow-sm">
           <div className="flex flex-col">
-            <label htmlFor="wizard-count" className="text-xs font-mono font-bold tracking-wider text-white uppercase">
+            <label htmlFor="wizard-count" className="text-xs font-mono font-bold tracking-wider text-foreground uppercase">
               Total Questions Volume
             </label>
-            <span className="text-[10px] text-muted-foreground mt-0.5 font-mono uppercase font-semibold">
+            <span className="text-[10px] text-muted-foreground mt-0.5 font-mono uppercase font-bold">
               Min 1 — Max 500 questions
             </span>
           </div>
@@ -267,13 +267,13 @@ export function Step3QuestionCount({
             onChange={(e) => {
               setQuestionCount(Math.max(1, parseInt(e.target.value) || 0))
             }}
-            className="w-full sm:w-36 bg-[#07080a] border border-border rounded-none px-4 py-2.5 text-center text-xl font-mono text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
+            className="w-full sm:w-36 bg-background border border-border rounded px-4 py-2.5 text-center text-xl font-mono text-foreground font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px] shadow-sm"
           />
         </div>
 
         {/* Preset quick buttons */}
         <div className="pt-2 flex items-center gap-2">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-semibold">Quick Presets:</span>
+          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">Quick Presets:</span>
           <div className="flex items-center gap-2 flex-wrap">
             {[20, 40, 80, 120].map((num) => {
               const isSelected = questionCount === num
@@ -283,10 +283,10 @@ export function Step3QuestionCount({
                   type="button"
                   onClick={() => onCustomPresetClick(num)}
                   className={cn(
-                    "text-xs font-mono px-3.5 py-1.5 border transition-all duration-300 ease-out cursor-pointer rounded-none min-h-[32px] hover:scale-[1.02]",
+                    "text-xs font-mono px-3.5 py-1.5 border transition-all duration-300 ease-out cursor-pointer rounded min-h-[32px] hover:scale-[1.02] shadow-sm",
                     isSelected
                       ? "border-primary bg-primary/10 text-primary font-bold animate-pulse-soft"
-                      : "border-border text-[#a4acba] hover:border-zinc-700/80 hover:text-white bg-[#07080a]"
+                      : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground bg-secondary"
                   )}
                 >
                   {num} QS
@@ -494,14 +494,14 @@ ${bundledSourceMaterial}
   return (
     <div className="space-y-6 animate-slide-up select-none">
       <div className="space-y-1.5">
-        <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
+        <span className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 uppercase font-bold">
           STEP 04 // GENERATE_STUDY_PACKAGE
         </span>
-        <h3 className="text-xl font-bold font-display text-white tracking-tight flex items-center">
+        <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">
           <span>Create Your Socratic Study Package</span>
           <InfoToolbox content="This packages our learning science prompt alongside your study materials so your chatbot can generate the exact structure seamlessly." />
         </h3>
-        <p className="text-xs text-[#a4acba] leading-relaxed max-w-2xl font-sans font-medium">
+        <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl font-sans font-medium">
           Feed your materials to the Socratic Prompt Builder to create a single-file generation package.
         </p>
       </div>
@@ -509,41 +509,41 @@ ${bundledSourceMaterial}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Numbered Guide */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="p-5 border border-border bg-[#101115] rounded">
-            <h4 className="text-xs font-mono font-bold tracking-wider text-white uppercase border-b border-border pb-2.5 mb-3.5 select-none">
+          <div className="p-5 border border-border bg-panel rounded shadow-sm">
+            <h4 className="text-xs font-mono font-bold tracking-wider text-foreground uppercase border-b border-border pb-2.5 mb-3.5 select-none">
               Generation Pipeline
             </h4>
             
-            <div className="space-y-4 text-xs font-medium leading-relaxed font-sans text-zinc-300 select-none">
+            <div className="space-y-4 text-xs font-medium leading-relaxed font-sans text-foreground select-none">
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">1</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">1</span>
                 <div>
-                  <span className="text-white font-bold block">Load Source Material</span>
-                  <span>Drag files (.pdf, .docx) into the box on the right. We parse them securely client-side.</span>
+                  <span className="text-foreground font-bold block">Load Source Material</span>
+                  <span className="text-muted-foreground">Drag files (.pdf, .docx) into the box on the right. We parse them securely client-side.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">2</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">2</span>
                 <div>
-                  <span className="text-white font-bold block">Add Explicit Instructions</span>
-                  <span>Type custom guidelines, syllabus directions, or explicit prompts in the text box below.</span>
+                  <span className="text-foreground font-bold block">Add Explicit Instructions</span>
+                  <span className="text-muted-foreground">Type custom guidelines, syllabus directions, or explicit prompts in the text box below.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">3</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">3</span>
                 <div>
-                  <span className="text-white font-bold block">Download Generation Package</span>
-                  <span>Download a single `.txt` file containing your parsed materials and custom instructions.</span>
+                  <span className="text-foreground font-bold block">Download Generation Package</span>
+                  <span className="text-muted-foreground">Download a single `.txt` file containing your parsed materials and custom instructions.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-black font-mono font-bold flex items-center justify-center shrink-0">4</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">4</span>
                 <div>
-                  <span className="text-white font-bold block">Generate in Gemini / Claude</span>
-                  <span>
+                  <span className="text-foreground font-bold block">Generate in Gemini / Claude</span>
+                  <span className="text-muted-foreground">
                     Upload the `.txt` file to{" "}
                     <a
                       href="https://gemini.google.com"
@@ -561,20 +561,20 @@ ${bundledSourceMaterial}
           </div>
 
           <div className="p-4 border border-emerald-500/20 bg-emerald-500/5 rounded">
-            <p className="text-xs leading-relaxed text-zinc-300 font-sans font-medium">
-              💡 <span className="text-[#4ae176] font-bold">Safe & Clean UX:</span> Your heavy converted PDF/Word files are stored efficiently in the wizard memory buffer, keeping the text box clear for your custom guidelines!
+            <p className="text-xs leading-relaxed text-foreground font-sans font-medium">
+              💡 <span className="text-emerald-600 dark:text-emerald-400 font-bold">Safe & Clean UX:</span> Your heavy converted PDF/Word files are stored efficiently in the wizard memory buffer, keeping the text box clear for your custom guidelines!
             </p>
           </div>
         </div>
 
         {/* Right Column: Path A material load zone */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="p-6 border border-border bg-[#101115] rounded space-y-4">
+          <div className="p-6 border border-border bg-panel rounded space-y-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block">
+              <span className="text-xs font-mono font-bold text-foreground uppercase tracking-wider block">
                 [PATH A] Drag Notes or Paste Study Material
               </span>
-              <span className="text-[10px] font-mono text-zinc-500 flex items-center gap-1.5 select-none">
+              <span className="text-[10px] font-mono text-muted-foreground flex items-center gap-1.5 select-none font-bold">
                 <span>📂</span>
                 <span>CLIENT-SIDE PARSING ACTIVE</span>
               </span>
@@ -587,8 +587,8 @@ ${bundledSourceMaterial}
               onDrop={handleDrop}
               className={cn(
                 "border border-dashed p-4 text-center rounded transition-colors flex flex-col justify-center items-center min-h-[90px] relative",
-                dragActive ? "border-primary bg-primary/5" : "border-border hover:border-zinc-700 bg-black/30",
-                isConverting && "border-primary/50 bg-primary/5 animate-pulse-glow"
+                dragActive ? "border-primary bg-primary/10" : "border-border hover:border-primary/50 bg-secondary/50",
+                isConverting && "border-primary/50 bg-primary/10 animate-pulse-glow"
               )}
             >
               {isConverting ? (
@@ -608,9 +608,9 @@ ${bundledSourceMaterial}
                     disabled={isConverting}
                     multiple
                   />
-                  <span className="text-xs text-zinc-400 font-sans font-medium">
+                  <span className="text-xs text-muted-foreground font-sans font-medium">
                     Drag & Drop any notes files (.pdf, .docx, .md, .txt) here, or{" "}
-                    <span className="text-primary hover:underline">browse files</span>
+                    <span className="text-primary hover:underline font-bold">browse files</span>
                   </span>
                 </>
               )}
@@ -619,14 +619,14 @@ ${bundledSourceMaterial}
             {/* Buffered files HUD display */}
             {convertedMaterial.trim() && (
               <div className="flex items-center justify-between px-3 py-2 border border-primary/20 bg-primary/5 text-xs text-primary font-mono rounded">
-                <span className="flex items-center gap-1.5 select-none">
+                <span className="flex items-center gap-1.5 select-none font-bold">
                   <span>📂</span>
                   <span>MEM-BUFFER: {new Blob([convertedMaterial]).size.toLocaleString()} bytes loaded</span>
                 </span>
                 <button
                   type="button"
                   onClick={() => setConvertedMaterial("")}
-                  className="text-zinc-500 hover:text-red-400 font-bold transition-colors text-[9px] uppercase cursor-pointer"
+                  className="text-muted-foreground hover:text-destructive font-bold transition-colors text-[9px] uppercase cursor-pointer"
                   title="Clear all converted files"
                 >
                   Clear Buffer [X]
@@ -635,7 +635,7 @@ ${bundledSourceMaterial}
             )}
 
             <div className="space-y-1.5">
-              <label htmlFor="pasted-notes" className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+              <label htmlFor="pasted-notes" className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">
                 Add Explicit Study Guidelines, Reference Rules, or Custom Instructions
               </label>
               <textarea
@@ -643,7 +643,7 @@ ${bundledSourceMaterial}
                 value={userMaterial}
                 onChange={(e) => setUserMaterial(e.target.value)}
                 placeholder="Enter specific instructions for the Socratic AI (e.g., 'Prioritize Chapter 4 terminology', 'Avoid code blocks in Section B', or paste additional explicit guidelines)..."
-                className="w-full bg-[#07080a] border border-border px-3.5 py-2.5 font-mono text-xs text-zinc-300 placeholder:text-zinc-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[140px] resize-y"
+                className="w-full bg-background border border-border rounded px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[140px] resize-y shadow-sm"
               />
             </div>
 
@@ -653,10 +653,10 @@ ${bundledSourceMaterial}
               disabled={!hasMaterial}
               aria-disabled={!hasMaterial}
               className={cn(
-                "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2",
+                "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 rounded shadow-sm",
                 hasMaterial
-                  ? "border-[#4ae176] bg-[#4ae176]/10 text-[#4ae176] hover:bg-[#4ae176]/15 border-glow-success"
-                  : "border-border text-muted-foreground bg-transparent opacity-40 cursor-not-allowed"
+                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 border-glow-success"
+                  : "border-border text-muted-foreground bg-secondary/30 opacity-40 cursor-not-allowed"
               )}
             >
               📥 DOWNLOAD STUDY BUNDLE (TAKE_ME_TO_ANY_CHATBOT.txt)
@@ -666,24 +666,24 @@ ${bundledSourceMaterial}
       </div>
 
       {/* Accordion Path B: Manual Prompt Copy */}
-      <div className="border border-border rounded bg-[#101115] overflow-hidden">
+      <div className="border border-border rounded bg-panel overflow-hidden shadow-sm">
         <button
           type="button"
           onClick={() => setShowManualPrompt(!showManualPrompt)}
-          className="w-full px-5 py-3.5 flex items-center justify-between hover:bg-zinc-800/10 transition-colors text-left"
+          className="w-full px-5 py-3.5 flex items-center justify-between hover:bg-secondary/40 transition-colors text-left cursor-pointer"
         >
-          <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">
+          <span className="text-xs font-mono font-bold text-foreground uppercase tracking-wider">
             [PATH B] Expert Mode: Copy raw system prompt instructions directly
           </span>
-          <span className="text-xs font-mono text-zinc-500 font-bold">
+          <span className="text-xs font-mono text-muted-foreground font-bold">
             {showManualPrompt ? "CLOSE ▲" : "OPEN ▼"}
           </span>
         </button>
 
         {showManualPrompt && (
-          <div className="p-5 border-t border-border bg-black/40 space-y-4 animate-slide-up">
+          <div className="p-5 border-t border-border bg-background space-y-4 animate-slide-up">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-semibold">
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">
                 SYSTEM PROMPT DIRECTIVES
               </span>
               <button
@@ -691,10 +691,10 @@ ${bundledSourceMaterial}
                 aria-label={promptCopied ? "Prompt copied to clipboard" : "Copy prompt to clipboard"}
                 onClick={() => onCopyPrompt(compiledPrompt)}
                 className={cn(
-                  "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer",
+                  "text-xs font-mono px-4 py-1.5 border rounded transition-all duration-150 cursor-pointer shadow-sm font-bold",
                   promptCopied
-                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
-                    : "border-primary bg-primary/5 text-primary hover:bg-primary/10"
+                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                    : "border-primary bg-primary/10 text-primary hover:bg-primary/20"
                 )}
               >
                 {promptCopied ? "✓ COPIED" : "COPY PROMPT"}
@@ -704,7 +704,7 @@ ${bundledSourceMaterial}
               readOnly
               value={compiledPrompt}
               aria-label="Raw compiled AI system prompt"
-              className="w-full bg-[#07080a] border border-border/80 font-mono text-xs leading-relaxed p-3 text-zinc-400 focus:outline-none resize-none h-44 cursor-default rounded"
+              className="w-full bg-muted/40 border border-border font-mono text-xs leading-relaxed p-3 text-foreground focus:outline-none resize-none h-44 cursor-default rounded shadow-inner"
             />
           </div>
         )}
@@ -748,14 +748,14 @@ export function Step5LoadData({
   return (
     <div className="space-y-8 animate-slide-up">
       <div className="space-y-1.5">
-        <span className="text-[10px] font-mono tracking-widest text-[#4ae176] uppercase font-bold">
+        <span className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 uppercase font-bold">
           STEP 05 // LOAD_VALIDATED_SUBJECT_JSON
         </span>
-        <h3 className="text-xl font-bold font-display text-white tracking-tight flex items-center">
+        <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">
           <span>Drop & Validate Generated JSON Dataset</span>
           <InfoToolbox content="Upload your generated dataset. We run schema validation checks, counting questions and flashcards, and cross-matching terminology groups dynamically." />
         </h3>
-        <p className="text-xs text-[#a4acba] leading-relaxed max-w-2xl font-sans font-medium">
+        <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl font-sans font-medium">
           Paste the single-line JSON output generated by NotebookLM or copy-drop your downloaded `.json` file below.
         </p>
       </div>

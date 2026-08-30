@@ -60,51 +60,73 @@ const SECURITY_PATTERNS = [
 
 const RENDER_TIMEOUT_MS = 8000
 
-// ─── Theme config — MOLD V2 amber/dark palette ────────────────────────────────
+// ─── Theme config — MOLD V2 amber/dark & daylight/light palettes ─────────────
 
-const MOLD_MERMAID_CONFIG = {
-  startOnLoad: false,
-  theme: "dark" as const,
-  themeVariables: {
-    // Amber primary
-    primaryColor: "#2a2500",
-    primaryTextColor: "#fecc17",
-    primaryBorderColor: "#4e4632",
-    // Surfaces
-    lineColor: "#4e4632",
-    secondaryColor: "#1c1b1b",
-    tertiaryColor: "#131313",
-    background: "#0e0e0e",
-    mainBkg: "#1c1b1b",
-    secondBkg: "#201f1f",
-    // Nodes
-    nodeBorder: "#4e4632",
-    clusterBkg: "#201f1f",
-    clusterBorder: "#353534",
-    // Text
-    edgeLabelBackground: "#1c1b1b",
-    // Sequence diagram
-    actorBkg: "#201f1f",
-    actorBorder: "#fecc17",
-    actorTextColor: "#e5e2e1",
-    actorLineColor: "#4e4632",
-    signalColor: "#fecc17",
-    signalTextColor: "#e5e2e1",
-    // Typography
-    fontSize: "13px",
-    fontFamily: "ui-monospace, 'Geist Mono', monospace",
-  },
-  flowchart: {
-    useMaxWidth: true,
-    htmlLabels: true,
-    curve: "basis" as const,
-    padding: 15,
-  },
-  maxTextSize: 90000,
-  sequence: {
-    useMaxWidth: true,
-  },
-  securityLevel: "strict" as const,
+function getMermaidConfig(isLight: boolean) {
+  return {
+    startOnLoad: false,
+    securityLevel: "strict" as const,
+    theme: isLight ? ("base" as const) : ("dark" as const),
+    themeVariables: isLight
+      ? {
+          primaryColor: "#ffffff",
+          primaryTextColor: "#16181d",
+          primaryBorderColor: "#475569",
+          lineColor: "#334155",
+          secondaryColor: "#f8fafc",
+          tertiaryColor: "#f1f5f9",
+          background: "#ffffff",
+          mainBkg: "#ffffff",
+          secondBkg: "#f8fafc",
+          nodeBorder: "#334155",
+          nodeTextColor: "#16181d",
+          clusterBkg: "#f8fafc",
+          clusterBorder: "#94a3b8",
+          edgeLabelBackground: "#ffffff",
+          actorBkg: "#ffffff",
+          actorBorder: "#d97706",
+          actorTextColor: "#16181d",
+          actorLineColor: "#475569",
+          signalColor: "#d97706",
+          signalTextColor: "#16181d",
+          labelTextColor: "#16181d",
+          fontSize: "13px",
+          fontFamily: "ui-monospace, 'Geist Mono', monospace",
+        }
+      : {
+          primaryColor: "#2a2500",
+          primaryTextColor: "#fecc17",
+          primaryBorderColor: "#4e4632",
+          lineColor: "#4e4632",
+          secondaryColor: "#1c1b1b",
+          tertiaryColor: "#131313",
+          background: "#0e0e0e",
+          mainBkg: "#1c1b1b",
+          secondBkg: "#201f1f",
+          nodeBorder: "#4e4632",
+          clusterBkg: "#201f1f",
+          clusterBorder: "#353534",
+          edgeLabelBackground: "#1c1b1b",
+          actorBkg: "#201f1f",
+          actorBorder: "#fecc17",
+          actorTextColor: "#e5e2e1",
+          actorLineColor: "#4e4632",
+          signalColor: "#fecc17",
+          signalTextColor: "#e5e2e1",
+          fontSize: "13px",
+          fontFamily: "ui-monospace, 'Geist Mono', monospace",
+        },
+    flowchart: {
+      useMaxWidth: true,
+      htmlLabels: true,
+      curve: "basis" as const,
+      padding: 15,
+    },
+    maxTextSize: 90000,
+    sequence: {
+      useMaxWidth: true,
+    },
+  }
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -211,9 +233,10 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
 
       if (abortRef.current) return
 
-      // Initialize with MOLD theme
+      // Initialize with dynamic theme based on active DOM mode
       try {
-        mermaid.initialize(MOLD_MERMAID_CONFIG)
+        const isLight = document.documentElement.getAttribute("data-theme-mode") === "light"
+        mermaid.initialize(getMermaidConfig(isLight))
       } catch (e) {
         // Non-fatal — continue with whatever state mermaid is in
         logger.warn("[MermaidDiagram] initialize warning:", e)
@@ -318,16 +341,16 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
         <div className="flex items-start gap-3">
           <WarningIcon className="w-5 h-5 text-[#ff4d4d] mt-0.5 shrink-0" />
           <div className="flex-1 min-w-0 space-y-1">
-            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#ff4d4d] font-bold">
+            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-destructive font-bold">
               DIAGRAM_ERR: {error.code.replace(/_/g, " ")}
             </p>
-            <p className="font-mono text-xs text-[#e5e2e1]">{error.message}</p>
+            <p className="font-mono text-xs text-foreground">{error.message}</p>
             {error.details && (
               <details className="mt-2">
-                <summary className="font-mono text-[10px] tracking-widest uppercase text-zinc-500 cursor-pointer hover:text-zinc-300 transition-colors select-none">
+                <summary className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground cursor-pointer hover:text-foreground transition-colors select-none">
                   SHOW_DETAILS
                 </summary>
-                <pre className="mt-2 font-mono text-[11px] bg-[#0e0e0e] border border-[#353534] p-3 overflow-x-auto text-zinc-400 leading-relaxed">
+                <pre className="mt-2 font-mono text-[11px] bg-muted border border-border p-3 overflow-x-auto text-muted-foreground leading-relaxed">
                   {error.details}
                 </pre>
               </details>
@@ -335,10 +358,10 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
           </div>
         </div>
         <details>
-          <summary className="font-mono text-[10px] tracking-widest uppercase text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors select-none">
+          <summary className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground cursor-pointer hover:text-foreground transition-colors select-none">
             VIEW_SOURCE
           </summary>
-          <pre className="mt-2 font-mono text-[11px] bg-[#0e0e0e] border border-[#353534] p-3 overflow-x-auto text-primary/70 leading-relaxed">
+          <pre className="mt-2 font-mono text-[11px] bg-muted border border-border p-3 overflow-x-auto text-primary/70 leading-relaxed">
             {chart}
           </pre>
         </details>

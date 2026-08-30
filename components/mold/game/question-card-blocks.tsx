@@ -40,7 +40,7 @@ export function QuestionContent({
           {/* LEFT: question text + options */}
           <div className="flex flex-col gap-4 overflow-y-auto min-h-0">
             <div className="space-y-2 shrink-0">
-              <h2 className="font-sans text-xl md:text-2xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty">
+              <h2 className="font-sans text-xl md:text-2xl font-bold text-foreground leading-tight tracking-tight text-pretty">
                 <span id={question.id}>
                   {hasDedicatedDiagram ? (
                     <span dangerouslySetInnerHTML={{
@@ -57,7 +57,7 @@ export function QuestionContent({
                   )}
                 </span>
               </h2>
-              <p className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest">
+              <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest">
                 {question.difficulty} &mdash; {question.type === "TrueFalse" ? "True / False" : "MCQ"}
               </p>
             </div>
@@ -82,7 +82,7 @@ export function QuestionContent({
   return (
     <div className="flex flex-col gap-4">
       <div className="space-y-2">
-        <h2 className="font-sans text-2xl md:text-3xl font-bold text-[#e5e2e1] leading-tight tracking-tight text-pretty">
+        <h2 className="font-sans text-2xl md:text-3xl font-bold text-foreground leading-tight tracking-tight text-pretty">
           <span id={question.id}>
             {hasDedicatedDiagram ? (
               <span dangerouslySetInnerHTML={{

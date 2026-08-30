@@ -5,9 +5,10 @@ import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
-import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX } from "lucide-react"
+import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX, Sun, Moon } from "lucide-react"
 import { GuideLink } from "@/components/mold/common/guide-link"
 import { isAudioMuted, toggleAudioMute } from "@/lib/audio/sound-engine"
+import { useColorTheme } from "@/lib/themes/theme-context"
 
 interface TopNavBarProps {
   activeSubjectName?: string
@@ -41,6 +42,7 @@ export function TopNavBar({
   onShowThemeModal,
   onShowLayoutModal,
 }: TopNavBarProps) {
+  const { themeMode, toggleMode } = useColorTheme()
   const [tipIndex, setTipIndex] = useState(0)
   const [muted, setMuted] = useState(false)
 
@@ -148,6 +150,20 @@ export function TopNavBar({
             <VolumeX className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
           ) : (
             <Volume2 className="w-4 h-4 text-primary" aria-hidden="true" />
+          )}
+        </button>
+
+        {/* Quick Mode Toggle (Light/Dark) */}
+        <button
+          onClick={toggleMode}
+          title={`Switch to ${themeMode === 'dark' ? 'Light' : 'Dark'} Mode`}
+          aria-label={`Switch to ${themeMode === 'dark' ? 'Light' : 'Dark'} Mode`}
+          className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] flex items-center justify-center shrink-0 rounded"
+        >
+          {themeMode === 'light' ? (
+            <Sun className="w-4 h-4 text-amber-500" aria-hidden="true" />
+          ) : (
+            <Moon className="w-4 h-4 text-primary" aria-hidden="true" />
           )}
         </button>
 

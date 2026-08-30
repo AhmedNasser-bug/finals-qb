@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
 import type { ColorThemeSpec, ColorThemeTokens } from './theme-types'
@@ -9,15 +9,20 @@ const STORAGE_KEY = 'mold_v2_color_theme'
 interface ColorThemeContextValue {
   activeTheme: ColorThemeSpec
   activeThemeId: string
+  themeMode: 'dark' | 'light'
   setThemeId: (themeId: string) => void
+  toggleMode: () => void
   availableThemes: ColorThemeSpec[]
 }
 
 const ColorThemeContext = createContext<ColorThemeContextValue | null>(null)
 
-function applyThemeTokensToDom(tokens: ColorThemeTokens) {
+function applyThemeTokensToDom(theme: ColorThemeSpec) {
   if (typeof document === 'undefined') return
   const root = document.documentElement
+  const { tokens, mode } = theme
+
+  root.setAttribute('data-theme-mode', mode)
 
   root.style.setProperty('--background', tokens.background)
   root.style.setProperty('--foreground', tokens.foreground)
@@ -38,6 +43,15 @@ function applyThemeTokensToDom(tokens: ColorThemeTokens) {
   root.style.setProperty('--border', tokens.border)
   root.style.setProperty('--input', tokens.input)
   root.style.setProperty('--ring', tokens.ring)
+
+  // Surface Hierarchy and Panel variables
+  root.style.setProperty('--panel', tokens.panel || tokens.card)
+  root.style.setProperty('--panel-foreground', tokens.panelForeground || tokens.foreground)
+  root.style.setProperty('--panel-border', tokens.panelBorder || tokens.border)
+  root.style.setProperty('--surface', tokens.background)
+  root.style.setProperty('--surface-container', tokens.surfaceContainer || tokens.card)
+  root.style.setProperty('--surface-container-low', tokens.surfaceContainerLow || tokens.muted)
+  root.style.setProperty('--surface-container-high', tokens.surfaceContainerHigh || tokens.secondary)
 }
 
 export function ColorThemeProvider({ children }: { children: React.ReactNode }) {
@@ -49,7 +63,10 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
       if (saved) {
         setThemeIdState(saved)
         const theme = getThemeById(saved)
-        applyThemeTokensToDom(theme.tokens)
+        applyThemeTokensToDom(theme)
+      } else {
+        const theme = getThemeById(DEFAULT_THEME_ID)
+        applyThemeTokensToDom(theme)
       }
     } catch {
       // Ignore localStorage read errors
@@ -59,12 +76,26 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
   const setThemeId = useCallback((id: string) => {
     setThemeIdState(id)
     const theme = getThemeById(id)
-    applyThemeTokensToDom(theme.tokens)
+    applyThemeTokensToDom(theme)
     try {
       localStorage.setItem(STORAGE_KEY, id)
     } catch {
       // Ignore localStorage write error
     }
+  }, [])
+
+  const toggleMode = useCallback(() => {
+    setThemeIdState((prevId) => {
+      const nextId = (prevId === 'paper-mono' || prevId === 'solar-parchment' || prevId === 'nordic-glacier')
+        ? DEFAULT_THEME_ID
+        : 'paper-mono'
+      const theme = getThemeById(nextId)
+      applyThemeTokensToDom(theme)
+      try {
+        localStorage.setItem(STORAGE_KEY, nextId)
+      } catch {}
+      return nextId
+    })
   }, [])
 
   const activeTheme = useMemo(() => getThemeById(themeId), [themeId])
@@ -73,10 +104,12 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
     () => ({
       activeTheme,
       activeThemeId: themeId,
+      themeMode: activeTheme.mode,
       setThemeId,
+      toggleMode,
       availableThemes: COLOR_THEMES,
     }),
-    [activeTheme, themeId, setThemeId]
+    [activeTheme, themeId, setThemeId, toggleMode]
   )
 
   return (
@@ -89,10 +122,13 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
 export function useColorTheme(): ColorThemeContextValue {
   const ctx = useContext(ColorThemeContext)
   if (!ctx) {
+    const fallbackTheme = getThemeById(DEFAULT_THEME_ID)
     return {
-      activeTheme: getThemeById(DEFAULT_THEME_ID),
+      activeTheme: fallbackTheme,
       activeThemeId: DEFAULT_THEME_ID,
+      themeMode: fallbackTheme.mode,
       setThemeId: () => {},
+      toggleMode: () => {},
       availableThemes: COLOR_THEMES,
     }
   }

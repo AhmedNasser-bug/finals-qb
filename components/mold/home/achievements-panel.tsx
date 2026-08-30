@@ -29,22 +29,22 @@ export function AchievementsPanel({
   onShowGallery,
 }: AchievementsPanelProps) {
   return (
-    <section className="bg-[#101115] border border-border p-6 rounded-md">
+    <section className="bg-panel border border-border p-6 rounded-md shadow-sm">
       <div className="flex items-center gap-2 mb-6">
         <Trophy className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
-        <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-white/80">
+        <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-foreground">
           ACHIEVED_OBJECTIVES
         </h2>
       </div>
 
-      <div className="flex flex-col items-center py-5 bg-zinc-900/50 border border-zinc-800/60 rounded mb-6 relative overflow-hidden select-none">
-        <div className="text-5xl font-headline font-black text-white/10 relative tracking-wider">
+      <div className="flex flex-col items-center py-5 bg-secondary/60 border border-border rounded mb-6 relative overflow-hidden select-none">
+        <div className="text-5xl font-headline font-black text-foreground/20 relative tracking-wider">
           {unlockedCount}/{totalAchievementsCount}
           <div className="absolute inset-0 flex items-center justify-center text-primary blur-[10px] opacity-20" aria-hidden="true">
             {unlockedCount}/{totalAchievementsCount}
           </div>
         </div>
-        <div className="font-mono text-[9px] text-primary/60 tracking-widest font-bold mt-1.5 uppercase">
+        <div className="font-mono text-[9px] text-primary tracking-widest font-bold mt-1.5 uppercase">
           COMPLETED_SYLLABUS_SECTOR
         </div>
       </div>
@@ -56,18 +56,18 @@ export function AchievementsPanel({
             <div 
               key={ach.id}
               className={cn(
-                "p-3.5 bg-zinc-900 border flex items-center gap-3.5 transition-all duration-200",
+                "p-3.5 border rounded flex items-center gap-3.5 transition-all duration-200",
                 isUnlocked 
-                  ? "border-primary/30 text-white" 
-                  : "border-zinc-800 text-zinc-500 opacity-40 grayscale"
+                  ? "bg-card border-primary/40 text-foreground shadow-sm" 
+                  : "bg-muted/40 border-border text-muted-foreground opacity-60 grayscale"
               )}
             >
-              <div className={cn("w-8 h-8 flex items-center justify-center border shrink-0 text-sm font-bold", isUnlocked ? "border-primary/20 bg-primary/5 text-primary" : "border-zinc-800 bg-zinc-900")}>
-                <Trophy className={cn("w-4 h-4", isUnlocked ? "text-primary" : "text-zinc-500")} aria-hidden="true" />
+              <div className={cn("w-8 h-8 flex items-center justify-center border rounded shrink-0 text-sm font-bold", isUnlocked ? "border-primary/30 bg-primary/10 text-primary" : "border-border bg-muted text-muted-foreground")}>
+                <Trophy className={cn("w-4 h-4", isUnlocked ? "text-primary" : "text-muted-foreground")} aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <div className="font-mono text-[9px] font-bold truncate uppercase">{ach.title.replace(/\s+/g, "_")}</div>
-                <div className="font-sans text-[8px] text-zinc-400 truncate leading-none mt-0.5">{ach.description}</div>
+                <div className="font-mono text-[9px] font-bold truncate uppercase text-foreground">{ach.title.replace(/\s+/g, "_")}</div>
+                <div className="font-sans text-[8px] text-muted-foreground truncate leading-none mt-0.5">{ach.description}</div>
               </div>
             </div>
           )
@@ -76,7 +76,7 @@ export function AchievementsPanel({
         {hasMoreAchievements && (
           <button 
             onClick={onShowGallery}
-            className="text-[9px] font-mono text-primary/70 hover:text-primary transition-colors text-center w-full font-bold pt-2 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+            className="text-[9px] font-mono text-primary hover:text-primary/80 transition-colors text-center w-full font-bold pt-2 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
           >
             View All {totalCount} Achievements →
           </button>

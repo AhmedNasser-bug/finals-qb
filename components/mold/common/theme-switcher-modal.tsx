@@ -1,21 +1,39 @@
-﻿'use client'
+'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { useColorTheme } from '@/lib/themes/theme-context'
-import { Palette, Check, X } from 'lucide-react'
+import { Palette, Check, X, Sun, Moon, Sparkles } from 'lucide-react'
+import type { ThemeMode } from '@/lib/themes/theme-types'
 
 interface ThemeSwitcherModalProps {
   onClose: () => void
 }
 
+type TabFilter = 'all' | 'dark' | 'light'
+
 export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
   const { activeThemeId, setThemeId, availableThemes } = useColorTheme()
   const modalRef = useRef<HTMLDivElement>(null)
+  const [filter, setFilter] = useState<TabFilter>('all')
+
+  const filteredThemes = useMemo(() => {
+    if (filter === 'all') return availableThemes
+    return availableThemes.filter((t) => t.mode === filter)
+  }, [availableThemes, filter])
+
+  const darkCount = useMemo(() => availableThemes.filter(t => t.mode === 'dark').length, [availableThemes])
+  const lightCount = useMemo(() => availableThemes.filter(t => t.mode === 'light').length, [availableThemes])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose()
+      } else if ((e.key === 'l' || e.key === 'L') && document.activeElement?.tagName !== 'INPUT') {
+        setFilter('light')
+      } else if ((e.key === 'd' || e.key === 'D') && document.activeElement?.tagName !== 'INPUT') {
+        setFilter('dark')
+      } else if ((e.key === 'a' || e.key === 'A') && document.activeElement?.tagName !== 'INPUT') {
+        setFilter('all')
       } else if (e.key === 'Tab' && modalRef.current) {
         const focusable = modalRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -50,7 +68,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
     >
       <div
         ref={modalRef}
-        className="w-full max-w-xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+        className="w-full max-w-2xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-panel/50">
@@ -63,10 +81,10 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
                 id="theme-modal-title"
                 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground"
               >
-                Color Theme Selector
+                Visual Theme Architecture
               </h2>
               <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
-                Select a visual phosphor palette for all interfaces
+                Switch between high-contrast terminal dark and daylight light themes
               </p>
             </div>
           </div>
@@ -80,9 +98,52 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           </button>
         </div>
 
+        {/* Mode Filter Tabs */}
+        <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-panel/30">
+          <button
+            type="button"
+            onClick={() => setFilter('all')}
+            className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+              filter === 'all'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
+          >
+            <Sparkles className="w-3 h-3" aria-hidden="true" />
+            ALL [{availableThemes.length}]
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter('dark')}
+            className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+              filter === 'dark'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
+          >
+            <Moon className="w-3 h-3" aria-hidden="true" />
+            DARK [{darkCount}]
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter('light')}
+            className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+              filter === 'light'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
+          >
+            <Sun className="w-3 h-3" aria-hidden="true" />
+            LIGHT [{lightCount}]
+          </button>
+          <span className="ml-auto text-[10px] font-mono text-muted-foreground hidden sm:inline">
+            Shortcuts: [A] All • [D] Dark • [L] Light
+          </span>
+        </div>
+
         {/* Themes Grid */}
         <div className="p-6 overflow-y-auto space-y-3">
-          {availableThemes.map((theme) => {
+          {filteredThemes.map((theme) => {
             const isSelected = theme.id === activeThemeId
             return (
               <button
@@ -92,11 +153,11 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
                 aria-pressed={isSelected}
                 className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                   isSelected
-                    ? 'border-primary bg-primary/5 shadow-sm'
+                    ? 'border-primary bg-primary/10 shadow-sm'
                     : 'border-border bg-card/60 hover:bg-muted/40 hover:border-border/80'
                 }`}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 min-w-0 flex-1">
                   {/* Swatch Preview */}
                   <div
                     className="w-12 h-12 rounded border flex flex-col justify-between p-1.5 shadow-inner shrink-0"
@@ -121,16 +182,24 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
                     />
                   </div>
 
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-mono font-bold tracking-wider text-foreground">
                         {theme.name}
+                      </span>
+                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border flex items-center gap-1 ${
+                        theme.mode === 'light'
+                          ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400'
+                          : 'bg-zinc-800/80 border-zinc-700 text-zinc-300'
+                      }`}>
+                        {theme.mode === 'light' ? <Sun className="w-2.5 h-2.5" /> : <Moon className="w-2.5 h-2.5" />}
+                        {theme.mode.toUpperCase()}
                       </span>
                       <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-muted border border-border text-muted-foreground">
                         {theme.label}
                       </span>
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-1 max-w-sm line-clamp-1">
+                    <p className="text-[11px] text-muted-foreground mt-1 line-clamp-1">
                       {theme.description}
                     </p>
                   </div>
@@ -168,3 +237,4 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
     </div>
   )
 }
+

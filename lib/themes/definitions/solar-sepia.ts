@@ -4,6 +4,7 @@ export const solarSepiaTheme: ColorThemeSpec = {
   id: 'solar-sepia',
   name: 'Solar Sepia',
   label: 'SOLAR / SEPIA',
+  mode: 'dark',
   description: 'Warm archival parchment aesthetic optimized for daylight study ergonomics.',
   preview: {
     accent: '#d97706',
@@ -31,5 +32,11 @@ export const solarSepiaTheme: ColorThemeSpec = {
     border: '35 22% 20%',
     input: '35 22% 14%',
     ring: '38 92% 50%',
+    panel: '35 25% 8.5%',
+    panelForeground: '35 25% 90%',
+    panelBorder: '35 22% 20%',
+    surfaceContainer: '35 25% 9.5%',
+    surfaceContainerLow: '35 25% 8.5%',
+    surfaceContainerHigh: '35 20% 14%',
   },
 }

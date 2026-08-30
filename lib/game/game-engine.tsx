@@ -18,6 +18,11 @@ import type {
 } from "@/lib/mold-types"
 import { shuffle } from "@/lib/crypto-utils"
 import { evaluateStreakAndShield } from "./streak-shield-logic"
+import {
+  sortFullRevisionQuestions,
+  computeCategoryRecallabilities,
+  weightedQuestionPool,
+} from "./recallability"
 
 // ─── Initial state factory ────────────────────────────────────────────────────
 
@@ -56,42 +61,35 @@ export function buildInitialState(config: GameConfig, questions: Question[]): Ga
 // ─── Question pool builder ─────────────────────────────────────────────────────
 
 const POOL_BUILDERS: Record<string, (config: GameConfig, allQuestions: Question[]) => Question[]> = {
-  "full-revision": (config, allQuestions) => {
-    // Strict sequential — no shuffle
-    return [...allQuestions];
+  "full-revision": (_config, allQuestions) => {
+    // Preserve category order; sort questions within each category by Bloom's taxonomy difficulty
+    return sortFullRevisionQuestions(allQuestions);
   },
   "blitz": (config, allQuestions) => {
-    const pool = shuffle([...allQuestions]);
-    return pool.slice(0, config.questionCount > 0 ? config.questionCount : 20);
+    const recallMap = computeCategoryRecallabilities(allQuestions, config.subjectId || "");
+    return weightedQuestionPool(allQuestions, recallMap, config.questionCount > 0 ? config.questionCount : 20);
   },
   "hardcore": (config, allQuestions) => {
-    let pool = [...allQuestions];
-    const hard = pool.filter((q) => q.difficulty === "Hard");
-    pool = hard.length >= 5 ? hard : shuffle(pool);
-    pool = shuffle(pool);
-    if (config.questionCount > 0) {
-      pool = pool.slice(0, config.questionCount);
-    }
-    return pool;
+    const recallMap = computeCategoryRecallabilities(allQuestions, config.subjectId || "");
+    const hard = allQuestions.filter((q) => q.difficulty === "Hard");
+    const basePool = hard.length >= 5 ? hard : allQuestions;
+    return weightedQuestionPool(basePool, recallMap, config.questionCount);
   },
   "practice": (config, allQuestions) => {
-    let pool = [...allQuestions];
     if (config.selectedCategory) {
-      pool = pool.filter((q) => q.category === config.selectedCategory);
+      let pool = allQuestions.filter((q) => q.category === config.selectedCategory);
+      pool = shuffle(pool);
+      if (config.questionCount > 0) {
+        pool = pool.slice(0, config.questionCount);
+      }
+      return pool;
     }
-    pool = shuffle(pool);
-    if (config.questionCount > 0) {
-      pool = pool.slice(0, config.questionCount);
-    }
-    return pool;
+    const recallMap = computeCategoryRecallabilities(allQuestions, config.subjectId || "");
+    return weightedQuestionPool(allQuestions, recallMap, config.questionCount);
   },
   "default": (config, allQuestions) => {
-    let pool = shuffle([...allQuestions]);
-    pool = shuffle(pool);
-    if (config.questionCount > 0) {
-      pool = pool.slice(0, config.questionCount);
-    }
-    return pool;
+    const recallMap = computeCategoryRecallabilities(allQuestions, config.subjectId || "");
+    return weightedQuestionPool(allQuestions, recallMap, config.questionCount);
   }
 };
 

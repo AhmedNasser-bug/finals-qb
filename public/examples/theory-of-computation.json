@@ -1,0 +1,85 @@
+{
+  "id": "theory-of-computation",
+  "name": "Theory of Computation",
+  "config": {
+    "title": "Theory of Computation",
+    "description": "Deterministic and Nondeterministic Finite Automata, Regular Expressions, Context-Free Grammars, Turing Machines, and Formal Languages.",
+    "version": "1.0"
+  },
+  "questions": [
+    {
+      "id": "toc-001",
+      "type": "MCQ",
+      "difficulty": "Medium",
+      "category": "finite-automata",
+      "question": "The state machine below defines a deterministic finite automaton $$\\mathcal{M} = \\langle Q, \\Sigma, \\delta, q_0, F \\rangle$$ over alphabet $$\\Sigma = \\{a, b\\}$$. Which regular language $$L(\\mathcal{M})$$ does it recognize?",
+      "diagram": "stateDiagram-v2\n    [*] --> q0\n    q0 --> q0: b\n    q0 --> q1: a\n    q1 --> q1: a\n    q1 --> q2: b\n    q2 --> q2: b\n    q2 --> [*]",
+      "options": [
+        {
+          "label": "A",
+          "text": "$L_4 = \\{w \\in \\Sigma^* \\mid |w|_a \\equiv 0 \\pmod 2\\}$"
+        },
+        {
+          "label": "B",
+          "text": "$L_3 = \\{a^n b^n \\mid n \\ge 1\\}$"
+        },
+        {
+          "label": "C",
+          "text": "$L_2 = \\{w \\in \\Sigma^* \\mid w \\text{ contains at least one } a \\text{ followed by } b\\}$"
+        },
+        {
+          "label": "D",
+          "text": "$L_1 = \\{w \\in \\Sigma^* \\mid w \\text{ ends with } ab\\}$"
+        }
+      ],
+      "answer": "D",
+      "hint": "Track the accepting transition into $q_2$ when reading $'b'$ directly after $'a'$.",
+      "explanation": "State $q_1$ signifies that the most recently seen character was $'a'$. Reading $'b'$ moves into accepting state $q_2$. Any subsequent $'b'$ keeps the machine in accepting state $q_2$, recognizing words ending with substring $ab$."
+    },
+    {
+      "id": "toc-002",
+      "type": "MCQ",
+      "difficulty": "Hard",
+      "category": "pumping-lemma",
+      "question": "According to the Pumping Lemma for regular languages, for any regular language $$L$$ with pumping length $$p$$, any string $$s \\in L$$ with $$|s| \\ge p$$ can be divided as $$s = xyz$$ such that for all $$i \\ge 0$$, $$xy^i z \\in L$$. Which of the following conditions must also hold?",
+      "options": [
+        {
+          "label": "A",
+          "text": "$|y| > 0$ and $|xy| \\le p$"
+        },
+        {
+          "label": "B",
+          "text": "$|y| \\ge p$ and $|xy| \\le |s|$"
+        },
+        {
+          "label": "C",
+          "text": "$|x| > 0$ and $|yz| \\le p$"
+        },
+        {
+          "label": "D",
+          "text": "$|y| = 1$ and $|xyz| = p$"
+        }
+      ],
+      "answer": "A",
+      "hint": "The pumped substring $y$ cannot be empty, and the first repeat occurs within the first $p$ characters.",
+      "explanation": "The three conditions of the Pumping Lemma are: (1) for all $i \\ge 0$, $xy^i z \\in L$, (2) $|y| > 0$ (non-empty loop), and (3) $|xy| \\le p$ (loop starts within prefix of length $p$)."
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "fc-001",
+      "category": "finite-automata",
+      "term": "Deterministic Finite Automaton (DFA)",
+      "definition": "A 5-tuple $(Q, \\Sigma, \\delta, q_0, F)$ consisting of a finite set of states, an alphabet, a transition function $\\delta: Q \\times \\Sigma \\to Q$, an initial state, and accepting states."
+    }
+  ],
+  "terminology": {
+    "finite-automata": [
+      {
+        "term": "Pumping Lemma",
+        "definition": "A fundamental property stating that every regular language has a characteristic pumping length $p$ allowing string decomposition $s = xyz$."
+      }
+    ]
+  },
+  "achievements": []
+}
