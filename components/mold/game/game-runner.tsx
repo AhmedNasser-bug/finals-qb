@@ -18,6 +18,12 @@ import { CheatSheetTerminal } from "@/components/mold/game/cheat-sheet-terminal"
 import { uuid } from "@/lib/crypto-utils"
 import { cn } from "@/lib/utils"
 import {
+  loadRetentionMap,
+  saveRetentionMap,
+  updateCardRetention,
+} from "@/lib/telemetry/retention-kernel"
+import { createInitialQuestionRetentionState } from "@/lib/game/recallability"
+import {
   playKeyClick,
   playCorrectChime,
   playWrongBuzzer,
@@ -382,13 +388,37 @@ function GameRunnerInner({
       onRunSaved?.(run)
       recordSession(run)
 
+      // Update question-level SM-2 retention for answered questions
+      try {
+        const retentionMap = loadRetentionMap(subject.id)
+        const updatedMap = { ...retentionMap }
+        let hasUpdates = false
+        state.questions.forEach((q, idx) => {
+          const isCorrect = state.answers[idx]
+          if (isCorrect !== undefined) {
+            hasUpdates = true
+            const existingState =
+              updatedMap[q.id] || createInitialQuestionRetentionState(q, subject.id)
+            updatedMap[q.id] = updateCardRetention(
+              existingState,
+              isCorrect ? "good" : "again"
+            )
+          }
+        })
+        if (hasUpdates) {
+          saveRetentionMap(subject.id, updatedMap)
+        }
+      } catch (err) {
+        console.warn("Failed to persist question retention updates:", err)
+      }
+
       // Evaluate achievements using full history (including the current run)
       onGameComplete(state, [...runs, run]).then((unlocked) => {
         if (unlocked.length > 0) showUnlocks(unlocked)
         onRunComplete?.()
       })
     }
-  }, [state, runs, onRunSaved, onGameComplete, showUnlocks, onRunComplete])
+  }, [state, runs, subject, onRunSaved, onGameComplete, showUnlocks, onRunComplete])
 
   if (state.phase === "complete") {
     return (

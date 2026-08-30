@@ -113,10 +113,44 @@ export interface RecallabilityStyle {
   label: string
 }
 
+export function createInitialQuestionRetentionState(
+  q: Question,
+  subjectId: string
+) {
+  return {
+    cardId: q.id,
+    subjectId,
+    category: q.category || "_general",
+    term: q.question,
+    definition: q.answer,
+    repetitions: 0,
+    intervalDays: 1,
+    easeFactor: 2.5,
+    stability: 1.0,
+    difficulty: q.difficulty === "Hard" ? 0.7 : q.difficulty === "Easy" ? 0.2 : 0.4,
+    lapses: 0,
+    lastReviewedAt: null,
+    nextDueDate: null,
+    currentRetrievability: 0,
+    urgencyLevel: "NEW" as const,
+  }
+}
+
 /**
  * Maps a recallability percentage (0..100) to a visual color scheme (Green -> Yellow -> Red).
  */
 export function getRecallabilityColor(pct: number): RecallabilityStyle {
+  if (pct === 0) {
+    return {
+      textColor: "text-red-600 dark:text-red-400",
+      borderColor: "border-red-500/40 hover:border-red-500",
+      bgColor: "bg-red-500/5",
+      badgeColor: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/30",
+      glowColor: "shadow-[0_0_12px_rgba(239,68,68,0.15)]",
+      tier: "critical",
+      label: "NEW / 0%",
+    }
+  }
   if (pct >= 80) {
     return {
       textColor: "text-emerald-600 dark:text-emerald-400",
@@ -171,12 +205,12 @@ export function computeCategoryRecallabilities(
   categories?: CategoryData[]
 ): Record<string, number> {
   const retentionMap = loadRetentionMap(subjectId)
-  const catStats: Record<string, { total: number; sumR: number }> = {}
+  const catStats: Record<string, { total: number; reviewed: number; sumR: number }> = {}
 
   // Initialize known categories
   if (categories) {
     for (const c of categories) {
-      catStats[c.id] = { total: 0, sumR: 0 }
+      catStats[c.id] = { total: 0, reviewed: 0, sumR: 0 }
     }
   }
 
@@ -184,12 +218,13 @@ export function computeCategoryRecallabilities(
   for (const q of questions) {
     const cat = q.category || "_general"
     if (!catStats[cat]) {
-      catStats[cat] = { total: 0, sumR: 0 }
+      catStats[cat] = { total: 0, reviewed: 0, sumR: 0 }
     }
     catStats[cat].total += 1
 
     const itemState = retentionMap[q.id]
-    if (itemState && itemState.lastReviewedAt) {
+    if (itemState && itemState.lastReviewedAt && itemState.repetitions > 0) {
+      catStats[cat].reviewed += 1
       const daysElapsed =
         (Date.now() - new Date(itemState.lastReviewedAt).getTime()) /
         (1000 * 60 * 60 * 24)
@@ -197,16 +232,13 @@ export function computeCategoryRecallabilities(
         itemState.stability,
         daysElapsed
       )
-    } else {
-      // Default baseline retrievability for unreviewed items (0.50)
-      catStats[cat].sumR += 0.5
     }
   }
 
   const result: Record<string, number> = {}
   for (const [cat, val] of Object.entries(catStats)) {
-    if (val.total === 0) {
-      result[cat] = 50 // 50% default
+    if (val.total === 0 || val.reviewed === 0) {
+      result[cat] = 0 // 0% unreviewed
     } else {
       result[cat] = Math.round((val.sumR / val.total) * 100)
     }

@@ -113,6 +113,11 @@ describe("Category Recallability & Color Grading", () => {
     assert.strictEqual(yellow.tier, "developing")
     assert.ok(yellow.textColor.includes("amber"))
 
+    const zero = getRecallabilityColor(0)
+    assert.strictEqual(zero.tier, "critical")
+    assert.strictEqual(zero.label, "NEW / 0%")
+    assert.ok(zero.textColor.includes("red"))
+
     const red = getRecallabilityColor(30)
     assert.strictEqual(red.tier, "critical")
     assert.ok(red.textColor.includes("red"))
