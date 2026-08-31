@@ -18,6 +18,12 @@ import { CheatSheetTerminal } from "@/components/mold/game/cheat-sheet-terminal"
 import { uuid } from "@/lib/crypto-utils"
 import { cn } from "@/lib/utils"
 import {
+  loadRetentionMap,
+  saveRetentionMap,
+  updateCardRetention,
+} from "@/lib/telemetry/retention-kernel"
+import { createInitialQuestionRetentionState } from "@/lib/game/recallability"
+import {
   playKeyClick,
   playCorrectChime,
   playWrongBuzzer,
@@ -382,13 +388,37 @@ function GameRunnerInner({
       onRunSaved?.(run)
       recordSession(run)
 
+      // Update question-level SM-2 retention for answered questions
+      try {
+        const retentionMap = loadRetentionMap(subject.id)
+        const updatedMap = { ...retentionMap }
+        let hasUpdates = false
+        state.questions.forEach((q, idx) => {
+          const isCorrect = state.answers[idx]
+          if (isCorrect !== undefined) {
+            hasUpdates = true
+            const existingState =
+              updatedMap[q.id] || createInitialQuestionRetentionState(q, subject.id)
+            updatedMap[q.id] = updateCardRetention(
+              existingState,
+              isCorrect ? "good" : "again"
+            )
+          }
+        })
+        if (hasUpdates) {
+          saveRetentionMap(subject.id, updatedMap)
+        }
+      } catch (err) {
+        console.warn("Failed to persist question retention updates:", err)
+      }
+
       // Evaluate achievements using full history (including the current run)
       onGameComplete(state, [...runs, run]).then((unlocked) => {
         if (unlocked.length > 0) showUnlocks(unlocked)
         onRunComplete?.()
       })
     }
-  }, [state, runs, onRunSaved, onGameComplete, showUnlocks, onRunComplete])
+  }, [state, runs, subject, onRunSaved, onGameComplete, showUnlocks, onRunComplete])
 
   if (state.phase === "complete") {
     return (
@@ -494,7 +524,7 @@ function GameRunnerInner({
       {/* Floating Review Deck toggle button on the right edge */}
       <button
         onClick={toggleCheatSheet}
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#121212] hover:bg-[#1c1b1b] border-y border-l border-zinc-800 hover:border-[#fecc17]/50 text-[#fecc17] font-mono text-[10px] font-bold py-3 px-2 rounded-l shadow-lg transition-all flex flex-col items-center gap-1.5 focus-ring uppercase tracking-widest cursor-pointer group"
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-panel hover:bg-secondary border-y border-l border-border hover:border-primary/50 text-primary font-mono text-[10px] font-bold py-3 px-2 rounded-l shadow-lg transition-all flex flex-col items-center gap-1.5 focus-ring uppercase tracking-widest cursor-pointer group"
         title="Open Review Deck (Ctrl + `)"
       >
         <span className="text-[12px] group-hover:scale-110 transition-transform">📚</span>
@@ -533,6 +563,7 @@ function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
             <QuestionCard.HtmlContent />
             {hasVisualActive && <QuestionCard.MermaidDiagram mode="below" />}
             <QuestionCard.Options cols={hasVisualActive ? "single" : "auto"} />
+            <QuestionCard.Footer showHint={showHint} />
           </div>
 
           {hasVisualActive && (
@@ -541,8 +572,6 @@ function PracticeQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
             </div>
           )}
         </div>
-
-        <QuestionCard.Footer showHint={showHint} />
       </QuestionCard.Frame>
     </QuestionCard.Provider>
   )
@@ -565,6 +594,7 @@ function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps
             <QuestionCard.HtmlContent />
             {hasVisualActive && <QuestionCard.MermaidDiagram mode="below" />}
             <QuestionCard.Options cols={hasVisualActive ? "single" : "auto"} />
+            <QuestionCard.Footer showHint={showHint} />
           </div>
 
           {hasVisualActive && (
@@ -573,8 +603,6 @@ function SurvivalQuestionCard({ value, showHint }: Omit<QuestionCardVariantProps
             </div>
           )}
         </div>
-
-        <QuestionCard.Footer showHint={showHint} />
       </QuestionCard.Frame>
     </QuestionCard.Provider>
   )
@@ -598,6 +626,7 @@ function StandardQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
             <QuestionCard.HtmlContent />
             {hasVisualActive && <QuestionCard.MermaidDiagram mode="below" />}
             <QuestionCard.Options cols={hasVisualActive ? "single" : "auto"} />
+            <QuestionCard.Footer showHint={showHint} />
           </div>
 
           {hasVisualActive && (
@@ -606,8 +635,6 @@ function StandardQuestionCard({ value, accuracyPct, showHint }: QuestionCardVari
             </div>
           )}
         </div>
-
-        <QuestionCard.Footer showHint={showHint} />
       </QuestionCard.Frame>
     </QuestionCard.Provider>
   )

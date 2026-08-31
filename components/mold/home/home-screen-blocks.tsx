@@ -19,6 +19,8 @@ interface MainContentGridProps {
   config: SetupConfig
   handleConfigChange: (patch: Partial<SetupConfig>) => void
   categories: CategoryData[]
+  questions?: Question[]
+  subjectId?: string
 
   // Achievements
   unlockedCount: number
@@ -35,6 +37,8 @@ export function MainContentGrid({
   config,
   handleConfigChange,
   categories,
+  questions,
+  subjectId,
   unlockedCount,
   totalAchievementsCount,
   topAchievements,
@@ -75,6 +79,8 @@ export function MainContentGrid({
               onChange={handleConfigChange}
               selectedMode={selectedMode}
               categories={categories}
+              questions={questions}
+              subjectId={subjectId}
             />
           </div>
         </div>

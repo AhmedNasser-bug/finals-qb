@@ -37,8 +37,8 @@ export function InfoToolbox({ content }: { content: string }) {
         i
       </button>
       {isOpen && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-64 p-3 bg-[#111215] border border-primary/30 shadow-2xl rounded text-[11px] leading-relaxed text-zinc-300 z-50 font-sans normal-case tracking-normal border-glow text-left animate-fade-in">
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-[#111215] z-50" />
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-64 p-3 bg-popover border border-border shadow-2xl rounded text-[11px] leading-relaxed text-popover-foreground z-50 font-sans normal-case tracking-normal text-left animate-fade-in">
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-popover z-50" />
           {content}
         </div>
       )}

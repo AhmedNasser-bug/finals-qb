@@ -24,42 +24,41 @@ export function OptionButton({
       title={`Select Option ${label}`}
       onClick={onSelect}
       className={cn(
-        "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fecc17]",
-        !isRevealed && !isSelected && "bg-[#2a2a2a] hover:bg-[#353534] border-l-4 border-transparent hover:border-[#4e4632]",
-        !isRevealed && isSelected && "bg-[#2a2a2a] border-l-4 border-[#fecc17] glow-primary",
-        isRevealed && isCorrect && "bg-[#4ae176]/10 border-l-4 border-[#4ae176]",
-        isRevealed && isWrong && "bg-[#930013]/10 border-l-4 border-[#930013]",
-        isDimmed && "bg-[#1c1b1b] border-l-4 border-transparent opacity-40",
+        "relative flex items-start justify-between p-4 text-left transition-all duration-100 btn-depress group border border-border/50",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+        !isRevealed && !isSelected && "bg-secondary/70 hover:bg-secondary border-l-4 border-l-transparent hover:border-l-primary/50",
+        !isRevealed && isSelected && "bg-secondary border-l-4 border-l-primary glow-primary",
+        isRevealed && isCorrect && "bg-emerald-500/10 border-l-4 border-l-emerald-500",
+        isRevealed && isWrong && "bg-destructive/10 border-l-4 border-l-destructive",
+        isDimmed && "bg-muted border-l-4 border-l-transparent opacity-40",
       )}
     >
       <div className="flex flex-col gap-1.5 flex-1 min-w-0">
         <span className={cn(
           "font-mono text-[10px] tracking-widest uppercase",
-          !isRevealed && isSelected ? "text-[#fecc17]" :
-            isRevealed && isCorrect ? "text-[#4ae176]" :
-              isRevealed && isWrong ? "text-[#ffb4ab]" :
-                "text-zinc-500"
+          !isRevealed && isSelected ? "text-primary font-bold" :
+            isRevealed && isCorrect ? "text-emerald-500 font-bold" :
+              isRevealed && isWrong ? "text-destructive font-bold" :
+                "text-muted-foreground"
         )}>
           OPTION_{String(idx + 1).padStart(2, "0")}
         </span>
         <span className={cn(
           "font-mono text-sm font-bold leading-snug",
-          !isRevealed && isSelected ? "text-[#fecc17]" :
-            isRevealed && isCorrect ? "text-[#4ae176]" :
-              isRevealed && isWrong ? "text-[#ffb4ab]" :
-                isDimmed ? "text-zinc-600" :
-                  "text-[#e5e2e1]"
+          !isRevealed && isSelected ? "text-foreground font-extrabold" :
+            isRevealed && isCorrect ? "text-emerald-600 dark:text-emerald-400 font-extrabold" :
+              isRevealed && isWrong ? "text-destructive font-extrabold" :
+                "text-foreground"
         )}>
           {/* Fallback to label if text is undefined for compatibility with types */}
           {text ?? label}
         </span>
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
-        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-[#ffb4ab]" />}
-        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-[#fecc17]" />}
-        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-zinc-700" />}
+        {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-emerald-500" />}
+        {isRevealed && isWrong && <XIcon className="w-5 h-5 text-destructive" />}
+        {!isRevealed && isSelected && <CheckCircleIcon className="w-5 h-5 text-primary" />}
+        {!isRevealed && !isSelected && <RadioIcon className="w-5 h-5 text-muted-foreground/40" />}
       </div>
     </button>
   )

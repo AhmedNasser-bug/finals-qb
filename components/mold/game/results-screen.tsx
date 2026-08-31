@@ -1,7 +1,7 @@
 "use client"
 
 import { useGameEngine } from "@/lib/game-engine"
-import { formatTime, calculateGrade, calculateAccuracy } from "@/lib/mold-types"
+import { formatTime, calculateGrade, calculateAccuracy, formatLabel } from "@/lib/mold-types"
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import {
@@ -66,7 +66,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain, onReDrillMistakes }: 
   })
   const modules = Object.entries(categoryMap).slice(0, 3).map(([cat, s], idx) => ({
     id: `MOD_${String(idx + 1).padStart(2, "0")}`,
-    name: cat.replace(/_/g, " "),
+    name: formatLabel(cat),
     pct: s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
     grade: calculateGrade(s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
   }))

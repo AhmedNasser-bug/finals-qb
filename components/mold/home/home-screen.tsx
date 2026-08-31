@@ -255,6 +255,8 @@ export function HomeScreen({
               config={config}
               handleConfigChange={handleConfigChange}
               categories={subjectData.categories}
+              questions={activeSubject.questions}
+              subjectId={activeSubject.id}
               unlockedCount={unlockedCount}
               totalAchievementsCount={totalAchievementsCount}
               topAchievements={topAchievements}

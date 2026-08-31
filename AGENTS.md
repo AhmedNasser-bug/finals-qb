@@ -534,6 +534,201 @@ These rules were agreed on during the code review and must be preserved:
 13. **Multi-Tenant isolated Builds:** Next.js build directories (`NEXT_DIST_DIR`) must be fully respected and cleanly separated within Docker container orchestration configs to avoid cross-tenant build collisions in multi-tenant environments.
 14. **Consolidated Test Verification:** The official test execution command is:
     `pnpm test`
+The demo uses `DEMO_ACHIEVEMENT_CONDITIONS`, a hardcoded registry. To use conditions from a real `FullSubjectData`:
+
+```ts
+import { loadConditionsFromSubject } from "@/lib/achievement-engine"
+const conditionMap = loadConditionsFromSubject(mySubject)
+// Future: pass conditionMap as a parameter to checkNewUnlocks
+```
+
+The function is already exported. Wiring it into `checkNewUnlocks` as an overload is the next migration step.
+
+### Storage
+
+Key: `"mold_v2_achievements"`. Shape: `Achievement[]`. Swap `loadAchievements` / `saveAchievements` internals for IndexedDB without changing any call sites — the interface is intentionally async.
+
+---
+
+## 8. Component Catalogue
+
+### HomeScreen
+
+- **Owns:** `view`, `runs`, `selectedMode`, `config`, `showGallery`
+- **Does NOT own:** achievements (comes from `useAchievements()`), game state
+- **Key prop passing:** passes `runs` into `<GameRunner runs={runs}>` so achievement evaluation uses real history (not demo data)
+- **On return from game:** calls `setRuns(loadRuns())` to refresh run history
+
+### GameRunner
+
+The composition root for a game session. Structure:
+
+```
+<ToastLayer>
+  <div min-h-screen>
+    <GameErrorBoundary onReturnHome={...}>
+      {flashcards ? <FlashcardScreen> : <GameEngineProvider> → <GameRunnerInner>}
+    </GameErrorBoundary>
+  </div>
+</ToastLayer>
+```
+
+`ToastLayer` is an internal render-prop component that keeps `useAchievementToast()` above all conditional renders (Rules of Hooks compliance).
+
+### GameHeader
+
+Reads `state` and `accuracyPct` from `useGameEngine()`. Displays: mode label, score/total, streak badge, global countdown or elapsed time, survival lives, accuracy, QUIT button, progress bar, question counter.
+
+### QuestionCard
+
+Reads `state` and `selectOption` from `useGameEngine()`. Manages per-option visual states: unselected / selected / revealed-correct / revealed-wrong / revealed-other. Shows hint panel and explanation panel conditionally.
+
+### GameFooter
+
+Reads `state` and dispatches `revealAnswer`, `nextQuestion`, `useHint`. SUBMIT button requires a selection; NEXT/FINISH appears after reveal; HINT button is hidden when `hintsEnabled === false`.
+
+### ResultsScreen
+
+Reads `state` from `useGameEngine()`. Displays grade badge, stat grid, HOME and PLAY AGAIN buttons. Accuracy is derived from answered questions (correct + wrong) to maintain consistency with the game engine's `accuracyPct`.
+
+### FlashcardScreen
+
+Standalone — no game engine. Manages a local `currentIndex`, `isFlipped`, `known: Set<string>` state. "Got It" / "Still Learning" controls. Shows session summary on completion.
+
+### AchievementToastContainer
+
+Bottom-right fixed stack. Each `AchievementToastItem` auto-dismisses after 4500ms. Animate in/out via Tailwind transition classes. Renders with `aria-live="polite"`.
+
+### GameErrorBoundary
+
+A React class component (required for `componentDidCatch`). Wraps `GameEngineProvider`. On error: logs to console (wire to Sentry in production), renders a "SYSTEM FAULT" panel with a "RETURN TO HOME" button that calls `this.props.onReturnHome`.
+
+---
+
+## 9. Data Flow: End-to-End Session
+
+```
+User selects mode + config on HomeScreen
+  → handleInitialize() builds GameConfig
+  → setView("game"), setActiveConfig(config)
+
+<GameRunner config runs onReturnHome>
+  → ToastLayer mounts (owns toast state)
+  → GameErrorBoundary mounts (crash protection)
+  → GameEngineProvider mounts (builds question pool, starts timer)
+    → GameRunnerInner renders
+      → GameHeader (reads state)
+      → QuestionCard (reads state, dispatches SELECT_OPTION)
+      → GameFooter (dispatches REVEAL_ANSWER, NEXT_QUESTION, USE_HINT)
+      → [Survival only] SurvivalStressBar
+
+User answers all questions or timer runs out
+  → reducer sets phase = "complete"
+  → useEffect in GameRunnerInner fires (achievementsFiredRef guard)
+  → onGameComplete(state, runs) → evaluates conditions → persists → returns unlocked[]
+  → showUnlocks(unlocked) → toast queue
+  → ResultsScreen renders
+
+User clicks HOME
+  → onReturnHome() called
+  → GameRunner unmounts (engine destroyed)
+  → HomeScreen sets view = "home", calls loadRuns() to refresh run history
+```
+
+---
+
+## 10. Persistence Layer
+
+### Run History
+
+- **Key:** `"mold_v2_runs"`
+- **Shape:** `RunRecord[]`
+- **Cap:** 50 most recent runs (enforced in `saveRuns`)
+- **Hydration:** `HomeScreen.useEffect → setRuns(loadRuns())`
+- **Write location:** Run records are not yet automatically saved after each game. The `onRunComplete` callback in `GameRunner` is the intended hook for this — it is called after achievement evaluation but the actual `saveRuns` call is not yet implemented. **This is the next feature to build.**
+
+### Achievements
+
+- **Key:** `"mold_v2_achievements"`
+- **Shape:** `Achievement[]`
+- **Hydration:** `AchievementProvider.useEffect → loadAchievements().then(setAchievements)`
+- **Write location:** `onGameComplete` in `achievement-engine.tsx`
+
+### Upgrade path to IndexedDB
+
+Both `loadAchievements/saveAchievements` and `loadRuns/saveRuns` are intentionally async. Swap the implementation bodies for `idb` or native IndexedDB calls without touching any call site.
+
+---
+
+## 11. Connecting a Real Subject
+
+To replace the demo question bank with a real subject:
+
+**Step 1 — Create your subject file** matching `FullSubjectData`:
+
+```ts
+// lib/subjects/my-subject.ts
+import type { FullSubjectData } from "@/lib/mold-types"
+export const MY_SUBJECT: FullSubjectData = {
+  id: "my-subject",
+  name: "My Subject",
+  config: { title: "My Subject", description: "...", storageKey: "mold_my_subject" },
+  questions: [...],       // Question[]
+  flashcards: [...],      // Flashcard[]
+  terminology: {...},     // Terminology
+  achievements: [...],    // RawAchievementDef[] — include condition fields
+}
+```
+
+**Step 2 — Update `subject-store.ts`**
+
+Replace `DEMO_FULL_SUBJECT` with an import of your subject.
+
+**Step 3 — Update `lib/mold-types.ts` DEMO_SUBJECT**
+
+Replace `DEMO_SUBJECT` (the simplified `SubjectData` used by `HomeScreen`) to match your subject's `id`, `name`, `description`, `totalQuestions`, and `categories`.
+
+**Step 4 — Wire achievement conditions from subject data**
+
+In `achievement-engine.tsx`, call `loadConditionsFromSubject(mySubject)` and use the resulting map in `checkNewUnlocks` instead of `ACHIEVEMENT_CONDITIONS`.
+
+---
+
+## 12. Known Seams and Production TODOs
+
+These are explicitly acknowledged incomplete areas, not bugs:
+
+| # | Location | Issue | Action Required |
+|---|---|---|---|
+| 1 | `home-screen.tsx` `handleReturnHome` | Run records are not persisted after a game — `saveRuns` is never called. | Call `saveRuns` in `onRunComplete` or in `handleReturnHome` after the game adds a new `RunRecord` to the list. |
+| 2 | `game-runner.tsx` `GameRunnerInner` | No `RunRecord` is constructed and appended to the `runs` array after a session. | Build `RunRecord` from `state` in `onRunComplete`, call `onRunComplete(record)`, let `HomeScreen` append and save it. |
+| 3 | `achievement-engine.tsx` `evaluateCondition` | `all_categories` condition uses run count as a proxy, not actual per-category tracking. | Extend `RunRecord` with `selectedCategory?: string` and use it in the evaluator. |
+| 4 | `achievement-engine.tsx` `checkNewUnlocks` | `ACHIEVEMENT_CONDITIONS` is the demo fallback. | Call `loadConditionsFromSubject()` and pass the result into `checkNewUnlocks`. |
+| 5 | `game-runner.tsx` | `DEMO_FULL_SUBJECT` is imported directly. | Accept the subject as a prop from `HomeScreen` so it can be swapped per subject. |
+| 6 | Persistence | localStorage used throughout. | Swap `loadAchievements/saveAchievements` and `loadRuns/saveRuns` for IDB or server API. |
+| 7 | Test coverage | Initial automated test suites exist and pass 100%. | Add further tests for remaining state transitions, custom mode logic, and edge cases. |
+
+---
+
+## 13. Engineering Constraints
+
+These rules were agreed on during the code review and must be preserved:
+
+1. **DRY — use `formatLabel()` for all slug-to-title transforms.** Do not inline `.split("-").map(...).join(" ")` anywhere.
+2. **Accuracy denominator is `score + wrongAnswers`, not `currentIndex`.** The `wrongAnswers` field exists in `GameState` for this reason.
+3. **`config` and `questions` props to `GameEngineProvider` must not be reassigned after mount.** The `useRef` stabilizer is load-bearing — do not remove it.
+4. **`useGameEngine()` and `useAchievements()` throw if used outside their providers.** Always check the component tree before adding a consumer.
+5. **`achievementsFiredRef` in `GameRunnerInner` ensures achievement evaluation fires exactly once.** Do not remove the `useRef` guard.
+6. **The `ToastLayer` render-prop must remain the outermost wrapper in `GameRunner`** so `useAchievementToast()` is called before any conditional render (Rules of Hooks).
+7. **All new utility functions belonging to the type/data layer go in `lib/mold-types.ts`.** Do not scatter them across component files.
+8. **Never use `DEMO_RUNS` as the achievement evaluation baseline in production.** Always pass the real `runs` prop from `HomeScreen` through `GameRunner` into `onGameComplete`.
+9. **SSR XSS Prevention:** Always use `isomorphic-dompurify` for HTML/question sanitization. Never fallback to raw/unsanitized HTML strings or bypass sanitization on the server-side (`typeof window === 'undefined'`).
+10. **Log PII/Secret Masking Integrity:** All regex-based masking filters in `lib/logger.ts` must use declarative capture-group capture patterns to selectively redact values while preserving structural characters (like quotes, colons, commas) so logs remain valid JSON.
+11. **Accessibility (A11y) First:** Purely decorative icons must have `aria-hidden="true"`. All clickable options and buttons must have clear focus rings (`focus-visible`). Dynamic empty or status text must be wrapped inside live regions (`role="status"` or `aria-live="polite"`).
+12. **Strict Mermaid security Level:** Any rendering configuration for Mermaid diagrams must set `securityLevel: 'strict'` to prevent arbitrary script injections.
+13. **Multi-Tenant isolated Builds:** Next.js build directories (`NEXT_DIST_DIR`) must be fully respected and cleanly separated within Docker container orchestration configs to avoid cross-tenant build collisions in multi-tenant environments.
+14. **Consolidated Test Verification:** The official test execution command is:
+    `pnpm test`
     Run this suite to verify structural and functional integrity before committing changes.
 15. **Node.js Process & Resource Hygiene:** To prevent high CPU/Memory exhaustion (90%+ spikes due to dangling Node/compiler processes), agents MUST track every background server, dev server, or test suite spawned. Upon task conclusion, abort, or completion, agents must aggressively tear down lingering processes using force-kill compliance (`taskkill /F /T /PID <pid>` on Windows or `kill -9` on Unix).
 16. **Tailwind Design Tokenization:** Avoid hardcoding arbitrary hex colors or static values inline (e.g. `bg-[#131313]`). All arbitrary values must be tokenized as CSS custom variables inside `:root` in `app/globals.css` using standard naming structures (`--tw-hex-...` for colors, `--tw-size-...` for spacing/fonts, `--tw-val-...` for general values) and referenceable via Tailwind variable patterns (e.g. `prefix-[var(--variable)]/opacity`).
@@ -547,6 +742,7 @@ These rules were agreed on during the code review and must be preserved:
 24. **Package Manager Selection (PNPM Only)**: Under no circumstances should `npm`, `yarn`, or `bun` be invoked for managing dependencies, executing scripts, or building the project. Always use `pnpm` exclusively (e.g., `pnpm install`, `pnpm test`, `pnpm run build`, `pnpm dev`). `package-lock.json` is banned from the repository; `pnpm-lock.yaml` is the sole canonical lockfile. The project enforces `"preinstall": "npx only-allow pnpm"` and uses `vercel.json` with `"installCommand": "pnpm install --no-frozen-lockfile"` to guarantee resilient CI deployments.
 25. **Terminal Command Chaining (Semicolon Rule)**: To ensure cross-platform safety (especially when running scripts on Windows hosts under PowerShell/CMD), never chain terminal shell commands with double-ampersands (`&&`). Always use semicolons (`;`) to separate commands or run them as independent process executions.
 26. **Automated Documentation Self-Annealing Rule**: To keep project documentation and constraints unified, accurate, and completely synchronized, agents MUST auto-invoke the [Self-Annealing Workflow (self_annealing)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/workflows/self_annealing.md) every five turns. This ensures constraints are matched with code and obsolete rules are automatically pruned.
+27. **Exclusive Use of `/browser` Subagent (Strict Prohibition of Ad-Hoc Playwright Scripts)**: Never write, generate, or execute ad-hoc standalone Playwright scripts directly via `run_command`, nor spawn raw detached browser processes manually. Always invoke and delegate to the specialized `/browser` subagent for all browser automation, visual regression checks, UX audits, and screenshot captures.
 
 ---
 
@@ -563,6 +759,11 @@ Standardized, recurring recipes, workflows, and execution protocols are availabl
 3. **[Self-Annealing Documentation and Rules (Workflow)](file:///d:/Study/Programming/Projects/finalsv2/finals-qb/.agent/workflows/self_annealing.md):**
    - **Trigger:** Required automatically every five conversation turns (Rule 26) to scan, reconcile, and sync codebase configuration rules and constraint documentation.
    - **Prerequisites:** Codebase access to `AGENTS.md`, `pnpm` package manager.
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
 
 <!-- BEGIN:nextjs-agent-rules -->
 

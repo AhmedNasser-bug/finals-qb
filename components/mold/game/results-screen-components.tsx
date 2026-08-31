@@ -13,26 +13,26 @@ export interface StatsGridProps {
 
 export function StatsGrid({ elapsedSeconds, avgTimeSec, bestStreak, xpYield }: StatsGridProps) {
   return (
-    <div className="lg:col-span-4 grid grid-cols-2 gap-[1px] bg-border/20">
-      <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
-        <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">TIME ELAPSED</span>
-        <span className="font-mono text-xl text-[#e5e2e1]">
+    <div className="lg:col-span-4 grid grid-cols-2 gap-[1px] bg-border">
+      <div className="bg-panel p-6 flex flex-col justify-between h-32">
+        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">TIME ELAPSED</span>
+        <span className="font-mono text-xl text-foreground">
           {elapsedSeconds > 0 ? formatTime(elapsedSeconds) : "0:00"}
         </span>
       </div>
-      <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
-        <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">AVG. TIME / QUESTION</span>
-        <span className="font-mono text-xl text-[#e5e2e1]">
+      <div className="bg-panel p-6 flex flex-col justify-between h-32">
+        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">AVG. TIME / QUESTION</span>
+        <span className="font-mono text-xl text-foreground">
           {avgTimeSec !== null ? `${avgTimeSec}S` : "—"}
         </span>
       </div>
-      <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
-        <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">BEST STREAK</span>
-        <span className="font-mono text-xl text-[#fecc17]">{bestStreak}</span>
+      <div className="bg-panel p-6 flex flex-col justify-between h-32">
+        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">BEST STREAK</span>
+        <span className="font-mono text-xl text-primary">{bestStreak}</span>
       </div>
-      <div className="bg-[#1c1b1b] p-6 flex flex-col justify-between h-32">
-        <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">POINTS EARNED</span>
-        <span className="font-mono text-xl text-[#4ae176]">+{xpYield.toLocaleString()}</span>
+      <div className="bg-panel p-6 flex flex-col justify-between h-32">
+        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">POINTS EARNED</span>
+        <span className="font-mono text-xl text-emerald-500">+{xpYield.toLocaleString()}</span>
       </div>
     </div>
   )
@@ -51,14 +51,14 @@ export interface SequenceMapProps {
 
 export function SequenceMap({ pixels, total, pixelCount, score, wrongCountVal, skipCount }: SequenceMapProps) {
   return (
-    <div className="lg:col-span-8 bg-[#1c1b1b] p-6 md:p-8 relative overflow-hidden">
+    <div className="lg:col-span-8 bg-panel border border-border p-6 md:p-8 relative overflow-hidden">
       <div className="scanlines absolute inset-0 pointer-events-none opacity-5" aria-hidden="true" />
       <div className="relative z-10 flex flex-col gap-5">
         <div className="flex justify-between items-center">
-          <h3 className="font-sans font-bold text-lg tracking-tight uppercase text-[#e5e2e1]">
+          <h3 className="font-sans font-bold text-lg tracking-tight uppercase text-foreground">
             QUESTION RESULTS MAP
           </h3>
-          <span className="font-mono text-[10px] tracking-widest text-zinc-500">
+          <span className="font-mono text-[10px] tracking-widest text-muted-foreground">
             QUESTION INDEX: {String(1).padStart(3, "0")} - {String(total).padStart(3, "0")}
           </span>
         </div>
@@ -138,26 +138,26 @@ export function ModulePerformance({ modules, resolveGradeColor }: ModulePerforma
           }
         `).join("\n")}
       `}</style>
-      <h2 className="font-sans font-bold text-xl tracking-tight uppercase text-[#e5e2e1]">
+      <h2 className="font-sans font-bold text-xl tracking-tight uppercase text-foreground">
         CATEGORY SUMMARY
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {modules.map((mod) => (
-          <div key={mod.id} className="bg-[#201f1f] p-6 relative flex flex-col gap-4">
-            <span className="absolute top-2 right-2 font-mono text-[10px] text-zinc-600">
+          <div key={mod.id} className="bg-panel border border-border rounded p-6 relative flex flex-col gap-4 shadow-sm">
+            <span className="absolute top-2 right-2 font-mono text-[10px] text-muted-foreground font-bold">
               {mod.id}
             </span>
-            <h4 className="font-sans font-semibold text-sm text-zinc-300 uppercase tracking-wide">
+            <h4 className="font-sans font-bold text-sm text-foreground uppercase tracking-wide">
               {mod.name}
             </h4>
             <div className="space-y-2">
               <div className="flex justify-between items-end">
-                <span className="font-mono text-[10px] text-zinc-500 uppercase">ACCURACY</span>
+                <span className="font-mono text-[10px] text-muted-foreground uppercase font-bold">ACCURACY</span>
                 <span className={cn("font-mono text-base font-black", `mod-color-${mod.id}`)}>
                   {mod.grade}
                 </span>
               </div>
-              <div className="h-[2px] w-full bg-[#353534]">
+              <div className="h-[2px] w-full bg-muted rounded overflow-hidden">
                 <div className={cn("h-full transition-all duration-700 ease-out", `mod-bar-fill-${mod.id}`)} />
               </div>
             </div>
