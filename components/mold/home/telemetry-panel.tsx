@@ -100,7 +100,7 @@ export function TelemetryPanel() {
               </span>
             </div>
             
-            <div className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}>
+            <div className="h-3 bg-secondary border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}>
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = averageResponseTimeMs > 0 ? (i < speedSegments) : false
                 return (
@@ -108,7 +108,7 @@ export function TelemetryPanel() {
                     key={i} 
                     className={cn(
                       "h-full flex-1 transition-all duration-300", 
-                      isFilled ? "bg-primary" : "bg-zinc-800"
+                      isFilled ? "bg-primary" : "bg-secondary"
                     )} 
                   />
                 )
@@ -116,7 +116,7 @@ export function TelemetryPanel() {
             </div>
 
             {/* Custom speed calibration legend */}
-            <div className="flex justify-between font-mono text-[8px] text-zinc-600 px-0.5 pt-0.5 select-none">
+            <div className="flex justify-between font-mono text-[8px] text-muted-foreground px-0.5 pt-0.5 select-none">
               <span>SLOWER (&gt;5s)</span>
               <span>AVERAGE (2.5s)</span>
               <span>FAST (&lt;1s)</span>

@@ -27,7 +27,7 @@ export function MobileBottomNavBar({
   onChangeSubject,
 }: MobileBottomNavBarProps) {
   return (
-    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#131313] border-t border-border z-50 flex justify-around items-center px-4 select-none">
+    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-panel border-t border-border z-50 flex justify-around items-center px-4 select-none">
       <button
         onClick={() => {
           setView("home")
@@ -35,7 +35,7 @@ export function MobileBottomNavBar({
         }}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
-          view === "home" ? "text-primary" : "text-primary/40"
+          view === "home" ? "text-primary" : "text-muted-foreground"
         )}
       >
         <TerminalIcon className="w-4 h-4" />
@@ -46,7 +46,7 @@ export function MobileBottomNavBar({
         onClick={() => setView("stats")}
         className={cn(
           "flex flex-col items-center gap-1 cursor-pointer transition-colors focus-ring p-1",
-          view === "stats" ? "text-primary" : "text-primary/40"
+          view === "stats" ? "text-primary" : "text-muted-foreground"
         )}
       >
         <BarChart3 className="w-4 h-4" />
@@ -55,7 +55,7 @@ export function MobileBottomNavBar({
 
       <button
         onClick={() => setShowEncyclopedia(true)}
-        className="flex flex-col items-center gap-1 text-primary/40 hover:text-primary transition-colors cursor-pointer p-1"
+        className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer p-1"
       >
         <BookOpen className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">DATA</span>
@@ -63,7 +63,7 @@ export function MobileBottomNavBar({
 
       <button
         onClick={() => setShowGallery(true)}
-        className="flex flex-col items-center gap-1 text-primary/40 hover:text-primary transition-colors cursor-pointer p-1"
+        className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer p-1"
       >
         <Trophy className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">ACHS</span>
@@ -71,7 +71,7 @@ export function MobileBottomNavBar({
 
       <button
         onClick={onChangeSubject}
-        className="flex flex-col items-center gap-1 text-primary/40 hover:text-primary transition-colors cursor-pointer p-1"
+        className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer p-1"
       >
         <RotateCcw className="w-4 h-4" />
         <span className="font-mono text-[8px] font-bold">SWITCH</span>
