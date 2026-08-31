@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,19 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "dashboard-semantic-token-standardization",
+      "category": "color-coding",
+      "tier": 5,
+      "title": "Dashboard Semantic Token Standardization & A11y Polish",
+      "implementedAt": "2026-08-31T16:22:36.106Z",
+      "componentsTouched": [
+        "components/mold/home/header-well.tsx",
+        "components/mold/home/telemetry-panel.tsx",
+        "components/mold/home/home-screen-components.tsx"
       ],
       "nonBreaking": true
     }
