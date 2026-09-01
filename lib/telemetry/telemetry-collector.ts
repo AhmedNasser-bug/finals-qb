@@ -8,6 +8,7 @@
 
 import type { CognitiveTelemetryEvent } from "./telemetry-types"
 import { getNamespacedKey } from "../utils/user-storage"
+import { logger } from "../logger"
 
 const TELEMETRY_BASE_KEY = "mold_v2_telemetry_events"
 const MAX_STORED_EVENTS = 500
@@ -40,7 +41,7 @@ class TelemetryCollector {
       try {
         listener(event)
       } catch (err) {
-        console.error("Telemetry listener error:", err)
+        logger.error("Telemetry listener error:", err)
       }
     })
   }
