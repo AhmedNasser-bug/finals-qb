@@ -201,6 +201,7 @@ export function SubjectSelector({
                     onClick={() => setSearchQuery("")}
                     className="pointer-events-auto text-[10px] font-mono text-muted-foreground hover:text-foreground mr-1"
                     title="Clear search"
+                    aria-label="Clear search"
                   >
                     ESC
                   </button>

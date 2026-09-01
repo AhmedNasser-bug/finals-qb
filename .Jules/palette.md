@@ -110,3 +110,7 @@
 
 
 
+
+## 2024-05-27 - Icon-only buttons lacking ARIA labels
+**Learning:** Certain icon-only interactive elements (like the search clear button 'ESC' in the `subject-selector.tsx` component) use only the `title` attribute, which is insufficient for many screen readers to properly announce the button's action.
+**Action:** When auditing icon-only buttons or contextless elements, ensure an explicit `aria-label` is present alongside `title` for robust accessibility support.
