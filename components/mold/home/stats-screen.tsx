@@ -124,6 +124,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         <div>
           <button 
             onClick={onReturnHome}
+            aria-label="Return to core dashboard"
             className="flex items-center gap-2 text-zinc-400 hover:text-[#fecc17] transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
