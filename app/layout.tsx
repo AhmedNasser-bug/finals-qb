@@ -7,8 +7,6 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from "@clerk/nextjs"
 import { shadcn } from "@clerk/ui/themes"
-import { AchievementProvider } from "@/lib/achievement-engine"
-import { StatsProvider } from "@/lib/game/stats-context"
 import "./globals.css"
 import "katex/dist/katex.min.css"
 
@@ -25,8 +23,7 @@ export const metadata: Metadata = {
   generator: "v0.dev",
 }
 
-import { ColorThemeProvider } from "@/lib/themes/theme-context"
-import { PageLayoutProvider } from "@/lib/layouts/layout-context"
+import { Providers } from "@/components/mold/layouts/providers"
 
 export default function RootLayout({
   children,
@@ -34,15 +31,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const content = (
-    <ColorThemeProvider>
-      <PageLayoutProvider>
-        <StatsProvider>
-          <AchievementProvider>
-            {children}
-          </AchievementProvider>
-        </StatsProvider>
-      </PageLayoutProvider>
-    </ColorThemeProvider>
+    <Providers>
+      {children}
+    </Providers>
   )
 
   return (
