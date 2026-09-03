@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
+  const [confirmClear, setConfirmClear] = useState(false)
 
   // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
@@ -63,13 +64,36 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
           <div className="flex items-center gap-2">
             {entries.length > 0 && (
-              <button
-                onClick={clearEntries}
-                aria-label="Clear Deck"
-                className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
-              >
-                Clear Deck
-              </button>
+              confirmClear ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setConfirmClear(false)}
+                    aria-label="Cancel clear deck"
+                    className="text-muted-foreground hover:text-foreground font-mono text-[10px] uppercase border border-border hover:border-border/80 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearEntries();
+                      setConfirmClear(false);
+                    }}
+                    aria-label="Confirm clear deck"
+                    className="text-destructive font-mono text-[10px] uppercase border border-destructive/30 bg-destructive/10 hover:bg-destructive/20 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring font-bold"
+                  >
+                    Confirm Clear?
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmClear(true)}
+                  aria-label="Clear Deck"
+                  title="Clear all cards from the review deck"
+                  className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                >
+                  Clear Deck
+                </button>
+              )
             )}
             <button
               onClick={() => setIsOpen(false)}
