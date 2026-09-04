@@ -1,4 +1,6 @@
 "use client"
+import { cn } from "@/lib/utils"
+import { calculateGrade, gradeBgColor } from "@/lib/mold-types"
 
 interface HeaderWellProps {
   subjectName: string
@@ -35,6 +37,14 @@ export function HeaderWell({
             <div className="text-3xl sm:text-4xl font-headline font-black text-emerald-400">
               {runCount > 0 ? `${visualAccuracyPct.toFixed(1)}%` : "100.0%"}
             </div>
+            {runCount > 0 && (
+              <div
+                className={cn("mt-1.5 font-mono text-[10px] px-2 py-0.5 rounded border uppercase tracking-widest font-bold", gradeBgColor(calculateGrade(visualAccuracyPct)))}
+                title={`Current Grade: ${calculateGrade(visualAccuracyPct)}`}
+              >
+                GRADE {calculateGrade(visualAccuracyPct)}
+              </div>
+            )}
           </div>
         </div>
       </div>

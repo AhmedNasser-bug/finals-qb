@@ -104,13 +104,13 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
             <table className="w-full text-sm" aria-label="Recent runs">
               <thead>
                 <tr className="border-b border-border bg-secondary/40">
-                  <th className="text-left px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider">DATE</th>
-                  <th className="text-left px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider">MODE</th>
-                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider">SCORE</th>
-                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider hidden sm:table-cell">ANSWERS</th>
-                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider hidden sm:table-cell">TIME</th>
-                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider hidden md:table-cell">STREAK</th>
-                  <th className="text-center px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider">GRADE</th>
+                  <th className="text-left px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider" title="Date of the quiz session">DATE</th>
+                  <th className="text-left px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider" title="Game mode of the quiz session">MODE</th>
+                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider" title="Accuracy percentage achieved">SCORE</th>
+                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider hidden sm:table-cell" title="Correct answers out of total questions">ANSWERS</th>
+                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider hidden sm:table-cell" title="Total time taken to complete the quiz">TIME</th>
+                  <th className="text-right px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider hidden md:table-cell" title="Highest consecutive correct answers during the quiz">STREAK</th>
+                  <th className="text-center px-4 py-2.5 text-xs font-mono text-muted-foreground tracking-wider" title="Overall performance grade">GRADE</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,7 +138,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
 
 function StatCell({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="flex flex-col gap-1 px-4 py-3 bg-panel">
+    <div className="flex flex-col gap-1 px-4 py-3 bg-panel" title={`${label}: ${value}`} aria-label={`${label}: ${value}`}>
       <span className="text-xs font-mono text-muted-foreground tracking-wider">{label}</span>
       <span className={cn(
         "text-xl font-mono font-bold",
