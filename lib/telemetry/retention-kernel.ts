@@ -199,38 +199,46 @@ export function deriveCategoryRetentionSummaries(
   cards: Flashcard[],
   retentionMap: RetentionMap
 ): CategoryRetentionSummary[] {
-  const groups: Record<string, CardRetentionState[]> = {}
+  const groups: Record<string, {
+    total: number;
+    mastered: number;
+    due: number;
+    lapsed: number;
+    sumR: number;
+    sumS: number;
+  }> = {}
 
-  cards.forEach((c) => {
+  for (const c of cards) {
     const cat = c.category || "_general"
-    if (!groups[cat]) groups[cat] = []
+    if (!groups[cat]) {
+      groups[cat] = { total: 0, mastered: 0, due: 0, lapsed: 0, sumR: 0, sumS: 0 }
+    }
+
     const state = retentionMap[c.id]
-    if (state) groups[cat].push(state)
-  })
+    if (state) {
+      groups[cat].total++;
+      groups[cat].sumR += state.currentRetrievability;
+      groups[cat].sumS += state.stability;
 
-  return Object.entries(groups).map(([cat, cardStates]) => {
-    const total = cardStates.length
-    const mastered = cardStates.filter((s) => s.urgencyLevel === "MASTERED").length
-    const due = cardStates.filter((s) => s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY").length
-    const lapsed = cardStates.filter((s) => s.urgencyLevel === "CRITICAL_LAPSED").length
+      if (state.urgencyLevel === "MASTERED") {
+        groups[cat].mastered++;
+      } else if (state.urgencyLevel === "DUE" || state.urgencyLevel === "APPROACHING_DECAY") {
+        groups[cat].due++;
+      } else if (state.urgencyLevel === "CRITICAL_LAPSED") {
+        groups[cat].lapsed++;
+      }
+    }
+  }
 
-    const avgR =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.currentRetrievability, 0) / total) * 100) / 100
-        : 0
-    const avgS =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.stability, 0) / total) * 10) / 10
-        : 0
-
+  return Object.entries(groups).map(([cat, stats]) => {
     return {
       category: cat,
-      totalCards: total,
-      masteredCount: mastered,
-      dueCount: due,
-      lapsedCount: lapsed,
-      averageRetrievability: avgR,
-      averageStabilityDays: avgS,
+      totalCards: stats.total,
+      masteredCount: stats.mastered,
+      dueCount: stats.due,
+      lapsedCount: stats.lapsed,
+      averageRetrievability: stats.total > 0 ? Math.round((stats.sumR / stats.total) * 100) / 100 : 0,
+      averageStabilityDays: stats.total > 0 ? Math.round((stats.sumS / stats.total) * 10) / 10 : 0,
     }
   })
 }

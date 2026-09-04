@@ -276,10 +276,14 @@ describe("parseSubjectJson", () => {
     });
   });
 
-  test("successfully parses and validates the newly merged subject file", () => {
+  test("successfully parses and validates the newly merged subject file", async () => {
     const filePath = path.join(process.cwd(), "public/examples/Merge-these-into-one-subject/MergedSubject.json");
     if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, "utf8");
+      const chunks = [];
+      for await (const chunk of fs.createReadStream(filePath, { encoding: 'utf8' })) {
+        chunks.push(chunk);
+      }
+      const raw = chunks.join('');
       const result = parseSubjectJson(raw);
       assert.strictEqual(result.parseError, undefined);
       const validation = validateSubjectData(result.data);
