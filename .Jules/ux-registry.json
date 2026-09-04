@@ -179,6 +179,20 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "dashboard-telemetry-clarity-semantic-badges",
+      "category": "tooltips",
+      "tier": 2,
+      "title": "Dashboard Telemetry Clarity & Semantic Assessment Badges",
+      "implementedAt": "2026-09-04T16:28:29.390Z",
+      "componentsTouched": [
+        "components/mold/home/header-well.tsx",
+        "components/mold/home/session-stats-panel.tsx",
+        "components/mold/home/performance-table.tsx",
+        "components/mold/home/achievements-panel.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

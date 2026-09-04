@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-27 - Dashboard Telemetry Clarity & Semantic Assessment Badges
+**Learning:** Dense telemetry dashboards often overwhelm users with numbers lacking immediate context. Adding semantic visual badges (like Grade S+ with contextual colors), informative hover tooltips (`title`) on data table headers and stat cells, and decorative icon insulation (`aria-hidden="true"`) to row labels drastically reduces cognitive load while maintaining strict accessibility standards.
+**Action:** When displaying aggregate metrics or data tables, always embed descriptive tooltips on headers and semantic badging (derived from existing design tokens like `gradeBgColor`) to translate raw numbers into immediate insight.

@@ -65,7 +65,7 @@ export function AchievementsPanel({
               <div className={cn("w-8 h-8 flex items-center justify-center border shrink-0 text-sm font-bold", isUnlocked ? "border-primary/20 bg-primary/5 text-primary" : "border-zinc-800 bg-zinc-900")}>
                 <Trophy className={cn("w-4 h-4", isUnlocked ? "text-primary" : "text-zinc-500")} aria-hidden="true" />
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0" title={ach.description}>
                 <div className="font-mono text-[9px] font-bold truncate uppercase">{ach.title.replace(/\s+/g, "_")}</div>
                 <div className="font-sans text-[8px] text-zinc-400 truncate leading-none mt-0.5">{ach.description}</div>
               </div>
