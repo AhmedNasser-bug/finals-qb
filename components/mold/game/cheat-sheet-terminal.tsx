@@ -9,6 +9,43 @@ import { cn } from "@/lib/utils"
 
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
+  const [confirmClear, setConfirmClear] = React.useState(false)
+
+  // Focus trap inside the drawer when open
+  const drawerRef = React.useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isOpen) {
+      setConfirmClear(false)
+      return
+    }
+
+    const el = drawerRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [isOpen])
 
   // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
@@ -38,8 +75,13 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
       {/* Side Panel Drawer */}
       <div
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
+        ref={drawerRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="review-deck-title"
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
+          "fixed top-0 right-0 z-50 h-screen outline-none w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -50,7 +92,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
-                STUDY DECK // REVIEW PANEL
+                <span id="review-deck-title">STUDY DECK // REVIEW PANEL</span>
               </span>
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded">
                 {entries.length} ITEMS
@@ -63,13 +105,35 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
           <div className="flex items-center gap-2">
             {entries.length > 0 && (
-              <button
-                onClick={clearEntries}
-                aria-label="Clear Deck"
-                className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
-              >
-                Clear Deck
-              </button>
+              confirmClear ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setConfirmClear(false)}
+                    aria-label="Cancel Clear Deck"
+                    className="text-muted-foreground hover:text-foreground font-mono text-[10px] uppercase border border-border bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearEntries()
+                      setConfirmClear(false)
+                    }}
+                    aria-label="Confirm Clear Deck"
+                    className="text-destructive font-bold hover:bg-destructive hover:text-destructive-foreground font-mono text-[10px] uppercase border border-destructive/50 bg-destructive/10 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                  >
+                    Confirm Clear
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmClear(true)}
+                  aria-label="Clear Deck"
+                  className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                >
+                  Clear Deck
+                </button>
+              )
             )}
             <button
               onClick={() => setIsOpen(false)}
