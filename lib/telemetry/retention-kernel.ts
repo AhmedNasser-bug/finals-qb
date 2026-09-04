@@ -210,25 +210,30 @@ export function deriveCategoryRetentionSummaries(
 
   return Object.entries(groups).map(([cat, cardStates]) => {
     const total = cardStates.length
-    const mastered = cardStates.filter((s) => s.urgencyLevel === "MASTERED").length
-    const due = cardStates.filter((s) => s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY").length
-    const lapsed = cardStates.filter((s) => s.urgencyLevel === "CRITICAL_LAPSED").length
+    let masteredCount = 0;
+    let dueCount = 0;
+    let lapsedCount = 0;
+    let sumR = 0;
+    let sumS = 0;
 
-    const avgR =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.currentRetrievability, 0) / total) * 100) / 100
-        : 0
-    const avgS =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.stability, 0) / total) * 10) / 10
-        : 0
+    for (const s of cardStates) {
+      if (s.urgencyLevel === "MASTERED") masteredCount++;
+      else if (s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY") dueCount++;
+      else if (s.urgencyLevel === "CRITICAL_LAPSED") lapsedCount++;
+
+      sumR += s.currentRetrievability;
+      sumS += s.stability;
+    }
+
+    const avgR = total > 0 ? Math.round((sumR / total) * 100) / 100 : 0;
+    const avgS = total > 0 ? Math.round((sumS / total) * 10) / 10 : 0;
 
     return {
       category: cat,
       totalCards: total,
-      masteredCount: mastered,
-      dueCount: due,
-      lapsedCount: lapsed,
+      masteredCount,
+      dueCount,
+      lapsedCount,
       averageRetrievability: avgR,
       averageStabilityDays: avgS,
     }
