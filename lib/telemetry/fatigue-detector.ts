@@ -46,17 +46,22 @@ export function analyzeCognitiveLoad(
     }
   }
 
-  const avg =
-    latencySamples.reduce((a, b) => a + b, 0) / latencySamples.length
+  let sumAll = 0;
+  for (let i = 0; i < latencySamples.length; i++) {
+    sumAll += latencySamples[i];
+  }
+  const avg = sumAll / latencySamples.length;
 
   // Calculate slope between first half and second half if >= 4 samples
   let slope = 0
   if (latencySamples.length >= 4) {
     const mid = Math.floor(latencySamples.length / 2)
-    const firstHalf = latencySamples.slice(0, mid)
-    const secondHalf = latencySamples.slice(mid)
-    const avg1 = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length
-    const avg2 = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length
+    let sum1 = 0;
+    for(let i=0; i<mid; i++) sum1 += latencySamples[i];
+    let sum2 = sumAll - sum1;
+
+    const avg1 = sum1 / mid;
+    const avg2 = sum2 / (latencySamples.length - mid);
     slope = Math.round((avg2 - avg1) * 10) / 10
   }
 
