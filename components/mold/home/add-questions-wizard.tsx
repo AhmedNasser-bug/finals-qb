@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useCallback } from "react"
+import React, { useState, useMemo, useCallback, useRef, useEffect } from "react"
 import { Sparkles, X, Copy, Check, Info, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
@@ -306,14 +306,45 @@ CRITICAL RULES:
     return false
   }, [step, categoryFocus, newCategoryName, parsedPreview, validationState])
 
+
+  const overlayRef = useRef<HTMLDivElement>(null)
+  // Trap focus inside overlay
+  useEffect(() => {
+    const el = overlayRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [])
+
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div ref={overlayRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="add-questions-title" className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none outline-none">
       <div className="w-full max-w-5xl h-[88vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
-            <h2 className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
+            <h2 id="add-questions-title" className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary animate-pulse" aria-hidden="true" />
               <span>Add Questions to Subject Wizard</span>
             </h2>
@@ -322,6 +353,7 @@ CRITICAL RULES:
             </p>
           </div>
           <button
+            type="button"
             onClick={onCancel}
             className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
             aria-label="Close wizard"
@@ -400,8 +432,9 @@ CRITICAL RULES:
                   const isSelected = contentType === type.id
                   return (
                     <button
+            type="button"
                       key={type.id}
-                      type="button"
+
                       onClick={() => setContentType(type.id as any)}
                       className={cn(
                         "flex flex-col text-left p-4 border transition-all duration-150 cursor-pointer min-h-[90px] justify-between rounded-none",
@@ -510,7 +543,7 @@ CRITICAL RULES:
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Theoretical */}
                 <button
-                  type="button"
+            type="button"
                   onClick={() => setStyleBias("theoretical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -535,7 +568,7 @@ CRITICAL RULES:
 
                 {/* Technical */}
                 <button
-                  type="button"
+            type="button"
                   onClick={() => setStyleBias("technical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -560,7 +593,7 @@ CRITICAL RULES:
 
                 {/* Balanced */}
                 <button
-                  type="button"
+            type="button"
                   onClick={() => setStyleBias("balanced")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -611,8 +644,7 @@ CRITICAL RULES:
                   const isSelected = categoryFocus === focus.id
                   return (
                     <button
-                      key={focus.id}
-                      type="button"
+            type="button" key={focus.id}
                       onClick={() => setCategoryFocus(focus.id as any)}
                       className={cn(
                         "p-5 border text-left flex flex-col justify-between gap-3 transition-all duration-150 cursor-pointer rounded-none min-h-[120px]",
@@ -721,7 +753,7 @@ CRITICAL RULES:
                     <span>SYSTEM PROMPT INSTRUCTION BUNDLE</span>
                   </span>
                   <button
-                    type="button"
+            type="button"
                     onClick={handleCopyPrompt}
                     className={cn(
                       "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer flex items-center gap-1.5",
@@ -872,6 +904,7 @@ CRITICAL RULES:
           {/* Back/Cancel */}
           {step === 1 ? (
             <button
+            type="button"
               onClick={onCancel}
               className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
             >
@@ -879,6 +912,7 @@ CRITICAL RULES:
             </button>
           ) : (
             <button
+            type="button"
               onClick={() => setStep((prev) => prev - 1)}
               className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
             >
@@ -889,6 +923,7 @@ CRITICAL RULES:
           {/* Continue/Confirm */}
           {step < 5 ? (
             <button
+            type="button"
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
               aria-busy={validationState === "validating"}
@@ -903,6 +938,7 @@ CRITICAL RULES:
             </button>
           ) : (
             <button
+            type="button"
               onClick={handleConfirmMerge}
               disabled={isNextDisabled}
               aria-busy={validationState === "validating"}

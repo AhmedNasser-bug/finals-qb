@@ -304,18 +304,49 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
   ]
 
   // Disable "Next" state triggers based on step compliance
+
+  const overlayRef = useRef<HTMLDivElement>(null)
+  // Trap focus inside overlay
+  useEffect(() => {
+    const el = overlayRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [])
+
   const isNextDisabled =
     (step === 1 && topic.trim() === "") ||
     (step === 5 && state !== "valid")
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div ref={overlayRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="subject-importer-title" className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none outline-none">
       <div className="w-full max-w-6xl h-[92vh] flex flex-col gap-0 border border-border bg-background rounded-none overflow-hidden border-glow transition-all duration-300">
 
         {/* Modal Main Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
-            <h2 className="text-sm font-display font-bold tracking-wider uppercase text-foreground">
+            <h2 id="subject-importer-title" className="text-sm font-display font-bold tracking-wider uppercase text-foreground">
               Import Subject Wizard
             </h2>
             <p className="text-[11px] font-mono text-muted-foreground mt-0.5 tracking-wider uppercase">
@@ -323,6 +354,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             </p>
           </div>
           <button
+            type="button"
             onClick={onCancel}
             className="w-8 h-8 flex items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:border-border transition-colors focus-ring cursor-pointer"
             aria-label="Close wizard"
@@ -450,6 +482,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
           {/* Cancel/Back buttons */}
           {step === 1 ? (
             <button
+            type="button"
               onClick={onCancel}
               aria-label="Cancel subject import"
               title="Cancel import and close"
@@ -459,6 +492,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             </button>
           ) : (
             <button
+            type="button"
               onClick={() => setStep((prev) => prev - 1)}
               aria-label="Go back to previous step"
               title="Back to previous step"
@@ -471,6 +505,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
           {/* Continue/Confirm buttons */}
           {step < 5 ? (
             <button
+            type="button"
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
               aria-busy={state === "importing"}
@@ -486,6 +521,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
             </button>
           ) : (
             <button
+            type="button"
               onClick={handleConfirm}
               disabled={isNextDisabled}
               aria-busy={state === "importing"}
