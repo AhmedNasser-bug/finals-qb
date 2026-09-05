@@ -20,6 +20,7 @@ import {
   type FinalistsAiPlanConfig,
 } from "@/lib/revenuecat/revenuecat-types"
 import type { Package } from "@revenuecat/purchases-js"
+import { RevenueCatLogo, RevenueCatBadge } from "@/components/mold/payment/revenuecat-logo"
 
 export default function PricingPage() {
   const {
@@ -105,10 +106,7 @@ export default function PricingPage() {
         </Link>
 
         {/* RevenueCat Header Recognition Badge */}
-        <div className="flex items-center gap-2 px-3 py-1 border border-amber-500/30 bg-amber-500/10 rounded font-mono text-[10px] tracking-widest text-primary font-bold uppercase">
-          <RevenueCatLogo className="w-3.5 h-3.5" aria-hidden="true" />
-          <span>POWERED BY REVENUECAT</span>
-        </div>
+        <RevenueCatBadge label="MADE WITH REVENUECAT" />
       </header>
 
       {/* Main Container */}
@@ -127,14 +125,16 @@ export default function PricingPage() {
             Integrated with modern cognitive reinforcement and spaced repetition.
           </p>
 
-          {/* Prominent "Made with RevenueCat" Recognition Badge */}
-          <div className="mt-6 inline-flex items-center gap-2.5 px-4 py-2 border border-primary/40 bg-panel shadow-lg rounded-md border-glow">
-            <RevenueCatLogo className="w-5 h-5 text-amber-500 shrink-0" aria-hidden="true" />
+          {/* Prominent "Made with RevenueCat" Recognition Card */}
+          <div className="mt-6 inline-flex items-center gap-3 px-4 py-2.5 border border-[#F2545B]/40 bg-panel/90 shadow-lg rounded-md border-glow">
+            <div className="p-1.5 rounded bg-[#F2545B]/15 border border-[#F2545B]/30 flex items-center justify-center">
+              <RevenueCatLogo className="w-5 h-5 text-[#F2545B] shrink-0" aria-hidden="true" />
+            </div>
             <div className="text-left">
-              <span className="block font-mono text-[10px] tracking-widest text-primary font-bold uppercase">
+              <span className="block font-mono text-[11px] tracking-widest text-[#F2545B] font-bold uppercase">
                 MADE WITH REVENUECAT
               </span>
-              <span className="block text-[9px] text-muted-foreground font-mono">
+              <span className="block text-[10px] text-muted-foreground font-mono">
                 Official Web Billing SDK & Entitlement Engine
               </span>
             </div>
@@ -142,7 +142,7 @@ export default function PricingPage() {
               href="https://www.revenuecat.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-2 p-1 text-muted-foreground hover:text-primary transition-colors"
+              className="ml-2 p-1 text-muted-foreground hover:text-[#F2545B] transition-colors"
               title="Visit RevenueCat"
               aria-label="Visit RevenueCat website"
             >
@@ -363,9 +363,9 @@ export default function PricingPage() {
 
         {/* Footer & FAQ */}
         <footer className="w-full max-w-4xl border-t border-border/60 pt-8 pb-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <RevenueCatLogo className="w-4 h-4 text-amber-500" aria-hidden="true" />
-            <span>Built with RevenueCat Web Billing SDK & Stripe</span>
+          <div className="flex items-center gap-2.5">
+            <RevenueCatLogo className="w-5 h-5 text-[#F2545B]" aria-hidden="true" />
+            <span className="font-semibold text-foreground/90">Built with RevenueCat Web Billing SDK & Stripe</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -390,18 +390,5 @@ export default function PricingPage() {
         </footer>
       </main>
     </div>
-  )
-}
-
-function RevenueCatLogo({ className, "aria-hidden": ariaHidden }: { className?: string; "aria-hidden"?: boolean | "true" | "false" }) {
-  return (
-    <svg
-      className={className}
-      aria-hidden={ariaHidden}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-    >
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.4z" />
-    </svg>
   )
 }

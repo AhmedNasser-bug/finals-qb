@@ -18,6 +18,7 @@ import {
   type FinalistsAiPlanConfig,
 } from "@/lib/revenuecat/revenuecat-types"
 import type { Package } from "@revenuecat/purchases-js"
+import { RevenueCatLogo, RevenueCatBadge } from "./revenuecat-logo"
 
 interface PaywallModalProps {
   isOpen?: boolean
@@ -148,9 +149,12 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
         {/* Header Block */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-primary/40 bg-primary/10 rounded font-mono text-[10px] tracking-widest text-primary font-bold uppercase mb-3 shadow-[0_0_12px_hsla(var(--primary),0.2)]">
-            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-            FINALISTS AI GENERATION PROTOCOL
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 border border-primary/40 bg-primary/10 rounded font-mono text-[10px] tracking-widest text-primary font-bold uppercase shadow-[0_0_12px_hsla(var(--primary),0.2)]">
+              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+              FINALISTS AI GENERATION PROTOCOL
+            </div>
+            <RevenueCatBadge label="MADE WITH REVENUECAT" />
           </div>
           <h2
             id="paywall-title"
@@ -308,7 +312,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
         {/* Modal Footer Controls */}
         <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-border/60 gap-4 text-xs">
           <div className="flex items-center gap-2 text-muted-foreground font-mono text-[10px]">
-            <ShieldCheck className="w-4 h-4 text-primary" aria-hidden="true" />
+            <RevenueCatLogo className="w-4 h-4 text-[#F2545B]" />
             <span>SECURE WEB BILLING VIA REVENUECAT & STRIPE</span>
           </div>
 
