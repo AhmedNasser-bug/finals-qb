@@ -1,6 +1,18 @@
 {
   "version": 1,
   "skills": {
+    "academic-paper": {
+      "source": "imbad0202/academic-research-skills",
+      "sourceType": "github",
+      "skillPath": "academic-paper/SKILL.md",
+      "computedHash": "c485e052b85b3faba3244adb7033f6ed5796f0766ec2fdbfe6f4518189e75680"
+    },
+    "academic-paper-reviewer": {
+      "source": "imbad0202/academic-research-skills",
+      "sourceType": "github",
+      "skillPath": "academic-paper-reviewer/SKILL.md",
+      "computedHash": "622c8d0f50cbe1571b07c5cfd8a5cbf08c84ea3b2c2e6870b8dfd1ffc0cb3515"
+    },
     "accessibility": {
       "source": "addyosmani/web-quality-skills",
       "sourceType": "autoskills-registry",
@@ -10,6 +22,12 @@
       "source": "wshobson/agents",
       "sourceType": "autoskills-registry",
       "computedHash": "1f566c2d9c3b50a784b05d08f6b08ebfeb31f038e4d4173f2d488484edb058a6"
+    },
+    "better-writing": {
+      "source": "jakubkrehel/skills",
+      "sourceType": "github",
+      "skillPath": "skills/better-writing/SKILL.md",
+      "computedHash": "a66da2a345b8e0c220841665c261cc9776c293fdb5d22f5165a98d0e7c790841"
     },
     "clerk": {
       "source": "clerk/skills",
@@ -65,6 +83,12 @@
       "source": "vercel-labs/agent-skills",
       "sourceType": "autoskills-registry",
       "computedHash": "698dfb0ec0cf3e8d97c3f181e13b37b3b8fbc872a4b031d812adb4193f66035e"
+    },
+    "firecrawl-research-papers": {
+      "source": "firecrawl/firecrawl-workflows",
+      "sourceType": "github",
+      "skillPath": "skills/firecrawl-research-papers/SKILL.md",
+      "computedHash": "2a9a6c62cb2861f1812b8610ab0a6a62b348508e1c22f92d6eddeb6924c9b5ab"
     },
     "frontend-design": {
       "source": "anthropics/skills",
@@ -130,6 +154,12 @@
       "source": "wshobson/agents",
       "sourceType": "autoskills-registry",
       "computedHash": "5ca0e177c6aaaba1889255691224daafdb7d71f317cc70bede1590d3907ded42"
+    },
+    "writing-shape": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/in-progress/writing-shape/SKILL.md",
+      "computedHash": "175889218686932bda7724425b97a0a10a7679db51447c40a1a0d3a5e6f2130e"
     },
     "zod": {
       "source": "pproenca/dot-skills",

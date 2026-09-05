@@ -28,6 +28,9 @@ export const metadata: Metadata = {
 import { ColorThemeProvider } from "@/lib/themes/theme-context"
 import { PageLayoutProvider } from "@/lib/layouts/layout-context"
 
+import { PurchasesProvider } from "@/lib/revenuecat/purchases-context"
+import { PaywallModal } from "@/components/mold/payment/paywall-modal"
+
 export default function RootLayout({
   children,
 }: {
@@ -37,9 +40,12 @@ export default function RootLayout({
     <ColorThemeProvider>
       <PageLayoutProvider>
         <StatsProvider>
-          <AchievementProvider>
-            {children}
-          </AchievementProvider>
+          <PurchasesProvider>
+            <AchievementProvider>
+              {children}
+              <PaywallModal />
+            </AchievementProvider>
+          </PurchasesProvider>
         </StatsProvider>
       </PageLayoutProvider>
     </ColorThemeProvider>

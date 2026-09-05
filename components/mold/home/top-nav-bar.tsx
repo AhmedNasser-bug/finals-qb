@@ -5,10 +5,11 @@ import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
-import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX, Sun, Moon } from "lucide-react"
+import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX, Sun, Moon, Sparkles } from "lucide-react"
 import { GuideLink } from "@/components/mold/common/guide-link"
 import { isAudioMuted, toggleAudioMute } from "@/lib/audio/sound-engine"
 import { useColorTheme } from "@/lib/themes/theme-context"
+import { usePurchases } from "@/lib/revenuecat/purchases-context"
 
 interface TopNavBarProps {
   activeSubjectName?: string
@@ -43,6 +44,7 @@ export function TopNavBar({
   onShowLayoutModal,
 }: TopNavBarProps) {
   const { themeMode, toggleMode } = useColorTheme()
+  const { hasAiEntitlement, openPaywall } = usePurchases()
   const [tipIndex, setTipIndex] = useState(0)
   const [muted, setMuted] = useState(false)
 
@@ -125,6 +127,22 @@ export function TopNavBar({
 
       {/* Right controls */}
       <div className="flex items-center gap-3">
+        {/* AI Pass Button */}
+        <button
+          onClick={() => openPaywall()}
+          title={hasAiEntitlement ? "Finalists AI Active — Tap to view details" : "Upgrade to Finalists AI — Tap to unlock"}
+          aria-label={hasAiEntitlement ? "Finalists AI Active" : "Upgrade to Finalists AI"}
+          type="button"
+          className={`flex items-center gap-1.5 px-2.5 py-1 font-mono text-[9px] font-bold tracking-widest uppercase rounded transition-all focus-ring cursor-pointer min-h-[30px] select-none ${
+            hasAiEntitlement
+              ? "border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 shadow-[0_0_10px_hsla(160,84%,39%,0.15)]"
+              : "border border-primary/50 bg-primary/10 text-primary hover:bg-primary hover:text-black shadow-[0_0_12px_hsla(var(--primary),0.2)] group"
+          }`}
+        >
+          <Sparkles className={`w-3 h-3 ${hasAiEntitlement ? "text-emerald-400" : "text-primary group-hover:text-black"}`} aria-hidden="true" />
+          <span>{hasAiEntitlement ? "AI PASS ACTIVE" : "AI PASS"}</span>
+        </button>
+
         {activeSubjectName && (
           <span
             className="text-[10px] font-mono text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 tracking-widest uppercase truncate max-w-[120px] sm:max-w-[200px] rounded"
