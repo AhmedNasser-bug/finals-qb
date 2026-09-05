@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-05 - Two-Step Destructive Action Confirmation in Transient Modals
+**Learning:** Transient overlays and side-panels like the Review Deck often have destructive actions (e.g., clearing the session's mistakes cache) positioned dangerously close to the close button. A single misclick can wipe out important study materials.
+**Action:** Implement a two-step confirmation state (e.g., "Clear Deck" -> "Confirm Clear? / Cancel") for any destructive cache manipulation within modals, and ensure the modal acts as a proper focus-trapped dialog (`role="dialog"`, `aria-modal="true"`) for accessibility.

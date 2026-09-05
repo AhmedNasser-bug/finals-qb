@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils"
 
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
+  const [confirmClearDeck, setConfirmClearDeck] = useState(false)
+  const overlayRef = useRef<HTMLDivElement>(null)
 
   // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
@@ -22,6 +24,36 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [toggleCheatSheet])
 
+
+  useEffect(() => {
+    if (!isOpen) return
+    const el = overlayRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [isOpen])
+
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
 
@@ -30,13 +62,21 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
       {/* Overlay Backdrop */}
       {isOpen && (
         <div
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false)
+            setConfirmClearDeck(false)
+          }}
           className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-fade-in"
         />
       )}
 
       {/* Side Panel Drawer */}
       <div
+        ref={overlayRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="review-deck-title"
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
           "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
@@ -49,7 +89,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-4 shrink-0 flex justify-between items-start font-mono">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
+              <span id="review-deck-title" className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
                 STUDY DECK // REVIEW PANEL
               </span>
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded">
@@ -62,17 +102,47 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
           </div>
 
           <div className="flex items-center gap-2">
+
             {entries.length > 0 && (
-              <button
-                onClick={clearEntries}
-                aria-label="Clear Deck"
-                className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
-              >
-                Clear Deck
-              </button>
+              confirmClearDeck ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setConfirmClearDeck(false)}
+                    aria-label="Cancel clear deck"
+                    className="text-muted-foreground hover:text-foreground font-mono text-[10px] uppercase border border-border bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearEntries()
+                      setConfirmClearDeck(false)
+                    }}
+                    aria-label="Confirm clear deck"
+                    className="text-destructive font-mono text-[10px] uppercase border border-destructive/30 bg-destructive/10 hover:bg-destructive hover:text-destructive-foreground px-2.5 py-1 rounded transition-all cursor-pointer focus-ring font-bold"
+                  >
+                    CONFIRM CLEAR?
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmClearDeck(true)}
+                  aria-label="Clear Deck"
+                  className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                >
+                  Clear Deck
+                </button>
+              )
             )}
             <button
-              onClick={() => setIsOpen(false)}
+              type="button"
+              onClick={() => {
+                setIsOpen(false)
+                setConfirmClearDeck(false)
+              }}
               aria-label="Close review deck panel"
               className="text-muted-foreground hover:text-primary font-mono text-[10px] uppercase border border-border hover:border-primary/30 bg-secondary/80 px-2 py-1 rounded transition-all cursor-pointer focus-ring"
               title="Close review deck panel (Press Esc)"
