@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2026-09-05 - [Optimize multiple array traversals in telemetry reporting]
+**Learning:** Multiple chained `.filter` and `.reduce` operations create unnecessary iterations over the same arrays, introducing O(N*M) complexity where N is number of categories and M is cards per category.
+**Action:** Refactored `deriveCategoryRetentionSummaries` to use a single pass loop instead of 5 separate array iterations.
