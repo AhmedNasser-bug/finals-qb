@@ -75,6 +75,8 @@ export function AchievementsPanel({
         
         {hasMoreAchievements && (
           <button 
+            type="button"
+            aria-label="View all achievements"
             onClick={onShowGallery}
             className="text-[9px] font-mono text-primary/70 hover:text-primary transition-colors text-center w-full font-bold pt-2 uppercase tracking-widest focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
           >
