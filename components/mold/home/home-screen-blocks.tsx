@@ -9,6 +9,106 @@ import { PerformanceTable } from "./performance-table"
 
 import type { GameModeId, SetupConfig, CategoryData, Achievement } from "@/lib/mold-types"
 
+interface MainLeftColumnProps {
+  selectedMode: GameModeId
+  handleModeSelect: (id: GameModeId) => void
+  handleInitialize: () => void
+  config: SetupConfig
+  handleConfigChange: (patch: Partial<SetupConfig>) => void
+  categories: CategoryData[]
+}
+
+export function MainLeftColumn({
+  selectedMode,
+  handleModeSelect,
+  handleInitialize,
+  config,
+  handleConfigChange,
+  categories,
+}: MainLeftColumnProps) {
+  return (
+    <div className="lg:col-span-8 space-y-8">
+      {/* Performance Telemetry panel */}
+      <TelemetryPanel />
+
+      {/* Modes Selection Grid */}
+      <div className="space-y-4">
+        <div className="border-b border-border pb-2 select-none">
+          <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
+            01 // CHOOSE STUDY REGIME
+          </h2>
+        </div>
+        <ModeSelector
+          selected={selectedMode}
+          onSelect={handleModeSelect}
+          onLaunch={handleInitialize}
+        />
+      </div>
+
+      {/* Configuration panel (Setup Panel) */}
+      <div className="space-y-4">
+        <div className="border-b border-border pb-2 select-none">
+          <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
+            02 // SPECIFY WORKLOAD PARAMETERS
+          </h2>
+        </div>
+        <div className="p-6 border border-border bg-panel rounded">
+          <SetupPanel
+            config={config}
+            onChange={handleConfigChange}
+            selectedMode={selectedMode}
+            categories={categories}
+          />
+        </div>
+      </div>
+
+      {/* Action initialize CTA */}
+      <button
+        onClick={handleInitialize}
+        title="Launch active quiz session (Press Enter)"
+        aria-label="Launch active quiz session"
+        className="w-full h-16 bg-primary text-primary-foreground font-headline font-black text-xl tracking-[0.25em] border-none flex items-center justify-center gap-4 shadow-[0_0_20px_hsla(var(--primary),0.1)] hover:shadow-[0_0_30px_hsla(var(--primary),0.25)] hover:-translate-y-0.5 transition-all active:translate-y-0.5 cursor-pointer uppercase select-none rounded focus-ring"
+      >
+        <span>INITIALIZE SESSION</span>
+        <Play className="w-5 h-5 fill-current shrink-0" aria-hidden="true" />
+      </button>
+    </div>
+  )
+}
+
+interface MainRightColumnProps {
+  unlockedCount: number
+  totalAchievementsCount: number
+  topAchievements: Achievement[]
+  achievements: Achievement[]
+  setShowGallery: (show: boolean) => void
+}
+
+export function MainRightColumn({
+  unlockedCount,
+  totalAchievementsCount,
+  topAchievements,
+  achievements,
+  setShowGallery,
+}: MainRightColumnProps) {
+  return (
+    <div className="lg:col-span-4 space-y-8 select-none">
+      {/* Achievements panel */}
+      <AchievementsPanel
+        unlockedCount={unlockedCount}
+        totalAchievementsCount={totalAchievementsCount}
+        topAchievements={topAchievements}
+        hasMoreAchievements={achievements.length > 3}
+        totalCount={achievements.length}
+        onShowGallery={() => setShowGallery(true)}
+      />
+
+      {/* Session stats block */}
+      <SessionStatsPanel />
+    </div>
+  )
+}
+
 interface MainContentGridProps {
   // Mode Selection
   selectedMode: GameModeId
@@ -43,69 +143,23 @@ export function MainContentGrid({
 }: MainContentGridProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      {/* Left Column: Telemetry, Modes, Setup, CTA */}
-      <div className="lg:col-span-8 space-y-8">
-        {/* Performance Telemetry panel */}
-        <TelemetryPanel />
-
-        {/* Modes Selection Grid */}
-        <div className="space-y-4">
-          <div className="border-b border-border pb-2 select-none">
-            <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
-              01 // CHOOSE STUDY REGIME
-            </h2>
-          </div>
-          <ModeSelector
-            selected={selectedMode}
-            onSelect={handleModeSelect}
-            onLaunch={handleInitialize}
-          />
-        </div>
-
-        {/* Configuration panel (Setup Panel) */}
-        <div className="space-y-4">
-          <div className="border-b border-border pb-2 select-none">
-            <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
-              02 // SPECIFY WORKLOAD PARAMETERS
-            </h2>
-          </div>
-          <div className="p-6 border border-border bg-panel rounded">
-            <SetupPanel
-              config={config}
-              onChange={handleConfigChange}
-              selectedMode={selectedMode}
-              categories={categories}
-            />
-          </div>
-        </div>
-
-        {/* Action initialize CTA */}
-        <button
-          onClick={handleInitialize}
-          title="Launch active quiz session (Press Enter)"
-          aria-label="Launch active quiz session"
-          className="w-full h-16 bg-primary text-primary-foreground font-headline font-black text-xl tracking-[0.25em] border-none flex items-center justify-center gap-4 shadow-[0_0_20px_hsla(var(--primary),0.1)] hover:shadow-[0_0_30px_hsla(var(--primary),0.25)] hover:-translate-y-0.5 transition-all active:translate-y-0.5 cursor-pointer uppercase select-none rounded focus-ring"
-        >
-          <span>INITIALIZE SESSION</span>
-          <Play className="w-5 h-5 fill-current shrink-0" aria-hidden="true" />
-        </button>
-      </div>
-
-      {/* Right Column: Achievements, Subject Image, Session Stats */}
-      <div className="lg:col-span-4 space-y-8 select-none">
-        {/* Achievements panel */}
-        <AchievementsPanel
-          unlockedCount={unlockedCount}
-          totalAchievementsCount={totalAchievementsCount}
-          topAchievements={topAchievements}
-          hasMoreAchievements={achievements.length > 3}
-          totalCount={achievements.length}
-          onShowGallery={() => setShowGallery(true)}
-        />
-
-        {/* Session stats block */}
-        <SessionStatsPanel />
-      </div>
+      <MainLeftColumn
+        selectedMode={selectedMode}
+        handleModeSelect={handleModeSelect}
+        handleInitialize={handleInitialize}
+        config={config}
+        handleConfigChange={handleConfigChange}
+        categories={categories}
+      />
+      <MainRightColumn
+        unlockedCount={unlockedCount}
+        totalAchievementsCount={totalAchievementsCount}
+        topAchievements={topAchievements}
+        achievements={achievements}
+        setShowGallery={setShowGallery}
+      />
     </div>
   )
 }
+
+export { HeaderWell, PerformanceTable }
