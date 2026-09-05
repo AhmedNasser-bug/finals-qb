@@ -179,6 +179,17 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "cheat-sheet-terminal-aria-dialog",
+      "category": "accessibility",
+      "tier": 2,
+      "title": "Added ARIA dialog semantics to Cheat Sheet Terminal drawer",
+      "implementedAt": "2026-09-05T16:30:19.298Z",
+      "componentsTouched": [
+        "components/mold/game/cheat-sheet-terminal.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }
