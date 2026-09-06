@@ -149,7 +149,7 @@ function ModeCard({
   }`
 
   return (
-    <button
+    <button type="button"
       onClick={() => {
         if (isSelected && onLaunch) {
           onLaunch()

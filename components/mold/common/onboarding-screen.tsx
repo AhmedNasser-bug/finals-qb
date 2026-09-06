@@ -92,7 +92,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
 
               {/* CTA */}
               <div className="flex flex-col items-center gap-3">
-                <button
+                <button type="button"
                   onClick={() => setStep("add-subject")}
                   aria-label="Get Started"
                   title="Get Started"
@@ -111,7 +111,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
             <div className="w-full flex flex-col items-center gap-8">
               {/* Back link */}
               <div className="self-start">
-                <button
+                <button type="button"
                   onClick={() => setStep("welcome")}
                   aria-label="Go back to welcome screen"
                   title="Go back to welcome screen"
@@ -149,7 +149,7 @@ export function OnboardingScreen({ onSubjectAdded }: OnboardingScreenProps) {
               </div>
 
               {/* Import CTA */}
-              <button
+              <button type="button"
                 onClick={() => setShowImporter(true)}
                 aria-label="Import JSON Subject"
                 title="Import JSON Subject"

@@ -51,7 +51,7 @@ export function GameFooter({
       {/* Primary CTA and Hint row — full width */}
       <div className="flex-1 flex items-center gap-3 h-12">
         {config.hintsEnabled && (
-          <button
+          <button type="button"
             onClick={onHintRequest}
             disabled={!canHint}
             aria-label={buttonTitle}
@@ -74,7 +74,7 @@ export function GameFooter({
 
         <div className="flex-1 h-full">
           {!isRevealed ? (
-            <button
+            <button type="button"
               onClick={revealAnswer}
               disabled={!canSubmit}
               aria-label="Submit sequence"
@@ -94,7 +94,7 @@ export function GameFooter({
               )}
             </button>
           ) : (
-            <button
+            <button type="button"
               onClick={nextQuestion}
               aria-label={isLast ? "View results" : "Continue session"}
               title={isLast ? "View results (Enter or Space)" : "Continue session (Enter or Space)"}
@@ -128,7 +128,7 @@ export function GameFooter({
           </div>
         )}
         {isRevealed && (
-          <button
+          <button type="button"
             onClick={nextQuestion}
             aria-label="Skip question"
             className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-primary hover:border-primary/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"

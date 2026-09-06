@@ -97,7 +97,7 @@ function AchievementToastItem({
         <p className="text-sm font-semibold text-foreground truncate">{item.achievement.title}</p>
         <p className="text-xs text-muted-foreground leading-snug line-clamp-1">{item.achievement.description}</p>
       </div>
-      <button
+      <button type="button"
         onClick={handleDismiss}
         className="shrink-0 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
         aria-label="Dismiss notification"
