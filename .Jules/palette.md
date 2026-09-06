@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-06 - Missing explicit type on buttons
+**Learning:** Many interactive buttons in the application lacked an explicit `type="button"` attribute. While they function properly outside of forms, any button accidentally moved inside a `<form>` tag could inadvertently trigger a page reload/form submission.
+**Action:** Enforce an explicit `type="button"` on all standard interactive buttons (unless deliberately used for form submission) to guarantee stable, predictable interactions regardless of their DOM placement.

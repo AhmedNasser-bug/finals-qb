@@ -322,7 +322,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
               Step {step} of 5 — {steps[step - 1].label}
             </p>
           </div>
-          <button
+          <button type="button"
             onClick={onCancel}
             className="w-8 h-8 flex items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:border-border transition-colors focus-ring cursor-pointer"
             aria-label="Close wizard"
@@ -449,7 +449,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
         <div className="flex items-center justify-between gap-4 px-8 py-5 border-t border-border bg-panel">
           {/* Cancel/Back buttons */}
           {step === 1 ? (
-            <button
+            <button type="button"
               onClick={onCancel}
               aria-label="Cancel subject import"
               title="Cancel import and close"
@@ -458,7 +458,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
               Cancel
             </button>
           ) : (
-            <button
+            <button type="button"
               onClick={() => setStep((prev) => prev - 1)}
               aria-label="Go back to previous step"
               title="Back to previous step"
@@ -470,7 +470,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
 
           {/* Continue/Confirm buttons */}
           {step < 5 ? (
-            <button
+            <button type="button"
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
               aria-busy={state === "importing"}
@@ -485,7 +485,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
               CONTINUE →
             </button>
           ) : (
-            <button
+            <button type="button"
               onClick={handleConfirm}
               disabled={isNextDisabled}
               aria-busy={state === "importing"}

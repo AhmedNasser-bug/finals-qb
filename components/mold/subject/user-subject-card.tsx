@@ -39,7 +39,7 @@ export function UserSubjectCard({
           <p className="text-base font-semibold text-foreground tracking-tight leading-snug text-pretty">{full.name}</p>
           <div className="flex items-center gap-1 shrink-0 z-10 relative">
             {!isConfirming && (
-              <button
+              <button type="button"
                 onClick={() => onShare(full)}
                 className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 aria-label={`Share ${full.name}`}
@@ -65,7 +65,7 @@ export function UserSubjectCard({
 
       {/* Invisible main button overlay covering the whole card (except z-10 interactive controls) */}
       {!isConfirming && (
-        <button
+        <button type="button"
           onClick={() => onSelect(full)}
           className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none z-0"
           aria-label={`Select subject ${full.name}`}
@@ -77,19 +77,19 @@ export function UserSubjectCard({
         {isConfirming ? (
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono text-destructive/80">Delete?</span>
-            <button
+            <button type="button"
               onClick={() => onDeleteConfirm(full.id)}
               aria-label={`Confirm deletion of ${full.name}`}
               className="text-[10px] font-mono font-semibold px-2 py-0.5 border border-destructive/50 text-destructive hover:bg-destructive/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
             >Yes</button>
-            <button
+            <button type="button"
               onClick={onDeleteCancel}
               aria-label={`Cancel deletion of ${full.name}`}
               className="text-[10px] font-mono px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >No</button>
           </div>
         ) : (
-          <button
+          <button type="button"
             onClick={(e) => { e.stopPropagation(); onRemoveClick(full.id) }}
             className="text-[10px] font-mono text-muted-foreground/40 hover:text-destructive transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-destructive"
             aria-label={`Remove ${full.name}`}

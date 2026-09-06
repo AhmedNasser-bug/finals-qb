@@ -23,7 +23,7 @@ export function ExampleModuleCard({
         <div className="flex items-start justify-between gap-3">
           <p className="text-base font-semibold text-foreground tracking-tight leading-snug text-pretty">{entry.name}</p>
           <div className="flex items-center gap-1 shrink-0 z-10 relative">
-            <button
+            <button type="button"
               onClick={(e) => { e.stopPropagation(); if (!isLoading) onShare(e, entry) }}
               disabled={isLoading}
               className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -53,7 +53,7 @@ export function ExampleModuleCard({
 
       {/* Invisible main button overlay covering the whole card (except z-10 interactive controls) */}
       {!isLoading && (
-        <button
+        <button type="button"
           onClick={() => onLoad(entry)}
           className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none z-0"
           aria-label={`Load module ${entry.name}`}
@@ -68,7 +68,7 @@ export function ExampleModuleCard({
             LOADING...
           </div>
         ) : (
-          <button
+          <button type="button"
             onClick={() => onLoad(entry)}
             className="text-[10px] font-mono text-primary hover:text-primary/80 transition-colors px-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >

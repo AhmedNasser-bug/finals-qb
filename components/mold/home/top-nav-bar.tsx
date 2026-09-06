@@ -84,7 +84,7 @@ export function TopNavBar({
       {/* Center: guide feed + pulsating GUIDE button */}
       <div className="hidden md:flex items-center gap-2 flex-1 max-w-md lg:max-w-2xl xl:max-w-[900px] mx-4">
         {/* Feed bar — clickable to cycle tips */}
-        <button
+        <button type="button"
           onClick={() => setTipIndex((prev) => (prev + 1) % GUIDANCE_TIPS.length)}
           title="Click to cycle next study tip"
           aria-label="Cycle to next study recommendation"
@@ -138,7 +138,7 @@ export function TopNavBar({
           </span>
         )}
 
-        <button
+        <button type="button"
           onClick={() => setMuted(toggleAudioMute())}
           title={muted ? "Unmute audio synthesizer (Press M)" : "Mute audio synthesizer (Press M)"}
           aria-label={muted ? "Unmute sound effects" : "Mute sound effects"}
@@ -152,7 +152,7 @@ export function TopNavBar({
         </button>
 
         {onShowThemeModal && (
-          <button
+          <button type="button"
             onClick={onShowThemeModal}
             title="Change color theme palette"
             aria-label="Open color theme switcher"
@@ -163,7 +163,7 @@ export function TopNavBar({
         )}
 
         {onShowLayoutModal && (
-          <button
+          <button type="button"
             onClick={onShowLayoutModal}
             title="Switch workspace page layout"
             aria-label="Open page layout switcher"
@@ -174,7 +174,7 @@ export function TopNavBar({
         )}
 
         {onImportNew && (
-          <button
+          <button type="button"
             onClick={onImportNew}
             title="Import New Subject JSON"
             aria-label="Import new subject from JSON file"
@@ -199,7 +199,7 @@ export function TopNavBar({
           <div className="flex items-center border-l border-zinc-800/60 pl-3 min-h-[28px]">
             <Show when="signed-out">
               <SignInButton mode="modal">
-                <button className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                <button type="button" className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
                   SIGN IN
                 </button>
               </SignInButton>

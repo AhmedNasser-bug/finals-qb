@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,17 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "global-button-type-robustness",
+      "category": "robustness",
+      "tier": 5,
+      "title": "Enforce explicit type='button' on all non-submit button elements",
+      "implementedAt": "2026-09-06T16:26:07.993Z",
+      "componentsTouched": [
+        "components/mold/**/*.tsx"
       ],
       "nonBreaking": true
     }
