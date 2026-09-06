@@ -27,6 +27,15 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
     return filteredRuns.slice(0, 5)
   }, [filteredRuns, showAllRuns])
 
+  // Pre-compute mode counts to avoid O(M*N) rendering complexity
+  const modeCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const r of runs) {
+      counts[r.mode] = (counts[r.mode] || 0) + 1
+    }
+    return counts
+  }, [runs])
+
   return (
     <section className={cn("flex flex-col gap-4", className)} aria-label="Performance Telemetry">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -50,7 +59,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
               ALL ({runs.length})
             </button>
             {GAME_MODES.map((m) => {
-              const count = runs.filter((r) => r.mode === m.id).length
+              const count = modeCounts[m.id] || 0
               if (count === 0) return null
               const isSelected = selectedFilterMode === m.id
               return (

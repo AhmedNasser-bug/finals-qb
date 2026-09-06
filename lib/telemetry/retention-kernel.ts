@@ -210,18 +210,23 @@ export function deriveCategoryRetentionSummaries(
 
   return Object.entries(groups).map(([cat, cardStates]) => {
     const total = cardStates.length
-    const mastered = cardStates.filter((s) => s.urgencyLevel === "MASTERED").length
-    const due = cardStates.filter((s) => s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY").length
-    const lapsed = cardStates.filter((s) => s.urgencyLevel === "CRITICAL_LAPSED").length
+    let mastered = 0
+    let due = 0
+    let lapsed = 0
+    let sumRetrievability = 0
+    let sumStability = 0
 
-    const avgR =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.currentRetrievability, 0) / total) * 100) / 100
-        : 0
-    const avgS =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.stability, 0) / total) * 10) / 10
-        : 0
+    for (const s of cardStates) {
+      if (s.urgencyLevel === "MASTERED") mastered++
+      else if (s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY") due++
+      else if (s.urgencyLevel === "CRITICAL_LAPSED") lapsed++
+
+      sumRetrievability += s.currentRetrievability
+      sumStability += s.stability
+    }
+
+    const avgR = total > 0 ? Math.round((sumRetrievability / total) * 100) / 100 : 0
+    const avgS = total > 0 ? Math.round((sumStability / total) * 10) / 10 : 0
 
     return {
       category: cat,

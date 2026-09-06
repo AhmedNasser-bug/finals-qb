@@ -29,8 +29,15 @@ export function evaluateDailyMissions(runs: RunRecord[], referenceDate: Date = n
   })
 
   const runsCount = runsToday.length
-  const questionsAnswered = runsToday.reduce((sum, r) => sum + r.totalQuestions, 0)
-  const hasHighAccuracy = runsToday.some((r) => r.score >= 85)
+  let questionsAnswered = 0
+  let hasHighAccuracy = false
+
+  for (const r of runsToday) {
+    questionsAnswered += r.totalQuestions
+    if (r.score >= 85) {
+      hasHighAccuracy = true
+    }
+  }
 
   return [
     {
