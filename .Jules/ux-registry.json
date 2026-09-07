@@ -179,6 +179,19 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "home-screen-a11y-polish",
+      "category": "accessibility",
+      "tier": 2,
+      "title": "Home Screen Core Component Accessibility Polish",
+      "implementedAt": "2026-09-07T16:33:31.650Z",
+      "componentsTouched": [
+        "components/mold/home/header-well.tsx",
+        "components/mold/home/session-stats-panel.tsx",
+        "components/mold/home/home-screen-blocks.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

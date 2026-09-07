@@ -22,23 +22,23 @@ export function HeaderWell({
               ACTIVE SUBJECT
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-headline font-black tracking-tight text-white uppercase leading-none break-words break-all">
-              {subjectName} <span className="text-primary-fixed-dim block md:inline text-xs sm:text-sm md:text-base lg:text-lg opacity-50">M1</span>
+              {subjectName} <span className="text-primary-fixed-dim block md:inline text-xs sm:text-sm md:text-base lg:text-lg opacity-50" aria-hidden="true">M1</span>
             </h1>
             <p className="text-xs text-muted-foreground leading-relaxed font-sans max-w-xl pt-2 font-medium">
               {description}
             </p>
           </div>
-          <div className="flex flex-col items-start md:items-end gap-1.5 shrink-0 bg-zinc-900/50 p-4 border border-zinc-800/80 rounded">
-            <div className="font-mono text-[9px] text-primary uppercase tracking-widest font-bold">
+          <div className="flex flex-col items-start md:items-end gap-1.5 shrink-0 bg-zinc-900/50 p-4 border border-zinc-800/80 rounded" role="group" aria-label={`Average accuracy is ${runCount > 0 ? `${visualAccuracyPct.toFixed(1)}%` : "100.0%"}`}>
+            <div className="font-mono text-[9px] text-primary uppercase tracking-widest font-bold" aria-hidden="true">
               AVERAGE ACCURACY
             </div>
-            <div className="text-3xl sm:text-4xl font-headline font-black text-emerald-400">
+            <div className="text-3xl sm:text-4xl font-headline font-black text-emerald-400" aria-hidden="true">
               {runCount > 0 ? `${visualAccuracyPct.toFixed(1)}%` : "100.0%"}
             </div>
           </div>
         </div>
       </div>
-      <div className="scanlines absolute inset-0 opacity-10 pointer-events-none" />
+      <div className="scanlines absolute inset-0 opacity-10 pointer-events-none" aria-hidden="true" />
     </header>
   )
 }

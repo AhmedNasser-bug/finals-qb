@@ -16,18 +16,18 @@ export function SessionStatsPanel() {
         </h2>
       </div>
       
-      <div className="flex flex-col gap-3 font-mono text-[10px]">
-        <div className="flex justify-between border-b border-border/60 pb-2">
-          <span className="text-muted-foreground uppercase">TOTAL_SESSIONS</span>
-          <span className="font-bold text-foreground tabular-nums">{stats.totalRuns}</span>
+      <div className="flex flex-col gap-3 font-mono text-[10px]" role="list" aria-label="Session statistics list">
+        <div className="flex justify-between border-b border-border/60 pb-2" role="listitem" aria-label={`Total sessions: ${stats.totalRuns}`}>
+          <span className="text-muted-foreground uppercase" aria-hidden="true">TOTAL_SESSIONS</span>
+          <span className="font-bold text-foreground tabular-nums" aria-hidden="true">{stats.totalRuns}</span>
         </div>
-        <div className="flex justify-between border-b border-border/60 pb-2">
-          <span className="text-muted-foreground uppercase">DAY_STREAK</span>
-          <span className="font-bold text-primary tabular-nums">{dayStreak} DAYS</span>
+        <div className="flex justify-between border-b border-border/60 pb-2" role="listitem" aria-label={`Day streak: ${dayStreak} days`}>
+          <span className="text-muted-foreground uppercase" aria-hidden="true">DAY_STREAK</span>
+          <span className="font-bold text-primary tabular-nums" aria-hidden="true">{dayStreak} DAYS</span>
         </div>
-        <div className="flex justify-between border-b border-border/60 pb-2">
-          <span className="text-muted-foreground uppercase">AVG_ACCURACY</span>
-          <span className="font-bold text-emerald-400 tabular-nums">
+        <div className="flex justify-between border-b border-border/60 pb-2" role="listitem" aria-label={`Average accuracy: ${stats.averageScore ? `${Math.round(stats.averageScore)}%` : "N/A"}`}>
+          <span className="text-muted-foreground uppercase" aria-hidden="true">AVG_ACCURACY</span>
+          <span className="font-bold text-emerald-400 tabular-nums" aria-hidden="true">
             {stats.averageScore ? `${Math.round(stats.averageScore)}%` : "—"}
           </span>
         </div>
