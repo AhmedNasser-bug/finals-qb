@@ -64,7 +64,9 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
           <div className="flex items-center gap-2">
             {entries.length > 0 && (
               <button
+                type="button"
                 onClick={clearEntries}
+                title="Clear all cards from the review deck"
                 aria-label="Clear Deck"
                 className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
               >
@@ -72,6 +74,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               </button>
             )}
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close review deck panel"
               className="text-muted-foreground hover:text-primary font-mono text-[10px] uppercase border border-border hover:border-primary/30 bg-secondary/80 px-2 py-1 rounded transition-all cursor-pointer focus-ring"

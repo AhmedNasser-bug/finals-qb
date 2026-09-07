@@ -199,7 +199,7 @@ export function TopNavBar({
           <div className="flex items-center border-l border-zinc-800/60 pl-3 min-h-[28px]">
             <Show when="signed-out">
               <SignInButton mode="modal">
-                <button className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                <button type="button" title="Sign in to your account" aria-label="Sign in to your account" className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
                   SIGN IN
                 </button>
               </SignInButton>

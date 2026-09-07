@@ -123,10 +123,11 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
         <div>
           <button 
+            type="button"
             onClick={onReturnHome}
             className="flex items-center gap-2 text-zinc-400 hover:text-[#fecc17] transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true" />
             <span>Return to core</span>
           </button>
           <h1 className="text-3xl font-display font-black tracking-tight text-white flex items-center gap-3">
@@ -444,25 +445,31 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
 
               {!showConfirmReset ? (
                 <button 
+              type="button"
                   onClick={() => setShowConfirmReset(true)}
+              title="Wipe all local telemetry and run data"
                   aria-label="Wipe all local telemetry and run data"
-                  className="bg-transparent hover:bg-destructive/10 text-destructive hover:text-red-400 border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
+              className="bg-transparent hover:bg-destructive/10 text-destructive hover:text-red-400 border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                    RESET_DATA
                 </button>
               ) : (
                 <div className="flex items-center gap-2 shrink-0">
                   <button 
+                type="button"
                     onClick={handleReset}
+                title="Confirm wipe all data"
                     aria-label="Confirm wipe all data"
-                    className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
+                className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                   >
                     CONFIRM
                   </button>
                   <button 
+                type="button"
                     onClick={() => setShowConfirmReset(false)}
+                title="Cancel wipe all data"
                     aria-label="Cancel wipe all data"
-                    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
+                className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                   >
                     CANCEL
                   </button>

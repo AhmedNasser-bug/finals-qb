@@ -189,18 +189,20 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         {/* Right: Quit & Review Deck Buttons (Compact for Mobile) */}
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={toggleCheatSheet}
             aria-label="Open Review Deck"
             title="Open Review Deck"
-            className="px-2 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-[#fecc17]/40 hover:bg-[#fecc17]/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
+            className="px-2 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-[#fecc17]/40 hover:bg-[#fecc17]/10 min-h-[32px] cursor-pointer transition-all active:scale-95 focus-ring"
           >
             [DECK]
           </button>
           <button
+            type="button"
             onClick={onForfeit}
             aria-label="Quit session"
             title="Quit session"
-            className="px-2.5 py-1.5 border border-red-500/20 bg-red-950/20 text-red-400 font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-red-500 hover:bg-red-500/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
+            className="px-2.5 py-1.5 border border-red-500/20 bg-red-950/20 text-red-400 font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-red-500 hover:bg-red-500/10 min-h-[32px] cursor-pointer transition-all active:scale-95 focus-ring"
           >
             QUIT
           </button>
@@ -328,6 +330,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           {/* Review Deck & Quit Buttons */}
           <div className="md:mt-1.5 flex gap-2">
             <button
+              type="button"
               onClick={toggleCheatSheet}
               aria-label="Toggle Review Deck terminal to inspect missed and hinted questions"
               className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-primary hover:border-primary/50 hover:bg-primary/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[36px] shrink-0 cursor-pointer rounded"
@@ -336,6 +339,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               [REVIEW DECK]
             </button>
             <button
+              type="button"
               onClick={onForfeit}
               aria-label="Forfeit active session and view summary results"
               title="Forfeit active session and view summary results"
