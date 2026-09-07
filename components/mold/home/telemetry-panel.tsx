@@ -40,7 +40,7 @@ export function TelemetryPanel() {
               <span className="text-emerald-400 font-bold tabular-nums">{roundedAccuracy}%</span>
             </div>
             
-            <div className="h-3 bg-secondary/60 border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average accuracy is ${roundedAccuracy}%`}>
+            <div className="h-3 bg-secondary/60 border border-border flex gap-0.5 p-0.5 rounded-sm overflow-hidden" role="meter" aria-label={`Average accuracy is ${roundedAccuracy}%`}>
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = i < Math.ceil(accuracyPct / 10)
                 return (
@@ -100,7 +100,7 @@ export function TelemetryPanel() {
               </span>
             </div>
             
-            <div className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden" aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}>
+            <div className="h-3 bg-zinc-900 border border-zinc-800 flex gap-0.5 p-0.5 rounded-sm overflow-hidden" role="meter" aria-label={`Average response time is ${averageResponseTimeMs} milliseconds`}>
               {Array.from({ length: 10 }).map((_, i) => {
                 const isFilled = averageResponseTimeMs > 0 ? (i < speedSegments) : false
                 return (

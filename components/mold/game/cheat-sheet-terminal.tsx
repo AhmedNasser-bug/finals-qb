@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
@@ -9,6 +9,38 @@ import { cn } from "@/lib/utils"
 
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
+
+  const panelRef = useRef<HTMLDivElement>(null)
+  // Trap focus inside panel when open
+  useEffect(() => {
+    if (!isOpen) return
+    const el = panelRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [isOpen])
+
 
   // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
@@ -37,7 +69,12 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        ref={panelRef}
+        tabIndex={-1}
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cheat-sheet-title"
         className={cn(
           "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -49,7 +86,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-4 shrink-0 flex justify-between items-start font-mono">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
+              <span id="cheat-sheet-title" className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
                 STUDY DECK // REVIEW PANEL
               </span>
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded">
@@ -63,7 +100,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
           <div className="flex items-center gap-2">
             {entries.length > 0 && (
-              <button
+              <button type="button"
                 onClick={clearEntries}
                 aria-label="Clear Deck"
                 className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
@@ -71,7 +108,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                 Clear Deck
               </button>
             )}
-            <button
+            <button type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close review deck panel"
               className="text-muted-foreground hover:text-primary font-mono text-[10px] uppercase border border-border hover:border-primary/30 bg-secondary/80 px-2 py-1 rounded transition-all cursor-pointer focus-ring"

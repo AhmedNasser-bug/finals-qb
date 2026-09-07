@@ -41,7 +41,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
         e.preventDefault()
         last.focus()
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -74,7 +74,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
         onClick={onClose}
         aria-modal="true"
         role="dialog"
-        aria-label="Encyclopedia"
+        aria-labelledby="encyclopedia-title"
       >
         <div
           className="bg-panel border border-border rounded p-8 max-w-sm w-full mx-4 text-center"
@@ -85,7 +85,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
           <p className="font-mono text-sm text-muted-foreground">
             No terminology data found in this subject.
           </p>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close encyclopedia overlay"
             title="Close encyclopedia overlay"
@@ -118,7 +118,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
       onClick={onClose}
       aria-modal="true"
       role="dialog"
-      aria-label="Encyclopedia"
+      aria-labelledby="encyclopedia-title"
     >
       <div
         ref={overlayRef}
@@ -129,14 +129,14 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-bold">
+            <span id="encyclopedia-title" className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-bold">
               Encyclopedia
             </span>
             <span className="text-xs font-mono text-primary border border-primary/30 bg-primary/10 px-2 py-0.5 rounded">
               {subject.config.title}
             </span>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close encyclopedia"
             title="Close encyclopedia (Esc)"
@@ -155,7 +155,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             {categories.map((cat) => {
               const count = terminology?.[cat]?.length ?? 0
               return (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => { setActiveCategory(cat); setSearch("") }}
                   aria-current={activeCategory === cat ? "page" : undefined}
