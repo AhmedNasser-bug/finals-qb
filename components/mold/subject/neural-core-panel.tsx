@@ -13,7 +13,9 @@ export function NeuralCorePanel() {
       {/* Decorative Brain/Cortex Image Card */}
       <div className="aspect-square bg-zinc-950 border border-zinc-800 p-2.5 relative overflow-hidden group rounded-md select-none border-glow shadow-[0_0_15px_rgba(254,204,23,0.05)] hover:shadow-[0_0_25px_rgba(254,204,23,0.12)] transition-all duration-500">
         <img
-          alt="Digital telemetry brain cortical visualization"
+          alt=""
+          role="presentation"
+          aria-hidden="true"
           className="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 group-hover:opacity-85 transition-all duration-700"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhXfd0BDWa6914O52t-6kHaB-iWXeSbkhlPio2Rtnl0JuAXsT60dN-YcowvASlkY8LY-uix1yLSB1kHqi1cUoxaHZloZMJF4vieq1bHrMfVySIWJaziKL_eo6q-iCdfqQJ-KTZVAgvDOmENMEeh-45IvE95U-YvUj0j6AUiLfIXieCQkdS3VSWQv4G75KySxVy8vpJWxoIe3BMbV16qwJMa1Zts8Rb_QdZoNeXrrzWAA7A1JMxVXIZ3_6uFokFise-DQ8c6V82m6Fl"
         />

@@ -110,3 +110,6 @@
 
 
 
+## 2023-10-25 - Make decorative cortical visualization images screen-reader-friendly
+**Learning:** Purely decorative images with verbose alt text (like "digital telemetry brain cortical visualization") create noise for screen reader users and degrade the experience.
+**Action:** Always add `role="presentation"` and `aria-hidden="true"` while leaving `alt=""` for purely decorative or aesthetic images in the UI to ensure screen readers skip them completely.
