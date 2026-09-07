@@ -43,19 +43,20 @@ export function buildIntelligentFlashcardQueue(
   } = options
 
   // 1. Filter by category if requested
-  let pool = cards
-  if (selectedCategory && selectedCategory !== "all") {
-    pool = cards.filter((c) => c.category === selectedCategory)
-  }
-
-  // 2. Classify cards into priority buckets
+  // 1. Filter by category if requested & 2. Classify cards into priority buckets
   const critical: Flashcard[] = []
   const due: Flashcard[] = []
   const approaching: Flashcard[] = []
   const unreviewed: Flashcard[] = []
   const mastered: Flashcard[] = []
 
-  pool.forEach((card) => {
+  const hasCategoryFilter = selectedCategory && selectedCategory !== "all";
+
+  for (const card of cards) {
+    if (hasCategoryFilter && card.category !== selectedCategory) {
+      continue;
+    }
+
     const state: CardRetentionState =
       retentionMap[card.id] || createInitialCardState(card, subjectId)
 
@@ -76,7 +77,7 @@ export function buildIntelligentFlashcardQueue(
         mastered.push(card)
         break
     }
-  })
+  }
 
   // Sort critical & due by lowest retrievability first
   const sortByLowestR = (a: Flashcard, b: Flashcard) => {
