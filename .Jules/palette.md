@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-07 - Adding `type="button"` and Accessible Tooltips to Control UI Elements
+**Learning:** Many React applications suffer from implicit form submission bugs because `<button>` defaults to `type="submit"` unless explicitly set to `type="button"`. Furthermore, icon-heavy UI components (like `[X]` for close or `[DECK]` for cheat sheets) rely on visual context but lack descriptive text for screen readers. Simply adding an `aria-label` is good, but adding a `title` provides an immediate tooltip for mouse users who might also be confused by the terse iconography.
+**Action:** Always default to `type="button"` for interactive elements that are not explicitly intended for form submission. Combine `aria-label` with `title` attributes on dense, context-heavy icon buttons to serve both screen readers and desktop pointer users simultaneously. Ensure decorative child SVG elements are explicitly marked with `aria-hidden="true"`.

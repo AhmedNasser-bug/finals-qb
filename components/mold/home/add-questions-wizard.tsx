@@ -322,11 +322,13 @@ CRITICAL RULES:
             </p>
           </div>
           <button
+            type="button"
+            title="Close wizard"
             onClick={onCancel}
             className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
             aria-label="Close wizard"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
@@ -872,15 +874,21 @@ CRITICAL RULES:
           {/* Back/Cancel */}
           {step === 1 ? (
             <button
+              type="button"
+              title="Cancel wizard"
+              aria-label="Cancel wizard"
               onClick={onCancel}
-              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
+              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary min-h-[40px] cursor-pointer"
             >
               Cancel
             </button>
           ) : (
             <button
+              type="button"
+              title="Go back to previous step"
+              aria-label="Go back to previous step"
               onClick={() => setStep((prev) => prev - 1)}
-              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
+              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary min-h-[40px] cursor-pointer"
             >
               ← BACK
             </button>
@@ -889,6 +897,9 @@ CRITICAL RULES:
           {/* Continue/Confirm */}
           {step < 5 ? (
             <button
+              type="button"
+              title="Continue to next step"
+              aria-label="Continue to next step"
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
               aria-busy={validationState === "validating"}
@@ -903,6 +914,9 @@ CRITICAL RULES:
             </button>
           ) : (
             <button
+              type="button"
+              title="Confirm merge"
+              aria-label="Confirm merge"
               onClick={handleConfirmMerge}
               disabled={isNextDisabled}
               aria-busy={validationState === "validating"}

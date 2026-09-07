@@ -49,6 +49,7 @@ export function ActionHub({
   return (
     <div className={cn("w-full flex flex-col gap-2.5", className)}>
       <button
+        type="button"
         onClick={onInitialize}
         disabled={disabled}
         aria-disabled={disabled}
