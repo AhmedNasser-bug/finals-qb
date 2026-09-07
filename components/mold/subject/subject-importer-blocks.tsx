@@ -476,7 +476,7 @@ export function DropZoneSection({
           Step 2 — Paste JSON
         </p>
         <div className="flex items-center gap-2">
-          <button
+          <button type="button"
             onClick={onPaste}
             disabled={state === "pasting"}
             title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
