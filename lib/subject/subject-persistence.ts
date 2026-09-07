@@ -74,34 +74,35 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
   }
 
   const termObj = obj.terminology as Record<string, unknown>
-  if (Object.keys(termObj).length > 0) {
-    const firstVal = Object.values(termObj)[0]
-    if (typeof firstVal === "string") {
-      // Entire map is flat strings — lift into a single _general bucket
-      const entries = Object.entries(termObj)
-      const lifted = new Array(entries.length)
-      for (let i = 0; i < entries.length; i++) {
-        lifted[i] = {
-          term: entries[i][0],
-          definition: entries[i][1] as string,
-        }
+  const termKeys = Object.keys(termObj)
+
+  if (termKeys.length > 0 && typeof Object.values(termObj)[0] === "string") {
+    // Entire map is flat strings — lift into a single _general bucket
+    const entries = Object.entries(termObj)
+    const lifted = new Array(entries.length)
+    for (let i = 0; i < entries.length; i++) {
+      lifted[i] = {
+        term: entries[i][0],
+        definition: entries[i][1] as string,
       }
-      obj.terminology = { _general: lifted }
-      warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
     }
+    obj.terminology = { _general: lifted }
+    warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
   }
 
   // Auto-generate empty terminology keys for any categories used by questions
   if (Array.isArray(obj.questions)) {
     const termDict = obj.terminology as Record<string, unknown>
-    obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
+    for (const q of obj.questions as any[]) {
+      if (!q || typeof q.category !== "string") continue;
+
+      const cat = q.category.trim()
+      if (cat === "") continue;
+
+      if (!Array.isArray(termDict[cat])) {
+        termDict[cat] = []
       }
-    })
+    }
   }
 }
 
@@ -249,34 +250,27 @@ function autoFixSingleQuestion(
     qFixed = true;
   } else {
     qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+    const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+
     if (!hasLabel) {
       const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+      const isTrueMatch = (qObj.type === "TrueFalse" || normalizedOptions.length === 2) && ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+      const isFalseMatch = (qObj.type === "TrueFalse" || normalizedOptions.length === 2) && ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+
+      const oldAnswer = qObj.answer;
+
       if (matchedOpt) {
-        const oldAnswer = qObj.answer;
         qObj.answer = matchedOpt.label;
         warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
         qFixed = true;
-        hasLabel = true;
+      } else if (isTrueMatch || isFalseMatch) {
+        qObj.answer = isTrueMatch ? "A" : "B";
+        warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+        qFixed = true;
       } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
+        qObj.answer = normalizedOptions[0].label;
+        warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+        qFixed = true;
       }
     }
   }
@@ -334,15 +328,17 @@ function autoFixTerminology(obj: Record<string, unknown>, warnings: string[]) {
   const termDict = obj.terminology as Record<string, unknown>
 
   // Auto-generate empty terminology keys for any categories used by questions
-  if (Array.isArray(obj.questions)) {
-    obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
-      }
-    })
+  if (!Array.isArray(obj.questions)) return;
+
+  for (const q of obj.questions as any[]) {
+    if (!q || typeof q.category !== "string") continue;
+
+    const cat = q.category.trim()
+    if (cat === "") continue;
+
+    if (!Array.isArray(termDict[cat])) {
+      termDict[cat] = []
+    }
   }
 }
 
