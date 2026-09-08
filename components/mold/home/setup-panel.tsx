@@ -29,21 +29,23 @@ export function SetupPanel({
         Configuration
       </h2>
 
-      <ConfigControls config={config} onChange={onChange}>
-        {!isUntimed && !isFullRevision && <ConfigControls.TimeLimit />}
-        <ConfigControls.HintSystem />
-        {!isFullRevision && !isPractice && <ConfigControls.QuestionCount />}
-        {isFullRevision && <ConfigControls.RevisionNote />}
-      </ConfigControls>
+      <div className="border border-border p-4 rounded bg-panel/50 flex flex-col gap-4">
+        <ConfigControls config={config} onChange={onChange}>
+          {!isUntimed && !isFullRevision && <ConfigControls.TimeLimit />}
+          <ConfigControls.HintSystem />
+          {!isFullRevision && !isPractice && <ConfigControls.QuestionCount />}
+          {isFullRevision && <ConfigControls.RevisionNote />}
+        </ConfigControls>
 
-      {/* Category selector — practice mode only */}
-      {isPractice && (
-        <CategorySelectorSection
-          config={config}
-          onChange={onChange}
-          categories={categories}
-        />
-      )}
+        {/* Category selector — practice mode only */}
+        {isPractice && (
+          <CategorySelectorSection
+            config={config}
+            onChange={onChange}
+            categories={categories}
+          />
+        )}
+      </div>
     </section>
   )
 }
