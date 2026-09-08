@@ -110,3 +110,7 @@
 
 
 
+
+## 2024-05-18 - A11y Focus Traps in Overlays
+**Learning:** Manual focus trap implementations using `useEffect` in React modals are prone to escaping backwards into the document if `Shift + Tab` is pressed immediately upon opening, because `document.activeElement` evaluates to the modal container `el` rather than the `first` query-selected child.
+**Action:** Always include a check for `document.activeElement === el` when wrapping focus backwards to ensure the focus trap correctly captures and redirects the initial backward tabulation.
