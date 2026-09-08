@@ -1,5 +1,6 @@
 import { formatLabel, type FullSubjectData } from "@/lib/mold-types"
 import { validateSubjectData } from "@/lib/subject-persistence"
+import { logger } from "@/lib/utils/logger"
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -1041,7 +1042,7 @@ export function downloadSubjectSolvedPdf(subject: FullSubjectData): void {
 
   const iframeDoc = iframe.contentWindow?.document
   if (!iframeDoc) {
-    console.error("Failed to create print iframe document")
+    logger.error("Failed to create print iframe document")
     if (iframe.parentNode) document.body.removeChild(iframe)
     return
   }
@@ -1058,7 +1059,7 @@ export function downloadSubjectSolvedPdf(subject: FullSubjectData): void {
       iframe.contentWindow?.focus()
       iframe.contentWindow?.print()
     } catch (err) {
-      console.error("Failed to trigger print:", err)
+      logger.error("Failed to trigger print:", err)
     } finally {
       setTimeout(() => {
         if (iframe.parentNode) iframe.parentNode.removeChild(iframe)
@@ -1086,7 +1087,7 @@ export function downloadSubjectPdf(subject: FullSubjectData): void {
   
   const iframeDoc = iframe.contentWindow?.document
   if (!iframeDoc) {
-    console.error("Failed to create print iframe document")
+    logger.error("Failed to create print iframe document")
     if (iframe.parentNode) {
       document.body.removeChild(iframe)
     }
@@ -1106,7 +1107,7 @@ export function downloadSubjectPdf(subject: FullSubjectData): void {
       iframe.contentWindow?.focus()
       iframe.contentWindow?.print()
     } catch (err) {
-      console.error("Failed to trigger print:", err)
+      logger.error("Failed to trigger print:", err)
     } finally {
       // Keep iframe in DOM for a little bit to ensure print dialog renders properly
       setTimeout(() => {
