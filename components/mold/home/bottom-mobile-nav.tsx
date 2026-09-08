@@ -30,7 +30,7 @@ export function BottomMobileNav({
   onChangeSubject,
 }: BottomMobileNavProps) {
   return (
-    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-panel/95 backdrop-blur-md border-t border-border z-50 flex justify-around items-center px-2 select-none" role="contentinfo">
+    <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-panel/95 backdrop-blur-md border-t border-border z-50 flex justify-around items-center px-2 select-none" role="navigation">
       <button
         onClick={() => {
           setView("home")

@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-08 - Global Shortcuts, Tab Navigation A11y, and Progressive Panel Disclosure
+**Learning:** Adding explicit keyboard shortcuts for top-level navigation actions (Theme, Layout, Import) drastically reduces friction for power users. Furthermore, enforcing semantic `role="navigation"` on the bottom mobile footer instead of generic `contentinfo` improves structural clarity for screen readers. Finally, wrapping configuration panels in visually distinct neo-brutalist border styles creates logical progressive disclosure and visually separates settings from study mode selectors.
+**Action:** When implementing global actions, always bind intuitive single-key hotkeys (e.g. `T`, `L`, `I`) and annotate the `title` attribute. Ensure all main navigation footers use `role="navigation"`, and encapsulate related configuration controls within distinct bordered panels using semantic layout classes.

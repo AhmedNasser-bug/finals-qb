@@ -58,10 +58,28 @@ export function TopNavBar({
         e.preventDefault()
         setMuted(toggleAudioMute())
       }
+      if (e.key === "t" || e.key === "T") {
+        if (onShowThemeModal) {
+          e.preventDefault()
+          onShowThemeModal()
+        }
+      }
+      if (e.key === "l" || e.key === "L") {
+        if (onShowLayoutModal) {
+          e.preventDefault()
+          onShowLayoutModal()
+        }
+      }
+      if (e.key === "i" || e.key === "I") {
+        if (onImportNew) {
+          e.preventDefault()
+          onImportNew()
+        }
+      }
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [])
+  }, [onShowThemeModal, onShowLayoutModal, onImportNew])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -154,7 +172,7 @@ export function TopNavBar({
         {onShowThemeModal && (
           <button
             onClick={onShowThemeModal}
-            title="Change color theme palette"
+            title="Change color theme palette (Press T)"
             aria-label="Open color theme switcher"
             className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] flex items-center justify-center shrink-0 rounded"
           >
@@ -165,7 +183,7 @@ export function TopNavBar({
         {onShowLayoutModal && (
           <button
             onClick={onShowLayoutModal}
-            title="Switch workspace page layout"
+            title="Switch workspace page layout (Press L)"
             aria-label="Open page layout switcher"
             className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden sm:flex items-center justify-center shrink-0 rounded"
           >
@@ -176,7 +194,7 @@ export function TopNavBar({
         {onImportNew && (
           <button
             onClick={onImportNew}
-            title="Import New Subject JSON"
+            title="Import New Subject JSON (Press I)"
             aria-label="Import new subject from JSON file"
             className="p-1.5 border border-border text-primary/80 hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden sm:flex items-center justify-center shrink-0 rounded"
           >

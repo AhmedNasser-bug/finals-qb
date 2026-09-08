@@ -179,6 +179,19 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "global-nav-shortcuts-and-setup-polish",
+      "category": "shortcuts|decluttering",
+      "tier": 1,
+      "title": "Global Nav Shortcuts (I, T, L), Bottom Nav A11y & Setup Panel Polish",
+      "implementedAt": "2026-09-08T16:20:04.480Z",
+      "componentsTouched": [
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/home/bottom-mobile-nav.tsx",
+        "components/mold/home/setup-panel.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }
