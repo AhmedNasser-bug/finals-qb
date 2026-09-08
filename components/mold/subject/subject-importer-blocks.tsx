@@ -288,6 +288,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                     )}
                   >
                     <input
+                      aria-label={`Select persona ${item.name}`}
                       type="radio"
                       name="persona-selection"
                       checked={persona === item.id}
