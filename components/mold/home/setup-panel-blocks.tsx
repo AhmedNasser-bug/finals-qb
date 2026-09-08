@@ -245,6 +245,7 @@ export function CategorySelectorSection({
         {categories.length > 3 && (
           <div className="relative">
             <input
+              aria-label="Search categories"
               type="search"
               value={filterQuery}
               onChange={(e) => setFilterQuery(e.target.value)}

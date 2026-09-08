@@ -110,3 +110,8 @@
 
 
 
+
+
+## 2024-05-24 - Accessibility and Inputs
+**Learning:** Adding aria-labels to components that already don't have visible labels makes them accessible to screen readers, and adding explicit `type="button"` attributes to un-typed buttons ensures they don't default to a form submit type. The learning here is that these are simple changes that can be done for specific components that need them for a significant accessibility win, but we must be careful not to use global search-and-replace scripts that modify large portions of the codebase simultaneously.
+**Action:** Always manually target specific components when applying UX fixes rather than executing widespread, automated regex replacements, and avoid committing temporary Node/Python scripts to the repository.
