@@ -69,7 +69,7 @@ export function FlashcardDossierCard({
             </span>
           </div>
           <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider animate-pulse-soft">
-            TAP TO FLIP
+            TAP OR [SPACE] TO FLIP
           </span>
         </div>
 
@@ -134,7 +134,7 @@ export function FlashcardDossierCard({
             {formatLabel(card.category)}
           </span>
           <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider">
-            TAP AGAIN TO REVIEW TERM
+            TAP AGAIN OR [SPACE] TO REVIEW TERM
           </span>
         </div>
       </div>
@@ -164,10 +164,11 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "hover:bg-red-400/10 hover:border-red-400/50",
           "transition-all duration-150",
           "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400",
-          "btn-depress"
+          "btn-depress flex items-center justify-center gap-2"
         )}
       >
-        ✕ &nbsp;STILL LEARNING &nbsp;-1
+        <span className="opacity-50 font-normal">[1]</span>
+        <span>✕ &nbsp;STILL LEARNING &nbsp;-1</span>
       </button>
       <button
         onClick={() => onRespond(true)}
@@ -177,10 +178,11 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "hover:bg-emerald-400/10 hover:border-emerald-400/50",
           "transition-all duration-150",
           "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400",
-          "btn-depress"
+          "btn-depress flex items-center justify-center gap-2"
         )}
       >
-        ✓ &nbsp;GOT IT &nbsp;+1
+        <span className="opacity-50 font-normal">[2]</span>
+        <span>✓ &nbsp;GOT IT &nbsp;+1</span>
       </button>
     </div>
   )

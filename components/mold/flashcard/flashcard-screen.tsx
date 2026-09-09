@@ -6,6 +6,7 @@ import { formatLabel, getCategoryAccent } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { shuffle } from "@/lib/crypto-utils"
 import { Header } from "@/components/mold/flashcard/flashcard-components"
+import { playKeyClick, toggleAudioMute } from "@/lib/audio/sound-engine"
 import {
   SessionEndScreen,
   RoundEndScreen,
@@ -81,6 +82,7 @@ export function FlashcardScreen({
 
   // Flip handler tracking cognitive flip latency
   const handleFlip = useCallback(() => {
+    playKeyClick()
     if (!flipped) {
       const now = Date.now()
       flipTimeRef.current = now
@@ -101,6 +103,7 @@ export function FlashcardScreen({
   // Respond to a card with SuperMemo retention updates
   const handleRespond = useCallback(
     (knew: boolean) => {
+      playKeyClick()
       if (respondingRef.current) return
       respondingRef.current = true
 
@@ -161,6 +164,42 @@ export function FlashcardScreen({
     },
     [card, index, deck.length, scores, retentionMap, subjectId]
   )
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+        return
+      }
+
+      if (e.key === "m" || e.key === "M") {
+        e.preventDefault()
+        toggleAudioMute()
+        return
+      }
+
+      if (phase !== "studying" || showHeatmap) return
+
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault()
+        handleFlip()
+        return
+      }
+
+      if (flipped) {
+        if (e.key === "1") {
+          e.preventDefault()
+          handleRespond(false)
+        } else if (e.key === "2") {
+          e.preventDefault()
+          handleRespond(true)
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [flipped, phase, showHeatmap, handleFlip, handleRespond])
 
   // Start next round with intelligent routing
   function handleContinue() {
