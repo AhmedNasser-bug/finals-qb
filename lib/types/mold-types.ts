@@ -299,21 +299,25 @@ export function computeAggregateStats(runs: RunRecord[]): AggregateStats {
   if (runs.length === 0) {
     return { totalRuns: 0, bestScore: 0, bestStreak: 0, currentStreak: 0, averageScore: 0, averageResponseTimeMs: 0 }
   }
-  const totalTimeSec = runs.reduce((sum, r) => sum + r.timeTaken, 0)
-  const totalQuestionsAnswered = runs.reduce((sum, r) => sum + r.totalQuestions, 0)
-  const averageResponseTimeMs = totalQuestionsAnswered > 0
-    ? Math.round((totalTimeSec * 1000) / totalQuestionsAnswered)
-    : 0
 
+  let totalTimeSec = 0
+  let totalQuestionsAnswered = 0
   let bestScore = 0
   let bestStreak = 0
   let sumScore = 0
+
   for (let i = 0; i < runs.length; i++) {
     const r = runs[i]
+    totalTimeSec += r.timeTaken
+    totalQuestionsAnswered += r.totalQuestions
     if (r.score > bestScore) bestScore = r.score
     if (r.streak > bestStreak) bestStreak = r.streak
     sumScore += r.score
   }
+
+  const averageResponseTimeMs = totalQuestionsAnswered > 0
+    ? Math.round((totalTimeSec * 1000) / totalQuestionsAnswered)
+    : 0
 
   return {
     totalRuns: runs.length,
