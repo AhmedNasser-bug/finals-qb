@@ -38,7 +38,7 @@ export function HeaderWell({
           </div>
         </div>
       </div>
-      <div className="scanlines absolute inset-0 opacity-10 pointer-events-none" />
+      <div className="scanlines absolute inset-0 opacity-10 pointer-events-none" aria-hidden="true" />
     </header>
   )
 }
