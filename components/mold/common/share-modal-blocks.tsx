@@ -67,8 +67,10 @@ export function LinkTabContent({
               onFocus={(e) => e.target.select()}
             />
             <button
+              type="button"
               onClick={onCopy}
               aria-label="Copy share link"
+              title="Copy link to clipboard"
               className={cn(
                 "shrink-0 px-3 py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                 copyState === "copied"
@@ -87,8 +89,10 @@ export function LinkTabContent({
           {/* Shorten button + short URL */}
           <div className="flex flex-col gap-2">
             <button
+              type="button"
               onClick={onShorten}
               disabled={shortenState === "loading"}
+              aria-busy={shortenState === "loading"}
               title={shortenState === "loading" ? "Currently shortening link..." : undefined}
               className={cn(
                 "w-full py-2 rounded border text-xs font-mono font-semibold tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
@@ -118,8 +122,10 @@ export function LinkTabContent({
                   onFocus={(e) => e.target.select()}
                 />
                 <button
+                  type="button"
                   onClick={onCopyShortUrl}
                   aria-label="Copy shortened link"
+                  title="Copy shortened link to clipboard"
                   className="shrink-0 px-3 py-2 rounded border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-mono font-semibold tracking-wider hover:bg-green-500/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                   <span aria-live="polite">
