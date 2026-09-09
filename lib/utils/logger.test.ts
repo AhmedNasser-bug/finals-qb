@@ -93,3 +93,27 @@ test('redacts private keys without breaking JSON parsing', () => {
   const result = maskData(jsonStr);
   assert.doesNotThrow(() => JSON.parse(result));
 });
+
+test('masks IPv4 addresses', () => {
+  const result1 = maskData('Connecting to 192.168.1.1 for database');
+  assert.strictEqual(result1, 'Connecting to [REDACTED] for database');
+
+  const result2 = maskData('{"ip": "10.0.0.1"}');
+  assert.strictEqual(result2, '{"ip":"[REDACTED]"}');
+});
+
+test('masks IPv6 addresses', () => {
+  const result1 = maskData('Request from 2001:0db8:85a3:0000:0000:8a2e:0370:7334 processed');
+  assert.strictEqual(result1, 'Request from [REDACTED] processed');
+
+  const result2 = maskData('{"client_ip": "fe80:0000:0000:0000:0204:61ff:fe9d:f156"}');
+  assert.strictEqual(result2, '{"client_ip":"[REDACTED]"}');
+});
+
+test('masks MAC addresses', () => {
+  const result1 = maskData('Device MAC Address: 00:1A:2B:3C:4D:5E');
+  assert.strictEqual(result1, 'Device MAC Address: [REDACTED]');
+
+  const result2 = maskData('{"device_mac": "00-1A-2B-3C-4D-5E"}');
+  assert.strictEqual(result2, '{"device_mac":"[REDACTED]"}');
+});
