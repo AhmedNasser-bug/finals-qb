@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,18 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "flashcard-keyboard-shortcuts",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Flashcard Screen Keyboard Shortcuts Engine",
+      "implementedAt": "2026-09-09T16:15:50.937Z",
+      "componentsTouched": [
+        "components/mold/flashcard/flashcard-screen.tsx",
+        "components/mold/flashcard/flashcard-screen-blocks.tsx"
       ],
       "nonBreaking": true
     }
