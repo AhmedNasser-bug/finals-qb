@@ -1,8 +1,8 @@
-# System Overview
+# Cross-Module Traceability Manual
 
-## Cross-Module Traceability
+This manual maps component interactions across frontend client apps, backend services, and cloud infra targets. It also documents interface properties and data pipelines to create a clear guide for cross-layer development.
 
-This document maps the architectural component interactions across frontend client apps, backend services, and cloud infra targets.
+## 1. Component Interactions
 
 ### Frontend Client Apps & Next.js App Router
 The frontend application uses Next.js 16 with the App Router.
@@ -32,3 +32,27 @@ The multi-tenant sandbox environment leverages Docker.
 - **Frontend App ↔ Local Storage**: Client components read/write to `localStorage` using hooks like `useSubjectStore` and persistent state managers to ensure offline availability.
 - **Backend Services**: Next.js Server Components handle secure, pre-rendered HTML delivery. Server Actions (if any) provide structured API points.
 - **Docker Multi-Tenant Sandbox**: Containerized tenants mount isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) avoiding state bleeding across the local orchestrator environments.
+
+## 2. Interface Properties
+
+### Core Data Models
+Defined heavily in `lib/types/mold-types.ts`, the principal models dictating the domain boundaries are:
+- `FullSubjectData`: Represents the fully hydrated model of a subject being tested or managed.
+- `Question`: Defines varying structures like MCQ (`MCQOption`) or TrueFalse questions.
+- `GameState`: The current atomic instance of a game run, capturing `GamePhase`, active scores, and timelines.
+- `AchievementCondition`: Logical evaluations determining progression capabilities.
+- `Terminology`: Used for learning modes, detailing specific concepts or terms (`TerminologyEntry`).
+
+### Interface Properties Mapping
+- **Subject Validation Interface (`SubjectSchema`)**: Validates inbound JSON to ensure the structure strictly conforms to the `FullSubjectData` type, guaranteeing stability across the persistence layer.
+- **Game Engine Dispatch Interface**: Component interactions dispatch structured objects (e.g. `{ type: 'ANSWER', payload: ... }`) ensuring predictability within the reducer pipeline.
+
+## 3. Data Pipelines
+
+### Data Persistence Pipeline
+`lib/subject/subject-persistence.ts` operates as the primary data pipeline bridging active memory and browser storage constraints.
+- `validateSubjectData(raw: unknown)`: Secures inbound JSON parsing constraints, avoiding schema mismatch.
+- `loadSubjects()` and `saveSubjects()`: Interfacing points with Next.js environment mapping directly to local persistence layers.
+
+### Game State Reducer Pipeline
+Within `lib/game-engine.tsx`, state mutations operate within a unidirectional data flow. Actions such as answer selections trigger state shifts that are then broadcasted back up to listeners mapped via `useGameEngine`.
