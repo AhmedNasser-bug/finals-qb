@@ -16,7 +16,7 @@ export function ZenMinimalDockLayout({
 }: PageLayoutProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary animate-fade-in relative">
-      <div className="scanlines absolute inset-0 opacity-[0.02] pointer-events-none" />
+      <div className="scanlines absolute inset-0 opacity-[0.02] pointer-events-none" aria-hidden="true" />
       {topNav}
       
       {/* Centered Focus Canvas */}

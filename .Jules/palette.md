@@ -110,3 +110,6 @@
 
 
 
+## 2024-09-10 - Modal Shift+Tab Focus Trap Escapes
+**Learning:** In custom React modal focus traps using `useEffect`, listening to `Shift+Tab` and redirecting focus from the first element to the last element works correctly *unless* the `document.activeElement` is currently the modal container itself (which happens when the modal is first opened and programmatically focused). If the user hits `Shift+Tab` while on the container, the trap breaks because it only checks if the active element is the *first* focusable element inside the modal.
+**Action:** When implementing custom `Shift+Tab` focus traps, always explicitly check `if (e.shiftKey && (document.activeElement === first || document.activeElement === modalContainer))` to catch backward tabbing from the root wrapper.

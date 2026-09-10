@@ -12,7 +12,7 @@ export function DefaultSidebarLayout({
 }: PageLayoutProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary animate-fade-in relative">
-      <div className="scanlines absolute inset-0 opacity-[0.03] pointer-events-none" />
+      <div className="scanlines absolute inset-0 opacity-[0.03] pointer-events-none" aria-hidden="true" />
       {topNav}
       <div className="flex-1 flex flex-col md:flex-row relative">
         {sidebar}
