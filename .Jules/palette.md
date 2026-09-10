@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-10 - Standardizing Semantic Background Tokens Across Panels
+**Learning:** Hardcoded raw hex colors (`#101115`, `#0b0c0f`) and raw zinc tailwind tokens (`bg-zinc-900`, `text-zinc-500`, `text-white`) were used inconsistently across Home Dashboard panels (TelemetryPanel, AchievementsPanel, HeaderWell), breaking the established design system rule which requires the exclusive use of semantic tokens (`bg-panel`, `bg-secondary`, `border-border`, `text-muted-foreground`, `text-foreground`).
+**Action:** When creating or modifying UI components, ensure that background, text, and border classes strictly use semantic Tailwind tokens and avoid raw color strings to guarantee theme consistency and accessibility.
