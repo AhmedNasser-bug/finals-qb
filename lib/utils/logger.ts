@@ -14,7 +14,12 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
   {
     // Private keys
     pattern: /(-----BEGIN[A-Z0-9-\s]{1,128}PRIVATE KEY-----)([\s\S]{1,8192}?)(-----END[A-Z0-9-\s]{1,128}PRIVATE KEY-----)/g,
-    replacement: '$1\\n[REDACTED]\\n$3'
+    replacement: (match: string, p1: string, p2: string, p3: string) => {
+      if (match.includes('\\n')) {
+        return `${p1}\\n[REDACTED]\\n${p3}`;
+      }
+      return `${p1}\n[REDACTED]\n${p3}`;
+    }
   },
   {
     // Common secrets and PII
