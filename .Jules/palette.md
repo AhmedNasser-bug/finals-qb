@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-24 - Enhancing Micro-UX with Contextual Tooltips and ARIA Labels
+**Learning:** Actions such as closing dialogs, cancelling reset prompts, and toggling specific overlay features often lack clear intent for users relying on screen readers or visual tooltips, causing ambiguity. Modals often represent these with icons or brief textual buttons that don't specify the result (e.g. "Close achievement gallery" vs just "Close").
+**Action:** Always include contextual `title` attributes for tooltips on modal actions to guide mouse users, and pair them with detailed `aria-label`s for screen reader parity (e.g., `aria-label="Dismiss notification" title="Dismiss achievement notification"`).

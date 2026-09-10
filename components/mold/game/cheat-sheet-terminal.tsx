@@ -66,6 +66,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               <button
                 onClick={clearEntries}
                 aria-label="Clear Deck"
+                title="Clear all cards from the review deck"
                 className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
               >
                 Clear Deck
