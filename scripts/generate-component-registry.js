@@ -30,12 +30,7 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await fs.promises.readFile(filePath, { encoding: 'utf-8' });
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
