@@ -14,8 +14,8 @@ export function HeaderWell({
   visualAccuracyPct,
 }: HeaderWellProps) {
   return (
-    <header className="mb-10 relative select-none">
-      <div className="bg-[#0b0c0f] p-8 border-l-4 border-primary inner-recess rounded-r-md">
+    <header className="mb-10 relative select-none" aria-label="Active subject header">
+      <div className="bg-panel p-8 border-l-4 border-primary inner-recess rounded-r-md">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
           <div className="space-y-1 min-w-0 flex-1">
             <div className="font-mono text-[10px] text-primary mb-1 tracking-[0.3em] uppercase opacity-70">
@@ -28,7 +28,7 @@ export function HeaderWell({
               {description}
             </p>
           </div>
-          <div className="flex flex-col items-start md:items-end gap-1.5 shrink-0 bg-zinc-900/50 p-4 border border-zinc-800/80 rounded">
+          <div className="flex flex-col items-start md:items-end gap-1.5 shrink-0 bg-secondary/50 p-4 border border-border/80 rounded">
             <div className="font-mono text-[9px] text-primary uppercase tracking-widest font-bold">
               AVERAGE ACCURACY
             </div>
