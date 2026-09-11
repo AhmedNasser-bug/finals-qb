@@ -17,16 +17,19 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
     replacement: '$1\\n[REDACTED]\\n$3'
   },
   {
-    // Common secrets and PII
-    pattern: /(\b[a-zA-Z0-9_]*(?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)[a-zA-Z0-9_]*["']?\s{0,10}[:=]\s{0,10})(?:(")([^"]{0,4096})(")|(')([^']{0,4096})(')|([^,\]\}\s]{1,4096}))/gi,
-    replacement: (match: string, p1: string, p2: string, p3: string, p4: string, p5: string, p6: string, p7: string, p8: string) => {
-      if (p8 && (p8.startsWith('[') || p8.startsWith('{'))) {
-        return match;
-      }
-      if (p2) return p1 + p2 + "[REDACTED]" + p4;
-      if (p5) return p1 + p5 + "[REDACTED]" + p7;
-      return p1 + '"[REDACTED]"';
-    }
+    // Common secrets and PII - Double Quoted
+    pattern: /(\b[a-zA-Z0-9_]*(?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)[a-zA-Z0-9_]*["']?\s{0,10}[:=]\s{0,10})(")([^"]{0,4096})(")/gi,
+    replacement: '$1$2[REDACTED]$4'
+  },
+  {
+    // Common secrets and PII - Single Quoted
+    pattern: /(\b[a-zA-Z0-9_]*(?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)[a-zA-Z0-9_]*["']?\s{0,10}[:=]\s{0,10})(')([^']{0,4096})(')/gi,
+    replacement: '$1$2[REDACTED]$4'
+  },
+  {
+    // Common secrets and PII - Unquoted (primitive values, not arrays/objects)
+    pattern: /(\b[a-zA-Z0-9_]*(?:api_key|apikey|secret|token|password|email|phone|ssn|credit_card)[a-zA-Z0-9_]*["']?\s{0,10}[:=]\s{0,10})([^,\]\}\s\[\{"'][^,\]\}\s]*)/gi,
+    replacement: '$1"[REDACTED]"'
   },
   {
     // JWTs
