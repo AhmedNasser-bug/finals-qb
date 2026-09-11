@@ -122,7 +122,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
       {/* ─── SCREEN HEADER ────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
         <div>
-          <button 
+          <button type="button"
             onClick={onReturnHome}
             className="flex items-center gap-2 text-zinc-400 hover:text-[#fecc17] transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
@@ -443,7 +443,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
               </div>
 
               {!showConfirmReset ? (
-                <button 
+                <button type="button"
                   onClick={() => setShowConfirmReset(true)}
                   aria-label="Wipe all local telemetry and run data"
                   className="bg-transparent hover:bg-destructive/10 text-destructive hover:text-red-400 border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
@@ -452,14 +452,14 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 </button>
               ) : (
                 <div className="flex items-center gap-2 shrink-0">
-                  <button 
+                  <button type="button"
                     onClick={handleReset}
                     aria-label="Confirm wipe all data"
                     className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
                   >
                     CONFIRM
                   </button>
-                  <button 
+                  <button type="button"
                     onClick={() => setShowConfirmReset(false)}
                     aria-label="Cancel wipe all data"
                     className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"

@@ -110,3 +110,7 @@
 
 
 
+
+## 2024-05-30 - Missing type attributes on React buttons
+**Learning:** Found instances where `<button>` elements in React were missing the explicit `type="button"` attribute. Without this, standard HTML default behavior applies, making them submit buttons if they are ever inadvertently rendered inside or near a form. This causes unwanted page reloads or implicit form submissions during user interaction, disrupting the application flow.
+**Action:** Always include an explicit `type="button"` on React action buttons (unless specifically intended to submit forms). Used a safe global regex injection (`/<button(?![^>]*\btype=)([^>]*)>/g`) across all components to add `type="button"` where it was omitted, ensuring robust interaction handling without breaking existing forms.
