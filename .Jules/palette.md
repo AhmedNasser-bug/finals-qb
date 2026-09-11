@@ -110,3 +110,6 @@
 
 
 
+## 2024-05-24 - Accessibility Standards for Modals and Meters
+**Learning:** Keyboard focus traps in modal overlays often fail on `Shift+Tab` if the modal container element itself is currently focused (which happens automatically upon opening). Additionally, visual progress bars implemented with `div`s are completely invisible to screen readers without semantic roles and value attributes.
+**Action:** When creating modals, ensure the backward tab logic checks `document.activeElement === el`. When implementing custom visual progress meters, always include `role="meter"`, `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`.
