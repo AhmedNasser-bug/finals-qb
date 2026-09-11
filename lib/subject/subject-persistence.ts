@@ -249,34 +249,39 @@ function autoFixSingleQuestion(
     qFixed = true;
   } else {
     qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+    const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+
     if (!hasLabel) {
+      const oldAnswer = qObj.answer;
+
+      // 7a. Try to match by exact text
       const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
       if (matchedOpt) {
-        const oldAnswer = qObj.answer;
         qObj.answer = matchedOpt.label;
         warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
         qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
+      }
+      // 7b. Try boolean matching if TrueFalse
+      else if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
+        const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+        const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+
+        if (isTrueMatch || isFalseMatch) {
+          qObj.answer = isTrueMatch ? "A" : "B";
+          warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+          qFixed = true;
+        } else {
+          // Fallback to first label
           qObj.answer = normalizedOptions[0].label;
           warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
           qFixed = true;
         }
+      }
+      // 7c. Unresolved fallback
+      else {
+        qObj.answer = normalizedOptions[0].label;
+        warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+        qFixed = true;
       }
     }
   }
@@ -688,9 +693,6 @@ function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
   let escaped = false
-  
-  let braceCount = 0;
-  let bracketCount = 0;
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
@@ -709,42 +711,13 @@ function balanceJsonStack(str: string): string {
 
     if (inString) continue;
 
-    if (char === '{') {
-      stack.push('{')
-      braceCount++
-    } else if (char === '[') {
-      stack.push('[')
-      bracketCount++
-    } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-        braceCount--
-      } else if (braceCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          braceCount--
-        }
-      }
-    } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-        bracketCount--
-      } else if (bracketCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
-        }
-      }
+    if (char === '{' || char === '[') {
+      stack.push(char)
+      continue;
+    }
+
+    if (char === '}' || char === ']') {
+      processStackClosure(stack, char);
     }
   }
   
@@ -775,44 +748,35 @@ function processEscapeSequence(
     return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
   }
 
-  // Check if it's a LaTeX command starting with b, f, n, r, t, u
+  // 1. Check for valid LaTeX command matching [bfnrtu]
   if (/[bfnrtu]/i.test(nextChar)) {
-    // Extract the alphabetical word starting at nextChar
     let word = "";
     let j = i + 1;
     while (j < str.length && /[a-zA-Z]/.test(str[j])) {
       word += str[j];
       j++;
     }
-
-    // If the extracted word is a known LaTeX command, double escape the backslash!
     if (LATEX_WORDS.has(word.toLowerCase())) {
       return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
     }
   }
 
-  // Standard JSON escape validation
-  if (
-    nextChar === '"' ||
-    nextChar === "\\" ||
-    nextChar === "/" ||
-    nextChar === "b" ||
-    nextChar === "f" ||
-    nextChar === "n" ||
-    nextChar === "r" ||
-    nextChar === "t"
-  ) {
+  // 2. Standard JSON valid escape check
+  const isValidStandardEscape =
+    nextChar === '"' || nextChar === "\\" || nextChar === "/" ||
+    nextChar === "b" || nextChar === "f" || nextChar === "n" ||
+    nextChar === "r" || nextChar === "t";
+
+  if (isValidStandardEscape) {
     return { addition: "\\" + nextChar, charsConsumed: 2, wasFixed: false };
   }
 
+  // 3. Hex escape validation (\uXXXX)
   if (nextChar === "u") {
     const isHex = (c: string | undefined) => c !== undefined && /[0-9a-fA-F]/.test(c);
-    if (
-      isHex(str[i + 2]) &&
-      isHex(str[i + 3]) &&
-      isHex(str[i + 4]) &&
-      isHex(str[i + 5])
-    ) {
+    const validHex = isHex(str[i + 2]) && isHex(str[i + 3]) && isHex(str[i + 4]) && isHex(str[i + 5]);
+
+    if (validHex) {
       return {
         addition: "\\u" + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5],
         charsConsumed: 6,
@@ -821,6 +785,7 @@ function processEscapeSequence(
     }
   }
 
+  // Fallback: it's an invalid escape, auto-fix by double-escaping
   return { addition: "\\\\", charsConsumed: 1, wasFixed: true };
 }
 
