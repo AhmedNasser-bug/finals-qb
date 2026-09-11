@@ -129,7 +129,7 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
               <p className="text-xs text-muted-foreground leading-relaxed">
                 The share link may be corrupted or truncated. Ask the sender to use the file download option instead.
               </p>
-              <button
+              <button type="button"
                 onClick={handleDecline}
                 aria-label="Dismiss error"
                 className="w-full py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"

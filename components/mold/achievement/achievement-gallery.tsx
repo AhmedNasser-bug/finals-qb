@@ -82,7 +82,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
               {unlocked.length} / {achievements.length} unlocked
             </p>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             aria-label="Close achievement gallery"

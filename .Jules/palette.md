@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-08-30 - Scoped Micro UX Fixes and Bulk Operations Constraints
+**Learning:** Performing blanket find-and-replace operations across a large codebase (like trying to add `type="button"` to 100+ components simultaneously) violates the constraint to keep micro-UX enhancements clean, focused, and under 50 lines. It also significantly increases the risk of introducing syntax typos (e.g., duplicated closing braces in `aria-label`s) that can break the build or degrade the screen reader experience.
+**Action:** When functioning as the "Palette" persona, always scope micro-UX improvements (like fixing missing button types or missing `aria-label`s) to a highly targeted, localized area or a small set of specific components. Isolate changes to guarantee they remain well under the 50-line limit per enhancement batch.

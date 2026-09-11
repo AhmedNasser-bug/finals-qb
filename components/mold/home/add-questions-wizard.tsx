@@ -441,7 +441,7 @@ CRITICAL RULES:
                         step={5}
                         value={questionCount}
                         onChange={(e) => setQuestionCount(parseInt(e.target.value) || 10)}
-                        className="w-40 accent-primary cursor-pointer"
+                        className="w-40 accent-primary cursor-pointer" aria-label="Questions Count Slider"
                       />
                       <input
                         id="question-count-input"
@@ -474,7 +474,7 @@ CRITICAL RULES:
                         step={5}
                         value={flashcardCount}
                         onChange={(e) => setFlashcardCount(parseInt(e.target.value) || 10)}
-                        className="w-40 accent-primary cursor-pointer"
+                        className="w-40 accent-primary cursor-pointer" aria-label="Flashcards Count Slider"
                       />
                       <input
                         id="flashcard-count-input"

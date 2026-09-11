@@ -183,6 +183,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
               <input
                 ref={searchInputRef}
                 type="search"
+                id="encyclopedia-search"
                 aria-label={`Search ${formatLabel(activeCategory)}`}
                 placeholder={`Search ${formatLabel(activeCategory)} (Press '/' to focus)…`}
                 value={search}
