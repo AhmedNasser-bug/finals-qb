@@ -68,8 +68,9 @@ export function FlashcardDossierCard({
               // {accent.label}
             </span>
           </div>
-          <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider animate-pulse-soft">
+          <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider animate-pulse-soft flex items-center gap-1.5">
             TAP TO FLIP
+            <span className="px-1 py-0.5 border border-border rounded bg-muted/30 text-[8px] font-bold" aria-hidden="true">[SPACE]</span>
           </span>
         </div>
 
@@ -159,7 +160,7 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
       <button
         onClick={() => onRespond(false)}
         className={cn(
-          "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider",
+          "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider relative flex items-center justify-center",
           "border-red-400/40 bg-red-400/5 text-red-400",
           "hover:bg-red-400/10 hover:border-red-400/50",
           "transition-all duration-150",
@@ -167,12 +168,13 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "btn-depress"
         )}
       >
+        <span className="absolute left-3 px-1 py-0.5 border border-red-400/30 rounded bg-red-400/10 text-[9px] font-bold" aria-hidden="true">[1]</span>
         ✕ &nbsp;STILL LEARNING &nbsp;-1
       </button>
       <button
         onClick={() => onRespond(true)}
         className={cn(
-          "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider font-bold",
+          "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider font-bold relative flex items-center justify-center",
           "border-emerald-400/40 bg-emerald-400/5 text-emerald-400",
           "hover:bg-emerald-400/10 hover:border-emerald-400/50",
           "transition-all duration-150",
@@ -180,6 +182,7 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "btn-depress"
         )}
       >
+        <span className="absolute left-3 px-1 py-0.5 border border-emerald-400/30 rounded bg-emerald-400/10 text-[9px] font-bold" aria-hidden="true">[2]/[↵]</span>
         ✓ &nbsp;GOT IT &nbsp;+1
       </button>
     </div>
@@ -259,9 +262,10 @@ export function SessionEndScreen({
           </button>
           <button
             onClick={onComplete}
-            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex items-center justify-center gap-2"
           >
             NEW SESSION
+            <span className="px-1 py-0.5 border border-primary-foreground/30 rounded bg-primary-foreground/10 text-[10px] font-bold" aria-hidden="true">[↵]</span>
           </button>
         </div>
       </div>
@@ -362,9 +366,10 @@ export function RoundEndScreen({
           </button>
           <button
             onClick={onContinue}
-            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring flex items-center justify-center gap-2"
           >
             CONTINUE — ROUND {round + 1}
+            <span className="px-1 py-0.5 border border-primary-foreground/30 rounded bg-primary-foreground/10 text-[10px] font-bold" aria-hidden="true">[↵]</span>
           </button>
         </div>
       </div>

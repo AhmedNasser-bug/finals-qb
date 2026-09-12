@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-12 - Flashcard Keyboard Navigation Engine & Hotkey Cues
+**Learning:** High-throughput flashcard study sessions are bottlenecked by mouse interactions. Adding a comprehensive keyboard navigation engine (`Space`/`Enter` to flip, `1` for "STILL LEARNING", `2` or `Enter` for "GOT IT", `Escape`/`H` to return home) significantly increases study velocity. Visual hotkey cues (`[SPACE]`, `[1]`, `[2]/[↵]`) make these shortcuts instantly discoverable without breaking the visual design.
+**Action:** Always provide full keyboard parity and visual hotkey badges in study/flashcard runner components.
