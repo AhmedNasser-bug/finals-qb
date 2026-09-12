@@ -95,11 +95,11 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
   if (Array.isArray(obj.questions)) {
     const termDict = obj.terminology as Record<string, unknown>
     obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
+      if (!q || typeof q.category !== "string" || q.category.trim() === "") return;
+
+      const cat = q.category.trim()
+      if (!Array.isArray(termDict[cat])) {
+        termDict[cat] = []
       }
     })
   }
@@ -249,34 +249,28 @@ function autoFixSingleQuestion(
     qFixed = true;
   } else {
     qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+    const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+
     if (!hasLabel) {
       const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+      const isTrueFalse = qObj.type === "TrueFalse" || normalizedOptions.length === 2;
+      const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+      const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+
+      const oldAnswer = qObj.answer;
+
       if (matchedOpt) {
-        const oldAnswer = qObj.answer;
         qObj.answer = matchedOpt.label;
         warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
         qFixed = true;
-        hasLabel = true;
+      } else if (isTrueFalse && (isTrueMatch || isFalseMatch)) {
+        qObj.answer = isTrueMatch ? "A" : "B";
+        warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+        qFixed = true;
       } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
-        }
+        qObj.answer = normalizedOptions[0].label;
+        warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+        qFixed = true;
       }
     }
   }
