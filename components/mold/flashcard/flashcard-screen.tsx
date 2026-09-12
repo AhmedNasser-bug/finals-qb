@@ -163,7 +163,7 @@ export function FlashcardScreen({
   )
 
   // Start next round with intelligent routing
-  function handleContinue() {
+  const handleContinue = useCallback(() => {
     const intelligent = buildIntelligentFlashcardQueue(flashcards, retentionMap, subjectId, {
       strategy: "SMART_ADAPTIVE",
     })
@@ -175,7 +175,59 @@ export function FlashcardScreen({
     setRoundStillLearning(0)
     setAnimClass("animate-fade-in")
     setPhase("studying")
-  }
+  }, [flashcards, retentionMap, subjectId])
+
+  // Update dependencies in useEffect above
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+        return
+      }
+
+      if (e.key === "Escape" || e.key === "h" || e.key === "H") {
+        e.preventDefault()
+        onReturnHome()
+        return
+      }
+
+      if (phase === "studying") {
+        if (!flipped) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            handleFlip()
+            return
+          }
+        } else {
+          if (e.key === "1") {
+            e.preventDefault()
+            handleRespond(false)
+            return
+          }
+          if (e.key === "2" || e.key === "Enter") {
+            e.preventDefault()
+            handleRespond(true)
+            return
+          }
+        }
+      } else if (phase === "round-end") {
+        if (e.key === "Enter") {
+          e.preventDefault()
+          handleContinue()
+          return
+        }
+      } else if (phase === "session-end") {
+        if (e.key === "Enter") {
+          e.preventDefault()
+          onComplete()
+          return
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [phase, flipped, onReturnHome, onComplete, handleFlip, handleRespond, handleContinue])
 
   // Drill triggered from Heatmap
   const handleDrillFromHeatmap = useCallback(
