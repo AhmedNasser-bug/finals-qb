@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2024-11-20 - O(N) Array Flattening and File Buffering
+**Learning:** Consolidating multiple chained array methods (`.filter().reduce().some()`) into a single flat `for...of` loop flattens time complexity to O(N) and drastically reduces synchronous render blocking in CPU-bound telemetry code. Additionally, using buffered file reading (`fsPromises.readFile`) instead of async chunk streaming (`for await (const chunk of stream)`) removes event-loop overhead for memory-bound payloads.
+**Action:** Always prefer flat `for...of` iteration over chained array methods for complex dataset reductions, and avoid manual stream-to-buffer chunking in Node unless files exceed V8 memory limits.
