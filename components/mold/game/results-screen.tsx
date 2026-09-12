@@ -253,7 +253,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain, onReDrillMistakes }: 
         {/* ── Bottom action HUD ── */}
         <footer className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-border">
           <div className="flex items-center gap-3">
-            <button
+            <button type="button"
               onClick={handleCopySummary}
               aria-label="Copy performance summary to clipboard"
               title="Copy formatted results to clipboard"
@@ -272,7 +272,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain, onReDrillMistakes }: 
           </div>
           <div className="flex flex-wrap gap-3 w-full md:w-auto">
             {mistakeQuestions.length > 0 && onReDrillMistakes && (
-              <button
+              <button type="button"
                 onClick={() => onReDrillMistakes(mistakeQuestions)}
                 aria-label={`Re-drill ${mistakeQuestions.length} mistakes (Press R)`}
                 title="Immediately launch remediation session drilling only missed questions"
@@ -281,7 +281,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain, onReDrillMistakes }: 
                 ⚡ RE-DRILL {mistakeQuestions.length} MISTAKES [R]
               </button>
             )}
-            <button
+            <button type="button"
               onClick={onReturnHome}
               aria-label="Return home (Esc or H)"
               title="Return to core dashboard (Press Esc or H)"
@@ -289,7 +289,7 @@ export function ResultsScreen({ onReturnHome, onPlayAgain, onReDrillMistakes }: 
             >
               RETURN TO HOME [ESC]
             </button>
-            <button
+            <button type="button"
               onClick={onPlayAgain}
               aria-label="Play again (Enter)"
               title="Start a new session in this mode (Press Enter)"
