@@ -38,7 +38,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
           e.preventDefault()
           last.focus()
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -84,8 +84,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
               </p>
             </div>
           </div>
-          <button
-            type="button"
+          <button type="button"
             onClick={onClose}
             className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
             aria-label="Close layout selector"
@@ -99,7 +98,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
           {availableLayouts.map((layout) => {
             const isSelected = layout.id === activeLayoutId
             return (
-              <button
+              <button type="button"
                 key={layout.id}
                 type="button"
                 onClick={() => setLayoutId(layout.id)}
@@ -150,8 +149,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
         {/* Footer */}
         <div className="px-6 py-3 border-t border-border bg-panel/30 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
           <span>Active: {activeLayoutId}</span>
-          <button
-            type="button"
+          <button type="button"
             onClick={onClose}
             className="px-3 py-1.5 rounded border border-border bg-card hover:bg-muted text-foreground text-[11px] font-mono font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >

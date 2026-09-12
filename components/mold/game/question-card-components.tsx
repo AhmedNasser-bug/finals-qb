@@ -15,7 +15,7 @@ export function OptionButton({
   onSelect,
 }: OptionButtonProps) {
   return (
-    <button
+    <button type="button"
       role="radio"
       aria-checked={isSelected}
       aria-disabled={isRevealed}

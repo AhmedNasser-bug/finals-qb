@@ -41,7 +41,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
         e.preventDefault()
         last.focus()
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -85,7 +85,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
           <p className="font-mono text-sm text-muted-foreground">
             No terminology data found in this subject.
           </p>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close encyclopedia overlay"
             title="Close encyclopedia overlay"
@@ -136,7 +136,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
               {subject.config.title}
             </span>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close encyclopedia"
             title="Close encyclopedia (Esc)"
@@ -155,7 +155,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             {categories.map((cat) => {
               const count = terminology?.[cat]?.length ?? 0
               return (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => { setActiveCategory(cat); setSearch("") }}
                   aria-current={activeCategory === cat ? "page" : undefined}
@@ -190,8 +190,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
                 className="w-full bg-background border border-border rounded px-3 py-1.5 pr-8 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
               {search && (
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setSearch("")}
                   aria-label="Clear term search"
                   title="Clear term search"
