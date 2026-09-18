@@ -131,7 +131,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             className="text-[10px] font-mono font-bold tracking-wider text-muted-foreground uppercase flex items-center justify-between"
           >
             <span>Questions</span>
-            <span className="text-[9px] text-[#fecc17] font-mono lowercase">
+            <span className="text-[9px] text-primary font-mono lowercase">
               threshold
             </span>
           </label>
@@ -520,7 +520,7 @@ export function DropZoneSection({
               state === "pasting"
                 ? "border-primary/50 bg-primary/10 text-primary opacity-60 cursor-wait"
                 : clipboardBlocked
-                ? "border-amber-500/60 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+                ? "border-primary/60 bg-primary/10 text-primary hover:bg-primary/20"
                 : "border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.01]"
             )}
           >
@@ -535,7 +535,7 @@ export function DropZoneSection({
         onPaste={handleNativePaste}
         onClick={handleBoxClick}
         className={cn(
-          "relative rounded-none border p-6 min-h-[220px] transition-all duration-300 ease-out flex flex-col items-center justify-center bg-[#07080a] cursor-text",
+          "relative rounded-none border p-6 min-h-[220px] transition-all duration-300 ease-out flex flex-col items-center justify-center bg-card cursor-text",
           isDragging
             ? "border-primary bg-primary/5 border-glow"
             : state === "valid"
@@ -544,7 +544,7 @@ export function DropZoneSection({
             ? "border-destructive/40 bg-destructive/5 border-glow-danger"
             : isFocused
             ? "border-primary/80 border-glow"
-            : "border-border hover:border-zinc-700/80"
+            : "border-border hover:border-primary/40"
         )}
       >
         <textarea
@@ -566,7 +566,7 @@ export function DropZoneSection({
 
         {!json && !isFocused && (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none select-none">
-            <svg className="w-8 h-8 text-zinc-500 animate-pulse-soft mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-8 h-8 text-muted-foreground animate-pulse-soft mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
             </svg>
             <p className="text-xs font-mono text-foreground font-semibold tracking-wider uppercase mb-1">
@@ -576,7 +576,7 @@ export function DropZoneSection({
               Drop a subject <code className="text-primary font-mono font-bold">.json</code> file here, click anywhere to type, or press <kbd className="px-1.5 py-0.5 border border-border bg-secondary text-primary font-mono text-[10px] rounded">Ctrl+V</kbd> / <kbd className="px-1.5 py-0.5 border border-border bg-secondary text-primary font-mono text-[10px] rounded">⌘V</kbd> to paste directly.
             </p>
             {clipboardBlocked && (
-              <p className="text-[11px] font-mono text-amber-500/90 mt-2 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded">
+              <p className="text-[11px] font-mono text-primary/90 mt-2 bg-primary/10 border border-primary/20 px-2 py-1 rounded">
                 ⚠ Clipboard permission is blocked in your browser. Click here and use Ctrl+V to paste manually.
               </p>
             )}
@@ -645,7 +645,7 @@ export function ValidationFeedbackSection({
             <p className="text-xs font-mono font-semibold text-destructive tracking-wide uppercase">
               Validation Failed — {result.errors.length} error{result.errors.length !== 1 ? "s" : ""}
             </p>
-            <p className="text-[11px] text-[#a4acba] leading-normal font-sans">
+            <p className="text-[11px] text-muted-foreground leading-normal font-sans">
               Review schema errors below. Use the automated parser diagnostics to resolve issues.
             </p>
           </div>
@@ -663,10 +663,10 @@ export function ValidationFeedbackSection({
           {/* Diagnostics & Snippet Extractor */}
           {parseErrorInfo && parseErrorInfo.snippet && (
             <div className="space-y-2">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-bold block">
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold block">
                 Error Context Specimen (around position {parseErrorInfo.position}):
               </span>
-              <pre className="p-3 bg-[#07080a] border border-border text-[11px] font-mono text-zinc-300 rounded overflow-x-auto whitespace-pre selection:bg-primary/20">
+              <pre className="p-3 bg-card border border-border text-[11px] font-mono text-foreground rounded overflow-x-auto whitespace-pre selection:bg-primary/20">
                 <code>
                   {parseErrorInfo.snippet}
                   {"\n"}
@@ -679,14 +679,14 @@ export function ValidationFeedbackSection({
       )}
 
       {result?.warnings && result.warnings.length > 0 && (
-        <div className="flex flex-col gap-1 rounded border border-amber-400/30 bg-amber-400/5 p-3 animate-slide-up">
-          <p className="text-xs font-mono font-semibold text-amber-400 tracking-wide uppercase">
+        <div className="flex flex-col gap-1 rounded border border-primary/30 bg-primary/5 p-3 animate-slide-up">
+          <p className="text-xs font-mono font-semibold text-primary tracking-wide uppercase">
             {result.warnings.length} Automated Fix{result.warnings.length !== 1 ? "es" : ""} / Adjustment{result.warnings.length !== 1 ? "s" : ""} Applied
           </p>
           <div className="flex flex-col gap-1 max-h-48 overflow-y-auto pr-1">
             {result.warnings.map((w, i) => (
-              <p key={i} className="text-xs text-amber-400/70 leading-relaxed flex gap-1.5 items-start">
-                <span className="text-amber-400 shrink-0 select-none">⚡</span>
+              <p key={i} className="text-xs text-primary/80 leading-relaxed flex gap-1.5 items-start">
+                <span className="text-primary shrink-0 select-none">⚡</span>
                 <span>{w}</span>
               </p>
             ))}

@@ -29,7 +29,7 @@ export function UserSubjectCard({
     <div
       className={cn(
         "group relative flex flex-col bg-panel border transition-all duration-300 ease-out",
-        "hover:-translate-y-0.5 hover:bg-[#121318]/50 focus-within:ring-2 focus-within:ring-primary/60 focus-within:ring-offset-2 focus-within:ring-offset-background",
+        "hover:-translate-y-0.5 hover:bg-secondary/60 focus-within:ring-2 focus-within:ring-primary/60 focus-within:ring-offset-2 focus-within:ring-offset-background",
         isConfirming ? "border-destructive/40" : "border-border hover:border-border/80"
       )}
     >

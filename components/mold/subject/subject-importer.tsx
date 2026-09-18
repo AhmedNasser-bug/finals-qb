@@ -527,7 +527,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
               onClick={onCancel}
               aria-label="Cancel subject import"
               title="Cancel import and close"
-              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-ring min-h-[44px] cursor-pointer"
+              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors focus-ring min-h-[44px] cursor-pointer"
             >
               Cancel
             </button>
@@ -536,7 +536,7 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
               onClick={() => setStep((prev) => prev - 1)}
               aria-label="Go back to previous step"
               title="Back to previous step"
-              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-ring min-h-[44px] cursor-pointer animate-fade-in"
+              className="text-xs font-mono px-5 py-2.5 rounded border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors focus-ring min-h-[44px] cursor-pointer animate-fade-in"
             >
               ← BACK
             </button>
