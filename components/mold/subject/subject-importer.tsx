@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useCallback, useMemo, type DragEvent } from "react"
+import React, { useState, useCallback, useMemo, useRef, useEffect, type DragEvent } from "react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
 import type { FullSubjectData } from "@/lib/mold-types"
@@ -41,6 +41,27 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   const [promptCopied, setPromptCopied] = useState(false)
   const [userMaterial, setUserMaterial] = useState("")
   const [convertedMaterial, setConvertedMaterial] = useState("")
+  const [clipboardBlocked, setClipboardBlocked] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+
+  // Listen to clipboard permission status proactively
+  useEffect(() => {
+    if (typeof navigator !== "undefined" && navigator.permissions?.query) {
+      navigator.permissions
+        .query({ name: "clipboard-read" as PermissionName })
+        .then((perm) => {
+          if (perm.state === "denied") {
+            setClipboardBlocked(true)
+          }
+          perm.onchange = () => {
+            setClipboardBlocked(perm.state === "denied")
+          }
+        })
+        .catch(() => {
+          // Fallback for environments where clipboard-read query is unsupported
+        })
+    }
+  }, [])
 
   // ─── Auto-update question count when preset changes ──────────────────────────
   const handlePresetSelect = (presetId: string) => {
@@ -70,15 +91,66 @@ export function SubjectImporter({ onImport, onCancel, existingIds = [] }: Subjec
   }, [selectedPreset])
 
   // ─── Paste from clipboard ───────────────────────────────────────────────
+  const focusManualInput = useCallback(() => {
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus()
+    })
+  }, [])
+
   async function handlePaste() {
+    // If permission was already blocked, avoid triggering repetitive browser prompt
+    if (clipboardBlocked) {
+      focusManualInput()
+      setResult({
+        valid: false,
+        errors: ["Clipboard permission is blocked in browser settings. Click the input box below and press Ctrl+V (or Cmd+V) to paste directly."],
+        warnings: []
+      })
+      setState("error")
+      return
+    }
+
     setState("pasting")
     try {
+      if (typeof navigator === "undefined" || !navigator.clipboard?.readText) {
+        throw new Error("Clipboard API not available")
+      }
       const text = await navigator.clipboard.readText()
+      if (!text || !text.trim()) {
+        setState("idle")
+        setResult({
+          valid: false,
+          errors: ["Clipboard is empty. Copy your generated JSON first, or click into the box below and press Ctrl+V to paste directly."],
+          warnings: []
+        })
+        focusManualInput()
+        return
+      }
       setJson(text)
       validate(text)
-    } catch {
-      setResult({ valid: false, errors: ["Failed to read clipboard. Try pasting manually."], warnings: [] })
+      setClipboardBlocked(false)
+    } catch (err: unknown) {
+      const errorMsg = (err as Error)?.message || ""
+      const isDenied =
+        (err as DOMException)?.name === "NotAllowedError" ||
+        errorMsg.toLowerCase().includes("denied") ||
+        errorMsg.toLowerCase().includes("permission")
+
+      if (isDenied) {
+        setClipboardBlocked(true)
+      }
+
+      setResult({
+        valid: false,
+        errors: [
+          isDenied
+            ? "Clipboard permission was denied. Click the input box below and press Ctrl+V (or Cmd+V) to paste directly."
+            : "Failed to read clipboard automatically. Click the input box below and press Ctrl+V (or Cmd+V) to paste."
+        ],
+        warnings: []
+      })
       setState("error")
+      focusManualInput()
     }
   }
 
@@ -440,6 +512,8 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
               questionCount={validatedQuestionCount}
               flashcardCount={validatedFlashcardCount}
               categories={validatedCategories}
+              clipboardBlocked={clipboardBlocked}
+              textareaRef={textareaRef}
             />
           )}
 

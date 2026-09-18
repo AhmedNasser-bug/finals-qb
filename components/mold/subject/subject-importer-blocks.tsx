@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { StatChip } from "@/components/mold/subject/subject-importer-components"
 import type { FullSubjectData } from "@/lib/mold-types"
@@ -448,7 +448,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
   )
 }
 
-interface DropZoneSectionProps {
+export interface DropZoneSectionProps {
   json: string
   state: ImporterState
   isDragging: boolean
@@ -457,6 +457,8 @@ interface DropZoneSectionProps {
   onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
   onDragLeave: () => void
   onDrop: (e: React.DragEvent<HTMLDivElement>) => void
+  clipboardBlocked?: boolean
+  textareaRef?: React.RefObject<HTMLTextAreaElement | null>
 }
 
 export function DropZoneSection({
@@ -468,7 +470,33 @@ export function DropZoneSection({
   onDragOver,
   onDragLeave,
   onDrop,
+  clipboardBlocked = false,
+  textareaRef,
 }: DropZoneSectionProps) {
+  const [isFocused, setIsFocused] = useState(false)
+  const localRef = useRef<HTMLTextAreaElement | null>(null)
+  const effectiveRef = textareaRef || localRef
+
+  const handleNativePaste = (e: React.ClipboardEvent) => {
+    const text = e.clipboardData?.getData("text")
+    if (text) {
+      e.preventDefault()
+      onChange(text)
+    }
+  }
+
+  const handleBoxClick = () => {
+    effectiveRef.current?.focus()
+  }
+
+  const handlePasteButtonClick = () => {
+    if (clipboardBlocked) {
+      effectiveRef.current?.focus()
+    } else {
+      onPaste()
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3.5">
       <div className="flex items-center justify-between">
@@ -477,17 +505,26 @@ export function DropZoneSection({
         </p>
         <div className="flex items-center gap-2">
           <button
-            onClick={onPaste}
+            type="button"
+            onClick={handlePasteButtonClick}
             disabled={state === "pasting"}
-            title={state === "pasting" ? "Currently pasting data..." : "Paste JSON from clipboard"}
+            title={
+              state === "pasting"
+                ? "Currently pasting data..."
+                : clipboardBlocked
+                ? "Clipboard permission is blocked in your browser. Click here to focus and press Ctrl+V"
+                : "Paste JSON from clipboard"
+            }
             className={cn(
               "text-xs font-mono px-5 py-2.5 rounded-none border font-semibold tracking-widest uppercase transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[44px] cursor-pointer",
               state === "pasting"
                 ? "border-primary/50 bg-primary/10 text-primary opacity-60 cursor-wait"
+                : clipboardBlocked
+                ? "border-amber-500/60 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
                 : "border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.01]"
             )}
           >
-            {state === "pasting" ? "..." : "Paste"}
+            {state === "pasting" ? "..." : clipboardBlocked ? "Paste (Ctrl+V)" : "Paste"}
           </button>
         </div>
       </div>
@@ -495,42 +532,59 @@ export function DropZoneSection({
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
+        onPaste={handleNativePaste}
+        onClick={handleBoxClick}
         className={cn(
-          "relative rounded-none border p-6 min-h-[180px] transition-all duration-300 ease-out flex flex-col items-center justify-center bg-[#07080a]",
+          "relative rounded-none border p-6 min-h-[220px] transition-all duration-300 ease-out flex flex-col items-center justify-center bg-[#07080a] cursor-text",
           isDragging
             ? "border-primary bg-primary/5 border-glow"
             : state === "valid"
             ? "border-emerald-500/40 bg-emerald-500/5 border-glow-success"
             : state === "error"
             ? "border-destructive/40 bg-destructive/5 border-glow-danger"
+            : isFocused
+            ? "border-primary/80 border-glow"
             : "border-border hover:border-zinc-700/80"
         )}
       >
-        {json ? (
-          <textarea
-            value={json}
-            aria-label="Paste JSON subject data here"
-            {...(state === "error" ? { "aria-invalid": "true" as const } : {})}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="JSON pasted here..."
-            spellCheck={false}
-            className="w-full bg-transparent font-mono text-xs p-0 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 resize-none h-56 leading-relaxed"
-          />
-        ) : (
-          <div className="text-center pointer-events-none flex flex-col items-center gap-2.5 py-6">
-            <svg className="w-8 h-8 text-zinc-500 animate-pulse-soft mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+        <textarea
+          ref={effectiveRef}
+          value={json}
+          aria-label="Paste JSON subject data here"
+          {...(state === "error" ? { "aria-invalid": "true" as const } : {})}
+          onChange={(e) => onChange(e.target.value)}
+          onPaste={handleNativePaste}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="Paste raw JSON here (Ctrl+V / Cmd+V)..."
+          spellCheck={false}
+          className={cn(
+            "w-full bg-transparent font-mono text-xs text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 resize-none h-56 leading-relaxed transition-opacity",
+            !json && !isFocused ? "opacity-0 pointer-events-none" : "opacity-100 relative z-10"
+          )}
+        />
+
+        {!json && !isFocused && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none select-none">
+            <svg className="w-8 h-8 text-zinc-500 animate-pulse-soft mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
             </svg>
-            <p className="text-xs font-mono text-foreground font-semibold tracking-wider uppercase">
-              DRAG & DROP SUBJECT FILE
+            <p className="text-xs font-mono text-foreground font-semibold tracking-wider uppercase mb-1">
+              DRAG & DROP OR CLICK TO PASTE JSON
             </p>
             <p className="text-xs text-muted-foreground max-w-sm leading-relaxed">
-              Drop a subject `.json` file here or click the <span className="text-primary font-bold">PASTE</span> button at the top to load from your clipboard.
+              Drop a subject <code className="text-primary font-mono font-bold">.json</code> file here, click anywhere to type, or press <kbd className="px-1.5 py-0.5 border border-border bg-secondary text-primary font-mono text-[10px] rounded">Ctrl+V</kbd> / <kbd className="px-1.5 py-0.5 border border-border bg-secondary text-primary font-mono text-[10px] rounded">⌘V</kbd> to paste directly.
             </p>
+            {clipboardBlocked && (
+              <p className="text-[11px] font-mono text-amber-500/90 mt-2 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded">
+                ⚠ Clipboard permission is blocked in your browser. Click here and use Ctrl+V to paste manually.
+              </p>
+            )}
           </div>
         )}
+
         {isDragging && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-none border-2 border-dashed border-primary bg-primary/10 pointer-events-none border-glow">
+          <div className="absolute inset-0 flex items-center justify-center rounded-none border-2 border-dashed border-primary bg-primary/10 pointer-events-none border-glow z-20">
             <span className="text-sm font-mono text-primary font-bold">DROP FILE TO LOAD</span>
           </div>
         )}

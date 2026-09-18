@@ -728,6 +728,8 @@ interface Step5LoadDataProps {
   questionCount: number
   flashcardCount: number
   categories: string[]
+  clipboardBlocked?: boolean
+  textareaRef?: React.RefObject<HTMLTextAreaElement | null>
 }
 
 export function Step5LoadData({
@@ -744,6 +746,8 @@ export function Step5LoadData({
   questionCount,
   flashcardCount,
   categories,
+  clipboardBlocked,
+  textareaRef,
 }: Step5LoadDataProps) {
   return (
     <div className="space-y-8 animate-slide-up">
@@ -769,6 +773,8 @@ export function Step5LoadData({
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
+        clipboardBlocked={clipboardBlocked}
+        textareaRef={textareaRef}
       />
 
       <ValidationFeedbackSection
