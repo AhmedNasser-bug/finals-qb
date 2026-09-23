@@ -593,6 +593,17 @@ export function DropZoneSection({
   )
 }
 
+export interface ValidationFeedbackSectionProps {
+  state: ImporterState
+  result: ValidationResult | null
+  preview: FullSubjectData | null
+  questionCount: number
+  flashcardCount: number
+  categories: string[]
+  json: string
+  onChange: (value: string) => void
+}
+
 export function ValidationFeedbackSection({
   state,
   result,
@@ -641,7 +652,7 @@ export function ValidationFeedbackSection({
 
           {/* Standard Errors List */}
           <ul className="flex flex-col gap-1.5 border-b border-border/40 pb-3">
-            {result.errors.map((err, i) => (
+            {result.errors.map((err: string, i: number) => (
               <li key={i} className="text-xs text-destructive/90 leading-relaxed flex gap-2">
                 <span className="font-mono shrink-0 text-destructive/70 font-bold">{i + 1}.</span>
                 {err}
@@ -673,7 +684,7 @@ export function ValidationFeedbackSection({
             {result.warnings.length} Automated Fix{result.warnings.length !== 1 ? "es" : ""} / Adjustment{result.warnings.length !== 1 ? "s" : ""} Applied
           </p>
           <div className="flex flex-col gap-1 max-h-48 overflow-y-auto pr-1">
-            {result.warnings.map((w, i) => (
+            {result.warnings.map((w: string, i: number) => (
               <p key={i} className="text-xs text-primary/80 leading-relaxed flex gap-1.5 items-start">
                 <span className="text-primary shrink-0 select-none">⚡</span>
                 <span>{w}</span>
@@ -704,7 +715,7 @@ export function ValidationFeedbackSection({
             <StatChip label="Categories" value={categories.length} />
           </div>
           <div className="flex flex-wrap gap-1">
-            {categories.map((cat) => (
+            {categories.map((cat: string) => (
               <span
                 key={cat}
                 className="text-[10px] font-mono px-2 py-0.5 rounded-sm border border-border text-muted-foreground"
