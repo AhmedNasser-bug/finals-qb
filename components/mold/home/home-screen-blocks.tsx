@@ -5,7 +5,6 @@ import { TelemetryPanel } from "./telemetry-panel"
 import { AchievementsPanel } from "./achievements-panel"
 import { SessionStatsPanel } from "./session-stats-panel"
 import { HeaderWell } from "./header-well"
-import { PerformanceTable } from "./performance-table"
 
 import type { GameModeId, SetupConfig, CategoryData, Achievement } from "@/lib/mold-types"
 
