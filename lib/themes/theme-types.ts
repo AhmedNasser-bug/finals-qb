@@ -18,12 +18,21 @@ export interface ColorThemeTokens {
   border: string
   input: string
   ring: string
+  panel?: string
+  panelForeground?: string
+  panelBorder?: string
+  surfaceContainer?: string
+  surfaceContainerLow?: string
+  surfaceContainerHigh?: string
 }
+
+export type ThemeMode = 'dark' | 'light'
 
 export interface ColorThemeSpec {
   id: string
   name: string
   label: string
+  mode: ThemeMode
   description: string
   preview: {
     accent: string
@@ -33,3 +42,4 @@ export interface ColorThemeSpec {
   }
   tokens: ColorThemeTokens
 }
+

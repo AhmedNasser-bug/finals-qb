@@ -6,6 +6,7 @@ import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
 import { renderMath } from "@/lib/utils/math-renderer"
 import { cn } from "@/lib/utils"
+import { X } from "lucide-react"
 
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
@@ -31,7 +32,8 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-fade-in"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in cursor-pointer"
+          aria-hidden="true"
         />
       )}
 
@@ -39,14 +41,14 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
       <div
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-[#0d0d0d] border-l border-zinc-800 shadow-2xl flex flex-col transition-all duration-300 transform select-text",
+          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-card border-l border-border shadow-2xl flex flex-col transition-all duration-300 transform select-text",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
         <div className="scanlines absolute inset-0 opacity-[0.03] pointer-events-none z-0" />
 
         {/* Panel Header */}
-        <div className="relative z-10 bg-[#121212] border-b border-zinc-800/80 px-4 py-4 shrink-0 flex justify-between items-start font-mono">
+        <div className="relative z-10 bg-panel border-b border-border px-4 py-4 shrink-0 flex justify-between items-start font-mono">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
@@ -66,32 +68,28 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               <button
                 onClick={clearEntries}
                 aria-label="Clear Deck"
-                className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary/80 px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
+                className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
               >
                 Clear Deck
               </button>
             )}
             <button
               onClick={() => setIsOpen(false)}
-              aria-label="Close review deck panel"
-              className="text-muted-foreground hover:text-primary font-mono text-[10px] uppercase border border-border hover:border-primary/30 bg-secondary/80 px-2 py-1 rounded transition-all cursor-pointer focus-ring"
-              title="Close review deck panel (Press Esc)"
+              aria-label="Close study deck review drawer"
+              className="text-muted-foreground hover:text-foreground p-1 border border-border hover:border-primary/50 transition-colors cursor-pointer rounded"
             >
-              [X]
+              <X className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         </div>
 
-        {/* Panel Content (Scrollable Deck of Cards) */}
-        <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
-          {reversedEntries.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
-              <div className="text-4xl">📚</div>
-              <div className="space-y-1">
-                <p className="font-sans font-bold text-sm text-zinc-300">Your review deck is currently empty</p>
-                <p className="font-sans text-xs text-zinc-500 max-w-xs leading-normal">
-                  Questions you answer incorrectly or request hints for during a session will appear here automatically.
-                </p>
+        {/* Panel Body / Scrollable Cards */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
+          {entries.length === 0 ? (
+            <div className="h-64 flex flex-col items-center justify-center border border-dashed border-border/80 rounded p-6 text-center space-y-2">
+              <span className="font-mono text-xl text-muted-foreground">0_ENTRIES</span>
+              <div className="font-sans text-xs text-muted-foreground max-w-xs leading-relaxed">
+                No mistakes or hint requests recorded yet. Questions you struggle with or use hints on will automatically accumulate in this deck for instant review.
               </div>
             </div>
           ) : (
@@ -105,10 +103,10 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                 <div
                   key={entry.id}
                   className={cn(
-                    "bg-[#121212] border p-4 md:p-5 rounded shadow-sm space-y-4 transition-all",
+                    "bg-panel border border-border p-4 md:p-5 rounded shadow-sm space-y-4 transition-all",
                     entry.gotWrong 
-                      ? "border-red-500/20 bg-gradient-to-br from-[#121212] to-red-950/[0.02]" 
-                      : "border-amber-500/20 bg-gradient-to-br from-[#121212] to-amber-950/[0.02]"
+                      ? "border-destructive/30" 
+                      : "border-primary/30"
                   )}
                 >
                   {/* Card Meta Header */}

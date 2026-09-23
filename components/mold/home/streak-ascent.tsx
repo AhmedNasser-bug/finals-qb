@@ -69,12 +69,12 @@ export function StreakAscent({ currentStreak, bestStreak, isAtRisk = false, clas
 
       {/* Upcoming Milestone (Aspirational) */}
       {nextMilestone && (
-        <div className="relative z-10 flex flex-col items-center mb-8 opacity-40">
-           <div className="text-[10px] font-mono text-muted-foreground tracking-widest mb-2">UPCOMING MILESTONE</div>
-           <div className={cn("w-10 h-10 flex items-center justify-center rounded-full border border-border bg-background glass")}>
-              <span className="font-mono text-sm">{nextMilestone}</span>
+        <div className="relative z-10 flex flex-col items-center mb-8 opacity-80">
+           <div className="text-[10px] font-mono text-muted-foreground font-bold tracking-widest mb-2">UPCOMING MILESTONE</div>
+           <div className={cn("w-10 h-10 flex items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm")}>
+              <span className="font-mono text-sm font-bold">{nextMilestone}</span>
            </div>
-           <div className="mt-2 text-xs font-mono">{STREAK_TIERS.find(t => t.min === nextMilestone)?.label}</div>
+           <div className="mt-2 text-xs font-mono font-bold text-foreground">{STREAK_TIERS.find(t => t.min === nextMilestone)?.label}</div>
            <div className="text-[10px] text-muted-foreground mt-1">{nextMilestone - currentStreak} days remaining</div>
         </div>
       )}

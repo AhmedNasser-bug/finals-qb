@@ -47,7 +47,7 @@ export function GameFooter({
   }
 
   return (
-    <footer className="bg-panel border-t border-border/80 px-4 h-24 flex items-center gap-4">
+    <footer className="bg-panel border-t border-border px-4 h-24 flex items-center gap-4 shadow-sm">
       {/* Primary CTA and Hint row — full width */}
       <div className="flex-1 flex items-center gap-3 h-12">
         {config.hintsEnabled && (
@@ -57,14 +57,14 @@ export function GameFooter({
             aria-label={buttonTitle}
             title={buttonTitle}
             className={cn(
-              "h-full px-4 font-mono text-xs font-black tracking-[0.15em] uppercase transition-all btn-depress focus-ring rounded flex items-center justify-center gap-2 shrink-0 w-28 sm:w-36 transition-all duration-150",
+              "h-full px-4 font-mono text-xs font-black tracking-[0.15em] uppercase transition-all btn-depress focus-ring rounded flex items-center justify-center gap-2 shrink-0 w-28 sm:w-36 transition-all duration-150 shadow-sm",
               canHint
-                ? "border-primary bg-primary/10 text-primary hover:bg-primary/20 border-glow"
+                ? "border border-primary bg-primary/10 text-primary hover:bg-primary/20 border-glow"
                 : initialLockRemaining > 0
-                ? "border-border bg-secondary/60 text-muted-foreground cursor-not-allowed animate-pulse"
+                ? "border border-border bg-secondary text-muted-foreground cursor-not-allowed animate-pulse"
                 : showHint
-                ? "border-primary bg-primary/25 text-primary border-glow animate-pulse"
-                : "border-border bg-secondary/30 text-muted-foreground/40 cursor-not-allowed"
+                ? "border border-primary bg-primary/25 text-primary border-glow animate-pulse"
+                : "border border-border bg-secondary/50 text-muted-foreground/40 cursor-not-allowed"
             )}
           >
             <span className="font-mono text-sm leading-none">{blockSymbol}</span>
@@ -80,10 +80,10 @@ export function GameFooter({
               aria-label="Submit sequence"
               title={!canSubmit ? "Select an option first (1..4 or click)" : "Submit sequence (Enter or Space)"}
               className={cn(
-                "w-full h-full font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded flex items-center justify-center gap-2",
+                "w-full h-full font-mono text-sm font-black tracking-[0.2em] uppercase transition-all btn-depress focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded flex items-center justify-center gap-2 shadow-sm",
                 canSubmit
                   ? "cta-gradient"
-                  : "bg-[#2a2a2a] text-zinc-600 cursor-not-allowed"
+                  : "bg-secondary text-muted-foreground/50 border border-border cursor-not-allowed"
               )}
             >
               <span>SUBMIT_SEQUENCE</span>
@@ -98,7 +98,7 @@ export function GameFooter({
               onClick={nextQuestion}
               aria-label={isLast ? "View results" : "Continue session"}
               title={isLast ? "View results (Enter or Space)" : "Continue session (Enter or Space)"}
-              className="w-full h-full cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1d21] rounded flex items-center justify-center gap-2"
+              className="w-full h-full cta-gradient font-mono text-sm font-black tracking-[0.2em] uppercase btn-depress animate-slide-up focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded flex items-center justify-center gap-2 shadow-sm"
             >
               <span>{isLast ? "VIEW_RESULTS" : "CONTINUE_SESSION"}</span>
               <span className="text-xs px-1.5 py-0.5 bg-black/30 border border-black/40 rounded font-mono font-bold select-none" aria-hidden="true">
@@ -113,16 +113,16 @@ export function GameFooter({
       <div className="flex items-center gap-4 shrink-0">
         {!isRevealed && (
           <div className="hidden lg:flex flex-col items-end" aria-live="polite" aria-atomic="true">
-            <span className="font-mono text-[8px] text-zinc-500 tracking-widest uppercase">SHORTCUTS</span>
-            <span className="font-mono text-[10px] text-zinc-400 font-bold uppercase">
+            <span className="font-mono text-[8px] text-muted-foreground tracking-widest uppercase font-bold">SHORTCUTS</span>
+            <span className="font-mono text-[10px] text-foreground font-bold uppercase">
               [1-4] SELECT • [H] HINT
             </span>
           </div>
         )}
         {!isRevealed && (
           <div className="hidden md:flex flex-col items-end" aria-live="polite" aria-atomic="true">
-            <span className="font-mono text-[9px] text-zinc-500 tracking-widest uppercase">STATUS</span>
-            <span className="font-mono text-xs text-zinc-500 font-bold uppercase">
+            <span className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase font-bold">STATUS</span>
+            <span className="font-mono text-xs text-foreground font-bold uppercase">
               {canSubmit ? "READY_TO_SUBMIT" : "WAITING_FOR_INPUT"}
             </span>
           </div>
@@ -131,7 +131,7 @@ export function GameFooter({
           <button
             onClick={nextQuestion}
             aria-label="Skip question"
-            className="flex items-center gap-2 h-12 px-4 border border-[#2a2a2a] text-zinc-500 font-mono text-xs font-bold tracking-widest uppercase hover:text-primary hover:border-primary/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            className="flex items-center gap-2 h-12 px-4 border border-border text-muted-foreground font-mono text-xs font-bold tracking-widest uppercase hover:text-primary hover:border-primary/40 bg-secondary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded shadow-sm"
           >
             <SkipIcon className="w-4 h-4" aria-hidden="true" />
             SKIP

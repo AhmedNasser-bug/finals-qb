@@ -49,7 +49,7 @@ export function Step1PresetTopic({
           className="text-xs font-mono font-bold tracking-wider text-foreground uppercase flex items-center justify-between"
         >
           <span>Enter Subject Topic / Domain Name</span>
-          <span className="text-[10px] text-primary font-mono font-normal">REQUIRED</span>
+          <span className="text-[10px] text-primary font-mono font-bold">REQUIRED</span>
         </label>
         <input
           id="wizard-topic"
@@ -57,7 +57,7 @@ export function Step1PresetTopic({
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="E.g., Theory of Computation, Data Structures, Human Anatomy..."
-          className="w-full bg-card border border-border rounded-none px-4 py-2.5 text-sm text-foreground font-mono placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
+          className="w-full bg-background border border-border rounded px-4 py-2.5 text-sm text-foreground font-mono placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px] shadow-sm"
           autoComplete="off"
         />
       </div>
@@ -102,10 +102,10 @@ export function Step1PresetTopic({
                 type="button"
                 onClick={() => onPresetSelect(p.id)}
                 className={cn(
-                  "flex flex-col text-left p-4 border transition-all duration-300 ease-out focus-ring cursor-pointer min-h-[110px] justify-between rounded-none hover:-translate-y-0.5 hover:bg-secondary/60 hover:border-primary/50",
+                  "flex flex-col text-left p-4 border transition-all duration-300 ease-out focus-ring cursor-pointer min-h-[110px] justify-between rounded hover:-translate-y-0.5 shadow-sm",
                   isSelected
-                    ? "border-primary bg-primary/5 text-foreground border-glow"
-                    : "border-border bg-panel text-muted-foreground hover:text-foreground"
+                    ? "border-primary bg-primary/10 text-foreground border-glow"
+                    : "border-border bg-panel text-muted-foreground hover:text-foreground hover:bg-secondary/40 hover:border-border/80"
                 )}
               >
                 <div>
@@ -140,7 +140,7 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
   return (
     <div className="space-y-8 animate-slide-up">
       <div className="space-y-1.5">
-        <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
+        <span className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 uppercase font-bold">
           STEP 02 // COGNITIVE_BIAS_CALIBRATION
         </span>
         <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">
@@ -158,22 +158,22 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
           type="button"
           onClick={() => setSubjectType("theoretical")}
           className={cn(
-            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-secondary/60",
+            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded min-h-[200px] hover:-translate-y-0.5 shadow-sm",
             subjectType === "theoretical"
-              ? "border-primary bg-primary/5 border-glow"
-              : "border-border bg-panel text-muted-foreground hover:border-primary/50 hover:text-foreground"
+              ? "border-emerald-500 bg-emerald-500/10 border-glow-success text-foreground"
+              : "border-border bg-panel text-muted-foreground hover:border-border/80 hover:text-foreground hover:bg-secondary/40"
           )}
         >
           <div className="space-y-3">
-            <span className="text-[9px] font-mono tracking-widest text-muted-foreground uppercase font-semibold">BIAS_PROFILE: TEXT_DICTIONARY</span>
-            <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "theoretical" ? "text-primary font-bold" : "text-foreground font-semibold")}>
+            <span className="text-[9px] font-mono tracking-widest text-muted-foreground uppercase font-bold">BIAS_PROFILE: TEXT_DICTIONARY</span>
+            <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "theoretical" ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-foreground font-semibold")}>
               Theoretical & Prose Focused
             </h4>
             <p className="text-xs text-muted-foreground leading-relaxed font-sans mt-2 font-medium">
               Optimized for descriptive fields, terminology dictionaries, conceptual analysis, and historical relationships. Restricts diagram clutter to maintain focus on literature, definitions, and prose structure.
             </p>
           </div>
-          <div className="text-[10px] font-mono text-primary font-bold uppercase tracking-widest border-t border-border/40 pt-2.5">
+          <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-widest border-t border-border/40 pt-2.5">
             {subjectType === "theoretical" ? "✓ SELECTED PROFILE" : "SELECT THEORETICAL"}
           </div>
         </button>
@@ -183,14 +183,14 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
           type="button"
           onClick={() => setSubjectType("technical")}
           className={cn(
-            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded-none min-h-[200px] hover:-translate-y-0.5 hover:bg-secondary/60",
+            "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded min-h-[200px] hover:-translate-y-0.5 shadow-sm",
             subjectType === "technical"
-              ? "border-primary bg-primary/5 border-glow"
-              : "border-border bg-panel text-muted-foreground hover:border-primary/50 hover:text-foreground"
+              ? "border-primary bg-primary/10 border-glow text-foreground"
+              : "border-border bg-panel text-muted-foreground hover:border-border/80 hover:text-foreground hover:bg-secondary/40"
           )}
         >
           <div className="space-y-3">
-            <span className="text-[9px] font-mono tracking-widest text-muted-foreground uppercase font-semibold">BIAS_PROFILE: DIAGRAMS_AND_CODE</span>
+            <span className="text-[9px] font-mono tracking-widest text-muted-foreground uppercase font-bold">BIAS_PROFILE: DIAGRAMS_AND_CODE</span>
             <h4 className={cn("text-lg font-bold font-display tracking-tight", subjectType === "technical" ? "text-primary font-bold" : "text-foreground font-semibold")}>
               Technical & Analytical Focused
             </h4>
@@ -237,7 +237,7 @@ export function Step3QuestionCount({
       </div>
 
       {/* Justification Box */}
-      <div className="p-4 bg-primary/5 border border-primary/20 flex items-start gap-3 rounded-none">
+      <div className="p-4 bg-primary/5 border border-primary/20 flex items-start gap-3 rounded">
         <span className="text-primary font-mono select-none text-sm mt-0.5">ℹ</span>
         <div>
           <p className="text-xs font-mono font-bold text-foreground uppercase tracking-wider">PRESET JUSTIFICATION</p>
@@ -249,12 +249,12 @@ export function Step3QuestionCount({
 
       {/* Question count input well */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-border/60 bg-panel p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-border bg-panel p-5 rounded shadow-sm">
           <div className="flex flex-col">
             <label htmlFor="wizard-count" className="text-xs font-mono font-bold tracking-wider text-foreground uppercase">
               Total Questions Volume
             </label>
-            <span className="text-[10px] text-muted-foreground mt-0.5 font-mono uppercase font-semibold">
+            <span className="text-[10px] text-muted-foreground mt-0.5 font-mono uppercase font-bold">
               Min 1 — Max 500 questions
             </span>
           </div>
@@ -267,13 +267,13 @@ export function Step3QuestionCount({
             onChange={(e) => {
               setQuestionCount(Math.max(1, parseInt(e.target.value) || 0))
             }}
-            className="w-full sm:w-36 bg-card border border-border rounded-none px-4 py-2.5 text-center text-xl font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px]"
+            className="w-full sm:w-36 bg-background border border-border rounded px-4 py-2.5 text-center text-xl font-mono text-foreground font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[40px] shadow-sm"
           />
         </div>
 
         {/* Preset quick buttons */}
         <div className="pt-2 flex items-center gap-2">
-          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-semibold">Quick Presets:</span>
+          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">Quick Presets:</span>
           <div className="flex items-center gap-2 flex-wrap">
             {[20, 40, 80, 120].map((num) => {
               const isSelected = questionCount === num
@@ -283,10 +283,10 @@ export function Step3QuestionCount({
                   type="button"
                   onClick={() => onCustomPresetClick(num)}
                   className={cn(
-                    "text-xs font-mono px-3.5 py-1.5 border transition-all duration-300 ease-out cursor-pointer rounded-none min-h-[32px] hover:scale-[1.02]",
+                    "text-xs font-mono px-3.5 py-1.5 border transition-all duration-300 ease-out cursor-pointer rounded min-h-[32px] hover:scale-[1.02] shadow-sm",
                     isSelected
                       ? "border-primary bg-primary/10 text-primary font-bold animate-pulse-soft"
-                      : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground bg-card"
+                      : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground bg-secondary"
                   )}
                 >
                   {num} QS
@@ -494,7 +494,7 @@ ${bundledSourceMaterial}
   return (
     <div className="space-y-6 animate-slide-up select-none">
       <div className="space-y-1.5">
-        <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
+        <span className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 uppercase font-bold">
           STEP 04 // GENERATE_STUDY_PACKAGE
         </span>
         <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">
@@ -509,41 +509,41 @@ ${bundledSourceMaterial}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Numbered Guide */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="p-5 border border-border bg-panel rounded">
+          <div className="p-5 border border-border bg-panel rounded shadow-sm">
             <h4 className="text-xs font-mono font-bold tracking-wider text-foreground uppercase border-b border-border pb-2.5 mb-3.5 select-none">
               Generation Pipeline
             </h4>
             
             <div className="space-y-4 text-xs font-medium leading-relaxed font-sans text-foreground select-none">
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0">1</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">1</span>
                 <div>
                   <span className="text-foreground font-bold block">Load Source Material</span>
-                  <span>Drag files (.pdf, .docx) into the box on the right. We parse them securely client-side.</span>
+                  <span className="text-muted-foreground">Drag files (.pdf, .docx) into the box on the right. We parse them securely client-side.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0">2</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">2</span>
                 <div>
                   <span className="text-foreground font-bold block">Add Explicit Instructions</span>
-                  <span>Type custom guidelines, syllabus directions, or explicit prompts in the text box below.</span>
+                  <span className="text-muted-foreground">Type custom guidelines, syllabus directions, or explicit prompts in the text box below.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0">3</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">3</span>
                 <div>
                   <span className="text-foreground font-bold block">Download Generation Package</span>
-                  <span>Download a single `.txt` file containing your parsed materials and custom instructions.</span>
+                  <span className="text-muted-foreground">Download a single `.txt` file containing your parsed materials and custom instructions.</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0">4</span>
+                <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground font-mono font-bold flex items-center justify-center shrink-0 text-[11px]">4</span>
                 <div>
                   <span className="text-foreground font-bold block">Generate in Gemini / Claude</span>
-                  <span>
+                  <span className="text-muted-foreground">
                     Upload the `.txt` file to{" "}
                     <a
                       href="https://gemini.google.com"
@@ -560,21 +560,21 @@ ${bundledSourceMaterial}
             </div>
           </div>
 
-          <div className="p-4 border border-primary/20 bg-primary/5 rounded">
+          <div className="p-4 border border-emerald-500/20 bg-emerald-500/5 rounded">
             <p className="text-xs leading-relaxed text-foreground font-sans font-medium">
-              💡 <span className="text-primary font-bold">Safe & Clean UX:</span> Your heavy converted PDF/Word files are stored efficiently in the wizard memory buffer, keeping the text box clear for your custom guidelines!
+              💡 <span className="text-emerald-600 dark:text-emerald-400 font-bold">Safe & Clean UX:</span> Your heavy converted PDF/Word files are stored efficiently in the wizard memory buffer, keeping the text box clear for your custom guidelines!
             </p>
           </div>
         </div>
 
         {/* Right Column: Path A material load zone */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="p-6 border border-border bg-panel rounded space-y-4">
+          <div className="p-6 border border-border bg-panel rounded space-y-4 shadow-sm">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono font-bold text-foreground uppercase tracking-wider block">
                 [PATH A] Drag Notes or Paste Study Material
               </span>
-              <span className="text-[10px] font-mono text-muted-foreground flex items-center gap-1.5 select-none">
+              <span className="text-[10px] font-mono text-muted-foreground flex items-center gap-1.5 select-none font-bold">
                 <span>📂</span>
                 <span>CLIENT-SIDE PARSING ACTIVE</span>
               </span>
@@ -587,8 +587,8 @@ ${bundledSourceMaterial}
               onDrop={handleDrop}
               className={cn(
                 "border border-dashed p-4 text-center rounded transition-colors flex flex-col justify-center items-center min-h-[90px] relative",
-                dragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 bg-secondary/30",
-                isConverting && "border-primary/50 bg-primary/5 animate-pulse-glow"
+                dragActive ? "border-primary bg-primary/10" : "border-border hover:border-primary/50 bg-secondary/50",
+                isConverting && "border-primary/50 bg-primary/10 animate-pulse-glow"
               )}
             >
               {isConverting ? (
@@ -610,7 +610,7 @@ ${bundledSourceMaterial}
                   />
                   <span className="text-xs text-muted-foreground font-sans font-medium">
                     Drag & Drop any notes files (.pdf, .docx, .md, .txt) here, or{" "}
-                    <span className="text-primary hover:underline">browse files</span>
+                    <span className="text-primary hover:underline font-bold">browse files</span>
                   </span>
                 </>
               )}
@@ -619,7 +619,7 @@ ${bundledSourceMaterial}
             {/* Buffered files HUD display */}
             {convertedMaterial.trim() && (
               <div className="flex items-center justify-between px-3 py-2 border border-primary/20 bg-primary/5 text-xs text-primary font-mono rounded">
-                <span className="flex items-center gap-1.5 select-none">
+                <span className="flex items-center gap-1.5 select-none font-bold">
                   <span>📂</span>
                   <span>MEM-BUFFER: {new Blob([convertedMaterial]).size.toLocaleString()} bytes loaded</span>
                 </span>
@@ -643,7 +643,7 @@ ${bundledSourceMaterial}
                 value={userMaterial}
                 onChange={(e) => setUserMaterial(e.target.value)}
                 placeholder="Enter specific instructions for the Socratic AI (e.g., 'Prioritize Chapter 4 terminology', 'Avoid code blocks in Section B', or paste additional explicit guidelines)..."
-                className="w-full bg-card border border-border px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[140px] resize-y"
+                className="w-full bg-background border border-border rounded px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 transition-all min-h-[140px] resize-y shadow-sm"
               />
             </div>
 
@@ -653,10 +653,10 @@ ${bundledSourceMaterial}
               disabled={!hasMaterial}
               aria-disabled={!hasMaterial}
               className={cn(
-                "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2",
+                "w-full h-11 border font-mono text-xs font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 rounded shadow-sm",
                 hasMaterial
-                  ? "border-primary bg-primary/10 text-primary hover:bg-primary/15 border-glow"
-                  : "border-border text-muted-foreground bg-transparent opacity-40 cursor-not-allowed"
+                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 border-glow-success"
+                  : "border-border text-muted-foreground bg-secondary/30 opacity-40 cursor-not-allowed"
               )}
             >
               📥 DOWNLOAD STUDY BUNDLE (TAKE_ME_TO_ANY_CHATBOT.txt)
@@ -666,13 +666,13 @@ ${bundledSourceMaterial}
       </div>
 
       {/* Accordion Path B: Manual Prompt Copy */}
-      <div className="border border-border rounded bg-panel overflow-hidden">
+      <div className="border border-border rounded bg-panel overflow-hidden shadow-sm">
         <button
           type="button"
           onClick={() => setShowManualPrompt(!showManualPrompt)}
-          className="w-full px-5 py-3.5 flex items-center justify-between hover:bg-secondary/40 transition-colors text-left"
+          className="w-full px-5 py-3.5 flex items-center justify-between hover:bg-secondary/40 transition-colors text-left cursor-pointer"
         >
-          <span className="text-xs font-mono font-bold text-muted-foreground uppercase tracking-wider">
+          <span className="text-xs font-mono font-bold text-foreground uppercase tracking-wider">
             [PATH B] Expert Mode: Copy raw system prompt instructions directly
           </span>
           <span className="text-xs font-mono text-muted-foreground font-bold">
@@ -681,9 +681,9 @@ ${bundledSourceMaterial}
         </button>
 
         {showManualPrompt && (
-          <div className="p-5 border-t border-border bg-secondary/30 space-y-4 animate-slide-up">
+          <div className="p-5 border-t border-border bg-background space-y-4 animate-slide-up">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-semibold">
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">
                 SYSTEM PROMPT DIRECTIVES
               </span>
               <button
@@ -691,10 +691,10 @@ ${bundledSourceMaterial}
                 aria-label={promptCopied ? "Prompt copied to clipboard" : "Copy prompt to clipboard"}
                 onClick={() => onCopyPrompt(compiledPrompt)}
                 className={cn(
-                  "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer",
+                  "text-xs font-mono px-4 py-1.5 border rounded transition-all duration-150 cursor-pointer shadow-sm font-bold",
                   promptCopied
-                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
-                    : "border-primary bg-primary/5 text-primary hover:bg-primary/10"
+                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                    : "border-primary bg-primary/10 text-primary hover:bg-primary/20"
                 )}
               >
                 {promptCopied ? "✓ COPIED" : "COPY PROMPT"}
@@ -704,7 +704,7 @@ ${bundledSourceMaterial}
               readOnly
               value={compiledPrompt}
               aria-label="Raw compiled AI system prompt"
-              className="w-full bg-card border border-border/80 font-mono text-xs leading-relaxed p-3 text-foreground focus:outline-none resize-none h-44 cursor-default rounded"
+              className="w-full bg-muted/40 border border-border font-mono text-xs leading-relaxed p-3 text-foreground focus:outline-none resize-none h-44 cursor-default rounded shadow-inner"
             />
           </div>
         )}
@@ -752,7 +752,7 @@ export function Step5LoadData({
   return (
     <div className="space-y-8 animate-slide-up">
       <div className="space-y-1.5">
-        <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold">
+        <span className="text-[10px] font-mono tracking-widest text-emerald-600 dark:text-emerald-400 uppercase font-bold">
           STEP 05 // LOAD_VALIDATED_SUBJECT_JSON
         </span>
         <h3 className="text-xl font-bold font-display text-foreground tracking-tight flex items-center">

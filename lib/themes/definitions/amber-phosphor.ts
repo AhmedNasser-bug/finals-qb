@@ -4,6 +4,7 @@ export const amberPhosphorTheme: ColorThemeSpec = {
   id: 'amber-phosphor',
   name: 'Amber Phosphor',
   label: 'AMBER / DEFAULT',
+  mode: 'dark',
   description: 'Iconic neo-brutalist CRT terminal with high-contrast amber phosphor glow.',
   preview: {
     accent: '#f59e0b',
@@ -31,5 +32,11 @@ export const amberPhosphorTheme: ColorThemeSpec = {
     border: '220 10% 18%',
     input: '220 10% 14%',
     ring: '43 100% 50%',
+    panel: '220 10% 8.5%',
+    panelForeground: '220 10% 92%',
+    panelBorder: '220 10% 18%',
+    surfaceContainer: '220 10% 9.5%',
+    surfaceContainerLow: '220 10% 8.5%',
+    surfaceContainerHigh: '220 10% 12.5%',
   },
 }

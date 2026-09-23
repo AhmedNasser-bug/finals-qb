@@ -535,16 +535,16 @@ export function DropZoneSection({
         onPaste={handleNativePaste}
         onClick={handleBoxClick}
         className={cn(
-          "relative rounded-none border p-6 min-h-[220px] transition-all duration-300 ease-out flex flex-col items-center justify-center bg-card cursor-text",
+          "relative rounded border p-6 min-h-[200px] transition-all duration-300 ease-out flex flex-col items-center justify-center bg-card shadow-sm cursor-text",
           isDragging
-            ? "border-primary bg-primary/5 border-glow"
+            ? "border-primary bg-primary/10 border-glow"
             : state === "valid"
             ? "border-emerald-500/40 bg-emerald-500/5 border-glow-success"
             : state === "error"
             ? "border-destructive/40 bg-destructive/5 border-glow-danger"
             : isFocused
             ? "border-primary/80 border-glow"
-            : "border-border hover:border-primary/40"
+            : "border-border hover:border-primary/50"
         )}
       >
         <textarea
@@ -569,7 +569,7 @@ export function DropZoneSection({
             <svg className="w-8 h-8 text-muted-foreground animate-pulse-soft mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
             </svg>
-            <p className="text-xs font-mono text-foreground font-semibold tracking-wider uppercase mb-1">
+            <p className="text-xs font-mono text-foreground font-bold tracking-wider uppercase mb-1">
               DRAG & DROP OR CLICK TO PASTE JSON
             </p>
             <p className="text-xs text-muted-foreground max-w-sm leading-relaxed">
@@ -584,24 +584,13 @@ export function DropZoneSection({
         )}
 
         {isDragging && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-none border-2 border-dashed border-primary bg-primary/10 pointer-events-none border-glow z-20">
+          <div className="absolute inset-0 flex items-center justify-center rounded border-2 border-dashed border-primary bg-primary/10 pointer-events-none border-glow z-20">
             <span className="text-sm font-mono text-primary font-bold">DROP FILE TO LOAD</span>
           </div>
         )}
       </div>
     </div>
   )
-}
-
-export interface ValidationFeedbackSectionProps {
-  state: ImporterState
-  result: ValidationResult | null
-  preview: FullSubjectData | null
-  questionCount: number
-  flashcardCount: number
-  categories: string[]
-  json: string
-  onChange: (text: string) => void
 }
 
 export function ValidationFeedbackSection({
@@ -614,7 +603,7 @@ export function ValidationFeedbackSection({
   json,
   onChange,
 }: ValidationFeedbackSectionProps) {
-  // 1. Position-based parsing error extractor (raw specimen only, no interactive elements)
+  // 1. Position-based parsing error extractor
   const parseErrorInfo = useMemo(() => {
     if (!result || result.valid || result.errors.length === 0) return null
     const firstErr = result.errors[0]
@@ -642,7 +631,7 @@ export function ValidationFeedbackSection({
       {state === "error" && result && (
         <div className="flex flex-col gap-4 rounded border border-destructive/30 bg-destructive/5 p-4 animate-slide-up">
           <div className="space-y-1">
-            <p className="text-xs font-mono font-semibold text-destructive tracking-wide uppercase">
+            <p className="text-xs font-mono font-bold text-destructive tracking-wide uppercase">
               Validation Failed — {result.errors.length} error{result.errors.length !== 1 ? "s" : ""}
             </p>
             <p className="text-[11px] text-muted-foreground leading-normal font-sans">
@@ -653,8 +642,8 @@ export function ValidationFeedbackSection({
           {/* Standard Errors List */}
           <ul className="flex flex-col gap-1.5 border-b border-border/40 pb-3">
             {result.errors.map((err, i) => (
-              <li key={i} className="text-xs text-destructive/80 leading-relaxed flex gap-2">
-                <span className="font-mono shrink-0 text-destructive/50">{i + 1}.</span>
+              <li key={i} className="text-xs text-destructive/90 leading-relaxed flex gap-2">
+                <span className="font-mono shrink-0 text-destructive/70 font-bold">{i + 1}.</span>
                 {err}
               </li>
             ))}
@@ -666,7 +655,7 @@ export function ValidationFeedbackSection({
               <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold block">
                 Error Context Specimen (around position {parseErrorInfo.position}):
               </span>
-              <pre className="p-3 bg-card border border-border text-[11px] font-mono text-foreground rounded overflow-x-auto whitespace-pre selection:bg-primary/20">
+              <pre className="p-3 bg-muted border border-border text-[11px] font-mono text-foreground rounded overflow-x-auto whitespace-pre selection:bg-primary/20">
                 <code>
                   {parseErrorInfo.snippet}
                   {"\n"}

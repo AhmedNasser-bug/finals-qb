@@ -5,7 +5,6 @@ import { TelemetryPanel } from "./telemetry-panel"
 import { AchievementsPanel } from "./achievements-panel"
 import { SessionStatsPanel } from "./session-stats-panel"
 import { HeaderWell } from "./header-well"
-import { PerformanceTable } from "./performance-table"
 
 import type { GameModeId, SetupConfig, CategoryData, Achievement } from "@/lib/mold-types"
 
@@ -19,6 +18,8 @@ interface MainContentGridProps {
   config: SetupConfig
   handleConfigChange: (patch: Partial<SetupConfig>) => void
   categories: CategoryData[]
+  questions?: Question[]
+  subjectId?: string
 
   // Achievements
   unlockedCount: number
@@ -35,6 +36,8 @@ export function MainContentGrid({
   config,
   handleConfigChange,
   categories,
+  questions,
+  subjectId,
   unlockedCount,
   totalAchievementsCount,
   topAchievements,
@@ -75,6 +78,8 @@ export function MainContentGrid({
               onChange={handleConfigChange}
               selectedMode={selectedMode}
               categories={categories}
+              questions={questions}
+              subjectId={subjectId}
             />
           </div>
         </div>

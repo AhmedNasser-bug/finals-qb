@@ -64,7 +64,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
   })
 
   return (
-    <header className="bg-[#131313] flex flex-col">
+    <header className="bg-panel border-b border-border flex flex-col shadow-sm">
       {/* ── SEGMENTED PROGRESS TRACKER (Shared across mobile and desktop) ── */}
       <div 
         className="px-6 md:px-10 pt-2.5 pb-0 space-y-0.5"
@@ -76,28 +76,28 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
       >
         <div className="flex justify-between items-end">
           <div className="flex items-center">
-            <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase font-bold">
               PROGRESS [{currentIndex}/{total}]{total > MAX_SEGMENTS ? ` — ${segmentCount} SEGMENTS` : ""}
             </span>
             {streak > 0 && (
               <span className={cn(
                 "ml-3 px-2 py-0.5 rounded font-mono text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 transition-all duration-300",
                 streak >= 12 
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_15px_rgba(74,225,118,0.4)] animate-pulse"
+                  ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 shadow-[0_0_15px_rgba(74,225,118,0.4)] animate-pulse"
                   : streak >= 8
                     ? "bg-destructive/20 text-destructive border border-destructive/40 shadow-[0_0_12px_rgba(239,68,68,0.4)] animate-bounce"
                     : streak >= 5
-                      ? "bg-orange-500/20 text-orange-400 border border-orange-500/40 shadow-[0_0_10px_rgba(249,115,22,0.3)]"
+                      ? "bg-orange-500/20 text-orange-500 border border-orange-500/40 shadow-[0_0_10px_rgba(249,115,22,0.3)]"
                       : streak >= 3
                         ? "bg-primary/20 text-primary border border-primary/40 shadow-[0_0_8px_rgba(254,204,23,0.2)]"
-                        : "bg-[#201f1f] text-muted-foreground border border-border"
+                        : "bg-secondary text-muted-foreground border border-border"
               )}>
                 <span className="text-[10px] animate-pulse" aria-hidden="true">🔥</span>
                 <span>STREAK ×{streak}</span>
               </span>
             )}
           </div>
-          <span className="font-mono text-[10px] tracking-[0.2em] text-emerald-400 uppercase">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-emerald-600 dark:text-emerald-400 uppercase font-bold">
             ACCURACY RATING: {accuracyPct >= 80 ? "EXCELLENT" : accuracyPct >= 50 ? "AVERAGE" : "LOW"}
           </span>
         </div>
@@ -192,7 +192,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             onClick={toggleCheatSheet}
             aria-label="Open Review Deck"
             title="Open Review Deck"
-            className="px-2 border border-zinc-800 bg-[#1b1b1f] text-[#fecc17] font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-[#fecc17]/40 hover:bg-[#fecc17]/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
+            className="px-2 border border-border bg-secondary text-primary font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-primary/40 hover:bg-primary/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
           >
             [DECK]
           </button>
@@ -200,7 +200,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             onClick={onForfeit}
             aria-label="Quit session"
             title="Quit session"
-            className="px-2.5 py-1.5 border border-red-500/20 bg-red-950/20 text-red-400 font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-red-500 hover:bg-red-500/10 min-h-[32px] cursor-pointer transition-all active:scale-95"
+            className="px-2.5 py-1.5 border border-destructive/30 bg-destructive/10 text-destructive font-mono text-[9px] font-black tracking-widest uppercase rounded hover:border-destructive hover:bg-destructive/20 min-h-[32px] cursor-pointer transition-all active:scale-95"
           >
             QUIT
           </button>
@@ -214,41 +214,41 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           <div className="flex items-center gap-4">
             {/* Streak badge */}
             <div className={cn(
-              "bg-[#201f1f] px-2.5 py-1 flex items-center gap-2 border-l-2",
+              "bg-secondary border border-border px-2.5 py-1 flex items-center gap-2 border-l-4 rounded",
               streak >= 10
-                ? "border-[#930013] shadow-[0px_0px_20px_rgba(147,0,10,0.3)]"
+                ? "border-l-destructive shadow-[0px_0px_20px_rgba(239,68,68,0.2)]"
                 : streak >= 5
-                  ? "border-orange-500 shadow-[0px_0px_15px_rgba(251,146,60,0.2)]"
-                  : "border-[#fecc17] shadow-[0px_0px_15px_rgba(254,204,23,0.15)]"
+                  ? "border-l-orange-500 shadow-[0px_0px_15px_rgba(251,146,60,0.2)]"
+                  : "border-l-primary shadow-[0px_0px_15px_rgba(254,204,23,0.15)]"
             )}>
               <BoltIcon className={cn(
                 "w-3.5 h-3.5 shrink-0",
-                streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
+                streak >= 10 ? "text-destructive" : streak >= 5 ? "text-orange-500" : "text-primary"
               )} />
               <div>
-                <p className="font-mono text-[8px] text-muted-foreground leading-none mb-0.5 tracking-widest uppercase">CURRENT STREAK</p>
+                <p className="font-mono text-[8px] text-muted-foreground leading-none mb-0.5 tracking-widest uppercase font-bold">CURRENT STREAK</p>
                 <p className={cn(
                   "font-mono text-base font-black leading-none",
-                  streak >= 10 ? "text-[#930013]" : streak >= 5 ? "text-orange-400" : "text-[#fecc17]"
+                  streak >= 10 ? "text-destructive" : streak >= 5 ? "text-orange-500" : "text-primary"
                 )}>{streak}</p>
               </div>
             </div>
             {/* Accuracy — sibling, not inside badge */}
             <div className="hidden md:flex flex-col">
-              <p className="font-mono text-[8px] text-muted-foreground tracking-widest uppercase mb-0.5">ACCURACY</p>
-              <p className="font-mono text-xs text-[#4ae176]">{accuracyPct}%</p>
+              <p className="font-mono text-[8px] text-muted-foreground tracking-widest uppercase mb-0.5 font-bold">ACCURACY</p>
+              <p className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">{accuracyPct}%</p>
             </div>
           </div>
           {/* Lives — always shown, empty hearts when not survival */}
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[8px] text-muted-foreground uppercase mr-1">LIVES REMAINING:</span>
+            <span className="font-mono text-[8px] text-muted-foreground uppercase font-bold mr-1">LIVES REMAINING:</span>
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
               return (
                 <HeartIcon
                   key={i}
                   filled={alive}
-                  className={cn("w-3.5 h-3.5", alive ? "text-[#930013]" : "text-zinc-800")}
+                  className={cn("w-3.5 h-3.5", alive ? "text-destructive" : "text-muted-foreground/30")}
                 />
               )
             })}
@@ -258,13 +258,13 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           {(streakShieldActive || streakShieldTriggeredThisQuestion) && (
             <div className="flex items-center gap-2 mt-1 select-none">
               {streakShieldActive && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 border border-cyan-500/30 bg-cyan-950/20 text-cyan-400 font-mono text-[9px] font-black tracking-widest uppercase rounded shadow-[0_0_12px_rgba(34,211,238,0.3)] animate-pulse">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 border border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-mono text-[9px] font-black tracking-widest uppercase rounded shadow-[0_0_12px_rgba(34,211,238,0.3)] animate-pulse">
                   <span className="text-[10px]">🛡️</span>
                   <span>STREAK SHIELD ACTIVE</span>
                 </div>
               )}
               {streakShieldTriggeredThisQuestion && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 border border-red-500 bg-red-950/50 text-red-400 font-mono text-[9px] font-bold tracking-widest uppercase rounded shadow-[0_0_15px_rgba(239,68,68,0.4)] animate-bounce">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 border border-destructive bg-destructive/20 text-destructive font-mono text-[9px] font-bold tracking-widest uppercase rounded shadow-[0_0_15px_rgba(239,68,68,0.4)] animate-bounce">
                   <span className="text-[10px]">💥</span>
                   <span>SHIELD SHATTERED / BRACED</span>
                 </div>
@@ -277,22 +277,21 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         <div className="flex flex-col items-center justify-center">
           {isTimedGlobal ? (
             <div className="relative group">
-              {/* Pulsing bg glow — only visible in critical state */}
               <div className={cn(
                 "absolute inset-0 blur-xl animate-pulse transition-opacity duration-500",
-                isCritical ? "bg-red-950/40 opacity-100" : "opacity-0"
+                isCritical ? "bg-destructive/40 opacity-100" : "opacity-0"
               )} />
               <div className={cn(
-                "relative bg-[#0e0e0e] border-x-4 px-3 py-1 sm:px-5 sm:py-2 text-center",
-                isCritical ? "border-red-600" : "border-red-950/40"
+                "relative bg-panel border border-border border-x-4 px-3 py-1 sm:px-5 sm:py-2 text-center rounded shadow-sm",
+                isCritical ? "border-destructive" : "border-destructive/30"
               )}>
                 <p className={cn(
-                  "font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1",
-                  isCritical ? "text-red-500" : "text-muted-foreground/80"
+                  "font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1 font-bold",
+                  isCritical ? "text-destructive" : "text-muted-foreground"
                 )}>TIME REMAINING</p>
                 <p className={cn(
                   "font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none",
-                  isCritical ? "text-red-300" : "text-red-200/70",
+                  isCritical ? "text-destructive" : "text-primary",
                   isUrgent && "motion-safe:animate-pulse"
                 )}>
                   {formatTime(globalTimeRemaining)}
@@ -301,9 +300,9 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
             </div>
           ) : (
             <div className="relative group">
-              <div className="relative bg-[#0e0e0e] border-x-4 border-zinc-800 px-3 py-1 sm:px-5 sm:py-2 text-center">
-                <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1 text-muted-foreground/80">ELAPSED</p>
-                <p className="font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none text-[#fecc17]">
+              <div className="relative bg-panel border border-border border-x-4 border-primary/40 px-3 py-1 sm:px-5 sm:py-2 text-center rounded shadow-sm">
+                <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-0.5 sm:mb-1 text-muted-foreground font-bold">ELAPSED</p>
+                <p className="font-mono text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none text-primary">
                   {formatTime(elapsedSeconds)}
                 </p>
               </div>
@@ -311,26 +310,26 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           )}
         </div>
 
-        {/* Right — session metadata + dots */}
+        {/* Right — session metadata + buttons */}
         <div className="hidden md:flex flex-col items-end gap-0.5">
-          <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest">
+          <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
             QUIZ MODE: {mode.toUpperCase()}
           </p>
-          <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest">
+          <p className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
             DIFFICULTY: {state.config?.difficulty?.toUpperCase() ?? "STANDARD"}
           </p>
           {/* Live indicator dots */}
           <div className="mt-1.5 flex gap-1.5">
-            <div className="w-1.5 h-1.5 bg-[#4ae176] animate-pulse" />
-            <div className="w-1.5 h-1.5 bg-[#4ae176]/40" />
-            <div className="w-1.5 h-1.5 bg-[#4ae176]/40" />
+            <div className="w-1.5 h-1.5 bg-emerald-500 animate-pulse rounded-full" />
+            <div className="w-1.5 h-1.5 bg-emerald-500/40 rounded-full" />
+            <div className="w-1.5 h-1.5 bg-emerald-500/40 rounded-full" />
           </div>
           {/* Review Deck & Quit Buttons */}
           <div className="md:mt-1.5 flex gap-2">
             <button
               onClick={toggleCheatSheet}
               aria-label="Toggle Review Deck terminal to inspect missed and hinted questions"
-              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-primary hover:border-primary/50 hover:bg-primary/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[36px] shrink-0 cursor-pointer rounded"
+              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-border bg-secondary text-primary hover:border-primary/50 hover:bg-primary/10 uppercase tracking-widest transition-all duration-150 focus-ring min-h-[36px] shrink-0 cursor-pointer rounded shadow-sm"
               title="Toggle Review Deck terminal to inspect missed and hinted questions (Press Esc)"
             >
               [REVIEW DECK]
@@ -339,7 +338,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               onClick={onForfeit}
               aria-label="Forfeit active session and view summary results"
               title="Forfeit active session and view summary results"
-              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-zinc-800 bg-[#1b1b1f] text-muted-foreground hover:border-destructive hover:bg-destructive/10 hover:text-destructive uppercase tracking-widest transition-all duration-150 focus-ring min-h-[36px] shrink-0 cursor-pointer rounded"
+              className="font-mono text-[10px] font-bold px-3 py-1.5 border border-border bg-secondary text-muted-foreground hover:border-destructive hover:bg-destructive/10 hover:text-destructive uppercase tracking-widest transition-all duration-150 focus-ring min-h-[36px] shrink-0 cursor-pointer rounded shadow-sm"
             >
               QUIT SESSION
             </button>

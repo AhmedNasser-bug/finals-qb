@@ -195,18 +195,34 @@ ConfigControls.RevisionNote = RevisionNote
 
 // ─── Category Selection with Search & Live Filter ─────────────────────────────
 
+import {
+  getRecallabilityColor,
+  computeCategoryRecallabilities,
+} from "@/lib/game/recallability"
+import type { Question } from "@/lib/mold-types"
+
+// ─── Category Selection with Search & Live Filter ─────────────────────────────
+
 export interface CategorySelectorSectionProps {
   config: SetupConfig
   onChange: (patch: Partial<SetupConfig>) => void
   categories: CategoryData[]
+  questions?: Question[]
+  subjectId?: string
 }
 
 export function CategorySelectorSection({
   config,
   onChange,
   categories,
+  questions = [],
+  subjectId = "",
 }: CategorySelectorSectionProps) {
   const [filterQuery, setFilterQuery] = useState("")
+
+  const recallabilityMap = useMemo(() => {
+    return computeCategoryRecallabilities(questions, subjectId, categories)
+  }, [questions, subjectId, categories])
 
   const filteredCategories = useMemo(() => {
     if (!filterQuery.trim()) return categories
@@ -219,6 +235,12 @@ export function CategorySelectorSection({
     [categories]
   )
 
+  const overallAverageRecall = useMemo(() => {
+    if (categories.length === 0) return 50
+    const sum = categories.reduce((acc, c) => acc + (recallabilityMap[c.id] ?? 50), 0)
+    return Math.round(sum / categories.length)
+  }, [categories, recallabilityMap])
+
   const activeCategoryName = useMemo(() => {
     if (!config.selectedCategory) return "All Categories"
     const found = categories.find((c) => c.id === config.selectedCategory)
@@ -229,11 +251,11 @@ export function CategorySelectorSection({
     <div className="flex flex-col gap-3 pt-2 border-t border-border/50">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <p className="text-xs font-mono tracking-widest text-emerald-400 uppercase font-bold">
+          <p className="text-xs font-mono tracking-widest text-emerald-500 dark:text-emerald-400 uppercase font-bold">
             Target Sector
           </p>
           <span
-            className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+            className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold"
             role="status"
             aria-live="polite"
           >
@@ -275,6 +297,7 @@ export function CategorySelectorSection({
             name="All Categories"
             questionCount={totalQuestions}
             selected={config.selectedCategory === null}
+            recallabilityPct={overallAverageRecall}
             onSelect={() => onChange({ selectedCategory: null })}
           />
         )}
@@ -285,6 +308,7 @@ export function CategorySelectorSection({
             name={cat.name}
             questionCount={cat.questionCount}
             selected={config.selectedCategory === cat.id}
+            recallabilityPct={recallabilityMap[cat.id] ?? 50}
             onSelect={() => onChange({ selectedCategory: cat.id })}
           />
         ))}
@@ -366,15 +390,24 @@ export interface CategoryTileProps {
   name: string
   questionCount: number
   selected: boolean
+  recallabilityPct?: number
   onSelect: () => void
 }
 
-export function CategoryTile({ name, questionCount, selected, onSelect }: CategoryTileProps) {
-  const ariaLabel = `Category: ${name}, ${questionCount} questions. ${
+export function CategoryTile({
+  name,
+  questionCount,
+  selected,
+  recallabilityPct = 50,
+  onSelect,
+}: CategoryTileProps) {
+  const recallStyle = getRecallabilityColor(recallabilityPct)
+
+  const ariaLabel = `Category: ${name}, ${questionCount} questions, ${recallabilityPct}% recallability (${recallStyle.label}). ${
     selected ? "Currently selected sector filter." : "Click to select sector."
   }`
 
-  const titleTooltip = `Filter practice pool to ${name} (${questionCount} questions)`
+  const titleTooltip = `Filter practice pool to ${name} (${questionCount} questions) — ${recallabilityPct}% Recallability [${recallStyle.label}]`
 
   return (
     <button
@@ -383,26 +416,42 @@ export function CategoryTile({ name, questionCount, selected, onSelect }: Catego
       aria-label={ariaLabel}
       title={titleTooltip}
       className={cn(
-        "flex flex-col gap-1.5 p-4 rounded border text-left transition-all duration-150 focus-ring min-h-[82px] justify-between group",
+        "flex flex-col gap-2 p-3.5 rounded border text-left transition-all duration-150 focus-ring min-h-[88px] justify-between group relative overflow-hidden",
         selected
-          ? "border-emerald-400/60 bg-emerald-400/5 text-foreground shadow-[0_0_10px_rgba(52,211,153,0.1)]"
-          : "border-border bg-panel text-foreground/80 hover:border-border/80 hover:text-foreground"
+          ? "border-emerald-500 bg-emerald-500/10 text-foreground shadow-[0_0_12px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/30"
+          : cn("bg-panel text-foreground/90 hover:text-foreground", recallStyle.borderColor, recallStyle.bgColor)
       )}
     >
       <div className="flex items-start justify-between gap-1 w-full">
         <span className="text-sm font-semibold leading-snug text-pretty font-display">{name}</span>
-        {selected && (
-          <span className="text-emerald-400 text-xs font-mono font-bold shrink-0" aria-hidden="true">
+        {selected ? (
+          <span className="text-emerald-500 text-xs font-mono font-bold shrink-0" aria-hidden="true">
             ✓
+          </span>
+        ) : (
+          <span
+            className={cn(
+              "text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border shrink-0 uppercase",
+              recallStyle.badgeColor
+            )}
+            title={`Retention: ${recallabilityPct}%`}
+          >
+            {recallabilityPct}%
           </span>
         )}
       </div>
-      <span className={cn(
-        "text-xs font-mono",
-        selected ? "text-emerald-400 font-medium" : "text-muted-foreground"
-      )}>
-        {questionCount} qs
-      </span>
+
+      <div className="flex items-center justify-between gap-2 w-full pt-1 border-t border-border/40">
+        <span className={cn(
+          "text-xs font-mono",
+          selected ? "text-emerald-500 font-bold" : "text-muted-foreground"
+        )}>
+          {questionCount} qs
+        </span>
+        <span className={cn("text-[9px] font-mono font-bold uppercase tracking-wider", recallStyle.textColor)}>
+          {selected ? `${recallabilityPct}% RECALL` : recallStyle.label}
+        </span>
+      </div>
     </button>
   )
 }

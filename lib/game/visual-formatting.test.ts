@@ -82,6 +82,15 @@ describe("LaTeX and HTML Overlap Math Parsing", () => {
     assert.match(cleanHtml, /<code>/, "Should preserve safe HTML tags")
     assert.match(cleanHtml, /<span class="katex">/, "Should compile LaTeX inside HTML blocks safely")
   })
+
+  test("renderMath parses complex automaton question prompt with multiple LaTeX expressions", () => {
+    const prompt = "The state machine below defines a deterministic finite automaton $$\\mathcal{M} = \\langle Q, \\Sigma, \\delta, q_0, F \\rangle$$ over alphabet $$\\Sigma = \\{a, b\\}$$. Which regular language $$L(\\mathcal{M})$$ does it recognize?"
+    const rendered = DOMPurify.sanitize(renderMath(prompt))
+
+    assert.match(rendered, /<span class="katex-display">/, "Should render display KaTeX equations")
+    assert.doesNotMatch(rendered, /\$\$\\mathcal\{M\}/, "Should not contain raw LaTeX delimiters")
+    assert.match(rendered, /deterministic finite automaton/, "Should preserve surrounding text")
+  })
 })
 
 import { evaluateStreakAndShield } from "./streak-shield-logic"

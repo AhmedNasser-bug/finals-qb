@@ -120,19 +120,19 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
     <div className="space-y-8 select-none animate-fade-in pb-16">
       
       {/* ─── SCREEN HEADER ────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
           <button 
             onClick={onReturnHome}
-            className="flex items-center gap-2 text-zinc-400 hover:text-[#fecc17] transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
+            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
             <span>Return to core</span>
           </button>
-          <h1 className="text-3xl font-display font-black tracking-tight text-white flex items-center gap-3">
-            STUDY STATISTICS <span className="font-mono text-xs text-primary font-bold px-2 py-0.5 rounded bg-primary/5 border border-primary/20">LIVE</span>
+          <h1 className="text-3xl font-display font-black tracking-tight text-foreground flex items-center gap-3">
+            STUDY STATISTICS <span className="font-mono text-xs text-primary font-bold px-2 py-0.5 rounded bg-primary/10 border border-primary/30">LIVE</span>
           </h1>
-          <p className="text-xs text-zinc-400 font-mono mt-1">REAL-TIME ACADEMIC PROGRESS AND STUDY STATS.</p>
+          <p className="text-xs text-muted-foreground font-mono mt-1">REAL-TIME ACADEMIC PROGRESS AND STUDY STATS.</p>
         </div>
       </div>
 
@@ -140,28 +140,28 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Total Runs Card */}
-        <div className="p-5 border border-border bg-[#101115] rounded relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
+        <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
+          <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
             <Trophy className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">QUIZZES COMPLETED</p>
-          <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">QUIZZES COMPLETED</p>
+          <p className="text-3xl font-mono font-bold tracking-tight text-foreground mt-2 tabular-nums">
             {stats.totalRuns}
           </p>
-          <div className="mt-3 flex items-center gap-1.5 font-mono text-[9px] text-[#fecc17] bg-[#fecc17]/5 border border-[#fecc17]/10 px-2 py-1 rounded w-fit">
-            <Flame className="w-3 h-3 text-orange-500 animate-pulse" />
+          <div className="mt-3 flex items-center gap-1.5 font-mono text-[9px] text-primary bg-primary/10 border border-primary/20 px-2 py-1 rounded w-fit">
+            <Flame className="w-3 h-3 text-amber-500 animate-pulse" />
             <span>DAY STREAK: {dayStreak}</span>
           </div>
         </div>
 
         {/* Average Score (Accuracy) Card */}
-        <div className="p-5 border border-border bg-[#101115] rounded relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
+        <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
+          <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
             <Target className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">AVERAGE ACCURACY</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">AVERAGE ACCURACY</p>
           <div className="flex items-baseline gap-3 mt-2">
-            <span className="text-3xl font-mono font-bold text-white tabular-nums">
+            <span className="text-3xl font-mono font-bold text-foreground tabular-nums">
               {stats.averageScore}%
             </span>
             {stats.totalRuns > 0 && (
@@ -170,31 +170,31 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
               </span>
             )}
           </div>
-          <p className="text-[9px] text-zinc-500 font-mono mt-3">BEST SINGLE ATTEMPT: {stats.bestScore}%</p>
+          <p className="text-[9px] text-muted-foreground font-mono mt-3">BEST SINGLE ATTEMPT: {stats.bestScore}%</p>
         </div>
 
         {/* Peak Correctness Streak Card */}
-        <div className="p-5 border border-border bg-[#101115] rounded relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
+        <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
+          <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
             <Zap className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">BEST ANSWER STREAK</p>
-          <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">BEST ANSWER STREAK</p>
+          <p className="text-3xl font-mono font-bold tracking-tight text-foreground mt-2 tabular-nums">
             ×{peakQuestionStreak}
           </p>
-          <p className="text-[9px] text-zinc-500 font-mono mt-3">BEST IN-QUIZ FOCUS CHAIN</p>
+          <p className="text-[9px] text-muted-foreground font-mono mt-3">BEST IN-QUIZ FOCUS CHAIN</p>
         </div>
 
         {/* Average Response Time Card */}
-        <div className="p-5 border border-border bg-[#101115] rounded relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <div className="absolute top-4 right-4 text-zinc-800 group-hover:text-zinc-700 transition-colors">
+        <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
+          <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
             <Clock className="w-5 h-5" />
           </div>
-          <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">AVERAGE ANSWER SPEED</p>
-          <p className="text-3xl font-mono font-bold tracking-tight text-white mt-2 tabular-nums">
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">AVERAGE ANSWER SPEED</p>
+          <p className="text-3xl font-mono font-bold tracking-tight text-foreground mt-2 tabular-nums">
             {formatTime(Math.round((stats.averageResponseTimeMs || 0) / 1000))}
           </p>
-          <p className="text-[9px] text-zinc-500 font-mono mt-3">
+          <p className="text-[9px] text-muted-foreground font-mono mt-3">
             {stats.averageResponseTimeMs ? `${Math.round(stats.averageResponseTimeMs)}ms per question` : "untimed"}
           </p>
         </div>
@@ -202,7 +202,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
       </div>
 
       {/* ─── CRAMMING EXAM READINESS INDEX (FEATURE 4) ────────────────────── */}
-      <div className="border border-border bg-gradient-to-r from-panel via-[#101115] to-panel p-6 rounded-md relative overflow-hidden">
+      <div className="border border-border bg-panel p-6 rounded-md relative overflow-hidden shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5 max-w-2xl">
             <div className="flex items-center gap-2">
@@ -271,12 +271,12 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 No active subject telemetry recorded yet.
               </div>
             ) : (
-              <div className="border border-border bg-[#101115] rounded divide-y divide-zinc-800/60 overflow-hidden">
+              <div className="border border-border bg-panel rounded divide-y divide-border overflow-hidden shadow-sm">
                 {categoryStats.map((item, idx) => {
                   const isCritical = item.retrievabilityPct < 60
                   const isDueSoon = item.retrievabilityPct >= 60 && item.retrievabilityPct < 85
                   return (
-                    <div key={item.category} className="p-3.5 flex items-center justify-between gap-3 hover:bg-secondary/20 transition-colors">
+                    <div key={item.category} className="p-3.5 flex items-center justify-between gap-3 hover:bg-secondary/40 transition-colors">
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span className="font-mono text-[10px] text-muted-foreground/60 w-4 tabular-nums">
                           {idx + 1}.
@@ -295,10 +295,10 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                         <span className={cn(
                           "font-mono text-[10px] font-bold px-2 py-0.5 rounded border",
                           isCritical
-                            ? "bg-red-500/10 text-red-400 border-red-500/20"
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
                             : isDueSoon
-                              ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                              : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                              : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                         )}>
                           {item.retrievabilityPct}% RETENTION
                         </span>
@@ -323,14 +323,14 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
               </h2>
             </div>
             
-            <div className="border border-border bg-[#101115] rounded p-6 divide-y divide-zinc-800/60">
+            <div className="border border-border bg-panel rounded p-6 divide-y divide-border shadow-sm">
               {missions.map((mission) => (
                 <div key={mission.id} className="py-4 first:pt-0 last:pb-0 flex items-start gap-4">
                   <div className={cn(
                     "w-5 h-5 rounded flex items-center justify-center shrink-0 border mt-0.5",
                     mission.completed 
-                      ? "border-[#fecc17] bg-[#fecc17]/10 text-primary" 
-                      : "border-zinc-700 bg-zinc-900 text-zinc-600"
+                      ? "border-primary bg-primary/10 text-primary" 
+                      : "border-border bg-muted text-muted-foreground"
                   )}>
                     {mission.completed && <CheckCircle2 className="w-4 h-4 fill-current text-primary shrink-0" />}
                   </div>
@@ -339,18 +339,18 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                     <div className="flex items-center justify-between gap-2">
                       <p className={cn(
                         "font-mono text-xs font-bold uppercase tracking-wider",
-                        mission.completed ? "text-[#fecc17]" : "text-white"
+                        mission.completed ? "text-primary" : "text-foreground"
                       )}>
                         {mission.title}
                       </p>
-                      <span className="font-mono text-[10px] text-zinc-500 tabular-nums">
+                      <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
                         {mission.current} / {mission.target}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-400 mt-1">{mission.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{mission.description}</p>
                     
                     {/* Progress slider */}
-                    <div className="mt-2.5 w-full h-1 bg-zinc-800 rounded overflow-hidden">
+                    <div className="mt-2.5 w-full h-1 bg-muted rounded overflow-hidden">
                       <div 
                         className="h-full bg-primary transition-all duration-500" 
                         style={{ width: `${(mission.current / mission.target) * 100}%` }}
@@ -364,8 +364,8 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
 
           {/* Long-Term Milestones Panel */}
           <div className="space-y-4">
-            <div className="border-b border-zinc-800 pb-2">
-              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
+            <div className="border-b border-border pb-2">
+              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-primary">
                 03 // LONG-TERM MILESTONES
               </h2>
             </div>
@@ -375,15 +375,15 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 <div 
                   key={milestone.id} 
                   className={cn(
-                    "p-4 border rounded bg-[#101115] relative overflow-hidden transition-all duration-300",
+                    "p-4 border rounded bg-panel relative overflow-hidden transition-all duration-300 shadow-sm",
                     milestone.completed 
                       ? "border-primary/40 shadow-[0_0_15px_rgba(254,204,23,0.05)]" 
-                      : "border-border hover:border-zinc-800"
+                      : "border-border hover:border-primary/30"
                   )}
                 >
                   {/* Subtle completed background check icon */}
                   {milestone.completed && (
-                    <div className="absolute -bottom-2 -right-2 text-[#fecc17]/5">
+                    <div className="absolute -bottom-2 -right-2 text-primary/5">
                       <Trophy className="w-16 h-16" />
                     </div>
                   )}
@@ -392,28 +392,28 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                     <div className="min-w-0">
                       <p className={cn(
                         "font-mono text-xs font-bold uppercase tracking-widest",
-                        milestone.completed ? "text-primary" : "text-white"
+                        milestone.completed ? "text-primary" : "text-foreground"
                       )}>
                         {milestone.title}
                       </p>
-                      <p className="text-[10px] text-zinc-400 mt-1 leading-snug">{milestone.description}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1 leading-snug">{milestone.description}</p>
                     </div>
 
                     <div className={cn(
                       "w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-mono font-bold",
                       milestone.completed 
                         ? "bg-primary/20 text-primary border border-primary/30" 
-                        : "bg-zinc-800/40 text-zinc-500 border border-zinc-700/60"
+                        : "bg-muted text-muted-foreground border border-border"
                     )}>
                       {milestone.completed ? "★" : `${Math.round((milestone.current / milestone.target) * 100)}%`}
                     </div>
                   </div>
 
-                  <div className="mt-4 w-full h-1 bg-zinc-800/80 rounded overflow-hidden relative z-10">
+                  <div className="mt-4 w-full h-1 bg-muted rounded overflow-hidden relative z-10">
                     <div 
                       className={cn(
                         "h-full transition-all duration-500",
-                        milestone.completed ? "bg-primary" : "bg-zinc-600"
+                        milestone.completed ? "bg-primary" : "bg-muted-foreground/40"
                       )} 
                       style={{ width: `${(milestone.current / milestone.target) * 100}%` }}
                     />
@@ -425,19 +425,19 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
 
           {/* CAUTION / DATA MANAGEMENT PANEL */}
           <div className="space-y-4 pt-4">
-            <div className="border-b border-zinc-800 pb-2">
-              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#fecc17]">
+            <div className="border-b border-border pb-2">
+              <h2 className="font-mono text-[10px] font-bold tracking-[0.2em] text-destructive">
                 04 // DATA SETTINGS
               </h2>
             </div>
             
             <div className="border border-destructive/20 bg-destructive/5 rounded p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
-                <p className="font-mono text-xs font-bold text-white flex items-center gap-2">
+                <p className="font-mono text-xs font-bold text-foreground flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-destructive" />
                   <span>RESET ALL STUDY DATA</span>
                 </p>
-                <p className="text-[10px] text-zinc-400 max-w-md">
+                <p className="text-[10px] text-muted-foreground max-w-md">
                   This action deletes all your completed quizzes, study streaks, best streak records, and progress stats. This cannot be undone.
                 </p>
               </div>
@@ -446,7 +446,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 <button 
                   onClick={() => setShowConfirmReset(true)}
                   aria-label="Wipe all local telemetry and run data"
-                  className="bg-transparent hover:bg-destructive/10 text-destructive hover:text-red-400 border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
+                  className="bg-transparent hover:bg-destructive/10 text-destructive border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
                 >
                    RESET_DATA
                 </button>
@@ -462,7 +462,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   <button 
                     onClick={() => setShowConfirmReset(false)}
                     aria-label="Cancel wipe all data"
-                    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
+                    className="bg-secondary hover:bg-muted border border-border text-foreground px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
                   >
                     CANCEL
                   </button>

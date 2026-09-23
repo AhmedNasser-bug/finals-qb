@@ -1,6 +1,6 @@
 "use client"
 
-import type { SetupConfig, GameModeId, CategoryData } from "@/lib/mold-types"
+import type { SetupConfig, GameModeId, CategoryData, Question } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { ConfigControls, CategorySelectorSection } from "@/components/mold/home/setup-panel-blocks"
 
@@ -9,6 +9,8 @@ interface SetupPanelProps {
   onChange: (patch: Partial<SetupConfig>) => void
   selectedMode: GameModeId
   categories: CategoryData[]
+  questions?: Question[]
+  subjectId?: string
   className?: string
 }
 
@@ -17,6 +19,8 @@ export function SetupPanel({
   onChange,
   selectedMode,
   categories,
+  questions,
+  subjectId,
   className,
 }: SetupPanelProps) {
   const isPractice = selectedMode === "practice"
@@ -42,6 +46,8 @@ export function SetupPanel({
           config={config}
           onChange={onChange}
           categories={categories}
+          questions={questions}
+          subjectId={subjectId}
         />
       )}
     </section>
