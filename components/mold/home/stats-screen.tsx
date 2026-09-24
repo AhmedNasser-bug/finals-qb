@@ -18,7 +18,7 @@ import { useStats } from "@/lib/game/stats-context"
 import { StreakAscent } from "./streak-ascent"
 import { calculateGrade, gradeColor, gradeBgColor, formatTime, formatLabel } from "@/lib/mold-types"
 import { getActiveSubject } from "@/lib/active-subject-store"
-import { loadRetentionMap, calculateRetrievability } from "@/lib/telemetry/retention-kernel"
+import { computeCategoryRecallabilities } from "@/lib/game/recallability"
 import { cn } from "@/lib/utils"
 
 interface StatsScreenProps {
@@ -39,34 +39,28 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
   const [showConfirmReset, setShowConfirmReset] = useState(false)
 
   const activeSubject = getActiveSubject()
-  const retentionMap = activeSubject ? loadRetentionMap(activeSubject.id) : {}
 
   // Compute category retrievability
   const categoryStats = useMemo(() => {
     if (!activeSubject) return []
-    const catMap: Record<string, { total: number; sumR: number }> = {}
-
+    const recallMap = computeCategoryRecallabilities(
+      activeSubject.questions,
+      activeSubject.id
+    )
+    const counts: Record<string, number> = {}
     activeSubject.questions.forEach((q) => {
-      const cat = q.category || "general"
-      if (!catMap[cat]) catMap[cat] = { total: 0, sumR: 0 }
-      catMap[cat].total += 1
-      const itemState = retentionMap[q.id]
-      if (itemState && itemState.lastReviewedAt) {
-        const daysElapsed = (Date.now() - new Date(itemState.lastReviewedAt).getTime()) / (1000 * 60 * 60 * 24)
-        catMap[cat].sumR += calculateRetrievability(itemState.stability, daysElapsed)
-      } else {
-        catMap[cat].sumR += 0.5 // Default unreviewed retrievability estimate
-      }
+      const cat = q.category || "_general"
+      counts[cat] = (counts[cat] || 0) + 1
     })
 
-    return Object.entries(catMap)
-      .map(([cat, val]) => ({
+    return Object.entries(recallMap)
+      .map(([cat, retrievabilityPct]) => ({
         category: cat,
-        retrievabilityPct: Math.round((val.sumR / Math.max(1, val.total)) * 100),
-        totalQuestions: val.total,
+        retrievabilityPct,
+        totalQuestions: counts[cat] || 0,
       }))
       .sort((a, b) => a.retrievabilityPct - b.retrievabilityPct) // Sort lowest (needs review) first
-  }, [activeSubject, retentionMap])
+  }, [activeSubject])
 
   // Compute Cramming Readiness Index
   const avgScore = stats.averageScore || 0

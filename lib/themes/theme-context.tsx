@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
 import type { ColorThemeSpec, ColorThemeTokens } from './theme-types'
-import { COLOR_THEMES, DEFAULT_THEME_ID, getThemeById } from './theme-registry'
+import { COLOR_THEMES, DEFAULT_THEME_ID, getThemeById, toggleThemeMode } from './theme-registry'
 
 const STORAGE_KEY = 'mold_v2_color_theme'
 
@@ -86,9 +86,7 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
 
   const toggleMode = useCallback(() => {
     setThemeIdState((prevId) => {
-      const nextId = (prevId === 'paper-mono' || prevId === 'solar-parchment' || prevId === 'nordic-glacier')
-        ? DEFAULT_THEME_ID
-        : 'paper-mono'
+      const nextId = toggleThemeMode(prevId)
       const theme = getThemeById(nextId)
       applyThemeTokensToDom(theme)
       try {

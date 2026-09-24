@@ -6,6 +6,7 @@ import {
   sortFullRevisionQuestions,
   getRecallabilityColor,
   weightedQuestionPool,
+  computeCategoryRecallabilities,
 } from "./recallability"
 
 describe("Bloom's Taxonomy & Full Revision Sorting", () => {
@@ -189,3 +190,35 @@ describe("Recallability-Weighted Question Pool Randomization", () => {
     assert.strictEqual(sampledAll.length, 20)
   })
 })
+
+describe("computeCategoryRecallabilities", () => {
+  test("returns 0% for unreviewed questions", () => {
+    const questions: Question[] = [
+      { id: "q1", type: "MCQ", difficulty: "Easy", category: "dfa", question: "DFA?", options: [], answer: "A" },
+      { id: "q2", type: "MCQ", difficulty: "Medium", category: "cfg", question: "CFG?", options: [], answer: "B" },
+    ]
+    const result = computeCategoryRecallabilities(questions, "test-subject-unreviewed")
+    assert.strictEqual(result["dfa"], 0)
+    assert.strictEqual(result["cfg"], 0)
+  })
+
+  test("handles empty questions gracefully", () => {
+    const result = computeCategoryRecallabilities([], "empty-subject")
+    assert.deepStrictEqual(result, {})
+  })
+
+  test("initializes known categories even if not in questions", () => {
+    const categories = [{ id: "cat-empty", name: "Empty Cat", questionCount: 0 }]
+    const result = computeCategoryRecallabilities([], "empty-subject", categories)
+    assert.strictEqual(result["cat-empty"], 0)
+  })
+
+  test("falls back to _general when question category is undefined", () => {
+    const questions: Question[] = [
+      { id: "q-nocat", type: "MCQ", difficulty: "Easy", category: "", question: "No cat", options: [], answer: "A" }
+    ]
+    const result = computeCategoryRecallabilities(questions, "test-general")
+    assert.strictEqual(result["_general"], 0)
+  })
+})
+

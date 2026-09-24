@@ -1,4 +1,6 @@
 import * as React from "react"
+import DOMPurify from "isomorphic-dompurify"
+import { renderMath } from "@/lib/utils/math-renderer"
 import { cn } from "@/lib/utils"
 import { CheckCircleIcon, RadioIcon, XIcon } from "@/components/mold/game/game-icons"
 import type { OptionButtonProps } from "@/components/mold/game/question-card-types"
@@ -43,16 +45,18 @@ export function OptionButton({
         )}>
           OPTION_{String(idx + 1).padStart(2, "0")}
         </span>
-        <span className={cn(
-          "font-mono text-sm font-bold leading-snug",
-          !isRevealed && isSelected ? "text-foreground font-extrabold" :
-            isRevealed && isCorrect ? "text-emerald-600 dark:text-emerald-400 font-extrabold" :
-              isRevealed && isWrong ? "text-destructive font-extrabold" :
-                "text-foreground"
-        )}>
-          {/* Fallback to label if text is undefined for compatibility with types */}
-          {text ?? label}
-        </span>
+        <span
+          className={cn(
+            "font-mono text-sm font-bold leading-snug",
+            !isRevealed && isSelected ? "text-foreground font-extrabold" :
+              isRevealed && isCorrect ? "text-emerald-600 dark:text-emerald-400 font-extrabold" :
+                isRevealed && isWrong ? "text-destructive font-extrabold" :
+                  "text-foreground"
+          )}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(renderMath(text ?? label))
+          }}
+        />
       </div>
       <div className="ml-3 mt-0.5 shrink-0">
         {isRevealed && isCorrect && <CheckCircleIcon className="w-5 h-5 text-emerald-500" />}
