@@ -65,7 +65,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
           <div className="flex items-center gap-2">
             {entries.length > 0 && (
-              <button
+              <button type="button"
                 onClick={clearEntries}
                 aria-label="Clear Deck"
                 className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
@@ -73,7 +73,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                 Clear Deck
               </button>
             )}
-            <button
+            <button type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close study deck review drawer"
               className="text-muted-foreground hover:text-foreground p-1 border border-border hover:border-primary/50 transition-colors cursor-pointer rounded"

@@ -122,7 +122,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
       {/* ─── SCREEN HEADER ────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <button 
+          <button type="button"
             onClick={onReturnHome}
             className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
@@ -350,7 +350,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                     <p className="text-xs text-muted-foreground mt-1">{mission.description}</p>
                     
                     {/* Progress slider */}
-                    <div className="mt-2.5 w-full h-1 bg-muted rounded overflow-hidden">
+                    <div className="mt-2.5 w-full h-1 bg-muted rounded overflow-hidden" role="meter" aria-valuemin={0} aria-valuemax={mission.target} aria-valuenow={mission.current}>
                       <div 
                         className="h-full bg-primary transition-all duration-500" 
                         style={{ width: `${(mission.current / mission.target) * 100}%` }}
@@ -443,7 +443,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
               </div>
 
               {!showConfirmReset ? (
-                <button 
+                <button type="button"
                   onClick={() => setShowConfirmReset(true)}
                   aria-label="Wipe all local telemetry and run data"
                   className="bg-transparent hover:bg-destructive/10 text-destructive border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
@@ -452,14 +452,14 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 </button>
               ) : (
                 <div className="flex items-center gap-2 shrink-0">
-                  <button 
+                  <button type="button"
                     onClick={handleReset}
                     aria-label="Confirm wipe all data"
                     className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
                   >
                     CONFIRM
                   </button>
-                  <button 
+                  <button type="button"
                     onClick={() => setShowConfirmReset(false)}
                     aria-label="Cancel wipe all data"
                     className="bg-secondary hover:bg-muted border border-border text-foreground px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"

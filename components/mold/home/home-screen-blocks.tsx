@@ -85,7 +85,7 @@ export function MainContentGrid({
         </div>
 
         {/* Action initialize CTA */}
-        <button
+        <button type="button"
           onClick={handleInitialize}
           title="Launch active quiz session (Press Enter)"
           aria-label="Launch active quiz session"

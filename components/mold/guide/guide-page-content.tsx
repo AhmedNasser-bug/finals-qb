@@ -238,7 +238,7 @@ export function GuidePageContent() {
                   aria-label="Filter documentation topics"
                 />
                 {searchQuery && (
-                  <button
+                  <button type="button"
                     onClick={() => setSearchQuery("")}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground font-mono text-[10px] uppercase"
                   >
@@ -256,7 +256,7 @@ export function GuidePageContent() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {STEPS.map((step, i) => (
-                <button
+                <button type="button"
                   key={step.num}
                   onClick={() => scrollToStep(i)}
                   className={cn(
@@ -286,7 +286,7 @@ export function GuidePageContent() {
       {/* ── MOBILE HORIZONTAL PILL BAR ────────────────────────────────────── */}
       <div className="md:hidden sticky top-16 z-40 bg-[#0d0e11] border-b border-border/70 px-4 py-2.5 overflow-x-auto flex items-center gap-2 scrollbar-none">
         {filteredToc.map((item) => (
-          <button
+          <button type="button"
             key={item.id}
             onClick={() => scrollToSection(item.id)}
             className={cn(
@@ -317,7 +317,7 @@ export function GuidePageContent() {
 
             <nav className="flex flex-col space-y-1" aria-label="Table of contents">
               {filteredToc.map((item) => (
-                <button
+                <button type="button"
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   className={cn(
@@ -369,7 +369,7 @@ export function GuidePageContent() {
 
       {/* ── FLOATING BACK TO TOP BUTTON ────────────────────────────────────── */}
       {showBackToTop && (
-        <button
+        <button type="button"
           onClick={scrollToTop}
           title="Scroll back to top"
           aria-label="Scroll back to top"
