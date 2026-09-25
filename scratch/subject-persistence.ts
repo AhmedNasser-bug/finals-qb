@@ -362,9 +362,9 @@ function autoFixTerminology(obj: Record<string, unknown>, warnings: string[]) {
 
 function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
   // Only treat as a subject and auto-fix if it has at least one subject signature key
-  const hasSignature = 
-    Array.isArray(obj.questions) || 
-    Array.isArray(obj.flashcards) || 
+  const hasSignature =
+    Array.isArray(obj.questions) ||
+    Array.isArray(obj.flashcards) ||
     (typeof obj.terminology === "object" && obj.terminology !== null && !Array.isArray(obj.terminology)) ||
     typeof obj.name === "string" ||
     (typeof obj.config === "object" && obj.config !== null && !Array.isArray(obj.config))
@@ -376,7 +376,7 @@ function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
     obj.name = "Imported Subject"
     warnings.push(`"name" was missing or invalid; defaulted to "Imported Subject".`)
   }
-  
+
   if (typeof obj.id !== "string" || obj.id.trim() === "") {
     const slug = (obj.name as string).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
     obj.id = slug || "imported-subject"
@@ -407,7 +407,7 @@ function autoFixSubjectData(obj: Record<string, unknown>, warnings: string[]) {
     obj.questions = []
     warnings.push(`"questions" array was missing or invalid; initialized as empty array.`)
   }
-  
+
   if ((obj.questions as unknown[]).length === 0) {
     obj.questions = [
       {
@@ -731,20 +731,20 @@ function balanceJsonStack(str: string): string {
       processStackClosure(stack, ']')
     }
   }
-  
+
   let balanced = str.trim()
   if (inString) balanced += '"'
-  
+
   if (balanced.endsWith(",")) {
     balanced = balanced.slice(0, -1)
   }
-  
+
   while (stack.length > 0) {
     const top = stack.pop()
     if (top === '{') balanced += '}'
     else if (top === '[') balanced += ']'
   }
-  
+
   return balanced
 }
 
@@ -853,7 +853,7 @@ function repairBadEscapes(str: string): { repaired: string; fixed: boolean } {
 export function repairJson(raw: string): { repaired: string; fixedIssues: string[] } {
   const fixedIssues: string[] = []
   let str = raw.trim()
-  
+
   // Issue 1: Remove markdown block comments if LLM wrapped it
   if (str.startsWith("```")) {
     const match = str.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i)
@@ -862,7 +862,7 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
       fixedIssues.push('Removed surrounding markdown code block fences (```json ... ```).')
     }
   }
-  
+
   // Issue 2: Smart quotes
   const hasSmartQuotes = /[\u201C\u201D\u201E\u201F\u2033\u2036\u2018\u2019\u201A\u201B\u2032\u2035]/.test(str)
   if (hasSmartQuotes) {
@@ -878,21 +878,21 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
     str = escapeRepaired
     fixedIssues.push("Repaired invalid escape characters inside string literals (e.g. backslashes not followed by valid escape codes).")
   }
-  
+
   // Issue 3: Trailing commas
   const hasTrailingCommas = /,\s*([\]}])/.test(str)
   if (hasTrailingCommas) {
     str = str.replace(/,\s*([\]}])/g, '$1')
     fixedIssues.push("Removed trailing commas inside arrays or objects.")
   }
-  
+
   // Issue 4: Balance truncated braces/brackets
   const balanced = balanceJsonStack(str)
   if (balanced !== str) {
     str = balanced
     fixedIssues.push("Balanced and auto-closed truncated brackets or braces at the end of the JSON.")
   }
-  
+
   return { repaired: str, fixedIssues }
 }
 
@@ -947,7 +947,7 @@ export function loadSubjects(): FullSubjectData[] {
     if (!raw) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
-    
+
     // Pass everything through validateSubjectData so old formats are normalised at runtime
     const validSubjects: FullSubjectData[] = []
     for (const item of parsed) {
