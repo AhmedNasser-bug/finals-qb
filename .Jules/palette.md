@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-25 - Tooltips, Stat Cell Decluttering, and ARIA Status
+**Learning:** Adding neo-brutalist panel borders (`border-b-4 border-r-4`) to stat cells improves visual hierarchy and adds a distinct pop off the background. Adding clear, contextual tooltips and ARIA labels (e.g. `Skip question (forfeit points)`) to icon-only or brief-text buttons like SKIP prevents confusion. `role="status"` ensures that dynamically loaded static text is announced by screen readers without being intrusive. Adding `type="button"` to generic buttons prevents unintended form submissions.
+**Action:** Always verify that generic buttons have `type="button"`, use distinct borders for distinct numeric stat cells to improve visual hierarchy, and use detailed `aria-label`s along with `title` for brief-text buttons. Use `role="status"` for non-intrusive announcements of static notes.

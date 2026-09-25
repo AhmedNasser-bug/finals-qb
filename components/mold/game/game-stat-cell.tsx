@@ -7,7 +7,7 @@ export function StatCell({
   label: string; value: string; accent?: boolean; className?: string
 }) {
   return (
-    <div className={cn("flex flex-col gap-1 p-3 bg-panel border border-border/40 rounded", className)}>
+    <div className={cn("flex flex-col gap-1 p-3 bg-panel border border-border/40 border-b-4 border-r-4 rounded", className)}>
       <span className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase">{label}</span>
       <span className={cn(
         "font-mono text-xl font-black tabular-nums",
