@@ -853,7 +853,19 @@ CRITICAL RULES:
                           <div>
                             <span className="text-zinc-500 block uppercase">Target Categories:</span>
                             <span className="text-xs font-bold text-white truncate block">
-                              {Array.from(new Set(parsedPreview.questions.filter(q => q.id !== "q-default-1").map(q => q.category))).map(cat => formatLabel(cat)).join(", ") || "—"}
+                              {(() => {
+                                const cats = new Set<string>();
+                                for (const q of parsedPreview.questions) {
+                                  if (q.id !== "q-default-1") {
+                                    cats.add(q.category);
+                                  }
+                                }
+                                const formatted = [];
+                                for (const cat of cats) {
+                                  formatted.push(formatLabel(cat));
+                                }
+                                return formatted.join(", ") || "—";
+                              })()}
                             </span>
                           </div>
                         </div>
