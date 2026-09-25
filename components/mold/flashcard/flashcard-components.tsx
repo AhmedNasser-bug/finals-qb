@@ -27,7 +27,7 @@ export function Header({
             ROUND {round}
           </span>
         </div>
-        <button
+        <button type="button"
           onClick={onQuit}
           className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded border border-transparent hover:border-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
@@ -36,7 +36,14 @@ export function Header({
       </div>
 
       {/* Progress bar */}
-      <div className="h-1 bg-secondary rounded-full overflow-hidden">
+      <div
+        className="h-1 bg-secondary rounded-full overflow-hidden"
+        role="meter"
+        aria-label="Flashcard session progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progress}
+      >
         <style>{`
           .fc-header-progress {
             width: ${progress}%;

@@ -84,7 +84,7 @@ export function SideNavBar({
           <span className="px-3 font-mono text-[9px] font-bold tracking-[0.2em] text-muted-foreground/70 uppercase">
             NAVIGATION
           </span>
-          <button 
+          <button type="button"
             onClick={onShowDashboard}
             title="Navigate to Dashboard (Mode Selection and Session Configuration)"
             aria-label="Navigate to Dashboard mode selection and session setup"
@@ -98,7 +98,7 @@ export function SideNavBar({
             <TerminalIcon className="w-3.5 h-3.5" aria-hidden="true" /> <span>Dashboard</span>
           </button>
 
-          <button 
+          <button type="button"
             onClick={onShowStats}
             title="View comprehensive study statistics, daily missions, and performance history"
             aria-label="View comprehensive study statistics, daily missions, and performance history"
@@ -112,7 +112,7 @@ export function SideNavBar({
             <BarChart3 className="w-3.5 h-3.5" aria-hidden="true" /> <span>Statistics</span>
           </button>
 
-          <button 
+          <button type="button"
             onClick={onShowEncyclopedia}
             title="Open interactive subject encyclopedia and key terminology definitions"
             aria-label="Open interactive subject encyclopedia and key terminology definitions"
@@ -121,7 +121,7 @@ export function SideNavBar({
             <BookOpen className="w-3.5 h-3.5" aria-hidden="true" /> <span>Encyclopedia</span>
           </button>
 
-          <button 
+          <button type="button"
             onClick={onShowGallery}
             title="View unlocked trophies, badges, and mastery achievements"
             aria-label="View unlocked trophies, badges, and mastery achievements"
@@ -145,7 +145,7 @@ export function SideNavBar({
           <span className="px-3 font-mono text-[9px] font-bold tracking-[0.2em] text-muted-foreground/70 uppercase">
             SUBJECT BANK
           </span>
-          <button 
+          <button type="button"
             onClick={onChangeSubject}
             title="Switch to another subject module in your library"
             aria-label="Switch to another subject module in your library"
@@ -154,7 +154,7 @@ export function SideNavBar({
             <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> <span>Switch Subject</span>
           </button>
           
-          <button 
+          <button type="button"
             onClick={onAddQuestions}
             title="Open AI Pedagogical Question Generator Wizard"
             aria-label="Open AI Pedagogical Question Generator Wizard"
@@ -169,7 +169,7 @@ export function SideNavBar({
             </span>
           </button>
 
-          <button 
+          <button type="button"
             onClick={onImportNew}
             title="Import new custom subject from a JSON document"
             aria-label="Import new custom subject from a JSON document"
@@ -185,7 +185,7 @@ export function SideNavBar({
             APPEARANCE
           </span>
           {onShowThemeModal && (
-            <button
+            <button type="button"
               onClick={onShowThemeModal}
               title="Change color theme palette and phosphor aesthetic"
               aria-label="Open color theme switcher modal"
@@ -195,7 +195,7 @@ export function SideNavBar({
             </button>
           )}
           {onShowLayoutModal && (
-            <button
+            <button type="button"
               onClick={onShowLayoutModal}
               title="Switch page workspace layout architecture"
               aria-label="Open page layout switcher modal"
@@ -236,7 +236,7 @@ export function SideNavBar({
 
           {exportExpanded && (
             <div id="study-exports-bundle" className="flex flex-col gap-1 pl-2 border-l-2 border-primary/20 ml-3.5 py-0.5 animate-slide-up">
-              <button 
+              <button type="button"
                 onClick={onDownloadHtml}
                 title="Export offline interactive HTML study package"
                 aria-label="Export offline interactive HTML study package"
@@ -251,7 +251,7 @@ export function SideNavBar({
                 </span>
               </button>
 
-              <button 
+              <button type="button"
                 onClick={onDownloadPdf}
                 title="Generate clean printable PDF question sheet"
                 aria-label="Generate clean printable PDF question sheet"
@@ -266,7 +266,7 @@ export function SideNavBar({
                 </span>
               </button>
 
-              <button 
+              <button type="button"
                 onClick={onDownloadSolvedPdf}
                 title="Generate complete solved PDF with explanations, hints, and diagrams"
                 aria-label="Generate complete solved PDF with explanations, hints, and diagrams"
@@ -287,7 +287,7 @@ export function SideNavBar({
 
       {/* Bottom Sticky Action Bar */}
       <div className="mt-auto pt-3 border-t border-border/60">
-        <button 
+        <button type="button"
           onClick={onInitialize}
           title="Launch active game session (Press Enter)"
           aria-label="Start active quiz session"
