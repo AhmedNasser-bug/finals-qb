@@ -130,7 +130,9 @@ export function GameFooter({
         {isRevealed && (
           <button
             onClick={nextQuestion}
-            aria-label="Skip question"
+            type="button"
+            title="Skip question (forfeit points)"
+            aria-label="Skip question (forfeit points)"
             className="flex items-center gap-2 h-12 px-4 border border-border text-muted-foreground font-mono text-xs font-bold tracking-widest uppercase hover:text-primary hover:border-primary/40 bg-secondary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded shadow-sm"
           >
             <SkipIcon className="w-4 h-4" aria-hidden="true" />
