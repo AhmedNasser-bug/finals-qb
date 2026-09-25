@@ -129,7 +129,7 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
               <p className="text-xs text-muted-foreground leading-relaxed">
                 The share link may be corrupted or truncated. Ask the sender to use the file download option instead.
               </p>
-              <button
+              <button type="button"
                 onClick={handleDecline}
                 aria-label="Dismiss error"
                 className="w-full py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -159,14 +159,14 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
 
               {/* Actions */}
               <div className="flex gap-3">
-                <button
+                <button type="button"
                   onClick={handleDecline}
                   title="Decline and dismiss subject"
                   className="flex-1 py-2.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                   Decline
                 </button>
-                <button
+                <button type="button"
                   onClick={handleAccept}
                   title="Accept and add subject to your local library"
                   className="flex-1 py-2.5 rounded border border-primary/50 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"

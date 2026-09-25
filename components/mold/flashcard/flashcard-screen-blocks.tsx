@@ -140,7 +140,7 @@ export function FlashcardDossierCard({
       </div>
 
       {/* Invisible click zone covering the entire card */}
-      <button
+      <button type="button"
         onClick={onFlip}
         aria-label={flipped ? "Show term" : "Show definition"}
         className="absolute inset-0 z-20 w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -156,7 +156,7 @@ export interface FlashcardResponseControlsProps {
 export function FlashcardResponseControls({ onRespond }: FlashcardResponseControlsProps) {
   return (
     <div className="flex gap-5 w-full max-w-2xl mt-6 animate-fade-in">
-      <button
+      <button type="button"
         onClick={() => onRespond(false)}
         className={cn(
           "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider",
@@ -169,7 +169,7 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
       >
         ✕ &nbsp;STILL LEARNING &nbsp;-1
       </button>
-      <button
+      <button type="button"
         onClick={() => onRespond(true)}
         className={cn(
           "flex-1 py-3 px-6 rounded border text-xs font-mono tracking-wider font-bold",
@@ -249,7 +249,7 @@ export function SessionEndScreen({
         )}
 
         <div className="flex gap-3 w-full max-w-sm">
-          <button
+          <button type="button"
             onClick={onReturnHome}
             aria-label="Return to home screen"
             title="Return to home screen"
@@ -257,7 +257,7 @@ export function SessionEndScreen({
           >
             HOME
           </button>
-          <button
+          <button type="button"
             onClick={onComplete}
             className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
@@ -352,7 +352,7 @@ export function RoundEndScreen({
         )}
 
         <div className="flex gap-3 w-full max-w-sm">
-          <button
+          <button type="button"
             onClick={onEndSession}
             aria-label="End current flashcard session"
             title="End current session"
@@ -360,7 +360,7 @@ export function RoundEndScreen({
           >
             END SESSION
           </button>
-          <button
+          <button type="button"
             onClick={onContinue}
             className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >

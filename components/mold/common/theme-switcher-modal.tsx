@@ -88,8 +88,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
               </p>
             </div>
           </div>
-          <button
-            type="button"
+          <button type="button"
             onClick={onClose}
             className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
             aria-label="Close theme selector"
@@ -100,8 +99,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
 
         {/* Mode Filter Tabs */}
         <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-panel/30">
-          <button
-            type="button"
+          <button type="button"
             onClick={() => setFilter('all')}
             className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
               filter === 'all'
@@ -112,8 +110,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
             <Sparkles className="w-3 h-3" aria-hidden="true" />
             ALL [{availableThemes.length}]
           </button>
-          <button
-            type="button"
+          <button type="button"
             onClick={() => setFilter('dark')}
             className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
               filter === 'dark'
@@ -124,8 +121,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
             <Moon className="w-3 h-3" aria-hidden="true" />
             DARK [{darkCount}]
           </button>
-          <button
-            type="button"
+          <button type="button"
             onClick={() => setFilter('light')}
             className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
               filter === 'light'
@@ -146,7 +142,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           {filteredThemes.map((theme) => {
             const isSelected = theme.id === activeThemeId
             return (
-              <button
+              <button type="button"
                 key={theme.id}
                 type="button"
                 onClick={() => setThemeId(theme.id)}
@@ -225,8 +221,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
         {/* Footer */}
         <div className="px-6 py-3 border-t border-border bg-panel/30 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
           <span>Active: {activeThemeId}</span>
-          <button
-            type="button"
+          <button type="button"
             onClick={onClose}
             className="px-3 py-1.5 rounded border border-border bg-card hover:bg-muted text-foreground text-[11px] font-mono font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >

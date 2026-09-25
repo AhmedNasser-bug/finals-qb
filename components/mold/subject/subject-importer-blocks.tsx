@@ -152,7 +152,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             {[20, 40, 80, 120].map((num) => {
               const isSelected = questionCount === num
               return (
-                <button
+                <button type="button"
                   key={num}
                   type="button"
                   onClick={() => {
@@ -212,7 +212,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
           {PEDAGOGICAL_PRESETS.map((p) => {
             const isSelected = selectedPreset === p.id
             return (
-              <button
+              <button type="button"
                 key={p.id}
                 type="button"
                 role="radio"
@@ -230,8 +230,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
               </button>
             )
           })}
-          <button
-            type="button"
+          <button type="button"
             role="radio"
             aria-checked={selectedPreset === "custom"}
             onClick={() => handlePresetSelect("custom")}
@@ -258,8 +257,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
 
       {/* Collapsible Advanced Customization Section */}
       <div className="border-t border-border/40 pt-2.5">
-        <button
-          type="button"
+        <button type="button"
           aria-expanded={showAdvanced}
           onClick={() => setShowAdvanced((prev) => !prev)}
           className="flex items-center gap-1 text-[10px] font-mono text-muted-foreground hover:text-foreground tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded px-1"
@@ -406,8 +404,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
       {/* Copy CTA Button and Live Code Drawer */}
       <div className="flex flex-col gap-2 border-t border-border/40 pt-3 mt-1">
         <div className="flex items-center justify-between gap-3">
-          <button
-            type="button"
+          <button type="button"
             aria-expanded={showRawPrompt}
             onClick={() => setShowRawPrompt((prev) => !prev)}
             className="text-[10px] font-mono text-muted-foreground hover:text-foreground tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded px-1"
@@ -415,8 +412,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
             {showRawPrompt ? "[-] Hide Raw Prompt" : "[+] Show Raw Prompt"}
           </button>
 
-          <button
-            type="button"
+          <button type="button"
             onClick={() => onCopyPrompt(compiledPrompt)}
             title="Copy customized pedagogical prompt"
             className={cn(
@@ -504,8 +500,7 @@ export function DropZoneSection({
           Step 2 — Paste JSON
         </p>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <button type="button"
             onClick={handlePasteButtonClick}
             disabled={state === "pasting"}
             title={
