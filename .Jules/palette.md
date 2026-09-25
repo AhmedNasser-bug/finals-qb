@@ -110,3 +110,6 @@
 
 
 
+## 2023-10-25 - Global type="button" and ARIA improvements
+**Learning:** Found a systemic pattern where `<button>` components were missing `type="button"`, leading to potential implicit form submission bugs. Also identified gaps in visual progress meter a11y, decorative images screen-reader noise, and missing live regions for empty state announcements.
+**Action:** Applied automated regex fixing to enforce `<button type="button">` globally across components. Enforced `role="meter"` for dynamic width `div` elements, `aria-hidden="true"` with `role="presentation"` for purely decorative `img` tags, matching `title` visual tooltips for icon-only action elements, and `role="status"` with `aria-live="polite"` for empty state data components. Will continue applying these systematically as standard project constraints.
