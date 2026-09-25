@@ -196,8 +196,7 @@ export function SubjectSelector({
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
                 {searchQuery ? (
-                  <button
-                    type="button"
+                  <button type="button"
                     onClick={() => setSearchQuery("")}
                     className="pointer-events-auto text-[10px] font-mono text-muted-foreground hover:text-foreground mr-1"
                     title="Clear search"
@@ -241,7 +240,7 @@ export function SubjectSelector({
             {/* Import button — shown even without user subjects */}
             {!hasUserSubjects && (
               <div className="flex justify-center pt-2">
-                <button
+                <button type="button"
                   onClick={() => setShowImporter(true)}
                   title="Import a subject via JSON"
                   className="flex items-center gap-3 px-6 py-3 border border-dashed border-border text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-xs font-mono tracking-wider"

@@ -321,7 +321,7 @@ CRITICAL RULES:
               Step {step} of 5 — {steps[step - 1].label}
             </p>
           </div>
-          <button
+          <button type="button"
             onClick={onCancel}
             className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
             aria-label="Close wizard"
@@ -399,7 +399,7 @@ CRITICAL RULES:
                 ].map((type) => {
                   const isSelected = contentType === type.id
                   return (
-                    <button
+                    <button type="button"
                       key={type.id}
                       type="button"
                       onClick={() => setContentType(type.id as any)}
@@ -509,8 +509,7 @@ CRITICAL RULES:
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Theoretical */}
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setStyleBias("theoretical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -534,8 +533,7 @@ CRITICAL RULES:
                 </button>
 
                 {/* Technical */}
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setStyleBias("technical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -559,8 +557,7 @@ CRITICAL RULES:
                 </button>
 
                 {/* Balanced */}
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setStyleBias("balanced")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -610,7 +607,7 @@ CRITICAL RULES:
                 ].map((focus) => {
                   const isSelected = categoryFocus === focus.id
                   return (
-                    <button
+                    <button type="button"
                       key={focus.id}
                       type="button"
                       onClick={() => setCategoryFocus(focus.id as any)}
@@ -720,8 +717,7 @@ CRITICAL RULES:
                     <FileText className="w-3.5 h-3.5 text-primary" />
                     <span>SYSTEM PROMPT INSTRUCTION BUNDLE</span>
                   </span>
-                  <button
-                    type="button"
+                  <button type="button"
                     onClick={handleCopyPrompt}
                     className={cn(
                       "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer flex items-center gap-1.5",
@@ -871,14 +867,14 @@ CRITICAL RULES:
         <div className="flex items-center justify-between gap-4 px-8 py-5 border-t border-border bg-panel">
           {/* Back/Cancel */}
           {step === 1 ? (
-            <button
+            <button type="button"
               onClick={onCancel}
               className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
             >
               Cancel
             </button>
           ) : (
-            <button
+            <button type="button"
               onClick={() => setStep((prev) => prev - 1)}
               className="text-xs font-mono px-5 py-2.5 rounded border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none min-h-[40px] cursor-pointer"
             >
@@ -888,7 +884,7 @@ CRITICAL RULES:
 
           {/* Continue/Confirm */}
           {step < 5 ? (
-            <button
+            <button type="button"
               onClick={() => setStep((prev) => prev + 1)}
               disabled={isNextDisabled}
               aria-busy={validationState === "validating"}
@@ -902,7 +898,7 @@ CRITICAL RULES:
               CONTINUE →
             </button>
           ) : (
-            <button
+            <button type="button"
               onClick={handleConfirmMerge}
               disabled={isNextDisabled}
               aria-busy={validationState === "validating"}

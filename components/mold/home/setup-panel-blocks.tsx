@@ -67,8 +67,7 @@ export function ConfigControls({
             Parameters // Presets
           </span>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <button
-              type="button"
+            <button type="button"
               onClick={handlePresetDefault}
               title="Default preset: Timer ON, Hints OFF, 20 questions"
               aria-label="Set parameters to standard default preset"
@@ -76,8 +75,7 @@ export function ConfigControls({
             >
               DEFAULT
             </button>
-            <button
-              type="button"
+            <button type="button"
               onClick={handlePresetMastery}
               title="Mastery preset: Timer OFF, Hints OFF, All questions"
               aria-label="Set parameters to untimed mastery preset covering all questions"
@@ -85,8 +83,7 @@ export function ConfigControls({
             >
               MASTERY
             </button>
-            <button
-              type="button"
+            <button type="button"
               onClick={handlePresetSpeedDrill}
               title="Speed Drill preset: Timer ON, Hints OFF, 10 questions"
               aria-label="Set parameters to rapid 10-question speed drill preset"
@@ -155,7 +152,7 @@ export function QuestionCountGroup({ options = QUESTION_COUNT_OPTIONS }: { optio
         {options.map((n) => {
           const isPressed = config.questionCount === n
           return (
-            <button
+            <button type="button"
               key={n}
               onClick={() => onChange({ questionCount: n })}
               aria-pressed={isPressed}
@@ -276,8 +273,7 @@ export function CategorySelectorSection({
               className="px-2.5 py-1 text-xs font-mono bg-secondary/50 border border-border rounded text-foreground placeholder:text-muted-foreground focus-ring w-full sm:w-44"
             />
             {filterQuery && (
-              <button
-                type="button"
+              <button type="button"
                 onClick={() => setFilterQuery("")}
                 aria-label="Clear category search"
                 title="Clear category search"
@@ -360,7 +356,7 @@ export function Toggle({
   title?: string
 }) {
   return (
-    <button
+    <button type="button"
       role="switch"
       aria-label={ariaLabel}
       aria-checked={checked}
@@ -410,7 +406,7 @@ export function CategoryTile({
   const titleTooltip = `Filter practice pool to ${name} (${questionCount} questions) — ${recallabilityPct}% Recallability [${recallStyle.label}]`
 
   return (
-    <button
+    <button type="button"
       onClick={onSelect}
       aria-pressed={selected}
       aria-label={ariaLabel}
