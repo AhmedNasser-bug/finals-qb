@@ -53,7 +53,7 @@ test('handles Error instances', () => {
   assert.ok(result instanceof Error);
   assert.strictEqual(result.message.includes('password123'), false);
   assert.strictEqual(result.message.includes('[REDACTED]'), true);
-  assert.strictEqual((result as any).api_key, '12345');
+  assert.strictEqual((result as any).api_key, '[REDACTED]');
   assert.strictEqual((result as any).safe_prop, 'safe');
 });
 
