@@ -2,3 +2,4 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2025-02-28 - [Eliminate Async Loop Bottlenecks & Missing Imports] **Learning:** When replacing stream read chunk loops with `readFile` in server actions, ensure the required async module (e.g., `fsPromises` from `"fs/promises"`) is properly imported if it was not already imported by the previous implementation. **Action:** Always double-check existing file imports at the top of the module when altering the core dependencies of a refactored block.
