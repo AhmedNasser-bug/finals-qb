@@ -155,7 +155,7 @@ export function QuestionCountGroup({ options = QUESTION_COUNT_OPTIONS }: { optio
         {options.map((n) => {
           const isPressed = config.questionCount === n
           return (
-            <button
+            <button type="button"
               key={n}
               onClick={() => onChange({ questionCount: n })}
               aria-pressed={isPressed}
@@ -360,7 +360,7 @@ export function Toggle({
   title?: string
 }) {
   return (
-    <button
+    <button type="button"
       role="switch"
       aria-label={ariaLabel}
       aria-checked={checked}
@@ -410,7 +410,7 @@ export function CategoryTile({
   const titleTooltip = `Filter practice pool to ${name} (${questionCount} questions) — ${recallabilityPct}% Recallability [${recallStyle.label}]`
 
   return (
-    <button
+    <button type="button"
       onClick={onSelect}
       aria-pressed={selected}
       aria-label={ariaLabel}

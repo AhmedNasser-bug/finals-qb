@@ -66,7 +66,7 @@ export function LinkTabContent({
               className="flex-1 min-w-0 bg-background border border-border rounded px-3 py-2 text-xs font-mono text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring truncate"
               onFocus={(e) => e.target.select()}
             />
-            <button
+            <button type="button"
               onClick={onCopy}
               aria-label="Copy share link"
               className={cn(
@@ -86,7 +86,7 @@ export function LinkTabContent({
 
           {/* Shorten button + short URL */}
           <div className="flex flex-col gap-2">
-            <button
+            <button type="button"
               onClick={onShorten}
               disabled={shortenState === "loading"}
               title={shortenState === "loading" ? "Currently shortening link..." : undefined}
@@ -117,7 +117,7 @@ export function LinkTabContent({
                   className="flex-1 min-w-0 bg-background border border-green-500/30 rounded px-3 py-2 text-xs font-mono text-green-400 focus:outline-none focus:ring-1 focus:ring-ring truncate"
                   onFocus={(e) => e.target.select()}
                 />
-                <button
+                <button type="button"
                   onClick={onCopyShortUrl}
                   aria-label="Copy shortened link"
                   className="shrink-0 px-3 py-2 rounded border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-mono font-semibold tracking-wider hover:bg-green-500/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -185,7 +185,7 @@ export function FileTabContent({ subject, onDownload }: FileTabContentProps) {
         </div>
       </div>
 
-      <button
+      <button type="button"
         onClick={onDownload}
         title="Download subject JSON file"
         className="w-full py-2.5 rounded border border-primary/40 bg-primary/10 text-primary text-xs font-mono font-semibold tracking-wider hover:bg-primary/20 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
