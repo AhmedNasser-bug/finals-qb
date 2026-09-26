@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "lastUpdated": "2026-09-26T16:21:52Z",
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,17 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "button-type-accessibility-fix",
+      "category": "accessibility",
+      "tier": 5,
+      "title": "Accessibility: Explicitly add type=\"button\" to UI buttons",
+      "implementedAt": "2026-09-26T16:21:52Z",
+      "componentsTouched": [
+        "components/mold/"
       ],
       "nonBreaking": true
     }

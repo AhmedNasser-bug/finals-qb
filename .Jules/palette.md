@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-26 - Adding explicit type="button" to UI buttons
+**Learning:** Generic `<button>` elements in React/Next.js without an explicit `type` attribute default to `type="submit"`. In complex UI, especially within or near forms, this can cause implicit, unintended form submissions when users interact with non-form controls (like changing a theme or opening a modal), leading to full-page reloads or unexpected behavior.
+**Action:** As a standard UX and accessibility practice, always explicitly add `type="button"` to generic UI `<button>` elements to prevent implicit form submissions. Ensure a script that automatically adds this attribute verifies the absence of the target attribute before replacement to avoid generating duplicate/invalid markup.
