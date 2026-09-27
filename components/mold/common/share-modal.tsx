@@ -147,7 +147,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
             </h2>
             <p className="text-xs text-muted-foreground font-mono mt-0.5">{subject.name}</p>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close share modal"
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded p-1"
@@ -159,7 +159,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
         {/* Tab bar */}
         <div className="flex border-b border-border">
           {(["link", "file"] as Tab[]).map((t) => (
-            <button
+            <button type="button"
               key={t}
               onClick={() => setTab(t)}
               className={cn(

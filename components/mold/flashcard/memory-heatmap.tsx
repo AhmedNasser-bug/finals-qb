@@ -68,7 +68,7 @@ export function MemoryHeatmap({
         {/* Action Triggers */}
         <div className="flex items-center gap-2 flex-wrap">
           {totalCritical > 0 && (
-            <button
+            <button type="button"
               onClick={() => onStartDrill("CRITICAL_ONLY", selectedCategory === "all" ? undefined : selectedCategory)}
               className="px-3 py-1.5 text-xs font-mono font-bold bg-destructive/10 text-destructive border border-destructive/40 hover:bg-destructive/20 rounded transition-colors flex items-center gap-1.5"
             >
@@ -78,7 +78,7 @@ export function MemoryHeatmap({
           )}
 
           {totalDue > 0 && (
-            <button
+            <button type="button"
               onClick={() => onStartDrill("DUE_ONLY", selectedCategory === "all" ? undefined : selectedCategory)}
               className="px-3 py-1.5 text-xs font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/40 hover:bg-amber-500/20 rounded transition-colors flex items-center gap-1.5"
             >
@@ -87,7 +87,7 @@ export function MemoryHeatmap({
             </button>
           )}
 
-          <button
+          <button type="button"
             onClick={() => onStartDrill("SMART_ADAPTIVE", selectedCategory === "all" ? undefined : selectedCategory)}
             className="px-3 py-1.5 text-xs font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded transition-colors"
           >
@@ -121,7 +121,7 @@ export function MemoryHeatmap({
         <span className="text-[11px] font-mono text-muted-foreground flex items-center gap-1 mr-1">
           <Filter className="w-3 h-3" aria-hidden="true" /> TOPIC:
         </span>
-        <button
+        <button type="button"
           onClick={() => setSelectedCategory("all")}
           className={`px-2.5 py-1 text-xs font-mono rounded transition-colors ${
             selectedCategory === "all"
@@ -132,7 +132,7 @@ export function MemoryHeatmap({
           ALL ({totalCards})
         </button>
         {summaries.map((sum) => (
-          <button
+          <button type="button"
             key={sum.category}
             onClick={() => setSelectedCategory(sum.category)}
             className={`px-2.5 py-1 text-xs font-mono rounded transition-colors ${
@@ -176,7 +176,7 @@ export function MemoryHeatmap({
             }
 
             return (
-              <button
+              <button type="button"
                 key={card.id}
                 onMouseEnter={() => setHoveredCard(state)}
                 onMouseLeave={() => setHoveredCard(null)}

@@ -85,7 +85,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
           <p className="font-mono text-sm text-muted-foreground">
             No terminology data found in this subject.
           </p>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close encyclopedia overlay"
             title="Close encyclopedia overlay"
@@ -136,7 +136,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
               {subject.config.title}
             </span>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close encyclopedia"
             title="Close encyclopedia (Esc)"
@@ -155,7 +155,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
             {categories.map((cat) => {
               const count = terminology?.[cat]?.length ?? 0
               return (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => { setActiveCategory(cat); setSearch("") }}
                   aria-current={activeCategory === cat ? "page" : undefined}
