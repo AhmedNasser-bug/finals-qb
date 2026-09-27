@@ -13,9 +13,16 @@ if [ "$1" = "--multi-tenant" ]; then
         docker compose up -d --build --remove-orphans
     else
         echo "Error: docker-compose or docker compose is required for multi-tenant setup."
+        exit 1
     fi
+    DOCKER_EXIT=$?
     echo "Multi-tenant sandbox containers are spinning up..."
 fi
 
-echo "=> Environment bootstrap complete."
-echo "You can now run 'pnpm dev' to start the local development server."
+if [ "${DOCKER_EXIT:-0}" -eq 0 ]; then
+    echo "=> Environment bootstrap complete."
+    echo "You can now run 'pnpm dev' to start the local development server."
+else
+    echo "=> Error during environment bootstrap."
+    exit 1
+fi
