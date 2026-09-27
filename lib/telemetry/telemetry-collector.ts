@@ -60,7 +60,7 @@ class TelemetryCollector {
     return this.inMemoryEvents.filter((evt) => {
       if (filter?.subjectId && evt.subjectId !== filter.subjectId) return false
       if (filter?.type && evt.type !== filter.type) return false
-      if (filter?.sinceIso && new Date(evt.timestamp) < new Date(filter.sinceIso)) return false
+      if (filter?.sinceIso && evt.timestamp < filter.sinceIso) return false
       return true
     })
   }
