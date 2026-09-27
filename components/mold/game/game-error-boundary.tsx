@@ -47,7 +47,7 @@ export class GameErrorBoundary extends Component<Props, State> {
               {this.state.message}
             </p>
           )}
-          <button
+          <button type="button"
             onClick={this.props.onReturnHome}
             aria-label="Return to Home"
             title="Return to Home"

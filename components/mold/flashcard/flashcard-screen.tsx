@@ -299,7 +299,7 @@ export function FlashcardScreen({
           </span>
         </div>
 
-        <button
+        <button type="button"
           onClick={() => setShowHeatmap((prev) => !prev)}
           className="px-2.5 py-1 text-xs font-mono font-bold bg-background border border-border hover:border-primary text-foreground rounded transition-colors flex items-center gap-1.5"
         >
