@@ -64,7 +64,7 @@ export function YourSubjectsSection({
         })}
 
         {/* Import card — dynamically spans 2 columns if user subjects count is even to balance grid layout */}
-        <button
+        <button type="button"
           onClick={onShowImporter}
           title="Import a subject via JSON"
           className={cn(

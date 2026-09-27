@@ -58,7 +58,7 @@ export function HeroHeader({
 
         <div className="ml-auto flex items-center gap-2">
           {onChangeSubject && (
-            <button
+            <button type="button"
               onClick={onChangeSubject}
               title="Change active subject"
               aria-label="Switch active subject"
@@ -68,7 +68,7 @@ export function HeroHeader({
             </button>
           )}
           {onImportNew && (
-            <button
+            <button type="button"
               onClick={onImportNew}
               title="Import a new subject JSON file"
               aria-label="Import a new subject"
@@ -83,7 +83,7 @@ export function HeroHeader({
               <span className="text-border select-none opacity-40">|</span>
               <Show when="signed-out">
                 <SignInButton mode="modal">
-                  <button className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
+                  <button type="button" className="text-[10px] font-mono text-primary border border-primary/20 bg-primary/5 px-2.5 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
                     SIGN IN
                   </button>
                 </SignInButton>
@@ -137,7 +137,7 @@ export function HeroHeader({
             </div>
           </div>
           {onTrophyClick ? (
-            <button
+            <button type="button"
               onClick={onTrophyClick}
               className={cn(
                 "w-12 h-12 rounded border flex items-center justify-center text-xl transition-all duration-150 active:scale-95",

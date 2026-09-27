@@ -6,7 +6,7 @@ import { AchievementsPanel } from "./achievements-panel"
 import { SessionStatsPanel } from "./session-stats-panel"
 import { HeaderWell } from "./header-well"
 
-import type { GameModeId, SetupConfig, CategoryData, Achievement } from "@/lib/mold-types"
+import type { GameModeId, SetupConfig, CategoryData, Achievement, Question } from "@/lib/mold-types"
 
 interface MainContentGridProps {
   // Mode Selection
@@ -85,7 +85,7 @@ export function MainContentGrid({
         </div>
 
         {/* Action initialize CTA */}
-        <button
+        <button type="button"
           onClick={handleInitialize}
           title="Launch active quiz session (Press Enter)"
           aria-label="Launch active quiz session"

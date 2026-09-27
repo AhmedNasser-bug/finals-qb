@@ -36,7 +36,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
         {/* Mode Filter Pills */}
         {runs.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter runs by game mode">
-            <button
+            <button type="button"
               onClick={() => setSelectedFilterMode("all")}
               aria-pressed={selectedFilterMode === "all"}
               title="Show all quiz runs"
@@ -54,7 +54,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
               if (count === 0) return null
               const isSelected = selectedFilterMode === m.id
               return (
-                <button
+                <button type="button"
                   key={m.id}
                   onClick={() => setSelectedFilterMode(m.id)}
                   aria-pressed={isSelected}
@@ -91,7 +91,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
       ) : filteredRuns.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 py-8 rounded border border-dashed border-border/60 text-muted-foreground" role="status" aria-live="polite">
           <p className="text-xs font-mono tracking-widest">NO RUNS FOR SELECTED FILTER</p>
-          <button
+          <button type="button"
             onClick={() => setSelectedFilterMode("all")}
             className="text-xs font-mono text-primary hover:underline"
           >
@@ -122,7 +122,7 @@ export function PerformanceTable({ runs, stats, className }: PerformanceTablePro
           </div>
           {filteredRuns.length > 5 && (
             <div className="p-2 border-t border-border bg-secondary/20 flex justify-center">
-              <button
+              <button type="button"
                 onClick={() => setShowAllRuns(!showAllRuns)}
                 className="text-xs font-mono text-primary hover:underline focus-ring px-2 py-1 rounded"
               >

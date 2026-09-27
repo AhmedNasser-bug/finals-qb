@@ -31,7 +31,7 @@ export function BottomMobileNav({
 }: BottomMobileNavProps) {
   return (
     <footer className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-panel/95 backdrop-blur-md border-t border-border z-50 flex justify-around items-center px-2 select-none" role="contentinfo">
-      <button
+      <button type="button"
         onClick={() => {
           setView("home")
           handleModeSelect("speedrun")
@@ -50,7 +50,7 @@ export function BottomMobileNav({
         <span className="font-mono text-[9px] font-bold tracking-wider">CORE</span>
       </button>
 
-      <button
+      <button type="button"
         onClick={() => setView("stats")}
         title="Open Stats Dashboard"
         aria-label="Open Stats Dashboard"
@@ -66,7 +66,7 @@ export function BottomMobileNav({
         <span className="font-mono text-[9px] font-bold tracking-wider">STATS</span>
       </button>
 
-      <button
+      <button type="button"
         onClick={() => setShowEncyclopedia(true)}
         title="Open Encyclopedia"
         aria-label="Data: Open Encyclopedia"
@@ -76,7 +76,7 @@ export function BottomMobileNav({
         <span className="font-mono text-[9px] font-bold tracking-wider">DATA</span>
       </button>
 
-      <button
+      <button type="button"
         onClick={() => setShowGallery(true)}
         title="Open Achievement Gallery"
         aria-label="Achs: Open Achievement Gallery"
@@ -86,7 +86,7 @@ export function BottomMobileNav({
         <span className="font-mono text-[9px] font-bold tracking-wider">ACHS</span>
       </button>
 
-      <button
+      <button type="button"
         onClick={onChangeSubject}
         title="Switch Subject"
         aria-label="Switch Subject"
