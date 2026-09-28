@@ -3,13 +3,14 @@ set -eo pipefail
 
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
+    # Idempotent directory creation for volume mounts
+    mkdir -p .next-tenant-a .next-tenant-b
+
     if [ ! -f docker-compose.yml ]; then
         echo "Error: docker-compose.yml not found."
     elif command -v docker-compose &> /dev/null; then
-        # Use idempotent up command, and restart conditionally if needed
         docker-compose up -d --build --remove-orphans
     elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
-        # Use idempotent up command
         docker compose up -d --build --remove-orphans
     else
         echo "Error: docker-compose or docker compose is required for multi-tenant setup."
