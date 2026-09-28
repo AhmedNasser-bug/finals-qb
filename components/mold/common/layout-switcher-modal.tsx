@@ -27,6 +27,12 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.focus()
+    }
+  }, [])
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose()
@@ -38,7 +44,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) {
           e.preventDefault()
           last.focus()
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -56,6 +62,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
       role="dialog"
+      tabIndex={-1}
       aria-modal="true"
       aria-labelledby="layout-modal-title"
       onClick={(e) => {

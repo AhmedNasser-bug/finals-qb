@@ -110,3 +110,7 @@
 
 
 
+
+## 2024-05-18 - Modal Dialog Initial Focus and Backward Navigation
+**Learning:** For custom modals acting as dialogs (`role="dialog"`), React's initial mount doesn't automatically pull keyboard focus into the container, causing screen readers and keyboard users to lose orientation. Furthermore, implementing a `Shift+Tab` backward focus trap fails immediately after mount if `document.activeElement` is the modal container itself (since it's not the "first" focusable sub-element).
+**Action:** Always add `tabIndex={-1}` to `role="dialog"` elements, use `useEffect` to `focus()` the container on mount, and in the backward navigation focus trap, check `if (e.shiftKey && (document.activeElement === firstFocusable || document.activeElement === modalRef.current))`.
