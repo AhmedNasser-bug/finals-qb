@@ -179,6 +179,18 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "flashcard-keyboard-shortcuts-and-badges",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Keyboard Shortcuts Engine and Visual Badges for Flashcards",
+      "implementedAt": "2026-09-28T16:11:38.823Z",
+      "componentsTouched": [
+        "components/mold/flashcard/flashcard-screen.tsx",
+        "components/mold/flashcard/flashcard-screen-blocks.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-28 - Flashcard Keybindings & Hotkey Badges
+**Learning:** During flashcard study sessions, relying solely on mouse clicks for flipping and scoring disrupts workflow. Wiring global keydown listeners for `Space`/`Enter` (to flip and advance) and `1`, `2` (for scoring), along with `Esc` for navigation, allows rapid completion of sets. Appending visual hotkey badges (`[SPACE]`, `[1]`, `[2]`, `[ESC]`, `[↵]`) explicitly cues users to the available keyboard affordances.
+**Action:** Embed keyboard-event handlers in root study views and integrate visually distinct, muted keycap representations within interactive elements.

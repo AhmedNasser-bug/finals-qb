@@ -198,6 +198,55 @@ export function FlashcardScreen({
     [flashcards, retentionMap, subjectId]
   )
 
+
+  // Keyboard Navigation Engine
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Do not intercept if user is interacting with an input (if any)
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (phase === "studying") {
+        if (!showHeatmap) {
+          if (!flipped) {
+            if (e.code === "Space" || e.code === "Enter") {
+              e.preventDefault();
+              handleFlip();
+            }
+          } else {
+            if (e.key === "1") {
+              e.preventDefault();
+              handleRespond(false);
+            } else if (e.key === "2") {
+              e.preventDefault();
+              handleRespond(true);
+            } else if (e.code === "Space" || e.code === "Enter") {
+              // Could map to got it, or do nothing. We'll do nothing so they explicitly press 1 or 2
+            }
+          }
+        }
+      } else if (phase === "round-end") {
+        if (e.code === "Enter") {
+          e.preventDefault();
+          handleContinue();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          setPhase("session-end");
+        }
+      } else if (phase === "session-end") {
+        if (e.code === "Enter") {
+          e.preventDefault();
+          onComplete();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          onReturnHome();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [phase, flipped, handleFlip, handleRespond, showHeatmap, onComplete, onReturnHome, handleContinue]);
+
   // Derived stats
   const { confident, neutral, learning, hardestCards, worstScore, hardest } = useMemo(() => {
     let conf = 0
