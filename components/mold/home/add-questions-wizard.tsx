@@ -653,7 +653,7 @@ CRITICAL RULES:
                         ))}
                       </select>
                     ) : (
-                      <p className="text-xs font-mono text-zinc-600 uppercase">
+                      <p role="status" aria-live="polite" className="text-xs font-mono text-zinc-600 uppercase">
                         No existing categories found in this subject.
                       </p>
                     )}
