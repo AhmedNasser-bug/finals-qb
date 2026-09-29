@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2024-10-31 - [Optimize File Streaming and Array Iteration]
+**Learning:** Manual chunking (`for await (const chunk of stream) { chunks.push(chunk) }`) creates significant event loop overhead compared to direct buffered reads (`fs.readFileSync` or `fsPromises.readFile`). Additionally, chaining `.filter().map()` causes unnecessary O(N^2) latency due to multiple passes, and using `.reverse()` on component renders mutates state unintentionally.
+**Action:** Replaced chunk streaming with direct buffered IO in `app/actions.ts` and `scripts/generate-component-registry.js`. Flattened multiple nested array iterations into single passes in `components/mold/home/streak-ascent.tsx` and `components/mold/home/add-questions-wizard.tsx`.
