@@ -42,7 +42,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) {
           e.preventDefault()
           last.focus()
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -68,6 +68,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
     >
       <div
         ref={modalRef}
+        tabIndex={-1}
         className="w-full max-w-2xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header */}
