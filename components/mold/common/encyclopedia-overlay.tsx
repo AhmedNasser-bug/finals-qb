@@ -41,7 +41,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
         e.preventDefault()
         last.focus()
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -79,10 +79,8 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
         <div
           className="bg-panel border border-border rounded p-8 max-w-sm w-full mx-4 text-center"
           onClick={(e) => e.stopPropagation()}
-          role="status"
-          aria-live="polite"
         >
-          <p className="font-mono text-sm text-muted-foreground">
+          <p className="font-mono text-sm text-muted-foreground" role="status" aria-live="polite">
             No terminology data found in this subject.
           </p>
           <button
