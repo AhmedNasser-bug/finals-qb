@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "lastUpdated": "2026-09-29T00:00:00Z",
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,22 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "modal-focus-trap-shift-tab-fix",
+      "category": "accessibility",
+      "tier": 2,
+      "title": "Shift-Tab Focus Trap Preservation on Modal Containers",
+      "implementedAt": "2026-09-29T00:00:00Z",
+      "componentsTouched": [
+        "components/mold/achievement/achievement-gallery.tsx",
+        "components/mold/common/share-modal.tsx",
+        "components/mold/common/encyclopedia-overlay.tsx",
+        "components/mold/subject/share-receiver.tsx",
+        "components/mold/common/theme-switcher-modal.tsx",
+        "components/mold/common/layout-switcher-modal.tsx"
       ],
       "nonBreaking": true
     }

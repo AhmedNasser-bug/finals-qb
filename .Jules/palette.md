@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-09-29 - Initial Focus and Shift-Tab Traversal in Modals
+**Learning:** When a modal opens and receives initial focus (via `tabIndex={-1}`), the first `Shift+Tab` event will escape the focus trap entirely because `document.activeElement` is the modal container, not the first focusable child.
+**Action:** When implementing keyboard focus traps for backward navigation (`Shift+Tab`), always explicitly include `document.activeElement === modalContainerRef` alongside the check for the first focusable element.
