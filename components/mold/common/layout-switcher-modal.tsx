@@ -38,7 +38,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) {
           e.preventDefault()
           last.focus()
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -52,9 +52,13 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
 
+  useEffect(() => {
+    if (modalRef.current) modalRef.current.focus()
+  }, [])
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       role="dialog"
       aria-modal="true"
       aria-labelledby="layout-modal-title"
@@ -64,7 +68,8 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
     >
       <div
         ref={modalRef}
-        className="w-full max-w-xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+        tabIndex={-1}
+        className="w-full max-w-xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh] outline-none"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-panel/50">
