@@ -110,3 +110,6 @@
 
 
 
+## 2024-10-24 - SVG aria-hidden additions
+**Learning:** Found several decorative SVG icons missing the \`aria-hidden="true"\` attribute which is important for screen readers. Added \`aria-hidden="true"\` to SVG elements to prevent them from being announced by screen readers when they do not serve an interactive or informative role.
+**Action:** Always verify if SVG elements need \`aria-hidden="true"\` when creating icon components.
