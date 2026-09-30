@@ -138,11 +138,14 @@ export function checkNewUnlocks(
 export function loadConditionsFromSubject(
   subject: import("@/lib/mold-types").FullSubjectData
 ): Record<string, AchievementCondition> {
-  return Object.fromEntries(
-    subject.achievements
-      .filter((a) => a.condition != null)
-      .map((a) => [a.id, a.condition as AchievementCondition])
-  )
+  const conditions: Record<string, AchievementCondition> = {}
+  for (let i = 0; i < subject.achievements.length; i++) {
+    const a = subject.achievements[i]
+    if (a.condition != null) {
+      conditions[a.id] = a.condition as AchievementCondition
+    }
+  }
+  return conditions
 }
 
 // ─── Condition registry (maps achievement id → condition) ─────────────────────
