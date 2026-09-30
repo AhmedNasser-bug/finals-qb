@@ -42,7 +42,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) {
           e.preventDefault()
           last.focus()
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -103,6 +103,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={() => setFilter('all')}
+            aria-pressed={filter === 'all'}
             className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
               filter === 'all'
                 ? 'bg-primary text-primary-foreground'
@@ -115,6 +116,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={() => setFilter('dark')}
+            aria-pressed={filter === 'dark'}
             className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
               filter === 'dark'
                 ? 'bg-primary text-primary-foreground'
@@ -127,6 +129,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={() => setFilter('light')}
+            aria-pressed={filter === 'light'}
             className={`px-3 py-1 text-xs font-mono font-bold rounded transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
               filter === 'light'
                 ? 'bg-primary text-primary-foreground'

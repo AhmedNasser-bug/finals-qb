@@ -41,7 +41,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
         e.preventDefault()
         last.focus()
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -158,7 +158,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
                 <button
                   key={cat}
                   onClick={() => { setActiveCategory(cat); setSearch("") }}
-                  aria-current={activeCategory === cat ? "page" : undefined}
+                  aria-pressed={activeCategory === cat}
                   title={`${formatLabel(cat)} (${count} terms)`}
                   className={cn(
                     "flex items-center justify-between text-left text-[11px] font-mono px-2.5 py-1.5 rounded transition-colors truncate focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",

@@ -53,7 +53,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el)) {
         e.preventDefault()
         last.focus()
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -162,6 +162,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
             <button
               key={t}
               onClick={() => setTab(t)}
+              aria-pressed={tab === t}
               className={cn(
                 "flex-1 py-2.5 text-xs font-mono tracking-wider uppercase transition-colors focus-visible:outline-none focus-visible:ring-inset focus-visible:ring-1 focus-visible:ring-ring",
                 tab === t
