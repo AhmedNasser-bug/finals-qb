@@ -1,4 +1,7 @@
-2024-05-18 - [Optimize duplicate ID resolution], Learning: While loops containing Set lookups can be O(N^2) if the final generated IDs consistently collide with the existing data set. Tracking the counter externally in a Map bypasses the need to regenerate previously-collided strings., Action: Updated duplicate ID resolution in `components/mold/home/add-questions-wizard.tsx` to use `Map` for both questions and flashcards.
-## 2024-06-25 - [Optimize optimizePackageImports]
-**Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
-**Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2024-10-31 - Direct IO Buffering
+**Learning:** Using `fs.createReadStream` and manually chaining `for await (const chunk of stream) { chunks.push(chunk) }` incurs high iteration and callback overhead for synchronously blocking CLI tools and short-lived edge handlers compared to direct buffering.
+**Action:** Always prefer `fs.readFileSync` or `fsPromises.readFile` when reading non-gigantic strings to allow the native V8 runtime to allocate continuous contiguous buffers and avoid event-loop overhead.
+
+## 2024-10-31 - Flattening Chained Map/Filter/Reduce Arrays
+**Learning:** Chaining array `.filter`, `.map`, and `.reduce` across collections incurs heavy quadratic O(N) allocation penalties for each intermediate array return structure.
+**Action:** When working on performance-critical mapping code (e.g. game event statistics loops), merge data transformations into flattened `for` or `for...of` loops tracking single values instead of spawning new uncollected garbage structures.
