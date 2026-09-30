@@ -1,0 +1,12 @@
+This pull request audits the core service layer and database controllers to refactor complex conditional hierarchies, specifically addressing deep nesting that significantly reduces code readability.
+
+### Structural Modifications
+
+*   **`lib/navigation/guide-url.ts`**:
+    *   Refactored `inferNameFromRelativeUrl` to use an early return pattern instead of deep nesting, significantly flattening the control flow while preserving functionality.
+*   **`lib/utils/json-patcher.ts`**:
+    *   Flattened `findDeformedBlockRange` by combining multiple nested `if` and `else if` conditions in the loop into guard clauses and early returns (`continue`).
+*   **`lib/subject/subject-persistence.ts`**:
+    *   Refactored `balanceJsonStack`, extracting the repeated stack closure logic (`}` and `]`) into a new helper function `processStackClosure`.
+    *   The core iteration inside `balanceJsonStack` now uses guard clauses to flatten conditions instead of heavily nesting `else if`.
+    *   Maintains functional parity with all parsing tests passing.
