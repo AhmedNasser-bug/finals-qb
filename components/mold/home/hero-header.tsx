@@ -172,8 +172,7 @@ export function HeroHeader({
 
 function TrophyIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
+    <svg aria-hidden="true" className={className}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
