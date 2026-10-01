@@ -32,6 +32,21 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
     // JWTs
     pattern: /(eyJ[A-Za-z0-9_-]{10,4096}\.[A-Za-z0-9_-]{10,4096}\.[A-Za-z0-9_-]{10,4096})/g,
     replacement: '[REDACTED]'
+  },
+  {
+    // Credit Cards
+    pattern: /\b(?:\d[ -]*?){13,16}\b/g,
+    replacement: '[REDACTED]'
+  },
+  {
+    // SSNs
+    pattern: /\b\d{3}[-.]?\d{2}[-.]?\d{4}\b/g,
+    replacement: '[REDACTED]'
+  },
+  {
+    // API Keys / Secret Tokens (e.g. sk_live_..., pk_test_...)
+    pattern: /\b(?:sk|pk)_(?:test|live)_[a-zA-Z0-9]{10,99}\b/g,
+    replacement: '[REDACTED]'
   }
 ];
 
