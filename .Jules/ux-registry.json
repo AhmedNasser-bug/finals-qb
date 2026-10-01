@@ -179,6 +179,20 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "modals-importers-shortcuts",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Modals & Importers Esc-to-Close Global Shortcuts and Button Accessibility",
+      "implementedAt": "2026-10-01T16:23:19.832Z",
+      "componentsTouched": [
+        "components/mold/common/theme-switcher-modal.tsx",
+        "components/mold/common/layout-switcher-modal.tsx",
+        "components/mold/subject/subject-importer.tsx",
+        "components/mold/home/add-questions-wizard.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

@@ -151,6 +151,8 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
                 type="button"
                 onClick={() => setThemeId(theme.id)}
                 aria-pressed={isSelected}
+                aria-label={`Select theme ${theme.name}`}
+                title={`Apply theme: ${theme.name}`}
                 className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                   isSelected
                     ? 'border-primary bg-primary/10 shadow-sm'
@@ -228,6 +230,8 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={onClose}
+            title="Apply and close (Esc)"
+            aria-label="Apply theme and close modal"
             className="px-3 py-1.5 rounded border border-border bg-card hover:bg-muted text-foreground text-[11px] font-mono font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             Done

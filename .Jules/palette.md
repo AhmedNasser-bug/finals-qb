@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-01 - Modals & Importers Esc-to-Close & A11y Polish
+**Learning:** In large settings modals or wizard flows, failing to implement Esc-to-close behavior causes user frustration, and contextless 'Done' buttons break accessibility.
+**Action:** Add global keyboard event listeners mapping Escape to the close/cancel callback and explicitly declare 'title' and 'aria-label' attributes on selection and submission actions.
