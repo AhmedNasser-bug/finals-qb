@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-24 - Role Dialog and Accessibility attributes
+**Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
+**Action:** Add these attributes to modals or side drawers when building custom overlay panels.
