@@ -42,7 +42,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) {
           e.preventDefault()
           last.focus()
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -59,6 +59,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="theme-modal-title"
@@ -228,6 +229,8 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={onClose}
+            aria-label="Done selecting theme"
+            title="Done selecting theme"
             className="px-3 py-1.5 rounded border border-border bg-card hover:bg-muted text-foreground text-[11px] font-mono font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             Done
