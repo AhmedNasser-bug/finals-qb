@@ -268,9 +268,15 @@ CRITICAL RULES:
 
     // Sort questions and flashcards by category
     const existingCategoriesOrder = Array.from(new Set(existingQuestions.map((q) => q.category)))
+
+    // ⚡ Bolt Optimization: Precompute category indices in an O(1) Map
+    // instead of calling .indexOf() inside the O(N log N) sort loop.
+    const catIndexMap = new Map<string, number>()
+    existingCategoriesOrder.forEach((cat, idx) => catIndexMap.set(cat, idx))
+
     const catIndex = (cat: string) => {
-      const idx = existingCategoriesOrder.indexOf(cat)
-      return idx === -1 ? Infinity : idx
+      const idx = catIndexMap.get(cat)
+      return idx === undefined ? Infinity : idx
     }
 
     combinedQuestions.sort((a, b) => catIndex(a.category) - catIndex(b.category))
