@@ -20,9 +20,9 @@ function scanDirectory(dir, fileList = []) {
 }
 
 function extractInterface(content, componentName) {
-  // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
+  // Capture export interface XProps { ... } or type XProps = { ... }
+  // We'll use a simpler regex that looks for interface or type ending with Props
+  const interfaceMatch = content.match(/(?:export\s+)?(?:interface|type)\s+\w*Props(?:\s*=|\s+extends\s+[^{]+)?\s*\{([\s\S]*?)\n\}/);
   if (interfaceMatch) {
     return interfaceMatch[1].trim();
   }
@@ -30,12 +30,13 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
+    const chunks = [];
+    stream.on('data', chunk => chunks.push(chunk));
+    stream.on('end', () => resolve(chunks.join('')));
+    stream.on('error', reject);
+  });
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
@@ -54,7 +55,12 @@ async function processComponent(filePath) {
 
   const hooksMatch = content.match(/use[A-Z]\w+/g);
   const hooks = hooksMatch ? Array.from(new Set(hooksMatch)).sort() : [];
-  const stateHooks = hooks.filter(h => h !== 'useMemo' && h !== 'useCallback');
+  const stateHooks = [];
+  for (const h of hooks) {
+    if (h !== 'useMemo' && h !== 'useCallback') {
+      stateHooks.push(h);
+    }
+  }
 
   const hasUseMemo = content.includes('useMemo');
   const hasUseCallback = content.includes('useCallback');
@@ -134,7 +140,13 @@ ${formattedEdgeCases.join('\n')}
 
 async function generateDocs() {
   const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
-  const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
+  const tsxFiles = [];
+  for (const f of allFiles) {
+    if (f.endsWith('.tsx')) {
+      tsxFiles.push(f);
+    }
+  }
+  tsxFiles.sort();
 
   const componentDocs = [];
   for (const file of tsxFiles) {
