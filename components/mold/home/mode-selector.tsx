@@ -75,7 +75,7 @@ function ModeGroup({ label, modes, selected, onSelect, onLaunch, accent, startIn
     : "border-emerald-400/60 bg-emerald-400/5"
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 border border-border p-4 bg-secondary/10 rounded">
       <div className="flex items-center justify-between">
         <p className={cn("text-xs font-mono tracking-wider font-semibold", accentClass)}>
           {label}

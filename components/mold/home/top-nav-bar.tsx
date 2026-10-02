@@ -99,7 +99,10 @@ export function TopNavBar({
               STUDY TIPS
             </span>
           </div>
-          <p className="font-mono text-[10px] lg:text-xs text-foreground group-hover:text-primary font-semibold tracking-wide transition-colors leading-relaxed truncate">
+          <p
+            role="status"
+            aria-live="polite"
+            className="font-mono text-[10px] lg:text-xs text-foreground group-hover:text-primary font-semibold tracking-wide transition-colors leading-relaxed truncate">
             {GUIDANCE_TIPS[tipIndex]}
           </p>
         </button>

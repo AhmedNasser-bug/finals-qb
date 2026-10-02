@@ -179,6 +179,21 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "action-hub-and-game-header-a11y-tooltips-and-live-regions",
+      "category": "tooltips",
+      "tier": 2,
+      "title": "Contextual Tooltips & ARIA Labels on Mobile Bottom Navigation, Game Header, Action Hub, and Mode Group Visual Separation",
+      "implementedAt": "2026-10-02T16:45:30.114Z",
+      "componentsTouched": [
+        "components/mold/home/action-hub.tsx",
+        "components/mold/home/home-screen-components.tsx",
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/home/mode-selector.tsx",
+        "components/mold/game/game-header.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

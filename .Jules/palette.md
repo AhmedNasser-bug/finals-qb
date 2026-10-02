@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-02 - Action Hub, Mobile Navigation & Game Header Contextual Polish
+**Learning:** Buttons and icons with only outer container a11y labels might lack clarity or screen-reader context on their inner visual elements. Decorative elements should be marked `aria-hidden='true'`.
+**Action:** Apply descriptive `aria-label` and `title` directly to interactive visual targets, add `aria-live='polite'` to changing text elements like Study Tips, and add visual separation (e.g., `bg-secondary/10`) to grouped layout elements like ModeSelector.

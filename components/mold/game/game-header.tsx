@@ -127,7 +127,10 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         {/* Left: Streak & Lives */}
         <div className="flex items-center gap-2">
           {/* Compact Streak */}
-          <div className={cn(
+          <div
+            title={`Current Streak: ${streak}`}
+            aria-label={`Current Streak: ${streak}`}
+            className={cn(
             "px-2 py-1 flex items-center gap-1 border-l-2 bg-[#201f1f]",
             streak >= 10 ? "border-destructive" : streak >= 5 ? "border-orange-500" : "border-primary"
           )}>
@@ -142,13 +145,17 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
           </div>
 
           {/* Compact Hearts */}
-          <div className="flex items-center gap-0.5 ml-1">
+          <div
+            title={`Lives Remaining: ${isSurvival ? livesRemaining : 3}`}
+            aria-label={`Lives Remaining: ${isSurvival ? livesRemaining : 3}`}
+            className="flex items-center gap-0.5 ml-1">
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
               return (
                 <HeartIcon
                   key={i}
                   filled={alive}
+                  aria-hidden="true"
                   className={cn("w-3.5 h-3.5", alive ? "text-destructive" : "text-muted-foreground/30")}
                 />
               )
@@ -213,7 +220,10 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-4">
             {/* Streak badge */}
-            <div className={cn(
+            <div
+              title={`Current Streak: ${streak}`}
+              aria-label={`Current Streak: ${streak}`}
+              className={cn(
               "bg-secondary border border-border px-2.5 py-1 flex items-center gap-2 border-l-4 rounded",
               streak >= 10
                 ? "border-l-destructive shadow-[0px_0px_20px_rgba(239,68,68,0.2)]"
@@ -224,7 +234,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               <BoltIcon className={cn(
                 "w-3.5 h-3.5 shrink-0",
                 streak >= 10 ? "text-destructive" : streak >= 5 ? "text-orange-500" : "text-primary"
-              )} />
+              )} aria-hidden="true" />
               <div>
                 <p className="font-mono text-[8px] text-muted-foreground leading-none mb-0.5 tracking-widest uppercase font-bold">CURRENT STREAK</p>
                 <p className={cn(
@@ -234,13 +244,19 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
               </div>
             </div>
             {/* Accuracy — sibling, not inside badge */}
-            <div className="hidden md:flex flex-col">
+            <div
+              title={`Current Accuracy: ${accuracyPct}%`}
+              aria-label={`Current Accuracy: ${accuracyPct}%`}
+              className="hidden md:flex flex-col">
               <p className="font-mono text-[8px] text-muted-foreground tracking-widest uppercase mb-0.5 font-bold">ACCURACY</p>
               <p className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">{accuracyPct}%</p>
             </div>
           </div>
           {/* Lives — always shown, empty hearts when not survival */}
-          <div className="flex items-center gap-2">
+          <div
+            title={`Lives Remaining: ${isSurvival ? livesRemaining : 3}`}
+            aria-label={`Lives Remaining: ${isSurvival ? livesRemaining : 3}`}
+            className="flex items-center gap-2">
             <span className="font-mono text-[8px] text-muted-foreground uppercase font-bold mr-1">LIVES REMAINING:</span>
             {Array.from({ length: 3 }).map((_, i) => {
               const alive = isSurvival ? i < livesRemaining : i < 3
@@ -248,6 +264,7 @@ export function GameHeader({ onForfeit }: { onForfeit: () => void }) {
                 <HeartIcon
                   key={i}
                   filled={alive}
+                  aria-hidden="true"
                   className={cn("w-3.5 h-3.5", alive ? "text-destructive" : "text-muted-foreground/30")}
                 />
               )
