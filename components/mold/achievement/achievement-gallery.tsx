@@ -25,10 +25,10 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
         e.preventDefault()
         last.focus()
-      } else if (!e.shiftKey && document.activeElement === last) {
+      } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
         e.preventDefault()
         first.focus()
       }

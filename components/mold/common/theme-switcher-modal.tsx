@@ -25,6 +25,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
   const lightCount = useMemo(() => availableThemes.filter(t => t.mode === 'light').length, [availableThemes])
 
   useEffect(() => {
+    if (modalRef.current) modalRef.current.focus()
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose()
@@ -42,10 +43,10 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && (document.activeElement === first || !modalRef.current.contains(document.activeElement))) {
           e.preventDefault()
           last.focus()
-        } else if (!e.shiftKey && document.activeElement === last) {
+        } else if (!e.shiftKey && (document.activeElement === last || !modalRef.current.contains(document.activeElement))) {
           e.preventDefault()
           first.focus()
         }
@@ -58,7 +59,9 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      ref={modalRef}
+      tabIndex={-1}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       role="dialog"
       aria-modal="true"
       aria-labelledby="theme-modal-title"
@@ -67,7 +70,6 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
       }}
     >
       <div
-        ref={modalRef}
         className="w-full max-w-2xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header */}
@@ -151,6 +153,8 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
                 type="button"
                 onClick={() => setThemeId(theme.id)}
                 aria-pressed={isSelected}
+                title={`Select theme: ${theme.name}`}
+                aria-label={`Select theme: ${theme.name}`}
                 className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                   isSelected
                     ? 'border-primary bg-primary/10 shadow-sm'
@@ -228,6 +232,8 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={onClose}
+            title="Done selecting theme"
+            aria-label="Done selecting theme"
             className="px-3 py-1.5 rounded border border-border bg-card hover:bg-muted text-foreground text-[11px] font-mono font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             Done
