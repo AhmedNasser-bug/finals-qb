@@ -7,6 +7,7 @@ import { SessionStatsPanel } from "./session-stats-panel"
 import { HeaderWell } from "./header-well"
 
 import type { GameModeId, SetupConfig, CategoryData, Achievement } from "@/lib/mold-types"
+import type { Question } from "@/lib/mold-types"
 
 interface MainContentGridProps {
   // Mode Selection
