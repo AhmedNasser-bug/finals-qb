@@ -313,7 +313,7 @@ export function CategorySelectorSection({
           />
         ))}
         {filteredCategories.length === 0 && (
-          <div className="col-span-2 sm:col-span-3 p-4 text-center text-xs font-mono text-muted-foreground border border-dashed border-border rounded">
+          <div className="col-span-2 sm:col-span-3 p-4 text-center text-xs font-mono text-muted-foreground border border-dashed border-border rounded" role="status" aria-live="polite">
             No matching sectors found for "{filterQuery}".
           </div>
         )}

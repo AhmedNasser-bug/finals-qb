@@ -433,7 +433,7 @@ function GameRunnerInner({
   if (!currentQuestion) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-sm font-mono text-muted-foreground">
+        <p className="text-sm font-mono text-muted-foreground" role="status" aria-live="polite">
           No questions available for this configuration.
         </p>
       </div>
