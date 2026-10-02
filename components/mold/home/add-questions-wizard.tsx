@@ -402,6 +402,7 @@ CRITICAL RULES:
                     <button
                       key={type.id}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => setContentType(type.id as any)}
                       className={cn(
                         "flex flex-col text-left p-4 border transition-all duration-150 cursor-pointer min-h-[90px] justify-between rounded-none",
@@ -511,6 +512,7 @@ CRITICAL RULES:
                 {/* Theoretical */}
                 <button
                   type="button"
+                  aria-pressed={styleBias === "theoretical"}
                   onClick={() => setStyleBias("theoretical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -536,6 +538,7 @@ CRITICAL RULES:
                 {/* Technical */}
                 <button
                   type="button"
+                  aria-pressed={styleBias === "technical"}
                   onClick={() => setStyleBias("technical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -561,6 +564,7 @@ CRITICAL RULES:
                 {/* Balanced */}
                 <button
                   type="button"
+                  aria-pressed={styleBias === "balanced"}
                   onClick={() => setStyleBias("balanced")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -613,6 +617,7 @@ CRITICAL RULES:
                     <button
                       key={focus.id}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => setCategoryFocus(focus.id as any)}
                       className={cn(
                         "p-5 border text-left flex flex-col justify-between gap-3 transition-all duration-150 cursor-pointer rounded-none min-h-[120px]",
