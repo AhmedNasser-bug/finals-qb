@@ -6,6 +6,7 @@ import { useStreak } from "@/lib/game/streak-context"
 import { useAchievements } from "@/lib/achievement-engine"
 import { useAchievementToast, AchievementToastContainer } from "@/components/mold/achievement/achievement-toast"
 import { GameErrorBoundary } from "@/components/mold/game/game-error-boundary"
+import { logger } from "@/lib/logger"
 import type { Achievement, GameConfig, RunRecord, FullSubjectData, Question } from "@/lib/mold-types"
 import { calculateGrade, calculateAccuracy, hasVisual } from "@/lib/mold-types"
 import { GameHeader } from "@/components/mold/game/game-header"
@@ -409,7 +410,7 @@ function GameRunnerInner({
           saveRetentionMap(subject.id, updatedMap)
         }
       } catch (err) {
-        console.warn("Failed to persist question retention updates:", err)
+        logger.warn("Failed to persist question retention updates:", err)
       }
 
       // Evaluate achievements using full history (including the current run)
