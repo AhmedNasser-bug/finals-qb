@@ -128,7 +128,7 @@ export function HeroHeader({
             {/* Visual Progress Track */}
             <div 
               className="w-20 sm:w-24 h-1 bg-secondary border border-border/50 rounded-full overflow-hidden mt-0.5" 
-              aria-hidden="true"
+              role="meter" aria-valuemin={0} aria-valuemax={total} aria-valuenow={unlocked}
             >
               <div 
                 className="h-full bg-primary transition-all duration-500 ease-out" 
