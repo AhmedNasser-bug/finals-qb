@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "lastUpdated": "2026-10-03T16:20:11Z",
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,19 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "modal-action-context-and-live-regions",
+      "category": "tooltips",
+      "tier": 2,
+      "title": "Contextual Modal Actions & Dynamic Live Regions",
+      "implementedAt": "2026-10-03T16:20:11Z",
+      "componentsTouched": [
+        "components/mold/home/header-well.tsx",
+        "components/mold/home/stats-screen.tsx",
+        "components/mold/game/cheat-sheet-terminal.tsx"
       ],
       "nonBreaking": true
     }
