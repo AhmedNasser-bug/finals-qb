@@ -126,3 +126,6 @@
 ## 2024-05-18 - Modal Dialog Initial Focus and Backward Navigation
 **Learning:** For custom modals acting as dialogs (`role="dialog"`), React's initial mount doesn't automatically pull keyboard focus into the container, causing screen readers and keyboard users to lose orientation. Furthermore, implementing a `Shift+Tab` backward focus trap fails immediately after mount if `document.activeElement` is the modal container itself (since it's not the "first" focusable sub-element).
 **Action:** Always add `tabIndex={-1}` to `role="dialog"` elements, use `useEffect` to `focus()` the container on mount, and in the backward navigation focus trap, check `if (e.shiftKey && (document.activeElement === firstFocusable || document.activeElement === modalRef.current))`.
+## 2026-08-27 - Global Escape Shortcuts for Modals & Polishing Dynamic Content A11y
+**Learning:** Forcing users to click 'X' or 'Close' buttons on overlays breaks rapid interaction loops, while dynamically filtered empty lists (like search results) can silently disappear for screen reader users without explicit status roles.
+**Action:** Always implement a global 'Escape' keydown listener to dismiss modal overlays in high-density dashboards, and ensure any dynamically rendered "No results found" container includes `role="status"` and `aria-live="polite"` for accessible announcements.

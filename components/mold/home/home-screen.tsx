@@ -126,6 +126,22 @@ export function HomeScreen({
     setView("game")
   }
 
+  // Global Escape Key to Close Overlays
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showGallery) setShowGallery(false)
+        else if (showEncyclopedia) setShowEncyclopedia(false)
+        else if (showImporter) setShowImporter(false)
+        else if (showAiWizard) setShowAiWizard(false)
+        else if (showThemeModal) setShowThemeModal(false)
+        else if (showLayoutModal) setShowLayoutModal(false)
+      }
+    }
+    window.addEventListener("keydown", handleEscape)
+    return () => window.removeEventListener("keydown", handleEscape)
+  }, [showGallery, showEncyclopedia, showImporter, showAiWizard, showThemeModal, showLayoutModal])
+
   // Home Screen Global Hotkeys (1-7 for Modes, Enter to Initialize)
   useEffect(() => {
     if (view !== "home" || showGallery || showEncyclopedia || showImporter || showAiWizard) return
