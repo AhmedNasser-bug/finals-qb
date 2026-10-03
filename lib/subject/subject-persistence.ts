@@ -243,39 +243,53 @@ function autoFixSingleQuestion(
   }
   qObj.options = normalizedOptions;
 
-  // 7. Auto-Fix Answer (lowercase, text-to-label remap, or missing)
+  // Helper for answer mapping
+  const tryMapBooleanAnswer = () => {
+    if (qObj.type !== "TrueFalse" && normalizedOptions.length !== 2) return false;
+    const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
+    const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+
+    if (isTrueMatch || isFalseMatch) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = isTrueMatch ? "A" : "B";
+      warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
+      qFixed = true;
+      return true;
+    }
+    return false;
+  };
+
+  const tryMapTextAnswer = () => {
+    const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
+    if (matchedOpt) {
+      const oldAnswer = qObj.answer;
+      qObj.answer = matchedOpt.label;
+      warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
+      qFixed = true;
+      return true;
+    }
+    return false;
+  };
+
+  const applyDefaultAnswer = () => {
+    const oldAnswer = qObj.answer;
+    qObj.answer = normalizedOptions[0].label;
+    warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
+    qFixed = true;
+  };
+
+  // 7. Auto-Fix Answer
   if (typeof qObj.answer !== "string" || qObj.answer.trim() === "") {
     qObj.answer = "A";
     qFixed = true;
   } else {
     qObj.answer = qObj.answer.toUpperCase().trim();
-    let hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+    const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
+
     if (!hasLabel) {
-      const matchedOpt = normalizedOptions.find((opt: any) => opt.text.toUpperCase() === qObj.answer);
-      if (matchedOpt) {
-        const oldAnswer = qObj.answer;
-        qObj.answer = matchedOpt.label;
-        warnings.push(`questions[${i}]: Answer text "${oldAnswer}" automatically remapped to label "${qObj.answer}".`);
-        qFixed = true;
-        hasLabel = true;
-      } else {
-        // Check for "True" / "False" maps to A / B
-        if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
-          if (isTrueMatch || isFalseMatch) {
-            const oldAnswer = qObj.answer;
-            qObj.answer = isTrueMatch ? "A" : "B";
-            warnings.push(`questions[${i}]: Boolean answer "${oldAnswer}" automatically mapped to option label "${qObj.answer}".`);
-            qFixed = true;
-            hasLabel = true;
-          }
-        }
-        if (!hasLabel) {
-          const oldAnswer = qObj.answer;
-          qObj.answer = normalizedOptions[0].label;
-          warnings.push(`questions[${i}]: Unresolved answer "${oldAnswer}" automatically reset to first option label "${qObj.answer}".`);
-          qFixed = true;
+      if (!tryMapTextAnswer()) {
+        if (!tryMapBooleanAnswer()) {
+          applyDefaultAnswer();
         }
       }
     }
@@ -688,12 +702,10 @@ function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
   let escaped = false
-  
-  let braceCount = 0;
-  let bracketCount = 0;
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
+
     if (escaped) {
       escaped = false
       continue
@@ -711,40 +723,12 @@ function balanceJsonStack(str: string): string {
 
     if (char === '{') {
       stack.push('{')
-      braceCount++
     } else if (char === '[') {
       stack.push('[')
-      bracketCount++
     } else if (char === '}') {
-      if (stack[stack.length - 1] === '{') {
-        stack.pop()
-        braceCount--
-      } else if (braceCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '{') {
-          if (stack[idx] === '[') bracketCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          braceCount--
-        }
-      }
+      processStackClosure(stack, '}')
     } else if (char === ']') {
-      if (stack[stack.length - 1] === '[') {
-        stack.pop()
-        bracketCount--
-      } else if (bracketCount > 0) {
-        let idx = stack.length - 1
-        while (idx >= 0 && stack[idx] !== '[') {
-          if (stack[idx] === '{') braceCount--
-          idx--
-        }
-        if (idx >= 0) {
-          stack.length = idx
-          bracketCount--
-        }
-      }
+      processStackClosure(stack, ']')
     }
   }
   
