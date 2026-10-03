@@ -17,6 +17,7 @@ import { CheatSheetProvider, useCheatSheet } from "@/lib/game/cheat-sheet-contex
 import { CheatSheetTerminal } from "@/components/mold/game/cheat-sheet-terminal"
 import { uuid } from "@/lib/crypto-utils"
 import { cn } from "@/lib/utils"
+import { logger } from "@/lib/logger"
 import {
   loadRetentionMap,
   saveRetentionMap,
@@ -409,7 +410,7 @@ function GameRunnerInner({
           saveRetentionMap(subject.id, updatedMap)
         }
       } catch (err) {
-        console.warn("Failed to persist question retention updates:", err)
+        logger.warn("Failed to persist question retention updates:", err)
       }
 
       // Evaluate achievements using full history (including the current run)
