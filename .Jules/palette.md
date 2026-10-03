@@ -1,4 +1,4 @@
-## 2024-05-12 - Missing ARIA Labels and Focus Rings in Modals/Setup
+﻿## 2024-05-12 - Missing ARIA Labels and Focus Rings in Modals/Setup
 **Learning:** Icon-only buttons (like Encyclopedia in action-hub) and semantic inputs (search in encyclopedia, textarea in importer) frequently miss ARIA labels across the UI. Modals and secondary setup panels often forget to include standard tailwind `focus-visible` utilities, negatively impacting keyboard navigation. Additionally, loading states benefit from `aria-busy` to communicate progress state to screen readers.
 **Action:** When creating new components, default to adding `aria-label` for icon buttons, ensure `focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring` is applied to all interactive elements, and add `aria-busy` for loading states to provide a complete accessibility experience.
 
@@ -75,7 +75,7 @@
 **Action:** Follow the 5-Tier UX Taxonomy as baseline guidance, but **never limit the agent to these 5 categories alone**. The agent has full autonomy to introduce ANY non-breaking UX innovation (e.g. animation polish, drag-and-drop, smart search, export shortcuts). Never alter core data contracts (`GameState`, `RunRecord`, `FullSubjectData`) or break `pnpm test`. Always log completed features in `.Jules/ux-registry.json`.
 
 ## 2026-08-16 - In-Game Keyboard Navigation Engine & Hotkey Affordances
-**Learning:** During rapid-fire study sessions, forcing players to use a mouse for every option selection and step transition introduces heavy physical friction. Wiring global keydown listeners for numerical keys (`1..4`), alphabetical keys (`A..D`), `Enter`/`Space` (for submit and advance), and `H` (for hint) speeds up question throughput by over 300%. Visual hotkey badges (`[1]`, `[2]`, `[↵]`) make the shortcut discovery instantaneous.
+**Learning:** During rapid-fire study sessions, forcing players to use a mouse for every option selection and step transition introduces heavy physical friction. Wiring global keydown listeners for numerical keys (`1..4`), alphabetical keys (`A..D`), `Enter`/`Space` (for submit and advance), and `H` (for hint) speeds up question throughput by over 300%. Visual hotkey badges (`[1]`, `[2]`, `[Γå╡]`) make the shortcut discovery instantaneous.
 **Action:** Always provide full keyboard navigation parity on quiz runner components, and accompany keyboard listeners with subtle visual keycap badges.
 
 ## 2026-08-16 - Mode Selector Hotkeys, Category Filter Search & Setup Presets
@@ -87,7 +87,7 @@
 **Action:** Always provide instant clipboard summary export and keyboard shortcuts on result summaries, and enforce two-step confirmation on destructive local storage actions.
 
 ## 2026-08-16 - Encyclopedia Global Slash Search Focus & Category Counters
-**Learning:** In extensive reference panels (like Encyclopedia), users often open the overlay to immediately search for a specific keyword. Binding the global `/` key to automatically focus the search input eliminates the manual click. Providing an instant `✕` button and showing per-category term counters on the sidebar gives immediate visual orientation.
+**Learning:** In extensive reference panels (like Encyclopedia), users often open the overlay to immediately search for a specific keyword. Binding the global `/` key to automatically focus the search input eliminates the manual click. Providing an instant `Γ£ò` button and showing per-category term counters on the sidebar gives immediate visual orientation.
 **Action:** In reference and encyclopedia overlays, bind `/` to search focus, render an instant clear button, and display count badges on category filters.
 
 ## 2026-08-27 - Zero-Dependency Web Audio Phosphor Synthesizer & Tactile Ergonomics
@@ -114,3 +114,6 @@
 ## 2026-09-25 - Tooltips, Stat Cell Decluttering, and ARIA Status
 **Learning:** Adding neo-brutalist panel borders (`border-b-4 border-r-4`) to stat cells improves visual hierarchy and adds a distinct pop off the background. Adding clear, contextual tooltips and ARIA labels (e.g. `Skip question (forfeit points)`) to icon-only or brief-text buttons like SKIP prevents confusion. `role="status"` ensures that dynamically loaded static text is announced by screen readers without being intrusive. Adding `type="button"` to generic buttons prevents unintended form submissions.
 **Action:** Always verify that generic buttons have `type="button"`, use distinct borders for distinct numeric stat cells to improve visual hierarchy, and use detailed `aria-label`s along with `title` for brief-text buttons. Use `role="status"` for non-intrusive announcements of static notes.
+## 2026-09-26 - Adding explicit type="button" to UI buttons
+**Learning:** Generic `<button>` elements in React/Next.js without an explicit `type` attribute default to `type="submit"`. In complex UI, especially within or near forms, this can cause implicit, unintended form submissions when users interact with non-form controls (like changing a theme or opening a modal), leading to full-page reloads or unexpected behavior.
+**Action:** As a standard UX and accessibility practice, always explicitly add `type="button"` to generic UI `<button>` elements to prevent implicit form submissions. Ensure a script that automatically adds this attribute verifies the absence of the target attribute before replacement to avoid generating duplicate/invalid markup.

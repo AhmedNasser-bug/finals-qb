@@ -1,0 +1,5 @@
+1. Audit and add `type="button"` to all generic UI `<button>` elements in the codebase (specifically in `components/mold/`) to prevent implicit form submissions.
+2. Ensure we use the built script to inject it safely, verifying we didn't add duplicate `type="button"` or double `type=` attributes.
+3. Update `.Jules/ux-registry.json` and `.Jules/palette.md` to record the UX improvement (accessibility & structural bug prevention).
+4. Run `pnpm test` to ensure there are zero breaking changes.
+5. Create a branch, commit, and open PR.
