@@ -16,6 +16,12 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const [filter, setFilter] = useState<TabFilter>('all')
 
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.focus()
+    }
+  }, [])
+
   const filteredThemes = useMemo(() => {
     if (filter === 'all') return availableThemes
     return availableThemes.filter((t) => t.mode === filter)
@@ -61,6 +67,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
       tabIndex={-1}
       role="dialog"
+      tabIndex={-1}
       aria-modal="true"
       aria-labelledby="theme-modal-title"
       onClick={(e) => {
