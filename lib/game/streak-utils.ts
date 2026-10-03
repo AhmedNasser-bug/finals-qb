@@ -3,15 +3,13 @@ export function calculateDayStreak(runs: Array<{ date: string }>): number {
   if (runs.length === 0) return 0
 
   // 1. Extract unique YYYY-MM-DD local dates, sorted ascending
-  const uniqueDates = Array.from(new Set(
-    runs.map((r) => {
-      try {
-        return new Date(r.date).toISOString().split("T")[0]
-      } catch {
-        return ""
-      }
-    }).filter(Boolean)
-  )).sort()
+  const validDates: string[] = []
+  for (const r of runs) {
+    if (!isNaN(new Date(r.date).getTime())) {
+      validDates.push(new Date(r.date).toISOString().split("T")[0])
+    }
+  }
+  const uniqueDates = Array.from(new Set(validDates)).sort()
 
   if (uniqueDates.length === 0) return 0
 
