@@ -90,7 +90,6 @@ export function TopNavBar({
           onClick={() => setTipIndex((prev) => (prev + 1) % GUIDANCE_TIPS.length)}
           title="Click to cycle next study tip"
           aria-label="Cycle to next study recommendation"
-          type="button"
           className="flex items-center text-left gap-3 bg-secondary/80 border border-primary/35 hover:border-primary/60 px-3.5 py-2 flex-1 min-w-0 cursor-pointer select-none group transition-all duration-300 shadow-[0_0_12px_hsla(var(--primary),0.03)] hover:shadow-[0_0_20px_hsla(var(--primary),0.12)] border-glow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
         >
           <div className="flex items-center gap-2 shrink-0">
