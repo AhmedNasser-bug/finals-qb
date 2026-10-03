@@ -386,7 +386,7 @@ function OptionButton({
   }
 
   return (
-    <button
+    <button type="button"
       role="radio"
       {...checkedProps}
       disabled={isRevealed}

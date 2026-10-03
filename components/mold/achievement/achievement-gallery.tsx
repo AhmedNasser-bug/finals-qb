@@ -25,7 +25,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && document.activeElement === first) {
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === el || document.activeElement === document.body)) {
         e.preventDefault()
         last.focus()
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -82,7 +82,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
               {unlocked.length} / {achievements.length} unlocked
             </p>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             aria-label="Close achievement gallery"
@@ -92,7 +92,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-secondary">
+        <div className="h-1 bg-secondary" role="meter" aria-valuemin={0} aria-valuemax={achievements.length} aria-valuenow={unlocked.length}>
           <style>{`
             .ach-gallery-progress {
               width: ${achievements.length > 0 ? (unlocked.length / achievements.length) * 100 : 0}%;
@@ -126,14 +126,14 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
           </span>
           {confirmReset ? (
             <div className="flex items-center gap-2">
-              <button
+              <button type="button"
                 onClick={() => setConfirmReset(false)}
                 className="text-xs font-mono text-muted-foreground hover:text-foreground px-2 py-1 rounded border border-border"
                 aria-label="Cancel achievement reset"
               >
                 CANCEL
               </button>
-              <button
+              <button type="button"
                 onClick={handleResetClick}
                 className="text-xs font-mono text-destructive bg-destructive/10 border border-destructive/30 hover:bg-destructive hover:text-destructive-foreground transition-colors px-2 py-1 rounded font-bold"
                 aria-label="Confirm reset of all achievements"
@@ -142,7 +142,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
               </button>
             </div>
           ) : (
-            <button
+            <button type="button"
               onClick={handleResetClick}
               title="Reset all achievements progress"
               aria-label="Reset all achievements"
