@@ -34,7 +34,9 @@ export function HeroHeader({
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
           <Image
             src="/logo.png"
-            alt="Finalist"
+            alt=""
+            role="presentation"
+            aria-hidden="true"
             width={22}
             height={22}
             className="shrink-0 drop-shadow-[0_0_5px_hsl(var(--primary)/0.6)]"
