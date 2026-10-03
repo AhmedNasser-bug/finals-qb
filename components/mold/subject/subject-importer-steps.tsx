@@ -97,7 +97,7 @@ export function Step1PresetTopic({
           ].map((p) => {
             const isSelected = selectedPreset === p.id
             return (
-              <button
+              <button type="button"
                 key={p.id}
                 type="button"
                 onClick={() => onPresetSelect(p.id)}
@@ -154,8 +154,7 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
 
       <div className="flex flex-col md:flex-row gap-6 mt-6">
         {/* Theoretical Card */}
-        <button
-          type="button"
+        <button type="button"
           onClick={() => setSubjectType("theoretical")}
           className={cn(
             "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded min-h-[200px] hover:-translate-y-0.5 shadow-sm",
@@ -179,8 +178,7 @@ export function Step2SubjectType({ subjectType, setSubjectType }: Step2SubjectTy
         </button>
 
         {/* Technical Card */}
-        <button
-          type="button"
+        <button type="button"
           onClick={() => setSubjectType("technical")}
           className={cn(
             "flex-1 p-8 border text-left flex flex-col justify-between gap-5 transition-all duration-300 ease-out focus-ring cursor-pointer rounded min-h-[200px] hover:-translate-y-0.5 shadow-sm",
@@ -278,7 +276,7 @@ export function Step3QuestionCount({
             {[20, 40, 80, 120].map((num) => {
               const isSelected = questionCount === num
               return (
-                <button
+                <button type="button"
                   key={num}
                   type="button"
                   onClick={() => onCustomPresetClick(num)}
@@ -623,8 +621,7 @@ ${bundledSourceMaterial}
                   <span>📂</span>
                   <span>MEM-BUFFER: {new Blob([convertedMaterial]).size.toLocaleString()} bytes loaded</span>
                 </span>
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setConvertedMaterial("")}
                   className="text-muted-foreground hover:text-destructive font-bold transition-colors text-[9px] uppercase cursor-pointer"
                   title="Clear all converted files"
@@ -647,8 +644,7 @@ ${bundledSourceMaterial}
               />
             </div>
 
-            <button
-              type="button"
+            <button type="button"
               onClick={downloadStudyPackage}
               disabled={!hasMaterial}
               aria-disabled={!hasMaterial}
@@ -667,8 +663,7 @@ ${bundledSourceMaterial}
 
       {/* Accordion Path B: Manual Prompt Copy */}
       <div className="border border-border rounded bg-panel overflow-hidden shadow-sm">
-        <button
-          type="button"
+        <button type="button"
           onClick={() => setShowManualPrompt(!showManualPrompt)}
           className="w-full px-5 py-3.5 flex items-center justify-between hover:bg-secondary/40 transition-colors text-left cursor-pointer"
         >
@@ -686,8 +681,7 @@ ${bundledSourceMaterial}
               <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">
                 SYSTEM PROMPT DIRECTIVES
               </span>
-              <button
-                type="button"
+              <button type="button"
                 aria-label={promptCopied ? "Prompt copied to clipboard" : "Copy prompt to clipboard"}
                 onClick={() => onCopyPrompt(compiledPrompt)}
                 className={cn(

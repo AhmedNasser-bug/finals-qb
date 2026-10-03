@@ -196,8 +196,7 @@ export function SubjectSelector({
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
                 {searchQuery ? (
-                  <button
-                    type="button"
+                  <button type="button"
                     onClick={() => setSearchQuery("")}
                     className="pointer-events-auto text-[10px] font-mono text-muted-foreground hover:text-foreground mr-1"
                     title="Clear search"

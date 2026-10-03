@@ -399,7 +399,7 @@ CRITICAL RULES:
                 ].map((type) => {
                   const isSelected = contentType === type.id
                   return (
-                    <button
+                    <button type="button"
                       key={type.id}
                       type="button"
                       onClick={() => setContentType(type.id as any)}
@@ -509,8 +509,7 @@ CRITICAL RULES:
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Theoretical */}
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setStyleBias("theoretical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -534,8 +533,7 @@ CRITICAL RULES:
                 </button>
 
                 {/* Technical */}
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setStyleBias("technical")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -559,8 +557,7 @@ CRITICAL RULES:
                 </button>
 
                 {/* Balanced */}
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setStyleBias("balanced")}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
@@ -610,7 +607,7 @@ CRITICAL RULES:
                 ].map((focus) => {
                   const isSelected = categoryFocus === focus.id
                   return (
-                    <button
+                    <button type="button"
                       key={focus.id}
                       type="button"
                       onClick={() => setCategoryFocus(focus.id as any)}
@@ -720,8 +717,7 @@ CRITICAL RULES:
                     <FileText className="w-3.5 h-3.5 text-primary" />
                     <span>SYSTEM PROMPT INSTRUCTION BUNDLE</span>
                   </span>
-                  <button
-                    type="button"
+                  <button type="button"
                     onClick={handleCopyPrompt}
                     className={cn(
                       "text-xs font-mono px-4 py-1.5 border transition-all duration-150 cursor-pointer flex items-center gap-1.5",

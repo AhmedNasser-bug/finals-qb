@@ -208,8 +208,7 @@ export function SideNavBar({
 
         {/* ── Section: Bundled Export & Study Materials ── */}
         <div className="flex flex-col gap-1 pt-1 border-t border-border/40">
-          <button
-            type="button"
+          <button type="button"
             onClick={() => setExportExpanded(!exportExpanded)}
             aria-expanded={exportExpanded}
             aria-controls="study-exports-bundle"

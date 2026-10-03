@@ -190,8 +190,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
                 className="w-full bg-background border border-border rounded px-3 py-1.5 pr-8 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
               {search && (
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setSearch("")}
                   aria-label="Clear term search"
                   title="Clear term search"

@@ -28,8 +28,7 @@ export function InfoToolbox({ content }: { content: string }) {
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
-      <button
-        type="button"
+      <button type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Help information details"
         className="w-4.5 h-4.5 rounded-full border border-primary/50 bg-primary/10 text-primary text-[10px] font-mono font-bold flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-150 cursor-pointer focus-ring"
