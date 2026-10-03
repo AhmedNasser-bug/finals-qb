@@ -69,7 +69,7 @@ export function FlashcardDossierCard({
             </span>
           </div>
           <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider animate-pulse-soft">
-            TAP TO FLIP
+            TAP OR [SPACE] TO FLIP
           </span>
         </div>
 
@@ -134,7 +134,7 @@ export function FlashcardDossierCard({
             {formatLabel(card.category)}
           </span>
           <span className="text-[10px] font-mono text-muted-foreground/60 tracking-wider">
-            TAP AGAIN TO REVIEW TERM
+            TAP OR [SPACE] TO REVIEW TERM
           </span>
         </div>
       </div>
@@ -167,7 +167,7 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "btn-depress"
         )}
       >
-        ✕ &nbsp;STILL LEARNING &nbsp;-1
+        <span className="opacity-50 mr-2">[1]</span> ✕ &nbsp;STILL LEARNING &nbsp;-1
       </button>
       <button type="button"
         onClick={() => onRespond(true)}
@@ -180,7 +180,7 @@ export function FlashcardResponseControls({ onRespond }: FlashcardResponseContro
           "btn-depress"
         )}
       >
-        ✓ &nbsp;GOT IT &nbsp;+1
+        <span className="opacity-50 mr-2">[2]</span> ✓ &nbsp;GOT IT &nbsp;+1
       </button>
     </div>
   )
@@ -255,13 +255,13 @@ export function SessionEndScreen({
             title="Return to home screen"
             className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground hover:border-border/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            HOME
+            HOME <span className="opacity-50 ml-1 text-[10px]">[ESC]</span>
           </button>
           <button type="button"
             onClick={onComplete}
             className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            NEW SESSION
+            NEW SESSION <span className="opacity-50 ml-1 text-[10px]">[↵]</span>
           </button>
         </div>
       </div>
@@ -358,13 +358,13 @@ export function RoundEndScreen({
             title="End current session"
             className="flex-1 py-2.5 px-4 rounded border border-border bg-panel text-sm font-mono text-foreground/80 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            END SESSION
+            END SESSION <span className="opacity-50 ml-1 text-[10px]">[ESC]</span>
           </button>
           <button type="button"
             onClick={onContinue}
             className="flex-1 py-2.5 px-4 rounded border border-primary bg-primary text-primary-foreground text-sm font-mono font-bold hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            CONTINUE — ROUND {round + 1}
+            CONTINUE — ROUND {round + 1} <span className="opacity-50 ml-1 text-[10px]">[↵]</span>
           </button>
         </div>
       </div>
