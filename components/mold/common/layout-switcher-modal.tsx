@@ -111,6 +111,8 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
                 type="button"
                 onClick={() => setLayoutId(layout.id)}
                 aria-pressed={isSelected}
+                aria-label={`Select layout ${layout.name}`}
+                title={`Apply layout: ${layout.name}`}
                 className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                   isSelected
                     ? 'border-primary bg-primary/5 shadow-sm'
@@ -159,6 +161,8 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
           <span>Active: {activeLayoutId}</span>
           <button type="button"
             onClick={onClose}
+            title="Apply and close (Esc)"
+            aria-label="Apply layout and close modal"
             className="px-3 py-1.5 rounded border border-border bg-card hover:bg-muted text-foreground text-[11px] font-mono font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             Done

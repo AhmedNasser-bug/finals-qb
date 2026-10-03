@@ -129,3 +129,6 @@
 ## 2026-08-27 - Global Escape Shortcuts for Modals & Polishing Dynamic Content A11y
 **Learning:** Forcing users to click 'X' or 'Close' buttons on overlays breaks rapid interaction loops, while dynamically filtered empty lists (like search results) can silently disappear for screen reader users without explicit status roles.
 **Action:** Always implement a global 'Escape' keydown listener to dismiss modal overlays in high-density dashboards, and ensure any dynamically rendered "No results found" container includes `role="status"` and `aria-live="polite"` for accessible announcements.
+## 2026-10-01 - Modals & Importers Esc-to-Close & A11y Polish
+**Learning:** In large settings modals or wizard flows, failing to implement Esc-to-close behavior causes user frustration, and contextless 'Done' buttons break accessibility.
+**Action:** Add global keyboard event listeners mapping Escape to the close/cancel callback and explicitly declare 'title' and 'aria-label' attributes on selection and submission actions.

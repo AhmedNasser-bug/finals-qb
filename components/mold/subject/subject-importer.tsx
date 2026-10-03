@@ -366,6 +366,16 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
     ? Array.from(new Set(preview.questions.map((q) => q.category)))
     : []
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onCancel()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [onCancel])
+
   // ─── Wizard breadcrumb steps ────────────────────────────────────────────────
   const steps = [
     { num: 1, label: "Preset" },
