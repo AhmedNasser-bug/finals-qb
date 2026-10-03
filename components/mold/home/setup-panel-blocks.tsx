@@ -179,7 +179,7 @@ export function QuestionCountGroup({ options = QUESTION_COUNT_OPTIONS }: { optio
 
 export function RevisionNote() {
   return (
-    <p className="text-xs font-mono text-muted-foreground py-1 leading-relaxed border-l-2 border-primary/50 pl-3 bg-secondary/20 rounded-r">
+    <p role="status" aria-live="polite" className="text-xs font-mono text-muted-foreground py-1 leading-relaxed border-l-2 border-primary/50 pl-3 bg-secondary/20 rounded-r">
       Full Revision uses all{" "}
       <span className="text-foreground font-semibold">questions in strict canonical order.</span>{" "}
       No parameter overrides available.

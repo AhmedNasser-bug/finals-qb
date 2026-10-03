@@ -161,6 +161,7 @@ function ModeCard({
         onSelect(mode.id)
         if (onLaunch) onLaunch()
       }}
+      type="button"
       aria-pressed={isSelected}
       aria-label={ariaLabel}
       title={tooltipTitle}

@@ -179,6 +179,20 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "ux-decluttering-and-tooltips",
+      "category": "decluttering",
+      "tier": 3,
+      "title": "Tooltips, Stat Cell Decluttering, and ARIA Status",
+      "implementedAt": "2026-09-25T16:32:00.441Z",
+      "componentsTouched": [
+        "components/mold/game/game-footer.tsx",
+        "components/mold/game/game-stat-cell.tsx",
+        "components/mold/home/setup-panel-blocks.tsx",
+        "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }
