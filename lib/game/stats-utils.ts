@@ -19,18 +19,40 @@ export interface Milestone {
 }
 
 export function evaluateDailyMissions(runs: RunRecord[], referenceDate: Date = new Date()): DailyMission[] {
-  const todayStr = referenceDate.toISOString().split("T")[0]
-  const runsToday = runs.filter((r) => {
-    try {
-      return new Date(r.date).toISOString().split("T")[0] === todayStr
-    } catch {
-      return false
-    }
-  })
+  const todayStr = referenceDate.toISOString().substring(0, 10);
 
-  const runsCount = runsToday.length
-  const questionsAnswered = runsToday.reduce((sum, r) => sum + r.totalQuestions, 0)
-  const hasHighAccuracy = runsToday.some((r) => r.score >= 85)
+  let runsCount = 0;
+  let questionsAnswered = 0;
+  let hasHighAccuracy = false;
+
+  // O(N) single pass tracking multiple aggregates without chained array methods
+  for (let i = 0; i < runs.length; i++) {
+    const r = runs[i];
+    if (!r.date) continue;
+
+    let runDateStr;
+
+    // Fast path: substring matching on expected ISO8601 datestring footprint
+    if (typeof r.date === 'string' && r.date.length >= 10 && r.date[4] === '-' && r.date[7] === '-') {
+        runDateStr = r.date.substring(0, 10);
+    } else {
+        // Fallback for unexpected date formats
+        try {
+          const d = new Date(r.date);
+          if (!isNaN(d.getTime())) {
+            runDateStr = d.toISOString().substring(0, 10);
+          }
+        } catch {
+          continue;
+        }
+    }
+
+    if (runDateStr === todayStr) {
+        runsCount++;
+        questionsAnswered += (r.totalQuestions || 0);
+        if (r.score >= 85) hasHighAccuracy = true;
+    }
+  }
 
   return [
     {
