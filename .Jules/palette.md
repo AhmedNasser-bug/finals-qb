@@ -132,3 +132,6 @@
 ## 2026-10-01 - Modals & Importers Esc-to-Close & A11y Polish
 **Learning:** In large settings modals or wizard flows, failing to implement Esc-to-close behavior causes user frustration, and contextless 'Done' buttons break accessibility.
 **Action:** Add global keyboard event listeners mapping Escape to the close/cancel callback and explicitly declare 'title' and 'aria-label' attributes on selection and submission actions.
+## 2026-10-24 - Role Dialog and Accessibility attributes
+**Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
+**Action:** Add these attributes to modals or side drawers when building custom overlay panels.
