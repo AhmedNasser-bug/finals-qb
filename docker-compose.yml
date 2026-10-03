@@ -9,7 +9,13 @@ services:
       - NEXT_DIST_DIR=.next-tenant-a
     ports:
       - "3001:3000"
-    command: sh -c "corepack enable pnpm && pnpm dev --port 3000"
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm dev --port 3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
   tenant-b:
     image: node:alpine
     working_dir: /app
@@ -19,4 +25,10 @@ services:
       - NEXT_DIST_DIR=.next-tenant-b
     ports:
       - "3002:3000"
-    command: sh -c "corepack enable pnpm && pnpm dev --port 3000"
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm dev --port 3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

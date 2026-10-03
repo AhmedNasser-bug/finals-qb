@@ -5,7 +5,7 @@ echo "=> Seeding mock data / workspace prep..."
 # Ensure docs directory exists
 mkdir -p docs
 
-# Create a mock database seed structure as per orchestration requirements
+# Idempotently create a mock database seed structure as per orchestration requirements
 mkdir -p .data/seeds
 if [ ! -f .data/seeds/default-tenant.json ]; then
 cat <<EOF3 > .data/seeds/default-tenant.json
@@ -16,5 +16,9 @@ cat <<EOF3 > .data/seeds/default-tenant.json
 EOF3
 echo "Mock database seeded."
 else
-    echo "Mock database already seeded."
+    echo "Mock database already seeded. Skipping seed creation to maintain idempotency."
 fi
+
+# Ensure output directories are pre-created to avoid mount issues in Docker
+mkdir -p .next-tenant-a
+mkdir -p .next-tenant-b
