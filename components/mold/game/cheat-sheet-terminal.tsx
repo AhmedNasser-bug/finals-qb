@@ -54,7 +54,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               <span className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
                 STUDY DECK // REVIEW PANEL
               </span>
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded">
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded" aria-live="polite">
                 {entries.length} ITEMS
               </span>
             </div>
@@ -68,6 +68,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               <button
                 onClick={clearEntries}
                 aria-label="Clear Deck"
+                title="Clear all flagged items from the review deck"
                 className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
               >
                 Clear Deck
@@ -76,6 +77,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
             <button
               onClick={() => setIsOpen(false)}
               aria-label="Close study deck review drawer"
+              title="Close review deck and return"
               className="text-muted-foreground hover:text-foreground p-1 border border-border hover:border-primary/50 transition-colors cursor-pointer rounded"
             >
               <X className="w-4 h-4" aria-hidden="true" />

@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-03 - Contextual Tooltips & Dynamic Live Regions in Overlays
+**Learning:** Actions within modal interfaces (like destructive resets or clear actions) without explicit `title` attributes lack broader context. Additionally, dynamic count and status updates outside of standard flow fail to announce properly to screen readers if `aria-live` is missing.
+**Action:** Always include explicit `title` tooltips for action buttons in modals or overlays. Wrap dynamic state indicators (like item counts or accuracy percentages) with `aria-live="polite"` or `role="status"` to guarantee proper accessibility announcements.

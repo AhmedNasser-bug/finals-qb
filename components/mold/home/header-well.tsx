@@ -32,7 +32,7 @@ export function HeaderWell({
             <div className="font-mono text-[9px] text-primary uppercase tracking-widest font-bold">
               AVERAGE ACCURACY
             </div>
-            <div className="text-3xl sm:text-4xl font-headline font-black text-emerald-500 dark:text-emerald-400">
+            <div className="text-3xl sm:text-4xl font-headline font-black text-emerald-500 dark:text-emerald-400" aria-live="polite">
               {runCount > 0 ? `${visualAccuracyPct.toFixed(1)}%` : "100.0%"}
             </div>
           </div>
