@@ -185,6 +185,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
                 type="search"
                 aria-label={`Search ${formatLabel(activeCategory)}`}
                 placeholder={`Search ${formatLabel(activeCategory)} (Press '/' to focus)…`}
+                title="Press / to focus search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-background border border-border rounded px-3 py-1.5 pr-8 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"

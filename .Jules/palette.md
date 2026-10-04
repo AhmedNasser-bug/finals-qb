@@ -110,3 +110,10 @@
 
 
 
+## 2026-10-04 - Form Input Label Mapping and Accessibility
+**Learning:** Form inputs (like radio buttons or checkboxes) must define an explicit `id` and have a matching `htmlFor` attribute on their associated `<label>` element, even when nested inside the label, to ensure reliable screen reader mapping and to increase the clickable hit area.
+**Action:** Always assign a unique `id` to form inputs and pair them with an explicit `<label htmlFor="id">`.
+
+## 2026-10-04 - ARIA Modal Dialog Setup
+**Learning:** When creating custom modal overlays (often structured as `fixed inset-0` containers), failing to include `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` breaks screen reader expectations and focus management.
+**Action:** Ensure all full-screen overlays acting as modals explicitly carry the `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` attributes on their root container.
