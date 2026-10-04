@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { GameEngineProvider, useGameEngine } from "@/lib/game-engine"
+import { logger } from "@/lib/utils/logger"
 import { useStreak } from "@/lib/game/streak-context"
 import { useAchievements } from "@/lib/achievement-engine"
 import { useAchievementToast, AchievementToastContainer } from "@/components/mold/achievement/achievement-toast"
@@ -409,7 +410,7 @@ function GameRunnerInner({
           saveRetentionMap(subject.id, updatedMap)
         }
       } catch (err) {
-        console.warn("Failed to persist question retention updates:", err)
+        logger.warn("Failed to persist question retention updates:", err)
       }
 
       // Evaluate achievements using full history (including the current run)

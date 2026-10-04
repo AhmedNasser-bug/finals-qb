@@ -7,9 +7,24 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
     replacement: '[REDACTED]'
   },
   {
+    // SSNs
+    pattern: /\b\d{3}-\d{2}-\d{4}\b/g,
+    replacement: '[REDACTED]'
+  },
+  {
+    // Credit Cards
+    pattern: /\b(?:\d{4}[ -]?){3}\d{4}\b/g,
+    replacement: '[REDACTED]'
+  },
+  {
     // Bearer tokens
     pattern: /(Bearer\s{1,10})([A-Za-z0-9\-\._~\+\/]{1,4096}={0,2})/g,
     replacement: '$1[REDACTED]'
+  },
+  {
+    // Standard service tokens
+    pattern: /\b(?:ghp|gho|ghu|ghs|ghr)_[a-zA-Z0-9]{36}\b|\b(?:sk|pk)_(?:test|live)_[a-zA-Z0-9]{24,99}\b|\bxox[baprs]-[0-9]{10,13}-[a-zA-Z0-9\-]+\b|\b(?:AKIA|ABIA|ACCA|ASIA)[0-9A-Z]{16}\b/g,
+    replacement: '[REDACTED]'
   },
   {
     // Private keys
