@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2024-05-30 - [Optimize Execution Latency and Quadratic Overheads]
+**Learning:** O(N) array operations (like `.includes()`) inside loops, and character-by-character string concatenation (`+=`) lead to quadratic O(N^2) execution latency. Additionally, `for await (const chunk of stream)` loops introduce per-chunk promise overhead.
+**Action:** Replaced `.includes()` with O(1) `Set.has()` lookups. Replaced `+=` string concatenations in loops with `.push()` to arrays followed by `.join('')` or with `str.slice()`. Refactored `for await` loops to use classic event-driven stream processing wrapped in a single Promise.
