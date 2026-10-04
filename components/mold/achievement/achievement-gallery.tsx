@@ -130,6 +130,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
                 onClick={() => setConfirmReset(false)}
                 className="text-xs font-mono text-muted-foreground hover:text-foreground px-2 py-1 rounded border border-border"
                 aria-label="Cancel achievement reset"
+                title="Cancel achievement reset"
               >
                 CANCEL
               </button>
@@ -137,6 +138,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
                 onClick={handleResetClick}
                 className="text-xs font-mono text-destructive bg-destructive/10 border border-destructive/30 hover:bg-destructive hover:text-destructive-foreground transition-colors px-2 py-1 rounded font-bold"
                 aria-label="Confirm reset of all achievements"
+                title="Confirm reset of all achievements"
               >
                 CONFIRM RESET ALL?
               </button>

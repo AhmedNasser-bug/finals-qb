@@ -307,7 +307,12 @@ CRITICAL RULES:
   }, [step, categoryFocus, newCategoryName, parsedPreview, validationState])
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div
+      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none"
+      role="dialog"
+      aria-modal="true"
+      tabIndex={-1}
+    >
       <div className="w-full max-w-5xl h-[88vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
         
         {/* Modal Header */}
