@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-08-30 - Session Stats Clipboard Export Shortcut
+**Learning:** Users often want to quickly capture their session statistics, but have to manually highlight and copy text. Adding a global keyboard listener (e.g. `C` for Copy) alongside dynamic UI feedback (e.g., `[COPIED]`) provides an instantaneous, zero-friction export mechanism for sharing stats.
+**Action:** Implement global keydown listeners mapped to `navigator.clipboard.writeText` for high-value data summary panels to facilitate instant text-based export.
