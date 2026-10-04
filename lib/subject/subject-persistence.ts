@@ -13,6 +13,9 @@ export interface ValidationResult {
   subject?: FullSubjectData
 }
 
+const TRUE_MATCH_SET = new Set(["TRUE", "YES", "T", "1"]);
+const FALSE_MATCH_SET = new Set(["FALSE", "NO", "F", "0"]);
+
 /**
  * Validates a parsed JSON object against the FullSubjectData contract.
  * Returns detailed field-level errors so the UI can display actionable feedback.
@@ -261,8 +264,8 @@ function autoFixSingleQuestion(
       } else {
         // Check for "True" / "False" maps to A / B
         if (qObj.type === "TrueFalse" || normalizedOptions.length === 2) {
-          const isTrueMatch = ["TRUE", "YES", "T", "1"].includes(qObj.answer as string);
-          const isFalseMatch = ["FALSE", "NO", "F", "0"].includes(qObj.answer as string);
+          const isTrueMatch = TRUE_MATCH_SET.has(qObj.answer as string);
+          const isFalseMatch = FALSE_MATCH_SET.has(qObj.answer as string);
           if (isTrueMatch || isFalseMatch) {
             const oldAnswer = qObj.answer;
             qObj.answer = isTrueMatch ? "A" : "B";
@@ -749,7 +752,8 @@ function balanceJsonStack(str: string): string {
   }
   
   let balanced = str.trim()
-  if (inString) balanced += '"'
+  const tails: string[] = []
+  if (inString) tails.push('"')
   
   if (balanced.endsWith(",")) {
     balanced = balanced.slice(0, -1)
@@ -757,11 +761,11 @@ function balanceJsonStack(str: string): string {
   
   while (stack.length > 0) {
     const top = stack.pop()
-    if (top === '{') balanced += '}'
-    else if (top === '[') balanced += ']'
+    if (top === '{') tails.push('}')
+    else if (top === '[') tails.push(']')
   }
   
-  return balanced
+  return balanced + tails.join('')
 }
 
 function processEscapeSequence(
@@ -778,12 +782,11 @@ function processEscapeSequence(
   // Check if it's a LaTeX command starting with b, f, n, r, t, u
   if (/[bfnrtu]/i.test(nextChar)) {
     // Extract the alphabetical word starting at nextChar
-    let word = "";
     let j = i + 1;
     while (j < str.length && /[a-zA-Z]/.test(str[j])) {
-      word += str[j];
       j++;
     }
+    const word = str.slice(i + 1, j);
 
     // If the extracted word is a known LaTeX command, double escape the backslash!
     if (LATEX_WORDS.has(word.toLowerCase())) {
@@ -918,9 +921,11 @@ export function repairJson(raw: string): { repaired: string; fixedIssues: string
  */
 function handleParseError(jsonToParse: string, fixedWarnings: string[], originalError: unknown): { data: unknown; parseError?: never; fixedWarnings?: string[] } | { data?: never; parseError: string; fixedWarnings?: never } {
   const { repaired, fixedIssues } = repairJson(jsonToParse)
+  const warningsSet = new Set(fixedWarnings)
   for (const issue of fixedIssues) {
-    if (!fixedWarnings.includes(issue)) {
+    if (!warningsSet.has(issue)) {
       fixedWarnings.push(issue)
+      warningsSet.add(issue)
     }
   }
   try {
