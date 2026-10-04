@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2024-10-04 - [Optimize .reduce() into flat O(N) loops]
+**Learning:** Chaining `.filter().length` and multiple `.reduce()` operations over the same dataset (like computing sum, average, and counts) introduces multiple O(N) traversals, hurting performance especially on large data structures.
+**Action:** Consolidate multiple iterations into a single flat `for` loop to compute all required aggregations simultaneously in one O(N) pass, maintaining optimal performance.
