@@ -75,6 +75,16 @@ test('handles non-plain objects', () => {
   assert.strictEqual(maskData(set), set);
 });
 
+test('redacts standalone ssn', () => {
+  const result = maskData('my ssn is 123-45-6789 and 123 45 6789 and 123456789');
+  assert.strictEqual(result, 'my ssn is [REDACTED] and [REDACTED] and [REDACTED]');
+});
+
+test('redacts standalone credit cards', () => {
+  const result = maskData('my card is 1234-5678-9012-3456 and 1234 5678 9012 3456 and 1234567890123456');
+  assert.strictEqual(result, 'my card is [REDACTED] and [REDACTED] and [REDACTED]');
+});
+
 test('matches prefixed api keys', () => {
   const result = maskData({ stripe_api_key: '12345', some_secret_value: 'my-password', normal_key: 'safe_value' });
   assert.strictEqual(result.stripe_api_key, '[REDACTED]');

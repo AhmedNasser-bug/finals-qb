@@ -23,6 +23,7 @@ import {
   updateCardRetention,
 } from "@/lib/telemetry/retention-kernel"
 import { createInitialQuestionRetentionState } from "@/lib/game/recallability"
+import { logger } from "@/lib/logger"
 import {
   playKeyClick,
   playCorrectChime,
@@ -409,7 +410,7 @@ function GameRunnerInner({
           saveRetentionMap(subject.id, updatedMap)
         }
       } catch (err) {
-        console.warn("Failed to persist question retention updates:", err)
+        logger.warn("Failed to persist question retention updates:", err)
       }
 
       // Evaluate achievements using full history (including the current run)
