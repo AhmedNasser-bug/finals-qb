@@ -179,6 +179,19 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "setup-quick-reset-and-search-hotkeys",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Setup Panel Quick Reset (Defaults) & Category Search Hotkey (C) with Init CTA Badge",
+      "implementedAt": "2026-10-05T16:27:57.856Z",
+      "componentsTouched": [
+        "components/mold/home/setup-panel.tsx",
+        "components/mold/home/setup-panel-blocks.tsx",
+        "components/mold/home/home-screen-blocks.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

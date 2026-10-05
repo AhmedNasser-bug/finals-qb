@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-27 - Configuration Reset Friction & Setup Search Affordances
+**Learning:** Users iteratively adjusting parameters in the Setup Panel experience friction having to manually toggle multiple switches back to standard defaults after a customized session. Also, mouse-dependent category search in deep subject pools breaks keyboard flow.
+**Action:** Introduce a clear "RESET" default state button on configuration headers, bind 'C' as a global category search focus hotkey, and append `<kbd>` visual badges to main CTA buttons like 'INITIALIZE SESSION' to continually teach users the existing keyboard architecture.

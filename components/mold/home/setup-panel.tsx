@@ -29,9 +29,19 @@ export function SetupPanel({
 
   return (
     <section className={cn("flex flex-col gap-4", className)}>
-      <h2 className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-semibold">
-        Configuration
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-semibold">
+          Configuration
+        </h2>
+        <button
+          onClick={() => onChange({ timeLimitEnabled: true, hintsEnabled: false, questionCount: 20, selectedCategory: null })}
+          className="text-[10px] font-mono text-muted-foreground hover:text-foreground border border-border px-2 py-0.5 rounded transition-colors cursor-pointer"
+          title="Reset configuration to default values"
+          aria-label="Reset configuration to default values"
+        >
+          RESET
+        </button>
+      </div>
 
       <ConfigControls config={config} onChange={onChange}>
         {!isUntimed && !isFullRevision && <ConfigControls.TimeLimit />}
