@@ -57,6 +57,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
       role="dialog"
       aria-modal="true"
+      tabIndex={-1}
       aria-labelledby="layout-modal-title"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
@@ -102,8 +103,9 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
               <button
                 key={layout.id}
                 type="button"
+                role="radio"
                 onClick={() => setLayoutId(layout.id)}
-                aria-pressed={isSelected}
+                aria-checked={isSelected}
                 className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                   isSelected
                     ? 'border-primary bg-primary/5 shadow-sm'

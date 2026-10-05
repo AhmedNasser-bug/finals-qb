@@ -151,14 +151,15 @@ export function QuestionCountGroup({ options = QUESTION_COUNT_OPTIONS }: { optio
       label="Question Count"
       description="Number of questions to pull per session"
     >
-      <div className="flex flex-wrap items-center gap-1.5 justify-end" role="group" aria-label="Question Count Options">
+      <div className="flex flex-wrap items-center gap-1.5 justify-end" role="radiogroup" aria-label="Question Count Options">
         {options.map((n) => {
           const isPressed = config.questionCount === n
           return (
             <button
               key={n}
+              role="radio"
               onClick={() => onChange({ questionCount: n })}
-              aria-pressed={isPressed}
+              aria-checked={isPressed}
               aria-label={`${n === 0 ? "All available" : n} questions`}
               title={`Set question limit to ${n === 0 ? "all available" : n} questions`}
               className={cn(
@@ -411,8 +412,9 @@ export function CategoryTile({
 
   return (
     <button
+      role="radio"
       onClick={onSelect}
-      aria-pressed={selected}
+      aria-checked={selected}
       aria-label={ariaLabel}
       title={titleTooltip}
       className={cn(

@@ -150,6 +150,7 @@ function ModeCard({
 
   return (
     <button
+      role="radio"
       onClick={() => {
         if (isSelected && onLaunch) {
           onLaunch()
@@ -161,7 +162,7 @@ function ModeCard({
         onSelect(mode.id)
         if (onLaunch) onLaunch()
       }}
-      aria-pressed={isSelected}
+      aria-checked={isSelected}
       aria-label={ariaLabel}
       title={tooltipTitle}
       className={cn(
