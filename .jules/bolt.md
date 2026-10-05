@@ -2,3 +2,6 @@
 ## 2024-06-25 - [Optimize optimizePackageImports]
 **Learning:** Next.js experimental `optimizePackageImports` is highly effective at reducing Turbopack build latency when used for barrel file exports or packages with many sub-modules that aren't cleanly tree-shaken by default.
 **Action:** Configured `optimizePackageImports` in `next.config.mjs` for `recharts`, `date-fns`, `lucide-react`, and other barrel-file dependencies.
+## 2026-10-05 - [Optimize optimizePackageImports for UI packages]
+**Learning:** Next.js build performance (Turbopack) can be significantly improved by explicitly listing heavily used modular dependencies (e.g., individual `@radix-ui` packages, `mermaid`, `katex`) within the `experimental.optimizePackageImports` array in `next.config.mjs`. Adding these helps skip loading unused modules and drastically reduces static generation overhead.
+**Action:** Always verify `package.json` for massive UI barrel files or heavily used fragmented component libraries (`@radix-ui/react-*`, `recharts`, `lucide-react`, etc.) and ensure they are added to `optimizePackageImports` in `next.config.mjs`.
