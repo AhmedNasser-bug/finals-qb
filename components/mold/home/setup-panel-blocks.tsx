@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, useMemo } from "react"
+import React, { createContext, useContext, useState, useMemo, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import type { SetupConfig, CategoryData } from "@/lib/mold-types"
 
@@ -219,6 +219,22 @@ export function CategorySelectorSection({
   subjectId = "",
 }: CategorySelectorSectionProps) {
   const [filterQuery, setFilterQuery] = useState("")
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'c' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const target = e.target as HTMLElement | null
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) {
+          return
+        }
+        e.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
 
   const recallabilityMap = useMemo(() => {
     return computeCategoryRecallabilities(questions, subjectId, categories)
@@ -267,14 +283,18 @@ export function CategorySelectorSection({
         {categories.length > 3 && (
           <div className="relative">
             <input
+              ref={searchInputRef}
               type="search"
               value={filterQuery}
               onChange={(e) => setFilterQuery(e.target.value)}
               placeholder="Search sectors..."
               aria-label="Search practice categories"
               title="Filter categories by name"
-              className="px-2.5 py-1 text-xs font-mono bg-secondary/50 border border-border rounded text-foreground placeholder:text-muted-foreground focus-ring w-full sm:w-44"
+              className="pl-7 pr-2.5 py-1 text-xs font-mono bg-secondary/50 border border-border rounded text-foreground placeholder:text-muted-foreground focus-ring w-full sm:w-44"
             />
+            <span aria-hidden="true" className="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-muted-foreground border border-border/50 rounded px-1 bg-panel pointer-events-none">
+              C
+            </span>
             {filterQuery && (
               <button
                 type="button"

@@ -92,6 +92,7 @@ export function MainContentGrid({
           className="w-full h-16 bg-primary text-primary-foreground font-headline font-black text-xl tracking-[0.25em] border-none flex items-center justify-center gap-4 shadow-[0_0_20px_hsla(var(--primary),0.1)] hover:shadow-[0_0_30px_hsla(var(--primary),0.25)] hover:-translate-y-0.5 transition-all active:translate-y-0.5 cursor-pointer uppercase select-none rounded focus-ring"
         >
           <span>INITIALIZE SESSION</span>
+          <kbd className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded border border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground tracking-widest transition-colors hidden sm:inline-block">↵ ENTER</kbd>
           <Play className="w-5 h-5 fill-current shrink-0" aria-hidden="true" />
         </button>
       </div>
