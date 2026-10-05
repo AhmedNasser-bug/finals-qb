@@ -114,15 +114,15 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
 
   return (
     <div
+      ref={overlayRef}
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
+      tabIndex={-1}
       aria-label="Encyclopedia"
     >
       <div
-        ref={overlayRef}
-        tabIndex={-1}
         className="bg-panel border border-border rounded w-full max-w-3xl mx-4 flex flex-col max-h-[85vh] outline-none animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
