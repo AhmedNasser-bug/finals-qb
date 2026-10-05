@@ -3,6 +3,7 @@ set -eo pipefail
 
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
+    mkdir -p .next-tenant-a .next-tenant-b
     if [ ! -f docker-compose.yml ]; then
         echo "Error: docker-compose.yml not found."
     elif command -v docker-compose &> /dev/null; then
