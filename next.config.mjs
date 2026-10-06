@@ -5,7 +5,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    // ⚡ Bolt Optimization: Bypass loading unused modules from the lucide-react barrel file
+    // ⚡ Bolt Optimization: Bypass loading unused modules from barrel file exports
     // to significantly reduce memory usage and Turbopack build latency.
     optimizePackageImports: [
       'lucide-react',
@@ -13,7 +13,9 @@ const nextConfig = {
       'date-fns',
       '@clerk/nextjs',
       '@clerk/ui',
-      'tailwind-merge'
+      'tailwind-merge',
+      'mermaid',
+      'katex'
     ],
   },
 }
