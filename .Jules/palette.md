@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-08-28 - Centralizing aria-hidden="true" on domain icon components
+**Learning:** Adding `aria-hidden="true"` specifically inside the `<svg>` definition of standard generic game icons (like CheckIcon, XIcon, BoltIcon) ensures they are always treated as purely decorative out of the box, mitigating the risk of engineers forgetting to pass this accessibility attribute in dense layouts.
+**Action:** When a library of icons is built exclusively for decorative dashboard context, centralize `aria-hidden="true"` directly into the core `<svg>` return blocks instead of relying on prop spreading.
