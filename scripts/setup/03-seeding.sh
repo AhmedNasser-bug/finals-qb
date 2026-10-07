@@ -18,3 +18,7 @@ echo "Mock database seeded."
 else
     echo "Mock database already seeded."
 fi
+
+# Ensure output directories are pre-created to avoid Docker permission errors
+mkdir -p .next-tenant-a .next-tenant-b
+echo "=> Created multi-tenant output directories."
