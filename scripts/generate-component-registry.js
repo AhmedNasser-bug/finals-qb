@@ -30,12 +30,13 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const content = chunks.join('');
+  const content = await new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
+    const chunks = [];
+    stream.on('data', chunk => chunks.push(chunk));
+    stream.on('end', () => resolve(chunks.join('')));
+    stream.on('error', reject);
+  });
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
@@ -51,6 +52,17 @@ async function processComponent(filePath) {
   const hasChildren = content.includes('children') || content.includes('ReactNode');
   const usesRouting = content.includes('useRouter') || content.includes('next/navigation') || content.includes('next/link');
   const isLazyLoaded = content.includes('next/dynamic') || content.includes('lazy(');
+
+  const hasNextImage = content.includes('next/image');
+  const hasNextFont = content.includes('next/font');
+  const hasSVG = content.includes('<svg') || content.includes('lucide-react');
+
+  let assetDelivery = [];
+  if (hasNextImage) assetDelivery.push('Optimized via next/image');
+  if (hasNextFont) assetDelivery.push('Optimized via next/font');
+  if (hasSVG) assetDelivery.push('Inlined SVG / Icon Fonts');
+  if (assetDelivery.length === 0) assetDelivery.push('None detected');
+  const assetDeliveryStr = assetDelivery.join(', ');
 
   const hooksMatch = content.match(/use[A-Z]\w+/g);
   const hooks = hooksMatch ? Array.from(new Set(hooksMatch)).sort() : [];
@@ -115,6 +127,7 @@ async function processComponent(filePath) {
 - Supports Slots (children): \`${hasChildren ? 'Yes' : 'No'}\`
 - Uses Routing: \`${usesRouting ? 'Yes' : 'No'}\`
 - Dynamic Lazy-Loading: \`${isLazyLoaded ? 'Yes' : 'No'}\`
+- Asset Delivery: \`${assetDeliveryStr}\`
 
 **State Dependencies (Hooks):**
 ${stateHooks.length > 0 ? stateHooks.join(', ') : 'None'}
