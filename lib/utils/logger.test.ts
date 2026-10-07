@@ -93,3 +93,8 @@ test('redacts private keys without breaking JSON parsing', () => {
   const result = maskData(jsonStr);
   assert.doesNotThrow(() => JSON.parse(result));
 });
+
+test('redacts standalone SSN and Credit Cards', () => {
+  const result1 = maskData('My SSN is 123-45-6789 and my card is 4123456789012345.');
+  assert.strictEqual(result1, 'My SSN is [REDACTED] and my card is [REDACTED].');
+});
