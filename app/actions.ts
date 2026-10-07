@@ -20,12 +20,13 @@ let manifestCache: ExampleManifestEntry[] | null = null
 
 async function processExampleFile(filePath: string, fileStem: string, file: string, manifestResults: ExampleManifestEntry[]) {
   try {
-    const stream = fs.createReadStream(filePath)
-    const chunks: Buffer[] = []
-    for await (const chunk of stream) {
-      chunks.push(chunk)
-    }
-    const content = Buffer.concat(chunks).toString("utf-8")
+    const content = await new Promise<string>((resolve, reject) => {
+      const stream = fs.createReadStream(filePath)
+      const chunks: Buffer[] = []
+      stream.on('data', chunk => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)))
+      stream.on('end', () => resolve(Buffer.concat(chunks).toString("utf-8")))
+      stream.on('error', reject)
+    })
     const data = JSON.parse(content)
 
     // Calculate categories
