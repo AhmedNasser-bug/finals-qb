@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -177,6 +177,18 @@
       "implementedAt": "2026-08-27T14:48:00Z",
       "componentsTouched": [
         "components/mold/subject/subject-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "escape-shortcut-subject-importer",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "Escape Key Shortcut & A11y Polish for Subject Importer and InfoToolbox",
+      "implementedAt": "2026-10-08T16:36:09.883Z",
+      "componentsTouched": [
+        "components/mold/subject/subject-importer.tsx",
+        "components/mold/subject/subject-importer-components.tsx"
       ],
       "nonBreaking": true
     }

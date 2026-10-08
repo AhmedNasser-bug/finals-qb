@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 export function StatChip({ label, value }: { label: string; value: number }) {
   return (
@@ -21,6 +21,15 @@ export function CloseIcon() {
 
 export function InfoToolbox({ content }: { content: string }) {
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setIsOpen(false)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [isOpen])
 
   return (
     <div 

@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-08 - Escape Shortcut for Modals and Tooltips
+**Learning:** Dense wizard modals and floating tooltips can trap users, especially power users utilizing keyboard navigation. Implementing `Escape` key to instantly dismiss these elements reduces friction.
+**Action:** Consistently apply `Escape` key event listeners (`keydown` -> `e.key === 'Escape'`) in modals and temporary floating elements like tooltips, ensuring they can be quickly dismissed. Add `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` to modal containers.
