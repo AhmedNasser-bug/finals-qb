@@ -22,9 +22,11 @@ async function processExampleFile(filePath: string, fileStem: string, file: stri
   try {
     const stream = fs.createReadStream(filePath)
     const chunks: Buffer[] = []
-    for await (const chunk of stream) {
-      chunks.push(chunk)
-    }
+    await new Promise<void>((resolve, reject) => {
+      stream.on("data", (chunk: Buffer) => chunks.push(chunk))
+      stream.on("end", resolve)
+      stream.on("error", reject)
+    })
     const content = Buffer.concat(chunks).toString("utf-8")
     const data = JSON.parse(content)
 
