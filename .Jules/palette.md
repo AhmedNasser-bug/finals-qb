@@ -110,3 +110,7 @@
 
 
 
+
+## 2023-10-08 - Accessible Controls and WCAG Label in Name
+**Learning:** Visual elements inside interactive controls (like icons inside `<button>`) can cause redundant or confusing announcements if not explicitly hidden with `aria-hidden="true"`. Also, when adding `aria-label` to buttons, we must ensure it matches or includes the visible text (WCAG 2.5.3 Label in Name) so voice dictation users can activate them by saying their visible name. Adding an `aria-label` identical to the visual text is actually redundant, as native text handles it fine.
+**Action:** Apply `aria-label` and `title` to action buttons lacking text, explicitly hide decorative SVGs with `aria-hidden="true"` inside clickable areas, and ensure `aria-label` always includes the button's visible text if text is also present.

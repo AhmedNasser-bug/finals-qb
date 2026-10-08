@@ -91,6 +91,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={onClose}
+            title="Close theme selector"
             className="p-1.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
             aria-label="Close theme selector"
           >
@@ -228,6 +229,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           <button
             type="button"
             onClick={onClose}
+            title="Confirm theme selection and close"
             className="px-3 py-1.5 rounded border border-border bg-card hover:bg-muted text-foreground text-[11px] font-mono font-bold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
             Done
