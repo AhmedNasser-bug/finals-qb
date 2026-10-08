@@ -179,6 +179,18 @@
         "components/mold/subject/subject-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "wizard-modal-aria",
+      "category": "accessibility",
+      "tier": 1,
+      "title": "Add ARIA Modal Attributes to Add Questions & Import Wizards",
+      "implementedAt": "2026-08-28T00:00:00Z",
+      "componentsTouched": [
+        "components/mold/home/add-questions-wizard.tsx",
+        "components/mold/subject/subject-importer.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }

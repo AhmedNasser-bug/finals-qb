@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-08-28 - ARIA Dialog Properties for Wizard Overlays
+**Learning:** Fixed-position overlay wizards (like the Subject Importer and Add Questions components) must explicitly announce themselves as modals to assistive technologies. Without `role="dialog"`, `aria-modal="true"`, and an `aria-labelledby` linking to their main headings, screen readers may fail to contextualize the overlay's content and its restrictive focus state.
+**Action:** Always apply `role="dialog"`, `aria-modal="true"`, and `aria-labelledby="[heading-id]"` on the outer full-screen `<div className="fixed inset-0...">` container of overlay wizard modals, ensuring the target heading has the corresponding `id`.
