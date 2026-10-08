@@ -3,6 +3,12 @@ set -eo pipefail
 
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
+
+    # Preemptively create required mount directories to prevent Docker Compose volume mounting errors
+    # in restrictive environments (e.g., overlayfs limits) for multi-tenant Next.js setups.
+    echo "Creating Next.js tenant output directories..."
+    mkdir -p .next-tenant-a .next-tenant-b
+
     if [ ! -f docker-compose.yml ]; then
         echo "Error: docker-compose.yml not found."
     elif command -v docker-compose &> /dev/null; then
