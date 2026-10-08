@@ -307,13 +307,18 @@ CRITICAL RULES:
   }, [step, categoryFocus, newCategoryName, parsedPreview, validationState])
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="wizard-title"
+      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none"
+    >
       <div className="w-full max-w-5xl h-[88vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-border bg-panel">
           <div>
-            <h2 className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
+            <h2 id="wizard-title" className="text-sm font-mono font-bold tracking-wider uppercase text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary animate-pulse" aria-hidden="true" />
               <span>Add Questions to Subject Wizard</span>
             </h2>
