@@ -32,9 +32,11 @@ function extractInterface(content, componentName) {
 async function processComponent(filePath) {
   const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
   const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
+  await new Promise((resolve, reject) => {
+    stream.on('data', (chunk) => chunks.push(chunk));
+    stream.on('end', resolve);
+    stream.on('error', reject);
+  });
   const content = chunks.join('');
 
   const fileName = path.basename(filePath);
