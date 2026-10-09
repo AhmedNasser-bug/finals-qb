@@ -110,3 +110,7 @@
 
 
 
+
+## 2026-10-09 - Standardized Modal Escape Shortcuts
+**Learning:** Modal overlays that trap focus should universally support the Escape key to close, providing a consistent keyboard-first experience.
+**Action:** Wire the Escape key to trigger the onClose handler in all modal interfaces.
