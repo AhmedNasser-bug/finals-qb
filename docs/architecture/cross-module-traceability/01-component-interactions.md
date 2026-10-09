@@ -4,6 +4,22 @@
 
 This document maps the architectural component interactions across frontend client apps, backend services, and cloud infra targets.
 
+### End-to-End Component Interaction Mapping
+
+**Frontend to Core Engine**
+- **Trigger**: User selects a mode via `components/mold/HomeScreen`.
+- **Interaction**: Sets state config in `HomeScreen`, builds `GameState`, and mounts `GameRunner`.
+- **Backend Trace**: The component is strictly client-side, but relies on Server Components to render the initial layout shell.
+
+**Client to Data Store**
+- **Trigger**: App boots or user imports a subject.
+- **Interaction**: `lib/subject/subject-store.ts` loads from localStorage or dynamically parses the imported `SubjectSchema`.
+- **Persistence Pipeline**: Changes are debounced and serialized back to `localStorage` ensuring local-first operation.
+
+**Telemetry & Sandbox Infrastructure**
+- **Trigger**: Multi-tenant Docker environment startup.
+- **Interaction**: Next.js binds `.next-tenant-*` directories to ensure isolated cache and state, while running Next.js under the orchestration scripts.
+
 ### Frontend Client Apps & Next.js App Router
 The frontend application uses Next.js 16 with the App Router.
 - `app/layout.tsx`: The root layout of the application, managing global styles and context providers.
@@ -32,3 +48,4 @@ The multi-tenant sandbox environment leverages Docker.
 - **Frontend App ↔ Local Storage**: Client components read/write to `localStorage` using hooks like `useSubjectStore` and persistent state managers to ensure offline availability.
 - **Backend Services**: Next.js Server Components handle secure, pre-rendered HTML delivery. Server Actions (if any) provide structured API points.
 - **Docker Multi-Tenant Sandbox**: Containerized tenants mount isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) avoiding state bleeding across the local orchestrator environments.
+- **Cloud Infrastructure Targets**: Vercel deployments via `vercel.json` and standard Next.js building rules.

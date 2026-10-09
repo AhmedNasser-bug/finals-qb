@@ -3,6 +3,11 @@ set -eo pipefail
 
 if [ "$1" = "--multi-tenant" ]; then
     echo "=> Starting multi-tenant sandbox..."
+
+    # Preemptively create tenant directories to prevent Docker Compose volume mounting errors
+    echo "=> Creating isolated mount directories..."
+    mkdir -p .next-tenant-a .next-tenant-b
+
     if [ ! -f docker-compose.yml ]; then
         echo "Error: docker-compose.yml not found."
     elif command -v docker-compose &> /dev/null; then
