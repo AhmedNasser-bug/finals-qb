@@ -1,21 +1,24 @@
 import { test, describe } from "node:test"
 import assert from "node:assert"
 import {
-  BASELINE_LIGHTHOUSE_REPORT,
+  computeLiveLighthouseReport,
   measureClientPerformance,
 } from "./lighthouse-service"
 
 describe("Google Lighthouse & Core Web Vitals Service", () => {
-  test("BASELINE_LIGHTHOUSE_REPORT has valid overall score and categories", () => {
-    assert.ok(BASELINE_LIGHTHOUSE_REPORT.overallScore >= 95)
-    assert.strictEqual(BASELINE_LIGHTHOUSE_REPORT.categories.performance.score, 98)
-    assert.strictEqual(BASELINE_LIGHTHOUSE_REPORT.categories.accessibility.score, 100)
-    assert.strictEqual(BASELINE_LIGHTHOUSE_REPORT.categories["best-practices"].score, 100)
-    assert.strictEqual(BASELINE_LIGHTHOUSE_REPORT.categories.seo.score, 100)
+  test("computeLiveLighthouseReport produces a complete and valid audit report", () => {
+    const report = computeLiveLighthouseReport()
+    assert.ok(report.overallScore >= 80, "Overall score should be high")
+    assert.ok(report.categories.performance.score >= 80)
+    assert.ok(report.categories.accessibility.score >= 80)
+    assert.ok(report.categories["best-practices"].score >= 80)
+    assert.ok(report.categories.seo.score >= 80)
+    assert.ok(report.audits.length >= 5, "Report should contain detailed audit items")
   })
 
   test("Core Web Vitals include all critical metrics (LCP, INP, CLS, FCP, TBT)", () => {
-    const metrics = BASELINE_LIGHTHOUSE_REPORT.coreWebVitals
+    const report = computeLiveLighthouseReport()
+    const metrics = report.coreWebVitals
     const ids = metrics.map((m) => m.id)
 
     assert.ok(ids.includes("lcp"), "Should include LCP")
@@ -25,12 +28,12 @@ describe("Google Lighthouse & Core Web Vitals Service", () => {
     assert.ok(ids.includes("tbt"), "Should include TBT")
 
     for (const m of metrics) {
-      assert.strictEqual(m.status, "good")
+      assert.ok(["good", "needs-improvement", "poor"].includes(m.status))
       assert.ok(m.value.length > 0)
     }
   })
 
-  test("measureClientPerformance returns valid fallback values in SSR / Node environment", () => {
+  test("measureClientPerformance returns valid timing values in SSR / Node environment", () => {
     const live = measureClientPerformance()
     assert.ok(typeof live.ttfbMs === "number" && live.ttfbMs > 0)
     assert.ok(typeof live.fcpMs === "number" && live.fcpMs > 0)

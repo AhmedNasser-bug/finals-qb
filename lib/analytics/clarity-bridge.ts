@@ -14,6 +14,7 @@ import type {
   ExcessiveScrollEvent,
   BehavioralTelemetrySummary,
 } from "@/lib/telemetry/telemetry-types"
+import { loadSubjectRuns } from "@/lib/utils/user-storage"
 
 declare global {
   interface Window {
@@ -212,43 +213,45 @@ export function attachFrictionDetector(activeSubjectId: string = "human-computer
 
 /**
  * Aggregates behavioral telemetry events into a unified friction summary
+ * based 100% on actual user interactions and recorded sessions without simulations or mocks.
  */
 export function getBehavioralTelemetrySummary(subjectId?: string): BehavioralTelemetrySummary {
-  const events = telemetryCollector.getEvents({ subjectId })
+  const events = telemetryCollector.getEvents(subjectId ? { subjectId } : undefined)
+  const actualRuns = loadSubjectRuns(subjectId)
 
   let rageClicks = 0
   let deadClicks = 0
   let excessiveScrolls = 0
   let quickBacks = 0
   let totalClicks = 0
-  let totalSessions = 0
 
   for (const ev of events) {
     if (ev.type === "rage_click") rageClicks++
     if (ev.type === "dead_click") deadClicks++
     if (ev.type === "excessive_scroll") excessiveScrolls++
     if (ev.type === "quick_back") quickBacks++
-    if (ev.type === "question_answered" || ev.type === "card_flipped") totalClicks++
-    if (ev.type === "session_completed") totalSessions++
+    if (
+      ev.type === "question_answered" ||
+      ev.type === "card_flipped" ||
+      ev.type === "rating_submitted" ||
+      ev.type === "hint_opened"
+    ) {
+      totalClicks++
+    }
   }
 
-  // Baseline calibration for demonstration if fresh session
-  if (totalClicks === 0 && rageClicks === 0 && deadClicks === 0) {
-    totalSessions = 12
-    totalClicks = 148
-    rageClicks = 2
-    deadClicks = 4
-    excessiveScrolls = 1
-    quickBacks = 1
-  }
+  // Count answered questions from completed run records if in-memory click buffer was cleared
+  const runsItemCount = actualRuns.reduce((acc, r) => acc + (r.totalQuestions || 0), 0)
+  const effectiveClicks = Math.max(totalClicks, runsItemCount)
+  const totalSessions = actualRuns.length
 
   const frictionCount = rageClicks * 3 + deadClicks * 2 + excessiveScrolls + quickBacks
-  const denominator = Math.max(totalClicks, 10)
-  const frictionIndex = Math.min(100, Math.round((frictionCount / denominator) * 100))
+  const totalInteractions = effectiveClicks + frictionCount
+  const frictionIndex = totalInteractions > 0 ? Math.min(100, Math.round((frictionCount / totalInteractions) * 100)) : 0
 
   return {
-    totalSessions: Math.max(1, totalSessions),
-    totalClicks,
+    totalSessions,
+    totalClicks: effectiveClicks,
     rageClicks,
     deadClicks,
     excessiveScrolls,
