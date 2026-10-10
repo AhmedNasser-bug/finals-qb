@@ -9,3 +9,6 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+## 2023-10-25 - Optimize array ops and disk streaming
+**Learning:** In performance-critical parsing loops, `stack.splice(idx)` introduces O(N) array overhead which can cause quadratic O(N^2) execution latency. Similarly, `existing.splice(...)` causes O(N) in-place array mutation overhead.
+**Action:** Prefer directly setting `array.length = newIndex` for truncation instead of using `splice(newIndex)`. For fixed-size buffers, create a new slice and reassign (`array = array.slice(-MAX_ITEMS)`). For file reading, use `fs.createReadStream` with event-driven logic (`stream.on('data')`) over `fsPromises.readFile` to leverage block streaming and avoid large non-buffered disk reads in server endpoints.
