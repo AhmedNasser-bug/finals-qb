@@ -37,6 +37,8 @@ export interface Flashcard {
   term: string
   definition: string
   category: string
+  front?: string
+  back?: string
 }
 
 export interface TerminologyEntry {

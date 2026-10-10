@@ -72,10 +72,10 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
   // Find matching RC Package for plan
   const findRcPackageForPlan = useCallback(
     (planId: string): Package | undefined => {
-      if (!currentOffering?.packages) return undefined
+      if (!currentOffering?.availablePackages) return undefined
       const targetPlan = FINALISTS_AI_PLANS.find((p) => p.id === planId)
-      return currentOffering.packages.find(
-        (pkg) =>
+      return currentOffering.availablePackages.find(
+        (pkg: Package) =>
           pkg.identifier.toLowerCase().includes(planId) ||
           (targetPlan && pkg.rcBillingProduct?.identifier === targetPlan.productId)
       )

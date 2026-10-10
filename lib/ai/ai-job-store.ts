@@ -111,6 +111,8 @@ export function synthesizeSubject(
   const flashcards: Flashcard[] = categories.map((cat, idx) => ({
     id: `fc-${cat}`,
     category: cat,
+    term: `What is the core postulate of ${topic} regarding ${cat.replace(/-/g, " ")}?`,
+    definition: `It formalizes the canonical properties and verification criteria ensuring optimal convergence.`,
     front: `What is the core postulate of ${topic} regarding ${cat.replace(/-/g, " ")}?`,
     back: `It formalizes the canonical properties and verification criteria ensuring optimal convergence.`,
   }))
