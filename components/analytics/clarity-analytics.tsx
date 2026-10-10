@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import Script from "next/script"
+import Clarity from "@microsoft/clarity"
 import { attachFrictionDetector } from "@/lib/analytics/clarity-bridge"
 
 interface MicrosoftClarityProps {
@@ -12,30 +12,20 @@ export function MicrosoftClarity({ projectId }: MicrosoftClarityProps) {
   const clarityId = projectId || process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || "yvia03evn3"
 
   useEffect(() => {
+    if (typeof window !== "undefined" && clarityId) {
+      try {
+        Clarity.init(clarityId)
+      } catch {
+        // Safe fallback in restricted or non-browser environments
+      }
+    }
+
     // Attach passive friction listeners (rage click & dead click detection)
     const cleanup = attachFrictionDetector()
     return () => {
       cleanup()
     }
-  }, [])
+  }, [clarityId])
 
-  if (!clarityId) {
-    return null
-  }
-
-  return (
-    <Script
-      id="microsoft-clarity"
-      strategy="afterInteractive"
-      dangerouslySetInnerHTML={{
-        __html: `
-          (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-          })(window, document, "clarity", "script", "${clarityId}");
-        `,
-      }}
-    />
-  )
+  return null
 }

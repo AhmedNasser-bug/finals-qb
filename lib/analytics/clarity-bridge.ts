@@ -15,6 +15,7 @@ import type {
   BehavioralTelemetrySummary,
 } from "@/lib/telemetry/telemetry-types"
 import { loadSubjectRuns } from "@/lib/utils/user-storage"
+import Clarity from "@microsoft/clarity"
 
 declare global {
   interface Window {
@@ -31,18 +32,22 @@ declare global {
  * Send custom event to Microsoft Clarity if active
  */
 export function trackClarityEvent(name: string, data?: Record<string, unknown>): void {
-  if (typeof window !== "undefined" && typeof window.clarity === "function") {
+  if (typeof window !== "undefined") {
     try {
-      window.clarity("event", name, data)
+      if (data && typeof window.clarity === "function") {
+        window.clarity("event", name, data)
+      } else {
+        Clarity.event(name)
+      }
     } catch {
       // Ignore delivery errors
     }
-  }
-  if (typeof window !== "undefined" && typeof window.gtag === "function") {
-    try {
-      window.gtag("event", `clarity_${name}`, data)
-    } catch {
-      // Ignore delivery errors
+    if (typeof window.gtag === "function") {
+      try {
+        window.gtag("event", `clarity_${name}`, data)
+      } catch {
+        // Ignore delivery errors
+      }
     }
   }
 }
@@ -51,9 +56,9 @@ export function trackClarityEvent(name: string, data?: Record<string, unknown>):
  * Set custom tag / dimension in Microsoft Clarity (e.g. subjectId, gameMode)
  */
 export function setClarityTag(key: string, value: string): void {
-  if (typeof window !== "undefined" && typeof window.clarity === "function") {
+  if (typeof window !== "undefined") {
     try {
-      window.clarity("set", key, value)
+      Clarity.setTag(key, value)
     } catch {
       // Ignore tag errors
     }
@@ -64,9 +69,9 @@ export function setClarityTag(key: string, value: string): void {
  * Set user identity in Microsoft Clarity
  */
 export function identifyClarityUser(userId: string): void {
-  if (typeof window !== "undefined" && typeof window.clarity === "function") {
+  if (typeof window !== "undefined") {
     try {
-      window.clarity("identify", userId)
+      Clarity.identify(userId)
     } catch {
       // Ignore identity errors
     }
