@@ -120,7 +120,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
             onClick={onReturnHome}
             className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
           >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true" />
             <span>Return to core</span>
           </button>
           <h1 className="text-3xl font-display font-black tracking-tight text-foreground flex items-center gap-3">
@@ -136,14 +136,14 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         {/* Total Runs Card */}
         <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
           <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
-            <Trophy className="w-5 h-5" />
+            <Trophy className="w-5 h-5" aria-hidden="true" />
           </div>
           <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">QUIZZES COMPLETED</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-foreground mt-2 tabular-nums">
             {stats.totalRuns}
           </p>
           <div className="mt-3 flex items-center gap-1.5 font-mono text-[9px] text-primary bg-primary/10 border border-primary/20 px-2 py-1 rounded w-fit">
-            <Flame className="w-3 h-3 text-amber-500 animate-pulse" />
+            <Flame className="w-3 h-3 text-amber-500 animate-pulse" aria-hidden="true" />
             <span>DAY STREAK: {dayStreak}</span>
           </div>
         </div>
@@ -170,7 +170,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         {/* Peak Correctness Streak Card */}
         <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
           <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
-            <Zap className="w-5 h-5" />
+            <Zap className="w-5 h-5" aria-hidden="true" />
           </div>
           <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">BEST ANSWER STREAK</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-foreground mt-2 tabular-nums">
@@ -182,7 +182,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         {/* Average Response Time Card */}
         <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
           <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
-            <Clock className="w-5 h-5" />
+            <Clock className="w-5 h-5" aria-hidden="true" />
           </div>
           <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">AVERAGE ANSWER SPEED</p>
           <p className="text-3xl font-mono font-bold tracking-tight text-foreground mt-2 tabular-nums">
@@ -378,7 +378,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   {/* Subtle completed background check icon */}
                   {milestone.completed && (
                     <div className="absolute -bottom-2 -right-2 text-primary/5">
-                      <Trophy className="w-16 h-16" />
+                      <Trophy className="w-16 h-16" aria-hidden="true" />
                     </div>
                   )}
 
@@ -428,7 +428,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
             <div className="border border-destructive/20 bg-destructive/5 rounded p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <p className="font-mono text-xs font-bold text-foreground flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-destructive" />
+                  <AlertTriangle className="w-4 h-4 text-destructive" aria-hidden="true" />
                   <span>RESET ALL STUDY DATA</span>
                 </p>
                 <p className="text-[10px] text-muted-foreground max-w-md">

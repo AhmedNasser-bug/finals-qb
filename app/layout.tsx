@@ -2,20 +2,18 @@ import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
-import { Outfit } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from "@clerk/nextjs"
 import { shadcn } from "@clerk/ui/themes"
 import "./globals.css"
 import "katex/dist/katex.min.css"
+const hasClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
-import { hasClerk } from "@/lib/user-storage"
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-display",
-})
+// Offline-resilient font fallback for --font-display (configured in globals.css)
+const outfit = {
+  variable: "",
+}
 
 export const metadata: Metadata = {
   title: "Finalist — Mastery Protocol",

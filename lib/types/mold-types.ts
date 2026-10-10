@@ -159,6 +159,7 @@ export interface RunRecord {
   timeTaken: number      // seconds; 0 = untimed
   streak: number
   grade: LetterGrade
+  selectedCategory?: string | null // optional category targeted in practice mode
 }
 
 export interface AggregateStats {

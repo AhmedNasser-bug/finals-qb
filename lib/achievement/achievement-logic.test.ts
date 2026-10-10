@@ -207,6 +207,17 @@ test("evaluateCondition: all_categories", () => {
     evaluateCondition(condition, createMockState(), enoughPracticeRuns),
     true
   );
+
+  const distinctCategoryRuns = [
+    createMockRun({ mode: "practice", selectedCategory: "finite-automata" }),
+    createMockRun({ mode: "practice", selectedCategory: "regular-expressions" }),
+    createMockRun({ mode: "practice", selectedCategory: "turing-machines" }),
+  ];
+
+  assert.strictEqual(
+    evaluateCondition(condition, createMockState(), distinctCategoryRuns),
+    true
+  );
 });
 
 test("evaluateCondition: all_unlocked", () => {

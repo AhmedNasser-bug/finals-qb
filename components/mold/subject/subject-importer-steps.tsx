@@ -97,7 +97,7 @@ export function Step1PresetTopic({
           ].map((p) => {
             const isSelected = selectedPreset === p.id
             return (
-              <button type="button"
+              <button
                 key={p.id}
                 type="button"
                 onClick={() => onPresetSelect(p.id)}
@@ -276,7 +276,7 @@ export function Step3QuestionCount({
             {[20, 40, 80, 120].map((num) => {
               const isSelected = questionCount === num
               return (
-                <button type="button"
+                <button
                   key={num}
                   type="button"
                   onClick={() => onCustomPresetClick(num)}

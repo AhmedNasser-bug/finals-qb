@@ -67,7 +67,6 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
       tabIndex={-1}
       role="dialog"
-      tabIndex={-1}
       aria-modal="true"
       aria-labelledby="theme-modal-title"
       onClick={(e) => {
@@ -150,7 +149,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           {filteredThemes.map((theme) => {
             const isSelected = theme.id === activeThemeId
             return (
-              <button type="button"
+              <button
                 key={theme.id}
                 type="button"
                 onClick={() => setThemeId(theme.id)}

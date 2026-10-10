@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { SafeAuthProvider } from "@/lib/user-storage"
 import { ColorThemeProvider } from "@/lib/themes/theme-context"
 import { PageLayoutProvider } from "@/lib/layouts/layout-context"
 import { StatsProvider } from "@/lib/game/stats-context"
@@ -12,14 +13,16 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <ColorThemeProvider>
-      <PageLayoutProvider>
-        <StatsProvider>
-          <AchievementProvider>
-            {children}
-          </AchievementProvider>
-        </StatsProvider>
-      </PageLayoutProvider>
-    </ColorThemeProvider>
+    <SafeAuthProvider>
+      <ColorThemeProvider>
+        <PageLayoutProvider>
+          <StatsProvider>
+            <AchievementProvider>
+              {children}
+            </AchievementProvider>
+          </StatsProvider>
+        </PageLayoutProvider>
+      </ColorThemeProvider>
+    </SafeAuthProvider>
   )
 }

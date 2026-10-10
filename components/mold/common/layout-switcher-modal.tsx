@@ -63,7 +63,6 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
       tabIndex={-1}
       role="dialog"
-      tabIndex={-1}
       aria-modal="true"
       aria-labelledby="layout-modal-title"
       onClick={(e) => {
@@ -106,7 +105,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
           {availableLayouts.map((layout) => {
             const isSelected = layout.id === activeLayoutId
             return (
-              <button type="button"
+              <button
                 key={layout.id}
                 type="button"
                 onClick={() => setLayoutId(layout.id)}

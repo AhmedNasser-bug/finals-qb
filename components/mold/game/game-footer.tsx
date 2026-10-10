@@ -128,7 +128,7 @@ export function GameFooter({
           </div>
         )}
         {isRevealed && (
-          <button type="button"
+          <button
             onClick={nextQuestion}
             type="button"
             title="Skip question (forfeit points)"

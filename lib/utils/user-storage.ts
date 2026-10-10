@@ -1,3 +1,6 @@
+"use client"
+
+import React, { createContext, useContext } from "react"
 import { useAuth as useClerkAuth } from "@clerk/nextjs"
 import type { RunRecord } from "../types/mold-types"
 
@@ -11,6 +14,34 @@ export const ACHIEVEMENTS_STORAGE_KEY = "mold_v2_achievements"
  */
 export const hasClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
+export interface SafeAuthState {
+  userId: string | null
+  isSignedIn: boolean
+}
+
+const DEFAULT_AUTH_STATE: SafeAuthState = {
+  userId: null,
+  isSignedIn: false,
+}
+
+const SafeAuthContext = createContext<SafeAuthState>(DEFAULT_AUTH_STATE)
+
+function ClerkAuthConsumer({ children }: { children: React.ReactNode }) {
+  const clerkAuth = useClerkAuth()
+  const value: SafeAuthState = {
+    userId: clerkAuth.userId ?? null,
+    isSignedIn: !!clerkAuth.isSignedIn,
+  }
+  return React.createElement(SafeAuthContext.Provider, { value }, children)
+}
+
+export function SafeAuthProvider({ children }: { children: React.ReactNode }) {
+  if (hasClerk) {
+    return React.createElement(ClerkAuthConsumer, null, children)
+  }
+  return React.createElement(SafeAuthContext.Provider, { value: DEFAULT_AUTH_STATE }, children)
+}
+
 /**
  * Returns a namespaced key if a userId is provided.
  * Otherwise, falls back to the legacy anonymous key.
@@ -21,19 +52,11 @@ export function getNamespacedKey(baseKey: string, userId: string | null | undefi
 }
 
 /**
- * A safe authentication hook wrapper.
- * Returns empty/anonymous auth state if Clerk is not enabled in the environment,
- * preventing any "useAuth must be used inside <ClerkProvider>" crashes.
+ * A safe authentication hook wrapper adhering to React 19 Rules of Hooks.
+ * Reads from SafeAuthContext unconditionally with no conditional calls or try/catch.
  */
-export function useSafeAuth() {
-  if (!hasClerk) {
-    return { userId: null, isSignedIn: false }
-  }
-  try {
-    return useClerkAuth()
-  } catch {
-    return { userId: null, isSignedIn: false }
-  }
+export function useSafeAuth(): SafeAuthState {
+  return useContext(SafeAuthContext)
 }
 
 export function loadRuns(userId?: string | null): RunRecord[] {

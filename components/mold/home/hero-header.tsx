@@ -31,7 +31,7 @@ export function HeroHeader({
       {/* Unified Control Center Top Bar */}
       <div className="flex flex-wrap items-center gap-4 px-6 py-3 border-b border-border/50 bg-muted/40">
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" aria-hidden="true" />
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" aria-hidden="true" />
           <Image
             src="/logo.png"
             alt=""
@@ -42,7 +42,7 @@ export function HeroHeader({
             className="shrink-0 drop-shadow-[0_0_5px_hsl(var(--primary)/0.6)]"
             priority
           />
-          <span className="text-[10px] font-mono tracking-widest text-emerald-500 dark:text-emerald-400 uppercase font-bold shrink-0">
+          <span className="text-[10px] font-mono tracking-widest text-primary uppercase font-bold shrink-0">
             MASTERY_PROTOCOL //
           </span>
           <span className="text-xs font-mono font-bold text-foreground uppercase truncate max-w-[180px] sm:max-w-[280px]">
@@ -174,6 +174,7 @@ function TrophyIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
+      aria-hidden="true"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

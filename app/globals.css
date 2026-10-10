@@ -19,6 +19,7 @@
 
 @layer base {
   :root {
+    --font-display: 'Outfit', var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     /* === Extracted Tailwind Custom Tokens === */
     --tw-hex-4ae176: #4ae176;
     --tw-hex-4e4632: #4e4632;

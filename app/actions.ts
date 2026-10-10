@@ -18,7 +18,7 @@ export interface ExampleManifestEntry {
 
 let manifestCache: ExampleManifestEntry[] | null = null
 
-async function processExampleFile(filePath: string, fileStem: string, file: string, manifestResults: ExampleManifestEntry[]) {
+async function processExampleFile(filePath: string, fileStem: string, file: string): Promise<ExampleManifestEntry | null> {
   try {
     const content = await fsPromises.readFile(filePath, "utf-8")
     const data = JSON.parse(content)
@@ -35,7 +35,7 @@ async function processExampleFile(filePath: string, fileStem: string, file: stri
       tags.push(data.config.difficulty)
     }
 
-    manifestResults.push({
+    return {
       id: data.id || fileStem,
       filename: fileStem,   // always the actual file name, not the subject id
       name: data.name || fileStem,
@@ -43,9 +43,10 @@ async function processExampleFile(filePath: string, fileStem: string, file: stri
       questionCount: data.questions?.length || 0,
       categoryCount: categories.size,
       tags: data.tags || tags
-    })
+    }
   } catch (err) {
     logger.error(`Failed to parse Example Example: ${file}`, err)
+    return null
   }
 }
 
@@ -60,13 +61,15 @@ export async function getExamplesManifest(): Promise<ExampleManifestEntry[]> {
     const files = await fsPromises.readdir(examplesDir)
     const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "index.json")
 
-    const manifestResults: ExampleManifestEntry[] = []
+    const results = await Promise.all(
+      jsonFiles.map((file) => {
+        const filePath = path.join(examplesDir, file)
+        const fileStem = file.replace(/\.json$/i, "")
+        return processExampleFile(filePath, fileStem, file)
+      })
+    )
 
-    for (const file of jsonFiles) {
-      const filePath = path.join(examplesDir, file)
-      const fileStem = file.replace(/\.json$/i, "")
-      await processExampleFile(filePath, fileStem, file, manifestResults)
-    }
+    const manifestResults = results.filter((entry): entry is ExampleManifestEntry => entry !== null)
 
     manifestCache = manifestResults
     return manifestResults

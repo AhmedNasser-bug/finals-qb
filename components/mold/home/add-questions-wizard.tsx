@@ -342,7 +342,7 @@ CRITICAL RULES:
             className="w-8 h-8 flex items-center justify-center border border-border text-[#a4acba] hover:text-white hover:border-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
             aria-label="Close wizard"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
@@ -415,7 +415,7 @@ CRITICAL RULES:
                 ].map((type) => {
                   const isSelected = contentType === type.id
                   return (
-                    <button type="button"
+                    <button
                       key={type.id}
                       type="button"
                       onClick={() => setContentType(type.id as any)}
@@ -623,7 +623,7 @@ CRITICAL RULES:
                 ].map((focus) => {
                   const isSelected = categoryFocus === focus.id
                   return (
-                    <button type="button"
+                    <button
                       key={focus.id}
                       type="button"
                       onClick={() => setCategoryFocus(focus.id as any)}
@@ -730,7 +730,7 @@ CRITICAL RULES:
               <div className="border border-border rounded bg-[#101115] overflow-hidden">
                 <div className="p-4 bg-black/40 border-b border-border flex items-center justify-between">
                   <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-semibold flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-primary" />
+                    <FileText className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
                     <span>SYSTEM PROMPT INSTRUCTION BUNDLE</span>
                   </span>
                   <button type="button"
@@ -744,12 +744,12 @@ CRITICAL RULES:
                   >
                     {promptCopied ? (
                       <>
-                        <Check className="w-3 h-3" />
+                        <Check className="w-3 h-3" aria-hidden="true" />
                         <span>COPIED</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3 h-3" />
+                        <Copy className="w-3 h-3" aria-hidden="true" />
                         <span>COPY PROMPT</span>
                       </>
                     )}
@@ -764,7 +764,7 @@ CRITICAL RULES:
               </div>
 
               <div className="p-4 border border-primary/20 bg-primary/5 rounded-none flex items-start gap-3">
-                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
                 <div className="text-xs leading-relaxed font-sans text-zinc-300">
                   <span className="font-bold text-white uppercase block">Next Steps:</span>
                   <ol className="list-decimal list-inside space-y-1 mt-1 text-zinc-400">

@@ -384,6 +384,7 @@ function GameRunnerInner({
         timeTaken: state.elapsedSeconds,
         streak: state.bestStreak,
         grade: calculateGrade(accuracyPctValue),
+        selectedCategory: config.selectedCategory,
       }
 
       onRunSaved?.(run)

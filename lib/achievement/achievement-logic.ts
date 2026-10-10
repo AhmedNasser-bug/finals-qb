@@ -41,19 +41,22 @@ const CONDITION_EVALUATORS: Record<string, ConditionEvaluator> = {
     return allRuns.length >= (condition.value ?? 0);
   },
   all_categories: (_condition, _state, allRuns) => {
-    // Check that at least one run exists for each category (via practice mode)
-    // Simplified: check that the player has used practice mode for every category
+    // Check that at least 3 distinct categories have been practiced,
+    // with backward-compatible fallback to practiceCount >= 3 for runs without category tags
+    const practicedCategories = new Set<string>();
     let practiceCount = 0;
 
-    // Fallback logic for backward compatibility until full implementation tracks selectedCategory per run
     for (let i = 0; i < allRuns.length; i++) {
-      if (allRuns[i].mode !== "practice") continue;
+      const run = allRuns[i];
+      if (run.mode !== "practice") continue;
       practiceCount++;
-      if (practiceCount >= 3) return true;
+      if (run.selectedCategory) {
+        practicedCategories.add(run.selectedCategory);
+      }
     }
 
-    // For demo purposes: unlock when they have 3+ practice runs
-    return false;
+    if (practicedCategories.size >= 3) return true;
+    return practiceCount >= 3;
   },
   all_unlocked: () => {
     return false;
