@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import type { SubjectData, Achievement } from "@/lib/mold-types"
 import { cn } from "@/lib/utils"
 import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs"
@@ -77,6 +78,15 @@ export function HeroHeader({
               IMPORT NEW
             </button>
           )}
+
+          <Link
+            href="/analytics"
+            title="Open Microsoft Clarity & Lighthouse Analytics Lab"
+            aria-label="Open Telemetry and Lighthouse Analytics Lab"
+            className="text-[10px] font-mono font-bold px-3 py-1.5 border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary transition-all duration-150 focus-ring min-h-[32px] flex items-center justify-center cursor-pointer rounded"
+          >
+            ANALYTICS LAB
+          </Link>
 
           {hasClerk && (
             <>
