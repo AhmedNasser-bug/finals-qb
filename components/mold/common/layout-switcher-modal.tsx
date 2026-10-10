@@ -27,12 +27,7 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (modalRef.current) {
-      modalRef.current.focus()
-    }
-  }, [])
-
-  useEffect(() => {
+    if (modalRef.current) modalRef.current.focus()
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose()
@@ -44,10 +39,10 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
-        if (e.shiftKey && (document.activeElement === first || document.activeElement === modalRef.current)) {
+        if (e.shiftKey && (document.activeElement === first || !modalRef.current.contains(document.activeElement))) {
           e.preventDefault()
           last.focus()
-        } else if (!e.shiftKey && document.activeElement === last) {
+        } else if (!e.shiftKey && (document.activeElement === last || !modalRef.current.contains(document.activeElement))) {
           e.preventDefault()
           first.focus()
         }
@@ -60,8 +55,9 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      ref={modalRef}
       tabIndex={-1}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       role="dialog"
       aria-modal="true"
       aria-labelledby="layout-modal-title"
@@ -70,7 +66,6 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
       }}
     >
       <div
-        ref={modalRef}
         className="w-full max-w-xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
       >
         {/* Header */}
@@ -110,8 +105,8 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
                 type="button"
                 onClick={() => setLayoutId(layout.id)}
                 aria-pressed={isSelected}
-                aria-label={`Select layout ${layout.name}`}
                 title={`Apply layout: ${layout.name}`}
+                aria-label={`Select layout ${layout.name}`}
                 className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
                   isSelected
                     ? 'border-primary bg-primary/5 shadow-sm'

@@ -53,10 +53,10 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
 
-      if (e.shiftKey && (document.activeElement === first || document.activeElement === el || document.activeElement === document.body)) {
+      if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
         e.preventDefault()
         last.focus()
-      } else if (!e.shiftKey && document.activeElement === last) {
+      } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
         e.preventDefault()
         first.focus()
       }
