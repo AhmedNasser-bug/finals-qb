@@ -20,7 +20,16 @@ let manifestCache: ExampleManifestEntry[] | null = null
 
 async function processExampleFile(filePath: string, fileStem: string, file: string): Promise<ExampleManifestEntry | null> {
   try {
-    const content = await fsPromises.readFile(filePath, "utf-8")
+    const content = await new Promise<string>((resolve, reject) => {
+      let data = ""
+      const stream = fs.createReadStream(filePath, "utf-8")
+      stream.on("data", (chunk) => {
+        data += chunk
+      })
+      stream.on("end", () => resolve(data))
+      stream.on("error", reject)
+    })
+
     const data = JSON.parse(content)
 
     // Calculate categories
