@@ -601,6 +601,7 @@ ${bundledSourceMaterial}
                   <input
                     type="file"
                     id="material-upload"
+                    aria-label="Upload study materials"
                     onChange={handleFileChange}
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     disabled={isConverting}

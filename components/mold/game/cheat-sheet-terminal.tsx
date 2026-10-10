@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
@@ -10,6 +10,38 @@ import { X } from "lucide-react"
 
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
+
+  const drawerRef = useRef<HTMLDivElement>(null)
+
+  // Trap focus inside modal
+  useEffect(() => {
+    if (!isOpen) return
+    const el = drawerRef.current
+    if (el) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [isOpen])
 
   // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
@@ -39,13 +71,14 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Review Deck Drawer"
         tabIndex={-1}
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-card border-l border-border shadow-2xl flex flex-col transition-all duration-300 transform select-text",
+          "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-card border-l border-border shadow-2xl flex flex-col transition-all duration-300 transform select-text outline-none",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
