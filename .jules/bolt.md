@@ -9,3 +9,6 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+## 2026-10-10 - [Optimize array truncation and shifting]
+**Learning:** Using `.splice()` for array truncation or removing elements from the beginning introduces O(N) overhead which can cause quadratic O(N^2) execution latency when nested inside loops or frequent operations.
+**Action:** Replaced `.splice()` with `.length = newIndex` for truncation and `.slice()` for removing elements from the start to avoid O(N) in-place array mutation overhead.
