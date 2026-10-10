@@ -280,12 +280,14 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                 ].map((item) => (
                   <label
                     key={item.id}
+                    htmlFor={`persona-${item.id}`}
                     className={cn(
                       "flex items-center gap-2 text-[11px] cursor-pointer hover:text-foreground transition-colors",
                       persona === item.id ? "text-foreground font-semibold" : "text-muted-foreground"
                     )}
                   >
                     <input
+                      id={`persona-${item.id}`}
                       type="radio"
                       name="persona-selection"
                       checked={persona === item.id}
@@ -330,12 +332,14 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                   return (
                     <label
                       key={item.id}
+                      htmlFor={`scaffold-${item.id}`}
                       className={cn(
                         "flex items-start gap-2 text-[11px] cursor-pointer hover:text-foreground transition-colors",
                         isChecked ? "text-foreground font-semibold" : "text-muted-foreground"
                       )}
                     >
                       <input
+                        id={`scaffold-${item.id}`}
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => handleScaffoldingToggle(item.id as ScaffoldingType)}
@@ -375,12 +379,14 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                   return (
                     <label
                       key={item.id}
+                      htmlFor={`format-${item.id}`}
                       className={cn(
                         "flex items-start gap-2 text-[11px] cursor-pointer hover:text-foreground transition-colors",
                         isChecked ? "text-foreground font-semibold" : "text-muted-foreground"
                       )}
                     >
                       <input
+                        id={`format-${item.id}`}
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => handleFormatToggle(item.id as FormatOption)}
