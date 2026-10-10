@@ -38,6 +38,13 @@ export function trackClarityEvent(name: string, data?: Record<string, unknown>):
       // Ignore delivery errors
     }
   }
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    try {
+      window.gtag("event", `clarity_${name}`, data)
+    } catch {
+      // Ignore delivery errors
+    }
+  }
 }
 
 /**

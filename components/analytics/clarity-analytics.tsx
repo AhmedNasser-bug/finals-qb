@@ -9,7 +9,7 @@ interface MicrosoftClarityProps {
 }
 
 export function MicrosoftClarity({ projectId }: MicrosoftClarityProps) {
-  const clarityId = projectId || process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID
+  const clarityId = projectId || process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || "yvia03evn3"
 
   useEffect(() => {
     // Attach passive friction listeners (rage click & dead click detection)

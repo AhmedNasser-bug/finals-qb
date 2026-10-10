@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 import { Providers } from "@/app/providers"
 
 import { MicrosoftClarity } from "@/components/analytics/clarity-analytics"
+import { GoogleAnalytics } from "@/components/analytics/google-analytics"
 
 export default function RootLayout({
   children,
@@ -48,7 +49,8 @@ export default function RootLayout({
         )}
         <Analytics />
         <SpeedInsights />
-        <MicrosoftClarity />
+        <GoogleAnalytics gaId="G-NE62TX80VB" />
+        <MicrosoftClarity projectId="yvia03evn3" />
       </body>
     </html>
   )
