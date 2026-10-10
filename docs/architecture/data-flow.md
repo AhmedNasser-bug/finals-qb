@@ -28,6 +28,11 @@ flowchart LR
   AnswerSubmit -->|correct| IncStreak[Increment Subject Streak]
   AnswerSubmit -->|wrong| ResetStreak[Reset Subject Streak]
   
+  GameRun --> UserInteraction[User Clicks / Scroll]
+  UserInteraction --> FrictionDetection{Friction Detection}
+  FrictionDetection -->|Rage / Dead Click| ClarityBridge[Clarity Bridge & Telemetry Collector]:::async
+  ClarityBridge --> AnalyticsDashboard[Analytics Dashboard /analytics]
+
   GameRun -->|Finish| RunRecordGen[Construct RunRecord with subjectId]
   RunRecordGen --> SaveRun[saveRuns to mold_v2_runs_subjectId]:::store
   RunRecordGen --> AchCheck[onGameComplete: Evaluate strictly against subject's runs]:::async

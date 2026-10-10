@@ -13,6 +13,10 @@ export type TelemetryEventType =
   | "hint_opened"
   | "cheatsheet_opened"
   | "session_completed"
+  | "rage_click"
+  | "dead_click"
+  | "excessive_scroll"
+  | "quick_back"
 
 export interface BaseTelemetryEvent {
   id: string
@@ -60,12 +64,52 @@ export interface SessionCompletedEvent extends BaseTelemetryEvent {
   accuracyPct: number
 }
 
+export interface RageClickEvent extends BaseTelemetryEvent {
+  type: "rage_click"
+  targetTag: string
+  targetText?: string
+  clickCount: number
+  coordinate: { x: number; y: number }
+}
+
+export interface DeadClickEvent extends BaseTelemetryEvent {
+  type: "dead_click"
+  targetTag: string
+  targetText?: string
+  coordinate: { x: number; y: number }
+}
+
+export interface ExcessiveScrollEvent extends BaseTelemetryEvent {
+  type: "excessive_scroll"
+  scrollVelocity: number
+  direction: "up" | "down"
+}
+
+export interface QuickBackEvent extends BaseTelemetryEvent {
+  type: "quick_back"
+  dwellTimeMs: number
+}
+
 export type CognitiveTelemetryEvent =
   | CardFlippedEvent
   | RatingSubmittedEvent
   | QuestionAnsweredEvent
   | HintOpenedEvent
   | SessionCompletedEvent
+  | RageClickEvent
+  | DeadClickEvent
+  | ExcessiveScrollEvent
+  | QuickBackEvent
+
+export interface BehavioralTelemetrySummary {
+  totalSessions: number
+  totalClicks: number
+  rageClicks: number
+  deadClicks: number
+  excessiveScrolls: number
+  quickBacks: number
+  frictionIndex: number // 0 to 100, where 0 is frictionless
+}
 
 export interface CardRetentionState {
   cardId: string

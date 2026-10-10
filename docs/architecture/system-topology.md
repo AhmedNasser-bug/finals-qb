@@ -13,6 +13,14 @@ graph TD
     AddQuestionsWizard[Socratic AI Question Generator]
     CheatSheetDrawer[Cheat Sheet Terminal Drawer]
     AchievementGallery[Achievement Gallery Modal]
+    AnalyticsDashboard[Analytics Dashboard /analytics]
+  end
+
+  subgraph Observability_Telemetry [Observability & Behavioral RUM]
+    MicrosoftClarity[Microsoft Clarity RUM Script]
+    FrictionDetector[Passive Friction Detector (Rage/Dead Clicks)]
+    LighthouseService[Lighthouse & CWV Engine]
+    TelemetryCollector[Cognitive Event Sink]
   end
 
   subgraph Client_State_Providers [Context & State Management]
@@ -52,6 +60,12 @@ graph TD
   CheatSheetDrawer --> StorageAdapter
   StorageAdapter --> LocalStorageAdapter
   StorageAdapter -.-> FirebaseAuthAdapter
+
+  HomeScreen --> AnalyticsDashboard
+  AnalyticsDashboard --> FrictionDetector
+  AnalyticsDashboard --> LighthouseService
+  FrictionDetector --> TelemetryCollector
+  FrictionDetector --> MicrosoftClarity
 
   AddQuestionsWizard --> Validation
   Validation --> DOMPurify

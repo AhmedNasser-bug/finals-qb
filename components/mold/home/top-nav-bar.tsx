@@ -5,7 +5,7 @@ import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
-import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX, Sun, Moon, Sparkles } from "lucide-react"
+import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX, Sun, Moon, Sparkles, Activity } from "lucide-react"
 import { GuideLink } from "@/components/mold/common/guide-link"
 import { isAudioMuted, toggleAudioMute } from "@/lib/audio/sound-engine"
 import { useColorTheme } from "@/lib/themes/theme-context"
@@ -216,6 +216,15 @@ export function TopNavBar({
             <span className="font-mono text-[9px] font-bold px-1 uppercase tracking-wider">IMPORT</span>
           </button>
         )}
+
+        <Link
+          href="/analytics"
+          title="Open Microsoft Clarity & Lighthouse Analytics Lab"
+          aria-label="Open Telemetry and Lighthouse Analytics Lab"
+          className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] flex items-center justify-center shrink-0 rounded"
+        >
+          <Activity className="w-4 h-4 text-primary" aria-hidden="true" />
+        </Link>
 
         {/* Mobile GUIDE link */}
         <GuideLink
