@@ -18,7 +18,8 @@ import {
   FolderDown,
   Palette,
   LayoutGrid,
-  HelpCircle
+  HelpCircle,
+  MessageSquarePlus,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -285,7 +286,19 @@ export function SideNavBar({
       </nav>
 
       {/* Bottom Sticky Action Bar */}
-      <div className="mt-auto pt-3 border-t border-border/60">
+      <div className="mt-auto pt-3 border-t border-border/60 flex flex-col gap-2">
+        <a
+          href="https://docs.google.com/forms/d/1LrdMb8QiGbB01tDw6DJd-tQl_ix3ldxaSND-4vkKJJc/edit"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Submit Feedback & Feature Requests (opens Google Form)"
+          aria-label="Submit Feedback Form (opens in new tab)"
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 border border-border hover:border-primary/50 text-muted-foreground hover:text-primary transition-all font-mono text-[9px] uppercase font-bold tracking-wider rounded focus-ring group"
+        >
+          <MessageSquarePlus className="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform shrink-0" aria-hidden="true" />
+          <span>FEEDBACK FORM</span>
+        </a>
+
         <button type="button"
           onClick={onInitialize}
           title="Launch active game session (Press Enter)"

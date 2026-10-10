@@ -5,7 +5,7 @@ import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
 import { hasClerk } from "@/lib/user-storage"
 
-import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX, Sun, Moon, Sparkles, Activity } from "lucide-react"
+import { Palette, LayoutGrid, BookOpen, Volume2, VolumeX, Sun, Moon, Sparkles, Activity, MessageSquarePlus } from "lucide-react"
 import { GuideLink } from "@/components/mold/common/guide-link"
 import { isAudioMuted, toggleAudioMute } from "@/lib/audio/sound-engine"
 import { useColorTheme } from "@/lib/themes/theme-context"
@@ -225,6 +225,19 @@ export function TopNavBar({
         >
           <Activity className="w-4 h-4 text-primary" aria-hidden="true" />
         </Link>
+
+        {/* Feedback Submission Form */}
+        <a
+          href="https://docs.google.com/forms/d/1LrdMb8QiGbB01tDw6DJd-tQl_ix3ldxaSND-4vkKJJc/edit"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Submit Feedback & Feature Requests (opens Google Form)"
+          aria-label="Submit Feedback Form (opens in new tab)"
+          className="flex items-center gap-1.5 px-2.5 py-1 font-mono text-[9px] font-bold tracking-widest uppercase rounded border border-primary/50 bg-primary/10 text-primary hover:bg-primary hover:text-black transition-all focus-ring cursor-pointer min-h-[32px] select-none group shadow-[0_0_12px_hsla(var(--primary),0.15)] shrink-0"
+        >
+          <MessageSquarePlus className="w-3.5 h-3.5 text-primary group-hover:text-black transition-colors shrink-0" aria-hidden="true" />
+          <span className="hidden sm:inline">FEEDBACK</span>
+        </a>
 
         {/* Mobile GUIDE link */}
         <GuideLink
