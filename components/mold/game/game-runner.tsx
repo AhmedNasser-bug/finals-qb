@@ -376,6 +376,7 @@ function GameRunnerInner({
       const totalQuestions = state.questions.length
       const run: RunRecord = {
         id: uuid(),
+        subjectId: subject.id,
         date: new Date().toISOString(),
         mode: state.mode,
         score: accuracyPctValue,

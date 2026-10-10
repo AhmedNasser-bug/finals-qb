@@ -153,6 +153,7 @@ export type LetterGrade = "S+" | "S" | "A+" | "A" | "B+" | "C+" | "D+" | "F"
 
 export interface RunRecord {
   id: string
+  subjectId?: string
   date: string           // ISO string
   mode: GameModeId
   score: number          // 0–100 accuracy %

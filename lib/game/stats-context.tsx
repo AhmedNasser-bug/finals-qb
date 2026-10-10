@@ -1,7 +1,16 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from "react"
-import { useSafeAuth, loadRuns, saveRuns, getNamespacedKey } from "../utils/user-storage"
+import {
+  useSafeAuth,
+  loadSubjectRuns,
+  saveSubjectRuns,
+  loadSubjectStreaks,
+  saveSubjectStreaks,
+  getSubjectStorageKey,
+  Q_STREAK_STORAGE_KEY,
+  PEAK_Q_STREAK_STORAGE_KEY,
+} from "../utils/user-storage"
 import type { RunRecord, AggregateStats } from "../types/mold-types"
 import { calculateDayStreak } from "./streak-utils"
 import { computeAggregateStats } from "../types/mold-types"
@@ -9,6 +18,8 @@ import { evaluateDailyMissions, evaluateMilestones } from "./stats-utils"
 import type { DailyMission, Milestone } from "./stats-utils"
 
 export interface StatsContextValue {
+  subjectId: string | null
+  setSubjectId: (id: string) => void
   runs: RunRecord[]
   dayStreak: number
   currentQuestionStreak: number
@@ -25,52 +36,40 @@ const StatsContext = createContext<StatsContextValue | null>(null)
 
 export function StatsProvider({ children }: { children: React.ReactNode }) {
   const { userId } = useSafeAuth()
+  const [subjectId, setSubjectIdState] = useState<string | null>("theory-of-computation")
+  const subjectIdRef = useRef<string | null>(subjectId)
+  subjectIdRef.current = subjectId
 
-  // LocalStorage storage keys namespaced to user if signed in
-  const qStreakKey = useMemo(() => getNamespacedKey("mold_v2_current_q_streak", userId), [userId])
-  const peakQStreakKey = useMemo(() => getNamespacedKey("mold_v2_peak_q_streak", userId), [userId])
+  const setSubjectId = useCallback((id: string) => {
+    setSubjectIdState((prev) => (prev === id ? prev : id))
+  }, [])
 
   // Vercel Best Practices: rerender-lazy-state-init (avoid disk read waterfall on render mount)
-  const [runs, setRuns] = useState<RunRecord[]>(() => loadRuns(userId))
+  const [runs, setRuns] = useState<RunRecord[]>(() => loadSubjectRuns(subjectId, userId))
+
+  const initialStreaks = useMemo(() => loadSubjectStreaks(subjectId, userId), [subjectId, userId])
+  const [currentQuestionStreak, setCurrentQuestionStreak] = useState<number>(initialStreaks.currentStreak)
+  const [peakQuestionStreak, setPeakQuestionStreak] = useState<number>(initialStreaks.peakStreak)
+
+  // Synchronize state when subjectId or userId changes (Vercel best-practices: js-cache-storage)
+  const prevScopeRef = useRef(`${subjectId}_${userId}`)
+  useEffect(() => {
+    const currentScope = `${subjectId}_${userId}`
+    if (prevScopeRef.current !== currentScope) {
+      prevScopeRef.current = currentScope
+      const loadedRuns = loadSubjectRuns(subjectId, userId)
+      setRuns(loadedRuns)
+
+      const streaks = loadSubjectStreaks(subjectId, userId)
+      setCurrentQuestionStreak(streaks.currentStreak)
+      setPeakQuestionStreak(streaks.peakStreak)
+    }
+  }, [subjectId, userId])
 
   // Vercel Best Practices: rerender-derived-state-no-effect (pure derived state using useMemo)
   const dayStreak = useMemo(() => calculateDayStreak(runs), [runs])
 
-  const [currentQuestionStreak, setCurrentQuestionStreak] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const savedQ = localStorage.getItem(getNamespacedKey("mold_v2_current_q_streak", userId))
-      return savedQ ? parseInt(savedQ, 10) : 0
-    }
-    return 0
-  })
-
-  const [peakQuestionStreak, setPeakQuestionStreak] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const savedPeak = localStorage.getItem(getNamespacedKey("mold_v2_peak_q_streak", userId))
-      return savedPeak ? parseInt(savedPeak, 10) : 0
-    }
-    return 0
-  })
-
-  // Synchronize state when userId changes (Vercel best-practices: js-cache-storage)
-  const prevUserRef = useRef(userId)
-  useEffect(() => {
-    if (prevUserRef.current !== userId) {
-      prevUserRef.current = userId
-      const loadedRuns = loadRuns(userId)
-      setRuns(loadedRuns)
-
-      if (typeof window !== "undefined") {
-        const savedQ = localStorage.getItem(qStreakKey)
-        const savedPeak = localStorage.getItem(peakQStreakKey)
-
-        setCurrentQuestionStreak(savedQ ? parseInt(savedQ, 10) : 0)
-        setPeakQuestionStreak(savedPeak ? parseInt(savedPeak, 10) : 0)
-      }
-    }
-  }, [userId, qStreakKey, peakQStreakKey])
-
-  // 2. Computed aggregate statistics
+  // 2. Computed aggregate statistics scoped to active subject
   const stats = useMemo(() => {
     return computeAggregateStats(runs)
   }, [runs])
@@ -85,57 +84,61 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
     return evaluateMilestones(runs, dayStreak, peakQuestionStreak)
   }, [runs, dayStreak, peakQuestionStreak])
 
-  // 5. Action: update active question streak on answer submission
+  // 5. Action: update active question streak on answer submission for current subject
   const updateQuestionStreak = useCallback((isCorrect: boolean) => {
+    const activeSubj = subjectIdRef.current
     setCurrentQuestionStreak((prev) => {
       const next = isCorrect ? prev + 1 : 0
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem(qStreakKey, next.toString())
-      }
-
       setPeakQuestionStreak((currentPeak) => {
-        if (next > currentPeak) {
-          if (typeof window !== "undefined") {
-            localStorage.setItem(peakQStreakKey, next.toString())
-          }
-          return next
-        }
-        return currentPeak
+        const nextPeak = next > currentPeak ? next : currentPeak
+        saveSubjectStreaks(next, nextPeak, activeSubj, userId)
+        return nextPeak
       })
 
       return next
     })
-  }, [qStreakKey, peakQStreakKey])
+  }, [userId])
 
   // 6. Action: commit completed run records to storage & sync state
   const recordSession = useCallback((run: RunRecord) => {
+    const activeSubj = run.subjectId || subjectIdRef.current || "theory-of-computation"
+    const taggedRun: RunRecord = {
+      ...run,
+      subjectId: activeSubj,
+    }
+
     setRuns((prev) => {
-      const hasCurrentRun = prev.some((r) => r.id === run.id)
-      const nextRuns = hasCurrentRun ? prev : [...prev, run]
+      const hasCurrentRun = prev.some((r) => r.id === taggedRun.id)
+      const nextRuns = hasCurrentRun ? prev : [...prev, taggedRun]
       const trimmedRuns = nextRuns.slice(-50)
       
-      saveRuns(trimmedRuns, userId)
+      saveSubjectRuns(trimmedRuns, activeSubj, userId)
       return trimmedRuns
     })
   }, [userId])
 
-  // 7. Action: clear all stats logs & caches
+  // 7. Action: clear all stats logs & caches for current subject
   const resetAllStats = useCallback(() => {
+    const activeSubj = subjectIdRef.current
     if (typeof window !== "undefined") {
-      localStorage.removeItem(qStreakKey)
-      localStorage.removeItem(peakQStreakKey)
+      const qKey = getSubjectStorageKey(Q_STREAK_STORAGE_KEY, activeSubj, userId)
+      const peakKey = getSubjectStorageKey(PEAK_Q_STREAK_STORAGE_KEY, activeSubj, userId)
+      localStorage.removeItem(qKey)
+      localStorage.removeItem(peakKey)
     }
     
-    saveRuns([], userId)
+    saveSubjectRuns([], activeSubj, userId)
     setRuns([])
     setCurrentQuestionStreak(0)
     setPeakQuestionStreak(0)
-  }, [qStreakKey, peakQStreakKey, userId])
+  }, [userId])
 
   return (
     <StatsContext.Provider
       value={{
+        subjectId,
+        setSubjectId,
         runs,
         dayStreak,
         currentQuestionStreak,

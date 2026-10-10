@@ -51,7 +51,7 @@ describe("PurchasesService", () => {
   })
 
   it("should resolve custom user ID accurately", () => {
-    const customUser = "user_clerk_12345"
+    const customUser = "user_custom_12345"
     const resolved = purchasesService.resolveAppUserId(customUser)
     assert.strictEqual(resolved, customUser)
   })

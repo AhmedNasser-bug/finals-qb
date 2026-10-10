@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react"
 import type {
@@ -27,27 +28,62 @@ export {
   ACHIEVEMENT_CONDITIONS,
 } from "./achievement-logic"
 
-import { getNamespacedKey, ACHIEVEMENTS_STORAGE_KEY, useSafeAuth } from "@/lib/user-storage"
+import {
+  getSubjectStorageKey,
+  ACHIEVEMENTS_STORAGE_KEY,
+  useSafeAuth,
+} from "@/lib/user-storage"
 
-// ─── Persistence helpers (localStorage, namespaced by Clerk User ID) ────
+// ─── Persistence helpers (localStorage, namespaced by subjectId and userId) ────
 
-async function loadAchievements(userId?: string | null): Promise<Achievement[]> {
+export async function loadSubjectAchievements(
+  subjectId: string,
+  userId?: string | null
+): Promise<Achievement[]> {
+  if (typeof window === "undefined" && typeof (globalThis as any).localStorage === "undefined") {
+    return []
+  }
   try {
-    const key = getNamespacedKey(ACHIEVEMENTS_STORAGE_KEY, userId)
+    const key = getSubjectStorageKey(ACHIEVEMENTS_STORAGE_KEY, subjectId, userId)
     const raw = localStorage.getItem(key)
-    if (!raw) return []
-    return JSON.parse(raw) as Achievement[]
+    if (raw) {
+      return JSON.parse(raw) as Achievement[]
+    }
+
+    // Transparent legacy migration fallback: check unscoped achievements
+    const legacyKey = getSubjectStorageKey(ACHIEVEMENTS_STORAGE_KEY, null, userId)
+    const legacyRaw = localStorage.getItem(legacyKey)
+    if (legacyRaw && subjectId === "theory-of-computation") {
+      try {
+        const legacy = JSON.parse(legacyRaw) as Achievement[]
+        if (Array.isArray(legacy) && legacy.length > 0) {
+          await saveSubjectAchievements(legacy, subjectId, userId)
+          return legacy
+        }
+      } catch {
+        // ignore legacy parsing error
+      }
+    }
+
+    return []
   } catch {
     return []
   }
 }
 
-async function saveAchievements(achievements: Achievement[], userId?: string | null): Promise<void> {
+export async function saveSubjectAchievements(
+  achievements: Achievement[],
+  subjectId: string,
+  userId?: string | null
+): Promise<void> {
+  if (typeof window === "undefined" && typeof (globalThis as any).localStorage === "undefined") {
+    return
+  }
   try {
-    const key = getNamespacedKey(ACHIEVEMENTS_STORAGE_KEY, userId)
+    const key = getSubjectStorageKey(ACHIEVEMENTS_STORAGE_KEY, subjectId, userId)
     localStorage.setItem(key, JSON.stringify(achievements))
   } catch {
-    // quota exceeded — silently ignore in demo; surface in prod via Sentry
+    // quota exceeded — silently ignore in demo; surface in prod via telemetry
   }
 }
 
@@ -59,7 +95,7 @@ interface AchievementContextValue {
   syncSubjectAchievements: (subject: import("@/lib/mold-types").FullSubjectData) => Promise<void>
   /** Call after a game completes to evaluate + persist any new unlocks */
   onGameComplete: (state: GameState, allRuns: RunRecord[]) => Promise<Achievement[]>
-  /** Reset all achievements to locked (dev/debug use only) */
+  /** Reset all achievements for current subject to locked (dev/debug use only) */
   reset: () => Promise<void>
 }
 
@@ -76,29 +112,32 @@ export function useAchievements(): AchievementContextValue {
 export function AchievementProvider({ children }: { children: ReactNode }) {
   const { userId } = useSafeAuth()
   const [achievements, setAchievements] = useState<Achievement[]>([])
-  const [conditions, setConditions]   = useState<Record<string, AchievementCondition>>({})
+  const [conditions, setConditions] = useState<Record<string, AchievementCondition>>({})
+  const activeSubjectIdRef = useRef<string>("theory-of-computation")
 
-  // Reload achievements when Clerk user session changes (log in / out / switch)
+  // Reload achievements when user session changes
   useEffect(() => {
-    loadAchievements(userId).then(setAchievements)
+    loadSubjectAchievements(activeSubjectIdRef.current, userId).then((loaded) => {
+      if (loaded.length > 0) {
+        setAchievements(loaded)
+      }
+    })
   }, [userId])
 
   /**
-   * Merge the active subject's achievement definitions into the stored list.
-   * - New entries (not in storage yet) are added as locked (unlockedAt: null).
-   * - Existing entries keep their current unlockedAt value.
-   * - Entries from the same subject that no longer exist are removed.
-   * This is the root cause fix for 0/0: without this, localStorage is always
-   * empty on first load and achievements never appear in the gallery.
+   * Sync the active subject's achievement definitions strictly into that subject's storage namespace.
+   * Completely eliminates cross-subject ID collision and state corruption.
    */
   const syncSubjectAchievements = useCallback(
     async (subject: import("@/lib/mold-types").FullSubjectData): Promise<void> => {
+      activeSubjectIdRef.current = subject.id
+
       // 1. Extract and store conditions for this subject
       const subjectConditions = loadConditionsFromSubject(subject)
       setConditions(subjectConditions)
 
-      // 2. Load all stored achievements (across all subjects) for this user
-      const stored = await loadAchievements(userId)
+      // 2. Load stored achievements specifically for THIS subject
+      const stored = await loadSubjectAchievements(subject.id, userId)
       const storedMap = new Map(stored.map((a) => [a.id, a]))
 
       // 3. Prepare achievements for this subject
@@ -107,18 +146,14 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
         title:       raw.title,
         description: raw.description,
         icon:        raw.icon,
-        // Preserve unlock state if this achievement was already stored
+        // Preserve unlock state if this achievement was already unlocked in THIS subject
         unlockedAt:  storedMap.get(raw.id)?.unlockedAt ?? null,
       }))
 
-      // 4. Merge into user storage: keep others, update/add current subject's
-      const subjectIds = new Set(subjectAchievements.map(a => a.id))
-      const others = stored.filter(a => !subjectIds.has(a.id))
-      const fullMerged = [...others, ...subjectAchievements]
+      // 4. Save specifically to this subject's storage namespace
+      await saveSubjectAchievements(subjectAchievements, subject.id, userId)
 
-      await saveAchievements(fullMerged, userId)
-
-      // 5. Update local React state with ONLY this subject's achievements
+      // 5. Update local React state with this subject's achievements
       setAchievements(subjectAchievements)
     },
     [userId]
@@ -126,9 +161,16 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
 
   const onGameComplete = useCallback(
     async (state: GameState, allRuns: RunRecord[]): Promise<Achievement[]> => {
-      const current = await loadAchievements(userId)
+      const activeSubjectId = state.config.subjectId || activeSubjectIdRef.current || "theory-of-computation"
+      const current = await loadSubjectAchievements(activeSubjectId, userId)
+
+      // Strictly evaluate only against runs belonging to the active subject
+      const subjectRuns = allRuns.filter(
+        (r) => !r.subjectId || r.subjectId === activeSubjectId
+      )
+
       // Use subject-specific conditions for evaluation
-      const newIds = checkNewUnlocks(current, state, allRuns, conditions)
+      const newIds = checkNewUnlocks(current, state, subjectRuns, conditions)
 
       if (newIds.length === 0) return []
 
@@ -138,9 +180,9 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
         newIdsSet.has(a.id) ? { ...a, unlockedAt: now } : a
       )
 
-      await saveAchievements(updated, userId)
+      await saveSubjectAchievements(updated, activeSubjectId, userId)
 
-      // Sync local state: update unlockedAt for the achievements we are currently displaying
+      // Sync local state: update unlockedAt for achievements currently displayed
       const updatedMap = new Map(updated.map((u) => [u.id, u]))
       setAchievements((prev) =>
         prev.map((a) => {
@@ -156,13 +198,17 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
   )
 
   const reset = useCallback(async () => {
-    const cleared = (await loadAchievements(userId)).map((a) => ({ ...a, unlockedAt: null }))
-    await saveAchievements(cleared, userId)
+    const activeSubjectId = activeSubjectIdRef.current || "theory-of-computation"
+    const current = await loadSubjectAchievements(activeSubjectId, userId)
+    const cleared = current.map((a) => ({ ...a, unlockedAt: null }))
+    await saveSubjectAchievements(cleared, activeSubjectId, userId)
     setAchievements(cleared)
   }, [userId])
 
   return (
-    <AchievementContext.Provider value={{ achievements, syncSubjectAchievements, onGameComplete, reset }}>
+    <AchievementContext.Provider
+      value={{ achievements, syncSubjectAchievements, onGameComplete, reset }}
+    >
       {children}
     </AchievementContext.Provider>
   )

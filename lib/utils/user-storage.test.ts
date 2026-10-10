@@ -1,6 +1,6 @@
 import { test, describe, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { loadRuns, saveRuns, RUNS_STORAGE_KEY } from "./user-storage.ts";
+import { loadRuns, saveRuns, loadSubjectStreaks, saveSubjectStreaks, RUNS_STORAGE_KEY } from "./user-storage.ts";
 import type { RunRecord } from "../types/mold-types.ts";
 
 describe("user-storage persistence", () => {
@@ -90,5 +90,68 @@ describe("user-storage persistence", () => {
     mockStorage[RUNS_STORAGE_KEY] = "{ invalid json ";
     const runs = loadRuns(null);
     assert.deepEqual(runs, []);
+  });
+
+  describe("Sleeper Agent Safeguards: Subject Data Separation", () => {
+    test("runs in Subject A do NOT collide with or leak into Subject B", () => {
+      const runSubjA: RunRecord = {
+        ...dummyRun,
+        id: "run-alpha-1",
+        subjectId: "subject-alpha",
+      };
+      const runSubjB: RunRecord = {
+        ...dummyRun,
+        id: "run-beta-1",
+        subjectId: "subject-beta",
+      };
+
+      saveRuns([runSubjA], "subject-alpha", null);
+      saveRuns([runSubjB], "subject-beta", null);
+
+      const loadedA = loadRuns("subject-alpha", null);
+      const loadedB = loadRuns("subject-beta", null);
+
+      assert.strictEqual(loadedA.length, 1);
+      assert.strictEqual(loadedA[0].id, "run-alpha-1");
+      assert.strictEqual(loadedA[0].subjectId, "subject-alpha");
+
+      assert.strictEqual(loadedB.length, 1);
+      assert.strictEqual(loadedB[0].id, "run-beta-1");
+      assert.strictEqual(loadedB[0].subjectId, "subject-beta");
+    });
+
+    test("streaks in Subject A are isolated from Subject B", () => {
+      saveSubjectStreaks(15, 20, "subject-alpha", null);
+      saveSubjectStreaks(2, 5, "subject-beta", null);
+
+      const streaksA = loadSubjectStreaks("subject-alpha", null);
+      const streaksB = loadSubjectStreaks("subject-beta", null);
+
+      assert.strictEqual(streaksA.currentStreak, 15);
+      assert.strictEqual(streaksA.peakStreak, 20);
+
+      assert.strictEqual(streaksB.currentStreak, 2);
+      assert.strictEqual(streaksB.peakStreak, 5);
+    });
+
+    test("legacy unscoped runs are transparently migrated into the target subject", () => {
+      const legacyRun: RunRecord = {
+        ...dummyRun,
+        id: "legacy-run-99",
+        subjectId: undefined,
+      };
+
+      mockStorage[RUNS_STORAGE_KEY] = JSON.stringify([legacyRun]);
+
+      const loaded = loadRuns("theory-of-computation", null);
+      assert.strictEqual(loaded.length, 1);
+      assert.strictEqual(loaded[0].id, "legacy-run-99");
+
+      // Verify it was written to the scoped key
+      const scopedKey = `${RUNS_STORAGE_KEY}_theory-of-computation`;
+      assert.ok(mockStorage[scopedKey]);
+      const scopedData = JSON.parse(mockStorage[scopedKey]);
+      assert.strictEqual(scopedData[0].id, "legacy-run-99");
+    });
   });
 });

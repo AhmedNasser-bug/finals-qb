@@ -73,13 +73,14 @@ export function HomeScreen({
   const [showLayoutModal, setShowLayoutModal] = useState(false)
 
   const { activeLayout } = usePageLayout()
-  const { runs, stats, recordSession } = useStats()
+  const { runs, stats, recordSession, setSubjectId } = useStats()
   const { achievements, syncSubjectAchievements } = useAchievements()
 
-  // Seed achievement definitions from the active subject on mount.
+  // Seed achievement definitions and synchronize subject-scoped stats on mount / subject change.
   useEffect(() => {
+    setSubjectId(activeSubject.id)
     syncSubjectAchievements(activeSubject)
-  }, [activeSubject.id, syncSubjectAchievements]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeSubject.id, setSubjectId, syncSubjectAchievements])
   
   const subjectData = toSubjectData(activeSubject)
 
