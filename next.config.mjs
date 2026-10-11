@@ -10,7 +10,9 @@ const nextConfig = {
       'date-fns',
       '@clerk/nextjs',
       '@clerk/ui',
-      'tailwind-merge'
+      'tailwind-merge',
+      'mermaid',
+      'katex'
     ],
   },
 }
