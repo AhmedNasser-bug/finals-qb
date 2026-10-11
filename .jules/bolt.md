@@ -9,3 +9,7 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+
+## 2024-10-24 - [Optimize turbopack build with optimizePackageImports for mermaid and katex]
+**Learning:** Large barrel file dependencies like `mermaid` and `katex` severely impact Turbopack build latency. Explicitly listing them in `experimental.optimizePackageImports` avoids loading unused modules.
+**Action:** Added `mermaid` and `katex` to `optimizePackageImports` in `next.config.mjs`.
