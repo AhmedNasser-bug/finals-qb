@@ -280,6 +280,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                 ].map((item) => (
                   <label
                     key={item.id}
+                    htmlFor={`persona-${item.id}`}
                     className={cn(
                       "flex items-center gap-2 text-[11px] cursor-pointer hover:text-foreground transition-colors",
                       persona === item.id ? "text-foreground font-semibold" : "text-muted-foreground"
@@ -287,6 +288,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                   >
                     <input
                       type="radio"
+                      id={`persona-${item.id}`}
                       name="persona-selection"
                       checked={persona === item.id}
                       onChange={() => handlePersonaChange(item.id as PersonaType)}
@@ -330,6 +332,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                   return (
                     <label
                       key={item.id}
+                      htmlFor={`scaffolding-${item.id}`}
                       className={cn(
                         "flex items-start gap-2 text-[11px] cursor-pointer hover:text-foreground transition-colors",
                         isChecked ? "text-foreground font-semibold" : "text-muted-foreground"
@@ -337,6 +340,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                     >
                       <input
                         type="checkbox"
+                        id={`scaffolding-${item.id}`}
                         checked={isChecked}
                         onChange={() => handleScaffoldingToggle(item.id as ScaffoldingType)}
                         className="accent-primary mt-0.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
@@ -375,6 +379,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                   return (
                     <label
                       key={item.id}
+                      htmlFor={`format-${item.id}`}
                       className={cn(
                         "flex items-start gap-2 text-[11px] cursor-pointer hover:text-foreground transition-colors",
                         isChecked ? "text-foreground font-semibold" : "text-muted-foreground"
@@ -382,6 +387,7 @@ export function AIPromptSection({ promptCopied, onCopyPrompt }: AIPromptSectionP
                     >
                       <input
                         type="checkbox"
+                        id={`format-${item.id}`}
                         checked={isChecked}
                         onChange={() => handleFormatToggle(item.id as FormatOption)}
                         className="accent-primary mt-0.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
