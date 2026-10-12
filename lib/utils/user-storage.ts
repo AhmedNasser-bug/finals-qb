@@ -86,24 +86,22 @@ export function loadSubjectRuns(
     // Transparent legacy migration: check un-scoped runs
     const legacyKey = getNamespacedKey(RUNS_STORAGE_KEY, userId)
     const legacyRaw = localStorage.getItem(legacyKey)
-    if (legacyRaw) {
-      try {
-        const legacyRuns = JSON.parse(legacyRaw) as RunRecord[]
-        if (Array.isArray(legacyRuns) && legacyRuns.length > 0) {
-          if (!subjectId) {
-            return legacyRuns
-          }
-          const matched = legacyRuns.filter(
-            (r) => r.subjectId === subjectId || (!r.subjectId && subjectId === "theory-of-computation")
-          )
-          if (matched.length > 0) {
-            saveSubjectRuns(matched, subjectId, userId)
-            return matched
-          }
-        }
-      } catch {
-        // ignore legacy parsing error
+    if (!legacyRaw) return []
+
+    try {
+      const legacyRuns = JSON.parse(legacyRaw) as RunRecord[]
+      if (!Array.isArray(legacyRuns) || legacyRuns.length === 0) return []
+      if (!subjectId) return legacyRuns
+
+      const matched = legacyRuns.filter(
+        (r) => r.subjectId === subjectId || (!r.subjectId && subjectId === "theory-of-computation")
+      )
+      if (matched.length > 0) {
+        saveSubjectRuns(matched, subjectId, userId)
+        return matched
       }
+    } catch {
+      // ignore legacy parsing error
     }
 
     return []
