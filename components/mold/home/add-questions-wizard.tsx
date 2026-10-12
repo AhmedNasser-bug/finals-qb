@@ -452,6 +452,7 @@ CRITICAL RULES:
                     <div className="flex items-center gap-3">
                       <input
                         type="range"
+                        aria-label="Questions Count"
                         min={5}
                         max={50}
                         step={5}
@@ -485,6 +486,7 @@ CRITICAL RULES:
                     <div className="flex items-center gap-3">
                       <input
                         type="range"
+                        aria-label="Flashcards Count"
                         min={5}
                         max={50}
                         step={5}

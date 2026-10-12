@@ -42,6 +42,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         role="dialog"
         aria-modal="true"
         aria-label="Review Deck Drawer"
+        aria-labelledby="cheat-sheet-title"
         tabIndex={-1}
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
@@ -55,7 +56,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         <div className="relative z-10 bg-panel border-b border-border px-4 py-4 shrink-0 flex justify-between items-start font-mono">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
+              <span id="cheat-sheet-title" className="text-xs uppercase tracking-wider text-foreground font-bold font-mono">
                 STUDY DECK // REVIEW PANEL
               </span>
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded">
