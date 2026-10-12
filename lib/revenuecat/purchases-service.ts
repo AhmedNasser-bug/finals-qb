@@ -54,19 +54,13 @@ export class PurchasesService {
    * Resolves or generates the app user id.
    */
   public resolveAppUserId(customUserId?: string | null): string {
-    if (customUserId && customUserId.trim()) {
-      return customUserId.trim()
-    }
-
-    if (!this.isBrowser()) {
-      return "$RCAnonymousID:server_default_guest"
-    }
+    if (customUserId?.trim()) return customUserId.trim()
+    if (!this.isBrowser()) return "$RCAnonymousID:server_default_guest"
 
     try {
       const storedId = window.localStorage.getItem(ANONYMOUS_USER_STORAGE_KEY)
-      if (storedId) {
-        return storedId
-      }
+      if (storedId) return storedId
+
       const newAnonId = Purchases.generateRevenueCatAnonymousAppUserId()
       window.localStorage.setItem(ANONYMOUS_USER_STORAGE_KEY, newAnonId)
       return newAnonId
@@ -79,67 +73,62 @@ export class PurchasesService {
    * Initialize and configure the RevenueCat Purchases Web SDK.
    * Safe to call multiple times; returns existing instance or in-flight promise.
    */
-  public async initialize(customUserId?: string | null): Promise<Purchases | null> {
-    if (!this.isBrowser()) {
+  private async _configureRevenueCat(targetUserId: string): Promise<Purchases | null> {
+    this.isConfiguring = true
+    try {
+      const apiKey = this.getApiKey()
+
+      if (this.purchasesInstance && this.currentAppUserId !== targetUserId) {
+        logger.info("PurchasesService: Changing user id", { newUserId: targetUserId })
+        await this.purchasesInstance.changeUser(targetUserId)
+        this.currentAppUserId = targetUserId
+        return this.purchasesInstance
+      }
+
+      if (Purchases.isConfigured()) {
+        this.purchasesInstance = Purchases.getSharedInstance()
+        this.currentAppUserId = targetUserId
+        return this.purchasesInstance
+      }
+
+      logger.info("PurchasesService: Configuring RevenueCat SDK", {
+        appUserId: targetUserId,
+        isSandbox: apiKey.startsWith("test_"),
+      })
+
+      this.purchasesInstance = Purchases.configure({
+        apiKey,
+        appUserId: targetUserId,
+      })
+      this.currentAppUserId = targetUserId
+
+      this.purchasesInstance.preload().catch((err: unknown) => {
+        logger.warn("PurchasesService: Preload failed non-critically", { error: err })
+      })
+
+      return this.purchasesInstance
+    } catch (err: unknown) {
+      logger.error("PurchasesService: Initialization failed", { error: err })
       return null
+    } finally {
+      this.isConfiguring = false
     }
+  }
+
+  public async initialize(customUserId?: string | null): Promise<Purchases | null> {
+    if (!this.isBrowser()) return null
 
     const targetUserId = this.resolveAppUserId(customUserId)
 
-    // If already initialized with this user, return existing instance
     if (this.purchasesInstance && this.currentAppUserId === targetUserId) {
       return this.purchasesInstance
     }
 
-    // If another configure call is in progress for the same user, reuse it
     if (this.initPromise && this.currentAppUserId === targetUserId) {
       return this.initPromise
     }
 
-    this.initPromise = (async () => {
-      this.isConfiguring = true
-      try {
-        const apiKey = this.getApiKey()
-
-        // If purchases was already configured with a different user, change user
-        if (this.purchasesInstance && this.currentAppUserId !== targetUserId) {
-          logger.info("PurchasesService: Changing user id", { newUserId: targetUserId })
-          await this.purchasesInstance.changeUser(targetUserId)
-          this.currentAppUserId = targetUserId
-          return this.purchasesInstance
-        }
-
-        if (Purchases.isConfigured()) {
-          this.purchasesInstance = Purchases.getSharedInstance()
-          this.currentAppUserId = targetUserId
-          return this.purchasesInstance
-        }
-
-        logger.info("PurchasesService: Configuring RevenueCat SDK", {
-          appUserId: targetUserId,
-          isSandbox: apiKey.startsWith("test_"),
-        })
-
-        this.purchasesInstance = Purchases.configure({
-          apiKey,
-          appUserId: targetUserId,
-        })
-        this.currentAppUserId = targetUserId
-
-        // Preload branding asynchronously to speed up checkout
-        this.purchasesInstance.preload().catch((err: unknown) => {
-          logger.warn("PurchasesService: Preload failed non-critically", { error: err })
-        })
-
-        return this.purchasesInstance
-      } catch (err: unknown) {
-        logger.error("PurchasesService: Initialization failed", { error: err })
-        return null
-      } finally {
-        this.isConfiguring = false
-      }
-    })()
-
+    this.initPromise = this._configureRevenueCat(targetUserId)
     return this.initPromise
   }
 

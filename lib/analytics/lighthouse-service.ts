@@ -81,30 +81,19 @@ export function measureClientPerformance(): LivePerformanceMetrics {
   const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[]
   const nav = navEntries.length > 0 ? navEntries[0] : null
 
-  let ttfbMs = 38
-  let domContentLoadedMs = 280
-  let loadEventMs = 510
+  const ttfbMs = nav ? Math.max(1, Math.round(nav.responseStart - nav.requestStart)) : 38
+  const domContentLoadedMs = nav ? Math.max(5, Math.round(nav.domContentLoadedEventEnd - nav.startTime)) : 280
+  const loadEventMs = nav ? Math.max(10, Math.round(nav.loadEventEnd - nav.startTime)) : 510
 
-  if (nav) {
-    ttfbMs = Math.max(1, Math.round(nav.responseStart - nav.requestStart))
-    domContentLoadedMs = Math.max(5, Math.round(nav.domContentLoadedEventEnd - nav.startTime))
-    loadEventMs = Math.max(10, Math.round(nav.loadEventEnd - nav.startTime))
-  }
-
-  let fcpMs = 420
   const paintEntries = performance.getEntriesByType("paint")
   const fcpEntry = paintEntries.find((p) => p.name === "first-contentful-paint")
-  if (fcpEntry) {
-    fcpMs = Math.max(10, Math.round(fcpEntry.startTime))
-  }
+  const fcpMs = fcpEntry ? Math.max(10, Math.round(fcpEntry.startTime)) : 420
 
   // LCP measurement from Performance API
   let lcpMs = Math.round(fcpMs * 1.3)
   try {
     const lcpEntries = performance.getEntriesByType("largest-contentful-paint") as PerformanceEntry[]
-    if (lcpEntries.length > 0) {
-      lcpMs = Math.round(lcpEntries[lcpEntries.length - 1].startTime)
-    }
+    if (lcpEntries.length > 0) lcpMs = Math.round(lcpEntries[lcpEntries.length - 1].startTime)
   } catch {
     // fallback to calculation from FCP
   }
@@ -114,8 +103,7 @@ export function measureClientPerformance(): LivePerformanceMetrics {
   try {
     const shiftEntries = performance.getEntriesByType("layout-shift") as unknown as Array<{ value: number }>
     if (shiftEntries.length > 0) {
-      clsScore = shiftEntries.reduce((acc, entry) => acc + (entry.value || 0), 0)
-      clsScore = Math.round(clsScore * 1000) / 1000
+      clsScore = Math.round(shiftEntries.reduce((acc, entry) => acc + (entry.value || 0), 0) * 1000) / 1000
     }
   } catch {
     // fallback
@@ -134,7 +122,7 @@ export function measureClientPerformance(): LivePerformanceMetrics {
 
   let jsHeapSizeMb: number | null = null
   const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number } }
-  if (perfAny.memory && perfAny.memory.usedJSHeapSize) {
+  if (perfAny.memory?.usedJSHeapSize) {
     jsHeapSizeMb = Math.round((perfAny.memory.usedJSHeapSize / (1024 * 1024)) * 10) / 10
   }
 
