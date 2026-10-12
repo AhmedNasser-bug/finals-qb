@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 17,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,18 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "modal-focus-trap-and-button-types",
+      "category": "shortcuts",
+      "tier": 1,
+      "title": "A11y Modals tabIndex Focus Traps & Explicit Generic button types",
+      "implementedAt": "2026-10-12T16:32:16.005Z",
+      "componentsTouched": [
+        "components/mold/payment/paywall-modal.tsx",
+        "components/mold/game/cheat-sheet-terminal.tsx"
       ],
       "nonBreaking": true
     }
