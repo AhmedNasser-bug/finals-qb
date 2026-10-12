@@ -121,6 +121,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
       aria-modal="true"
       role="dialog"
       aria-label="Encyclopedia"
+      aria-labelledby="encyclopedia-title"
     >
       <div
         className="bg-panel border border-border rounded w-full max-w-3xl mx-4 flex flex-col max-h-[85vh] animate-slide-up"
@@ -129,7 +130,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-bold">
+            <span id="encyclopedia-title" className="text-xs font-mono tracking-widest text-muted-foreground uppercase font-bold">
               Encyclopedia
             </span>
             <span className="text-xs font-mono text-primary border border-primary/30 bg-primary/10 px-2 py-0.5 rounded">

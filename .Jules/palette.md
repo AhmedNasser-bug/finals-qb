@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2024-10-24 - Role Dialog explicit title and a11y polish
+**Learning:** Adding explicit aria-labelledby to role="dialog" overlays along with aria-modal="true" improves screen reader focus, and ensuring <button> elements have an explicit type (e.g. type="button") avoids form submission propagation bugs. Range inputs also need aria-labels.
+**Action:** Always link dialog roles to a heading ID, set type="button" on non-submit interactive triggers, and add aria-label attributes to input sliders.
