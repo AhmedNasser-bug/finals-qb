@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-10-25 - Modal Focus Traps and Generic Button Types
+**Learning:** React generic UI `<button>` elements default to `type="submit"`, causing unintended form submissions or page reloads when rendered near forms. Additionally, custom modal dialogs missing `tabIndex={-1}` and `role="dialog"` can prevent assistive technologies from properly focusing on the initial mount, breaking navigation logic.
+**Action:** Always explicitly define `type="button"` on non-submitting React UI `<button>` components. Ensure overlay modals have `tabIndex={-1}` on their `role="dialog"` container and use `useEffect` hooks combined with `useRef` to programmatically transfer focus securely on mount, along with implementing shift+tab focus boundaries.
