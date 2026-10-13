@@ -695,7 +695,9 @@ function processStackClosure(stack: ("{" | "[")[], char: string) {
     return;
   }
   const idx = stack.lastIndexOf(expectedOpen);
-  if (idx !== -1) stack.splice(idx);
+  if (idx !== -1) {
+    stack.length = idx;
+  }
 }
 
 function balanceJsonStack(str: string): string {
