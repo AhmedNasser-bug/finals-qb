@@ -12,9 +12,9 @@ const PII_PATTERNS: Array<{ pattern: RegExp; replacement: RedactReplacement }> =
     replacement: '$1[REDACTED]'
   },
   {
-    // Private keys
-    pattern: /(-----BEGIN[A-Z0-9-\s]{1,128}PRIVATE KEY-----)([\s\S]{1,8192}?)(-----END[A-Z0-9-\s]{1,128}PRIVATE KEY-----)/g,
-    replacement: '$1\\n[REDACTED]\\n$3'
+    // Private keys (works with truncated keys too by using an optional end marker or none)
+    pattern: /(-----BEGIN[A-Z0-9-\s]{1,128}PRIVATE KEY-----)([A-Za-z0-9+/\s=\\]{1,8192})/g,
+    replacement: '$1\\n[REDACTED]'
   },
   {
     // Common secrets and PII
