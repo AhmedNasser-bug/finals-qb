@@ -95,11 +95,10 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
   if (Array.isArray(obj.questions)) {
     const termDict = obj.terminology as Record<string, unknown>
     obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
+      if (!q || typeof q.category !== "string" || q.category.trim() === "") return;
+      const cat = q.category.trim();
+      if (!Array.isArray(termDict[cat])) {
+        termDict[cat] = [];
       }
     })
   }
@@ -286,12 +285,8 @@ function autoFixSingleQuestion(
     qObj.answer = qObj.answer.toUpperCase().trim();
     const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
 
-    if (!hasLabel) {
-      if (!tryMapTextAnswer()) {
-        if (!tryMapBooleanAnswer()) {
-          applyDefaultAnswer();
-        }
-      }
+    if (!hasLabel && !tryMapTextAnswer() && !tryMapBooleanAnswer()) {
+      applyDefaultAnswer();
     }
   }
 
