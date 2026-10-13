@@ -24,6 +24,7 @@ import {
   updateCardRetention,
 } from "@/lib/telemetry/retention-kernel"
 import { createInitialQuestionRetentionState } from "@/lib/game/recallability"
+import { logger } from "@/lib/logger"
 import {
   playKeyClick,
   playCorrectChime,
