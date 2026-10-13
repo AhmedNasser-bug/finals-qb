@@ -6,6 +6,8 @@ const nextConfig = {
     // to significantly reduce memory usage and Turbopack build latency.
     optimizePackageImports: [
       'lucide-react',
+      'mermaid',
+      'katex',
       'recharts',
       'date-fns',
       '@clerk/nextjs',
