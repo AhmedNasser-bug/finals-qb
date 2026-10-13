@@ -8,6 +8,10 @@ if [ "$1" = "--multi-tenant" ]; then
     echo "Cleaning up any old isolated .next output directories..."
     rm -rf .next-tenant-a .next-tenant-b
 
+    # Preemptively create mount directories to prevent Docker Compose volume mounting errors
+    mkdir -p .next-tenant-a
+    mkdir -p .next-tenant-b
+
     if [ ! -f docker-compose.yml ]; then
         echo "Error: docker-compose.yml not found."
     elif command -v docker-compose &> /dev/null; then
