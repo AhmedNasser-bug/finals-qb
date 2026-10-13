@@ -70,6 +70,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       role="dialog"
       aria-modal="true"
+      tabIndex={-1}
       aria-labelledby="theme-modal-title"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
