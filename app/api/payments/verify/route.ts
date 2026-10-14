@@ -32,19 +32,19 @@ export async function GET(request: NextRequest) {
       next: { revalidate: 0 },
     })
 
-    if (!response.ok) {
-      // If 404, subscriber does not exist yet
-      if (response.status === 404) {
-        const notFoundResult: PaymentVerifyResponse = {
-          appUserId,
-          hasAiEntitlement: false,
-          expirationDate: null,
-          activeSubscriptions: [],
-          managementUrl: null,
-        }
-        return NextResponse.json(notFoundResult)
+    // If 404, subscriber does not exist yet
+    if (response.status === 404) {
+      const notFoundResult: PaymentVerifyResponse = {
+        appUserId,
+        hasAiEntitlement: false,
+        expirationDate: null,
+        activeSubscriptions: [],
+        managementUrl: null,
       }
+      return NextResponse.json(notFoundResult)
+    }
 
+    if (!response.ok) {
       logger.warn("RevenueCat verify API returned non-OK status", {
         status: response.status,
         appUserId,
@@ -72,12 +72,12 @@ export async function GET(request: NextRequest) {
     )
 
     const activeSubscriptions: string[] = []
-    if (subscriber?.subscriptions) {
-      for (const [prodId, sub] of Object.entries<any>(subscriber.subscriptions)) {
-        if (!sub.expires_date || new Date(sub.expires_date).getTime() > Date.now()) {
-          activeSubscriptions.push(prodId)
-        }
+    const subscriptions = subscriber?.subscriptions || {}
+    for (const [prodId, sub] of Object.entries<any>(subscriptions)) {
+      if (sub.expires_date && new Date(sub.expires_date).getTime() <= Date.now()) {
+        continue
       }
+      activeSubscriptions.push(prodId)
     }
 
     const result: PaymentVerifyResponse = {
