@@ -93,3 +93,10 @@ test('redacts private keys without breaking JSON parsing', () => {
   const result = maskData(jsonStr);
   assert.doesNotThrow(() => JSON.parse(result));
 });
+
+test('redacts truncated private keys', () => {
+  const truncatedKey = "-----BEGIN PRIVATE KEY-----\\nMIICXAIBAAKBgQDCr";
+  const result = maskData(truncatedKey);
+  assert.strictEqual(result.includes('[REDACTED]'), true);
+  assert.strictEqual(result.includes('MIICXAIBAAKBgQDCr'), false);
+});
