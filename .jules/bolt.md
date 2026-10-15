@@ -9,3 +9,6 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+## 2026-10-15 - [Optimize redundant type checking bottlenecks during Next.js deployments]
+**Learning:** To eliminate redundant type checking bottlenecks during Next.js deployments (`pnpm build`), we can configure `typescript: { ignoreBuildErrors: true }` in `next.config.mjs` since type safety is already enforced upstream in CI via `pnpm lint` (`tsc --noEmit`).
+**Action:** Configured `typescript: { ignoreBuildErrors: true }` in `next.config.mjs`.
