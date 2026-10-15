@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useCallback } from "react"
+import React, { useState, useMemo, useCallback, useRef, useEffect } from "react"
 import { Sparkles, X, Copy, Check, Info, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { parseSubjectJson, validateSubjectData, type ValidationResult } from "@/lib/subject-persistence"
@@ -312,10 +312,31 @@ CRITICAL RULES:
     return false
   }, [step, categoryFocus, newCategoryName, parsedPreview, validationState])
 
-  React.useEffect(() => {
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = modalRef.current
+    if (el) el.focus()
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onCancel()
+      } else if (e.key === "Tab" && el) {
+        const focusable = el.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
+          e.preventDefault()
+          first.focus()
+        }
       }
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -323,7 +344,12 @@ CRITICAL RULES:
   }, [onCancel])
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div
+      ref={modalRef}
+      role="dialog"
+      aria-modal="true"
+      tabIndex={-1}
+      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none outline-none">
       <div className="w-full max-w-5xl h-[88vh] flex flex-col gap-0 border border-border bg-[#0a0b0d] rounded-none overflow-hidden border-glow transition-all duration-300">
         
         {/* Modal Header */}

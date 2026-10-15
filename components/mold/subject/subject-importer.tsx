@@ -366,10 +366,31 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
     ? Array.from(new Set(preview.questions.map((q) => q.category)))
     : []
 
+  const modalRef = useRef<HTMLDivElement>(null)
+
   React.useEffect(() => {
+    const el = modalRef.current
+    if (el) el.focus()
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onCancel()
+      } else if (e.key === "Tab" && el) {
+        const focusable = el.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
+          e.preventDefault()
+          first.focus()
+        }
       }
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -391,7 +412,12 @@ The JSON output will be encoded into shareable URLs. To maximize shareability, g
     (step === 5 && state !== "valid")
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none">
+    <div
+      ref={modalRef}
+      role="dialog"
+      aria-modal="true"
+      tabIndex={-1}
+      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in select-none outline-none">
       <div className="w-full max-w-6xl h-[92vh] flex flex-col gap-0 border border-border bg-background rounded-none overflow-hidden border-glow transition-all duration-300">
 
         {/* Modal Main Header */}
