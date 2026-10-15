@@ -527,6 +527,7 @@ CRITICAL RULES:
                 {/* Theoretical */}
                 <button type="button"
                   onClick={() => setStyleBias("theoretical")}
+                  aria-pressed={styleBias === "theoretical"}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
                     styleBias === "theoretical"
@@ -551,6 +552,7 @@ CRITICAL RULES:
                 {/* Technical */}
                 <button type="button"
                   onClick={() => setStyleBias("technical")}
+                  aria-pressed={styleBias === "technical"}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
                     styleBias === "technical"
@@ -575,6 +577,7 @@ CRITICAL RULES:
                 {/* Balanced */}
                 <button type="button"
                   onClick={() => setStyleBias("balanced")}
+                  aria-pressed={styleBias === "balanced"}
                   className={cn(
                     "p-6 border text-left flex flex-col justify-between gap-4 transition-all duration-150 cursor-pointer rounded-none min-h-[170px]",
                     styleBias === "balanced"

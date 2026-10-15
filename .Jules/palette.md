@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-10-25 - ARIA Pressed States on Selection Buttons
+**Learning:** In wizard flows and setup panels where users select an option (like a style bias) by clicking one of several buttons, failing to include `aria-pressed` prevents screen readers from understanding which option is currently selected. Relying only on visual cues (like borders or "✓ SELECTED" text) excludes visually impaired users.
+**Action:** Always add `aria-pressed={isSelected}` to toggle-style selection buttons inside forms and wizards to explicitly communicate their active state to assistive technology.
