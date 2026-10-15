@@ -29,8 +29,18 @@ function extractInterface(content, componentName) {
   return 'None specified or inline props';
 }
 
+function readStream(filePath) {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
+    stream.on('data', chunk => data += chunk);
+    stream.on('end', () => resolve(data));
+    stream.on('error', err => reject(err));
+  });
+}
+
 async function processComponent(filePath) {
-  const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
+  const content = await readStream(filePath);
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
