@@ -30,7 +30,7 @@ class TelemetryCollector {
 
     this.inMemoryEvents.push(event)
     if (this.inMemoryEvents.length > MAX_STORED_EVENTS) {
-      this.inMemoryEvents.shift()
+      this.inMemoryEvents = this.inMemoryEvents.slice(-MAX_STORED_EVENTS)
     }
 
     // Persist to localStorage safely
@@ -102,10 +102,10 @@ class TelemetryCollector {
         userId
       )
       const raw = localStorage.getItem(key)
-      const existing: CognitiveTelemetryEvent[] = raw ? JSON.parse(raw) : []
+      let existing: CognitiveTelemetryEvent[] = raw ? JSON.parse(raw) : []
       existing.push(event)
       if (existing.length > MAX_STORED_EVENTS) {
-        existing.splice(0, existing.length - MAX_STORED_EVENTS)
+        existing = existing.slice(-MAX_STORED_EVENTS)
       }
       localStorage.setItem(key, JSON.stringify(existing))
     } catch {}
