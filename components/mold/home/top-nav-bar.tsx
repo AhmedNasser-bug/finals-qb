@@ -279,7 +279,7 @@ export function TopNavBar({
 
         {/* Feedback Submission Form */}
         <a
-          href="https://docs.google.com/forms/d/1LrdMb8QiGbB01tDw6DJd-tQl_ix3ldxaSND-4vkKJJc/edit"
+          href="https://forms.gle/di5VKqVw33pDzrMj7"
           target="_blank"
           rel="noopener noreferrer"
           title="Submit Feedback & Feature Requests (opens Google Form)"
