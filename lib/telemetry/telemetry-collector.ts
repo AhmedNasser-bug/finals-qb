@@ -8,7 +8,7 @@
 
 import type { CognitiveTelemetryEvent } from "./telemetry-types"
 import { getNamespacedKey } from "../utils/user-storage"
-import { logger } from "@/lib/logger"
+import { logger, maskData } from "@/lib/logger"
 
 const TELEMETRY_BASE_KEY = "mold_v2_telemetry_events"
 const MAX_STORED_EVENTS = 500
@@ -20,6 +20,8 @@ class TelemetryCollector {
   private listeners: Set<TelemetryListener> = new Set()
 
   public record(event: CognitiveTelemetryEvent, userId?: string | null): void {
+    event = maskData(event);
+
     // Add unique ID if missing
     if (!event.id) {
       event.id = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
