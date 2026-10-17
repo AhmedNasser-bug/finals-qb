@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useRef } from "react"
 import {
   X,
   Sparkles,
@@ -44,6 +44,13 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [purchaseError, setPurchaseError] = useState<string | null>(null)
   const [purchaseSuccess, setPurchaseSuccess] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      modalRef.current?.focus()
+    }
+  }, [isOpen])
 
   // Close on Escape key
   useEffect(() => {
@@ -129,10 +136,12 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   return (
     <div
+      ref={modalRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"
+      tabIndex={-1}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
