@@ -7,6 +7,7 @@ if [ "$1" = "--multi-tenant" ]; then
     # Idempotent clean-up of potentially orphaned resources
     echo "Cleaning up any old isolated .next output directories..."
     rm -rf .next-tenant-a .next-tenant-b
+    mkdir -p .next-tenant-a .next-tenant-b
 
     if [ ! -f docker-compose.yml ]; then
         echo "Error: docker-compose.yml not found."
