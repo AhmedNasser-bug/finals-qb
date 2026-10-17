@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2024-10-25 - Modal Keyboard Accessibility and Programmatic Focus
+**Learning:** React modal implementations often wrap their content in a generic `<div role="dialog">`. Without explicit focus management, when the modal mounts, keyboard focus remains on the triggering element or body, making it difficult for screen readers to navigate the new context. Because a `<div>` is naturally non-interactive, simply calling `focus()` on it fails unless it has been explicitly configured to receive programmatic focus.
+**Action:** Always add `tabIndex={-1}` to the wrapping `div` of `role="dialog"` elements, capture a reference (`useRef`), and trigger a `useEffect` to call `focus()` on mount. Apply `outline-none` if the default focus ring on the entire wrapper is visually undesirable, ensuring inner interactive elements still receive normal focus styling.
