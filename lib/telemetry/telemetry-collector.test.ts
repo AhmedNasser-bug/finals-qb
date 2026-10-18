@@ -89,4 +89,35 @@ describe("TelemetryCollector", () => {
     assert.equal(loaded.length, 1)
     assert.equal((loaded[0] as CardFlippedEvent).cardId, "card-p1")
   })
+
+  test("masks PII in recorded events before storing and notifying", () => {
+    const event: any = {
+      id: "evt-pii-1",
+      type: "custom_event",
+      subjectId: "algorithms",
+      timestamp: new Date().toISOString(),
+      payload: {
+        userEmail: "test@example.com",
+        secretToken: "Bearer 12345"
+      }
+    }
+
+    let notifiedEvent: any = null
+    const unsubscribe = telemetryCollector.subscribe((evt) => {
+      notifiedEvent = evt
+    })
+
+    telemetryCollector.record(event)
+
+    // Check memory
+    const stored = telemetryCollector.getEvents({ subjectId: "algorithms" })
+    assert.equal((stored[0] as any).payload.userEmail, "[REDACTED]")
+    assert.equal((stored[0] as any).payload.secretToken, "[REDACTED]")
+
+    // Check notified listener
+    assert.equal(notifiedEvent.payload.userEmail, "[REDACTED]")
+    assert.equal(notifiedEvent.payload.secretToken, "[REDACTED]")
+
+    unsubscribe()
+  })
 })
