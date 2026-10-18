@@ -1,26 +1,11 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
 import { SignInButton, Show, UserButton } from "@clerk/nextjs"
+import { MobileDrawer } from "./top-nav-blocks/mobile-drawer"
+import { DesktopControls } from "./top-nav-blocks/desktop-controls"
 import { hasClerk } from "@/lib/user-storage"
 
-import {
-  Palette,
-  LayoutGrid,
-  BookOpen,
-  Volume2,
-  VolumeX,
-  Sun,
-  Moon,
-  Sparkles,
-  Activity,
-  MessageSquarePlus,
-  Menu,
-  X,
-  FolderDown,
-  ExternalLink,
-} from "lucide-react"
 import { GuideLink } from "@/components/mold/common/guide-link"
 import { isAudioMuted, toggleAudioMute } from "@/lib/audio/sound-engine"
 import { useColorTheme } from "@/lib/themes/theme-context"
@@ -168,331 +153,41 @@ export function TopNavBar({
         </GuideLink>
       </div>
 
-      {/* Right controls */}
-      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-        {/* AI Pass Button */}
-        <button
-          onClick={() => openPaywall()}
-          title={hasAiEntitlement ? "Finalists AI Active — Tap to view details" : "Upgrade to Finalists AI — Tap to unlock"}
-          aria-label={hasAiEntitlement ? "Finalists AI Active" : "Upgrade to Finalists AI"}
-          type="button"
-          className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 font-mono text-[9px] font-bold tracking-widest uppercase rounded transition-all focus-ring cursor-pointer min-h-[30px] select-none shrink-0 ${
-            hasAiEntitlement
-              ? "border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 shadow-[0_0_10px_hsla(160,84%,39%,0.15)]"
-              : "border border-primary/50 bg-primary/10 text-primary hover:bg-primary hover:text-black shadow-[0_0_12px_hsla(var(--primary),0.2)] group"
-          }`}
-        >
-          <Sparkles className={`w-3 h-3 ${hasAiEntitlement ? "text-emerald-400" : "text-primary group-hover:text-black"}`} aria-hidden="true" />
-          <span>{hasAiEntitlement ? "AI PASS" : "AI PASS"}</span>
-        </button>
 
-        {/* Active Subject Badge (desktop only) */}
-        {activeSubjectName && (
-          <span
-            className="hidden lg:inline-flex text-[10px] font-mono text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 tracking-widest uppercase truncate max-w-[140px] xl:max-w-[200px] rounded"
-            title={activeSubjectName}
-          >
-            {activeSubjectName}
-          </span>
-        )}
+      <DesktopControls
+        hasAiEntitlement={hasAiEntitlement}
+        openPaywall={openPaywall}
+        activeSubjectName={activeSubjectName}
+        loadedSubjectsCount={loadedSubjectsCount}
+        muted={muted}
+        setMuted={setMuted}
+        toggleAudioMute={toggleAudioMute}
+        themeMode={themeMode}
+        toggleMode={toggleMode}
+        onShowThemeModal={onShowThemeModal}
+        onShowLayoutModal={onShowLayoutModal}
+        onImportNew={onImportNew}
+        menuButtonRef={menuButtonRef}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+        hasClerk={hasClerk}
+      />
 
-        {/* Loaded Subjects Count (large desktop only) */}
-        {loadedSubjectsCount !== undefined && (
-          <span className="hidden xl:inline-flex text-[10px] font-mono text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 tracking-widest uppercase shrink-0 rounded">
-            {loadedSubjectsCount} SUBJECT{loadedSubjectsCount !== 1 ? "S" : ""} LOADED
-          </span>
-        )}
-
-        {/* Audio Toggle (desktop/tablet) */}
-        <button type="button"
-          onClick={() => setMuted(toggleAudioMute())}
-          title={muted ? "Unmute audio synthesizer (Press M)" : "Mute audio synthesizer (Press M)"}
-          aria-label={muted ? "Unmute sound effects" : "Mute sound effects"}
-          className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden sm:flex items-center justify-center shrink-0 rounded"
-        >
-          {muted ? (
-            <VolumeX className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-          ) : (
-            <Volume2 className="w-4 h-4 text-primary" aria-hidden="true" />
-          )}
-        </button>
-
-        {/* Quick Mode Toggle (Light/Dark) (desktop/tablet) */}
-        <button type="button"
-          onClick={toggleMode}
-          title={`Switch to ${themeMode === 'dark' ? 'Light' : 'Dark'} Mode`}
-          aria-label={`Switch to ${themeMode === 'dark' ? 'Light' : 'Dark'} Mode`}
-          className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden sm:flex items-center justify-center shrink-0 rounded"
-        >
-          {themeMode === 'light' ? (
-            <Sun className="w-4 h-4 text-amber-500" aria-hidden="true" />
-          ) : (
-            <Moon className="w-4 h-4 text-primary" aria-hidden="true" />
-          )}
-        </button>
-
-        {/* Color Palette Modal Trigger (desktop/tablet) */}
-        {onShowThemeModal && (
-          <button type="button"
-            onClick={onShowThemeModal}
-            title="Change color theme palette"
-            aria-label="Open color theme switcher"
-            className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden sm:flex items-center justify-center shrink-0 rounded"
-          >
-            <Palette className="w-4 h-4 text-primary" aria-hidden="true" />
-          </button>
-        )}
-
-        {/* Workspace Layout Grid Trigger (desktop) */}
-        {onShowLayoutModal && (
-          <button type="button"
-            onClick={onShowLayoutModal}
-            title="Switch workspace page layout"
-            aria-label="Open page layout switcher"
-            className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden md:flex items-center justify-center shrink-0 rounded"
-          >
-            <LayoutGrid className="w-4 h-4 text-primary" aria-hidden="true" />
-          </button>
-        )}
-
-        {/* Import Subject JSON Trigger (desktop) */}
-        {onImportNew && (
-          <button type="button"
-            onClick={onImportNew}
-            title="Import New Subject JSON"
-            aria-label="Import new subject from JSON file"
-            className="p-1.5 border border-border text-primary/80 hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden md:flex items-center justify-center shrink-0 rounded"
-          >
-            <span className="font-mono text-[9px] font-bold px-1 uppercase tracking-wider">IMPORT</span>
-          </button>
-        )}
-
-        {/* Analytics Telemetry Lab Link (desktop/tablet) */}
-        <Link
-          href="/analytics"
-          title="Open Microsoft Clarity & Lighthouse Analytics Lab"
-          aria-label="Open Telemetry and Lighthouse Analytics Lab"
-          className="p-2 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] hidden sm:flex items-center justify-center shrink-0 rounded"
-        >
-          <Activity className="w-4 h-4 text-primary" aria-hidden="true" />
-        </Link>
-
-        {/* Feedback Submission Form */}
-        <a
-          href="https://forms.gle/di5VKqVw33pDzrMj7"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Submit Feedback & Feature Requests (opens Google Form)"
-          aria-label="Submit Feedback Form (opens in new tab)"
-          className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 font-mono text-[9px] font-bold tracking-widest uppercase rounded border border-primary/50 bg-primary/10 text-primary hover:bg-primary hover:text-black transition-all focus-ring cursor-pointer min-h-[30px] select-none group shadow-[0_0_12px_hsla(var(--primary),0.15)] shrink-0"
-        >
-          <MessageSquarePlus className="w-3.5 h-3.5 text-primary group-hover:text-black transition-colors shrink-0" aria-hidden="true" />
-          <span className="hidden sm:inline">FEEDBACK</span>
-        </a>
-
-        {/* Mobile Menu Drawer Toggle (mobile only) */}
-        <button
-          ref={menuButtonRef}
-          type="button"
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-top-nav-drawer"
-          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="sm:hidden p-1.5 border border-border text-muted-foreground hover:text-primary hover:bg-secondary hover:border-primary/40 transition-all focus-ring cursor-pointer min-h-[32px] min-w-[32px] flex items-center justify-center shrink-0 rounded"
-        >
-          {mobileMenuOpen ? (
-            <X className="w-4 h-4 text-primary" aria-hidden="true" />
-          ) : (
-            <Menu className="w-4 h-4 text-primary" aria-hidden="true" />
-          )}
-        </button>
-
-        {/* Clerk Auth Section */}
-        {hasClerk && (
-          <div className="flex items-center border-l border-zinc-800/60 pl-2 sm:pl-3 min-h-[28px] shrink-0">
-            <Show when="signed-out">
-              <SignInButton mode="modal">
-                <button type="button" className="text-[10px] font-mono font-bold text-primary border border-primary/20 bg-primary/5 px-2 py-1 hover:bg-primary/10 transition-colors focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer">
-                  SIGN IN
-                </button>
-              </SignInButton>
-            </Show>
-            <Show when="signed-in">
-              <UserButton
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "w-6 h-6 border border-primary/30 rounded-none",
-                    userButtonTrigger: "focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none cursor-pointer"
-                  }
-                }}
-              />
-            </Show>
-          </div>
-        )}
-      </div>
-
-      {/* Floating Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div
-          ref={mobileMenuRef}
-          id="mobile-top-nav-drawer"
-          role="region"
-          aria-label="Mobile navigation menu"
-          className="fixed top-16 left-0 right-0 w-full max-h-[calc(100vh-4rem)] overflow-y-auto bg-panel/95 backdrop-blur-md border-b border-border/80 shadow-2xl p-4 sm:hidden z-50 animate-slide-up flex flex-col gap-3 font-mono select-none"
-        >
-          {/* Active Subject and Count card */}
-          {(activeSubjectName || loadedSubjectsCount !== undefined) && (
-            <div className="flex items-center justify-between p-2.5 bg-secondary/60 border border-border/60 rounded">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full shrink-0" aria-hidden="true" />
-                <div className="min-w-0">
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest leading-none">ACTIVE SUBJECT</p>
-                  <p className="text-xs font-bold text-foreground truncate mt-1">{activeSubjectName || "Default Subject"}</p>
-                </div>
-              </div>
-              {loadedSubjectsCount !== undefined && (
-                <span className="text-[9px] text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2 py-0.5 tracking-wider uppercase shrink-0 rounded">
-                  {loadedSubjectsCount} LOADED
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Controls Grid */}
-          <div className="grid grid-cols-2 gap-2">
-            {/* Audio Toggle */}
-            <button
-              type="button"
-              onClick={() => setMuted(toggleAudioMute())}
-              aria-label={muted ? "Unmute audio synthesizer" : "Mute audio synthesizer"}
-              className="flex items-center justify-between p-2.5 bg-secondary/40 border border-border/60 hover:border-primary/40 hover:bg-secondary text-foreground text-left transition-all rounded focus-ring cursor-pointer"
-            >
-              <span className="text-[10px] tracking-wider uppercase font-bold">AUDIO</span>
-              {muted ? (
-                <span className="flex items-center gap-1 text-[9px] text-muted-foreground">
-                  <VolumeX className="w-3.5 h-3.5" aria-hidden="true" /> OFF
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 text-[9px] text-primary">
-                  <Volume2 className="w-3.5 h-3.5" aria-hidden="true" /> ON
-                </span>
-              )}
-            </button>
-
-            {/* Dark / Light Mode Toggle */}
-            <button
-              type="button"
-              onClick={toggleMode}
-              aria-label={`Switch to ${themeMode === 'dark' ? 'Light' : 'Dark'} Mode`}
-              className="flex items-center justify-between p-2.5 bg-secondary/40 border border-border/60 hover:border-primary/40 hover:bg-secondary text-foreground text-left transition-all rounded focus-ring cursor-pointer"
-            >
-              <span className="text-[10px] tracking-wider uppercase font-bold">THEME</span>
-              <span className="flex items-center gap-1 text-[9px] text-primary">
-                {themeMode === 'light' ? (
-                  <>
-                    <Sun className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" /> LIGHT
-                  </>
-                ) : (
-                  <>
-                    <Moon className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> DARK
-                  </>
-                )}
-              </span>
-            </button>
-
-            {/* Color Palette modal trigger */}
-            {onShowThemeModal && (
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  onShowThemeModal()
-                }}
-                aria-label="Open color theme switcher"
-                className="flex items-center justify-between p-2.5 bg-secondary/40 border border-border/60 hover:border-primary/40 hover:bg-secondary text-foreground text-left transition-all rounded focus-ring cursor-pointer"
-              >
-                <span className="text-[10px] tracking-wider uppercase font-bold">PALETTES</span>
-                <Palette className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-              </button>
-            )}
-
-            {/* Page layout switcher */}
-            {onShowLayoutModal && (
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  onShowLayoutModal()
-                }}
-                aria-label="Open page layout switcher"
-                className="flex items-center justify-between p-2.5 bg-secondary/40 border border-border/60 hover:border-primary/40 hover:bg-secondary text-foreground text-left transition-all rounded focus-ring cursor-pointer"
-              >
-                <span className="text-[10px] tracking-wider uppercase font-bold">LAYOUT</span>
-                <LayoutGrid className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-              </button>
-            )}
-
-            {/* Import subject JSON */}
-            {onImportNew && (
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  onImportNew()
-                }}
-                aria-label="Import new subject from JSON file"
-                className="flex items-center justify-between p-2.5 bg-secondary/40 border border-border/60 hover:border-primary/40 hover:bg-secondary text-foreground text-left transition-all rounded focus-ring cursor-pointer"
-              >
-                <span className="text-[10px] tracking-wider uppercase font-bold">IMPORT JSON</span>
-                <FolderDown className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-              </button>
-            )}
-
-            {/* Telemetry and Analytics Lab Link */}
-            <Link
-              href="/analytics"
-              onClick={() => setMobileMenuOpen(false)}
-              aria-label="Open Telemetry and Lighthouse Analytics Lab"
-              className="flex items-center justify-between p-2.5 bg-secondary/40 border border-border/60 hover:border-primary/40 hover:bg-secondary text-foreground text-left transition-all rounded focus-ring cursor-pointer"
-            >
-              <span className="text-[10px] tracking-wider uppercase font-bold">ANALYTICS LAB</span>
-              <Activity className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-            </Link>
-          </div>
-
-          {/* Full-width action links */}
-          <div className="flex flex-col gap-2 pt-1 border-t border-border/50">
-            {/* Guide Link */}
-            <GuideLink
-              source="mobile_drawer"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between p-2.5 bg-primary/5 border border-primary/30 hover:bg-primary/15 text-primary transition-all rounded focus-ring cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
-                <span className="text-[10px] font-bold tracking-wider uppercase">USER GUIDE & STRATEGIES</span>
-              </div>
-              <span className="text-[9px] tracking-wider text-muted-foreground uppercase">READ</span>
-            </GuideLink>
-
-            {/* Feedback Submission Form */}
-            <a
-              href="https://docs.google.com/forms/d/1LrdMb8QiGbB01tDw6DJd-tQl_ix3ldxaSND-4vkKJJc/edit"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setMobileMenuOpen(false)}
-              aria-label="Submit Feedback Form (opens in new tab)"
-              className="flex items-center justify-between p-2.5 bg-primary/10 border border-primary/50 hover:bg-primary hover:text-black text-primary transition-all rounded group focus-ring cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <MessageSquarePlus className="w-4 h-4 text-primary group-hover:text-black transition-colors" aria-hidden="true" />
-                <span className="text-[10px] font-bold tracking-wider uppercase">SUBMIT FEEDBACK</span>
-              </div>
-              <ExternalLink className="w-3.5 h-3.5 text-primary group-hover:text-black transition-colors" aria-hidden="true" />
-            </a>
-          </div>
-        </div>
-      )}
+      <MobileDrawer
+        mobileMenuOpen={mobileMenuOpen}
+        mobileMenuRef={mobileMenuRef}
+        activeSubjectName={activeSubjectName}
+        loadedSubjectsCount={loadedSubjectsCount}
+        muted={muted}
+        setMuted={setMuted}
+        toggleAudioMute={toggleAudioMute}
+        themeMode={themeMode}
+        toggleMode={toggleMode}
+        onShowThemeModal={onShowThemeModal}
+        onShowLayoutModal={onShowLayoutModal}
+        onImportNew={onImportNew}
+        setMobileMenuOpen={setMobileMenuOpen}
+      />
     </nav>
   )
 }

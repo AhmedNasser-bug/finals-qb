@@ -4,13 +4,14 @@ import fs from "node:fs"
 import path from "node:path"
 
 describe("Navigation Bar Feedback Submission Form Integration", () => {
-  const topNavPath = path.join(process.cwd(), "components/mold/home/top-nav-bar.tsx")
+  const desktopNavPath = path.join(process.cwd(), "components/mold/home/top-nav-blocks/desktop-controls.tsx")
+  const mobileDrawerPath = path.join(process.cwd(), "components/mold/home/top-nav-blocks/mobile-drawer.tsx")
   const sideNavPath = path.join(process.cwd(), "components/mold/home/side-nav-bar.tsx")
   const targetUrl = "https://docs.google.com/forms/d/1LrdMb8QiGbB01tDw6DJd-tQl_ix3ldxaSND-4vkKJJc/edit"
 
   test("top-nav-bar.tsx includes feedback button targeting official Google Form", () => {
-    assert.ok(fs.existsSync(topNavPath), "top-nav-bar.tsx must exist")
-    const content = fs.readFileSync(topNavPath, "utf-8")
+    assert.ok(fs.existsSync(desktopNavPath), "desktop-controls.tsx must exist")
+    const content = fs.readFileSync(desktopNavPath, "utf-8") + fs.readFileSync(mobileDrawerPath, "utf-8")
 
     assert.ok(content.includes(targetUrl), "TopNavBar must link to the specified feedback form URL")
     assert.ok(content.includes('target="_blank"'), "Feedback link must open in a new tab")
