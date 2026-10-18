@@ -9,3 +9,7 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+
+## 2024-10-18 - [Optimize fs.readFileSync and O(N^2) array truncations]
+**Learning:** `fs.readFileSync` blocks the Node.js event loop synchronously, causing quadratic latency growth if reading multiple files in loop; Using `array.shift()` and `array.splice(0, N)` inside loops induces O(N^2) latency due to reallocation. `array.splice(idx)` causes reallocation.
+**Action:** Replaced `fs.readFileSync` with `fs.createReadStream` wrapped in a Promise. Replaced `array.shift()` and `array.splice(0, N)` with `array.slice(-N)`. Replaced `array.splice(idx)` with `array.length = idx`.

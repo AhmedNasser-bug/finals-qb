@@ -19,6 +19,58 @@ This registry outlines the exact properties, slots, state dependencies, and perf
 
 ## Component Definitions
 
+### `app/analytics/page.tsx`
+
+**Module Name:** Page
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
+### `app/error.tsx`
+
+**Module Name:** Error
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `Yes`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useEffect
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Implements explicit fallback UIs for critical asynchronous or failing boundaries.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
 ### `app/guide/page.tsx`
 
 **Module Name:** Page
@@ -69,6 +121,31 @@ None specified or inline props
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
+### `app/not-found.tsx`
+
+**Module Name:** Not-Found
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `Yes`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
 ### `app/page.tsx`
 
 **Module Name:** Page
@@ -96,6 +173,57 @@ None specified or inline props
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
+### `app/pricing/page.tsx`
+
+**Module Name:** Page
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `Yes`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+usePurchases, useState
+
+**Performance Characteristics:**
+Utilizes memoization: useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `app/providers.tsx`
+
+**Module Name:** Providers
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+children: React.ReactNode
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+
+
 ### `app/subjects/page.tsx`
 
 **Module Name:** Page
@@ -120,6 +248,81 @@ None specified or inline props
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
+
+
+### `app/upgrade/page.tsx`
+
+**Module Name:** Page
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
+- Uses Routing: `Yes`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+
+
+### `components/analytics/clarity-analytics.tsx`
+
+**Module Name:** Clarity-Analytics
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useEffect
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+projectId?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
+
+
+### `components/analytics/google-analytics.tsx`
+
+**Module Name:** Google-Analytics
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+gaId?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Pure presentation component. Minimal edge cases aside from standard prop type validations.
 
 
 ### `components/mold/achievement/achievement-gallery.tsx`
@@ -172,6 +375,33 @@ id: string
 
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/analytics/analytics-dashboard.tsx`
+
+**Module Name:** Analytics-Dashboard
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `Yes`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useAuditReport, useEffect, usePointer, usePointerClick, useReport, useState
+
+**Performance Characteristics:**
+Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
 
 
@@ -1117,7 +1347,7 @@ onInitialize: () => void
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useState
+useEffect, useState
 
 **Performance Characteristics:**
 Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.
@@ -1200,7 +1430,7 @@ subjectName: string
 **Characteristics:**
 - Client Component: `Yes`
 - Supports Slots (children): `No`
-- Uses Routing: `No`
+- Uses Routing: `Yes`
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
@@ -1629,7 +1859,7 @@ None specified or inline props
 - Dynamic Lazy-Loading: `No`
 
 **State Dependencies (Hooks):**
-useColorTheme, useEffect, useState
+useColorTheme, useEffect, useEvent, usePurchases, useRef, useState
 
 **Performance Characteristics:**
 No explicit memoization hooks (useMemo/useCallback) used.
@@ -1648,6 +1878,35 @@ activeSubjectName?: string
 **Edge-Case Input Handling & Validation:**
 - Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 - Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/layouts/base-page-wrapper.tsx`
+
+**Module Name:** Base-Page-Wrapper
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+children: React.ReactNode
+  topNav?: React.ReactNode
+  mobileNav?: React.ReactNode
+  footer?: React.ReactNode
+  scanlinesClassName?: string
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
 
 
 ### `components/mold/layouts/default-sidebar-layout.tsx`
@@ -1757,6 +2016,58 @@ None specified or inline props
 **Characteristics:**
 - Client Component: `Yes`
 - Supports Slots (children): `Yes`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+None
+
+**Performance Characteristics:**
+No explicit memoization hooks (useMemo/useCallback) used.
+
+**Properties & Slots (Interface):**
+```typescript
+None specified or inline props
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+
+
+### `components/mold/payment/paywall-modal.tsx`
+
+**Module Name:** Paywall-Modal
+
+**Characteristics:**
+- Client Component: `Yes`
+- Supports Slots (children): `No`
+- Uses Routing: `No`
+- Dynamic Lazy-Loading: `No`
+
+**State Dependencies (Hooks):**
+useEffect, usePurchases, useState
+
+**Performance Characteristics:**
+Utilizes memoization: useCallback to prevent unnecessary re-renders.
+
+**Properties & Slots (Interface):**
+```typescript
+isOpen?: boolean
+  onClose?: () => void
+```
+
+**Edge-Case Input Handling & Validation:**
+- Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.
+- Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.
+
+
+### `components/mold/payment/revenuecat-logo.tsx`
+
+**Module Name:** Revenuecat-Logo
+
+**Characteristics:**
+- Client Component: `No`
+- Supports Slots (children): `No`
 - Uses Routing: `No`
 - Dynamic Lazy-Loading: `No`
 
