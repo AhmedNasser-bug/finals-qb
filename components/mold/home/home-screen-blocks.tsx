@@ -1,6 +1,7 @@
 import { Play } from "lucide-react"
 import { ModeSelector } from "./mode-selector"
 import { SetupPanel } from "./setup-panel"
+import { ActionHub } from "./action-hub"
 import { TelemetryPanel } from "./telemetry-panel"
 import { AchievementsPanel } from "./achievements-panel"
 import { SessionStatsPanel } from "./session-stats-panel"
@@ -17,6 +18,7 @@ interface MainContentGridProps {
   // Configuration
   config: SetupConfig
   handleConfigChange: (patch: Partial<SetupConfig>) => void
+  handleResetConfig: () => void
   categories: CategoryData[]
   questions?: Question[]
   subjectId?: string
@@ -35,6 +37,7 @@ export function MainContentGrid({
   handleInitialize,
   config,
   handleConfigChange,
+  handleResetConfig,
   categories,
   questions,
   subjectId,
@@ -76,6 +79,7 @@ export function MainContentGrid({
             <SetupPanel
               config={config}
               onChange={handleConfigChange}
+              onReset={handleResetConfig}
               selectedMode={selectedMode}
               categories={categories}
               questions={questions}
@@ -85,15 +89,10 @@ export function MainContentGrid({
         </div>
 
         {/* Action initialize CTA */}
-        <button type="button"
-          onClick={handleInitialize}
-          title="Launch active quiz session (Press Enter)"
-          aria-label="Launch active quiz session"
-          className="w-full h-16 bg-primary text-primary-foreground font-headline font-black text-xl tracking-[0.25em] border-none flex items-center justify-center gap-4 shadow-[0_0_20px_hsla(var(--primary),0.1)] hover:shadow-[0_0_30px_hsla(var(--primary),0.25)] hover:-translate-y-0.5 transition-all active:translate-y-0.5 cursor-pointer uppercase select-none rounded focus-ring"
-        >
-          <span>INITIALIZE SESSION</span>
-          <Play className="w-5 h-5 fill-current shrink-0" aria-hidden="true" />
-        </button>
+        <ActionHub
+          onInitialize={handleInitialize}
+          selectedMode={selectedMode}
+        />
       </div>
 
       {/* Right Column: Achievements, Subject Image, Session Stats */}

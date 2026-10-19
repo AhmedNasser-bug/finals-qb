@@ -105,6 +105,15 @@ export function HomeScreen({
 
   const visualAccuracyPct = stats.averageScore || 0
 
+  function handleResetConfig() {
+    setConfig({
+      timeLimitEnabled: true,
+      hintsEnabled: false,
+      questionCount: 20,
+      selectedCategory: null,
+    })
+  }
+
   function handleConfigChange(patch: Partial<SetupConfig>) {
     setConfig((prev) => ({ ...prev, ...patch }))
   }
@@ -271,6 +280,7 @@ export function HomeScreen({
               handleInitialize={handleInitialize}
               config={config}
               handleConfigChange={handleConfigChange}
+              handleResetConfig={handleResetConfig}
               categories={subjectData.categories}
               questions={activeSubject.questions}
               subjectId={activeSubject.id}
