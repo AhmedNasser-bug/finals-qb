@@ -5,7 +5,7 @@
 This document maps the interface properties and data pipelines for the MOLD V2 application.
 
 ### Core Data Models
-Defined heavily in `lib/types/mold-types.ts`, the principal models dictating the domain boundaries are:
+Defined across `lib/types/mold-types.ts` and `lib/mold-types.ts`, the principal models dictating the domain boundaries are:
 - `FullSubjectData`: Represents the fully hydrated model of a subject being tested or managed.
 - `Question`: Defines varying structures like MCQ (`MCQOption`) or TrueFalse questions.
 - `GameState`: The current atomic instance of a game run, capturing `GamePhase`, active scores, and timelines.
