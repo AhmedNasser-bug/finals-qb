@@ -27,15 +27,19 @@ describe("Top Navigation Bar Mobile Responsiveness & Utility Drawer", () => {
 
   test("top-nav-bar.tsx renders all key utilities in the mobile drawer", () => {
     const content = fs.readFileSync(topNavPath, "utf-8")
-    assert.ok(content.includes('id="mobile-top-nav-drawer"'), "Drawer element must have id matching aria-controls")
-    assert.ok(content.includes("AUDIO"), "Drawer must provide audio mute control")
-    assert.ok(content.includes("THEME"), "Drawer must provide light/dark theme control")
-    assert.ok(content.includes("PALETTES"), "Drawer must provide theme palette switcher")
-    assert.ok(content.includes("LAYOUT"), "Drawer must provide layout switcher")
-    assert.ok(content.includes("IMPORT JSON"), "Drawer must provide import JSON action")
-    assert.ok(content.includes("ANALYTICS LAB"), "Drawer must provide telemetry & analytics link")
-    assert.ok(content.includes("USER GUIDE & STRATEGIES"), "Drawer must provide user guide link")
-    assert.ok(content.includes("SUBMIT FEEDBACK"), "Drawer must provide feedback submission link")
+    const drawerPath = path.join(process.cwd(), "components/mold/home/top-nav-blocks/mobile-drawer.tsx")
+    const drawerContent = fs.existsSync(drawerPath) ? fs.readFileSync(drawerPath, "utf-8") : ""
+    const fullContent = content + drawerContent
+
+    assert.ok(fullContent.includes('id="mobile-top-nav-drawer"'), "Drawer element must have id matching aria-controls")
+    assert.ok(fullContent.includes("AUDIO"), "Drawer must provide audio mute control")
+    assert.ok(fullContent.includes("THEME"), "Drawer must provide light/dark theme control")
+    assert.ok(fullContent.includes("PALETTES"), "Drawer must provide theme palette switcher")
+    assert.ok(fullContent.includes("LAYOUT"), "Drawer must provide layout switcher")
+    assert.ok(fullContent.includes("IMPORT JSON"), "Drawer must provide import JSON action")
+    assert.ok(fullContent.includes("ANALYTICS LAB"), "Drawer must provide telemetry & analytics link")
+    assert.ok(fullContent.includes("USER GUIDE & STRATEGIES"), "Drawer must provide user guide link")
+    assert.ok(fullContent.includes("SUBMIT FEEDBACK"), "Drawer must provide feedback submission link")
   })
 
   test("top-nav-bar.tsx implements accessibility escape and click-outside listeners", () => {
