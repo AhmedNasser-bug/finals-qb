@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useRef } from "react"
 import {
   X,
   Sparkles,
@@ -45,16 +45,56 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
   const [purchaseError, setPurchaseError] = useState<string | null>(null)
   const [purchaseSuccess, setPurchaseSuccess] = useState(false)
 
-  // Close on Escape key
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  // Focus trap and escape key handler
   useEffect(() => {
-    if (!isOpen) return
-    const handleKeyDown = (e: KeyboardEvent) => {
+    if (!isOpen) {
+      // Restore focus when closing
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus()
+      }
+      return
+    }
+
+    // Save previous focus when opening
+    previousFocusRef.current = document.activeElement as HTMLElement
+
+    // Focus the modal itself
+    if (modalRef.current) {
+      modalRef.current.focus()
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         onClose()
+        return
+      }
+
+      if (e.key === "Tab") {
+        if (!modalRef.current) return
+
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey && (document.activeElement === first || !modalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && (document.activeElement === last || !modalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          first.focus()
+        }
       }
     }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+
+    document.addEventListener("keydown", handleKeyDown, true)
+    return () => document.removeEventListener("keydown", handleKeyDown, true)
   }, [isOpen, onClose])
 
   // Prevent background scroll when modal is open
@@ -132,6 +172,8 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-title"
+      ref={modalRef}
+      tabIndex={-1}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()

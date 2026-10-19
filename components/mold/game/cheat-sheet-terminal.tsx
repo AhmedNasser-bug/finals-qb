@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
@@ -26,6 +26,48 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
 
+
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  // Focus trap
+  useEffect(() => {
+    if (!isOpen) {
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus()
+      }
+      return
+    }
+
+    previousFocusRef.current = document.activeElement as HTMLElement
+    if (modalRef.current) {
+      modalRef.current.focus()
+    }
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab" || !modalRef.current) return
+
+      const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && (document.activeElement === first || !modalRef.current.contains(document.activeElement))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && (document.activeElement === last || !modalRef.current.contains(document.activeElement))) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab, true)
+    return () => document.removeEventListener("keydown", handleTab, true)
+  }, [isOpen])
+
   return (
     <>
       {/* Overlay Backdrop */}
@@ -42,6 +84,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         role="dialog"
         aria-modal="true"
         aria-label="Review Deck Drawer"
+        ref={modalRef}
         tabIndex={-1}
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
