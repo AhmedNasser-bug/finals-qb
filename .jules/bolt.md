@@ -9,3 +9,10 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+## 2024-05-19 - [O(N^2) Array Splice in Hot Loops]
+**Learning:** [Using `array.splice(idx)` inside tight loops (like character-by-character JSON parsers/stack balancers) causes severe O(N^2) latency because it forces V8 to allocate new array chunks for the removed elements every iteration, even if the result is thrown away.]
+**Action:** [To truncate arrays from an index to the end in O(1) time without allocation overhead, always use `array.length = idx` instead of `array.splice(idx)`.]
+
+## 2024-05-19 - [O(N^2) String Accumulation from Arrays]
+**Learning:** [Repeatedly popping from an array and concatenating strings character-by-character (`str += array.pop()`) inside a loop causes memory thrashing and O(N^2) string flattening latency.]
+**Action:** [Use flat backward iteration to build short suffix strings sequentially, then apply a single concatenation operation.]

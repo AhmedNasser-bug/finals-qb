@@ -688,16 +688,6 @@ export function validateSubjectData(raw: unknown): ValidationResult {
   }
 }
 
-function processStackClosure(stack: ("{" | "[")[], char: string) {
-  const expectedOpen = char === '}' ? '{' : '[';
-  if (stack[stack.length - 1] === expectedOpen) {
-    stack.pop();
-    return;
-  }
-  const idx = stack.lastIndexOf(expectedOpen);
-  if (idx !== -1) stack.splice(idx);
-}
-
 function balanceJsonStack(str: string): string {
   const stack: ("{" | "[")[] = []
   let inString = false
@@ -724,7 +714,13 @@ function balanceJsonStack(str: string): string {
     if (char === '{' || char === '[') {
       stack.push(char as "{" | "[")
     } else if (char === '}' || char === ']') {
-      processStackClosure(stack, char)
+      const expectedOpen = char === '}' ? '{' : '[';
+      if (stack[stack.length - 1] === expectedOpen) {
+        stack.pop();
+      } else {
+        const idx = stack.lastIndexOf(expectedOpen);
+        if (idx !== -1) stack.length = idx;
+      }
     }
   }
   
@@ -735,10 +731,12 @@ function balanceJsonStack(str: string): string {
     balanced = balanced.slice(0, -1)
   }
   
-  while (stack.length > 0) {
-    const top = stack.pop()
-    if (top === '{') balanced += '}'
-    else if (top === '[') balanced += ']'
+  if (stack.length > 0) {
+    let suffix = "";
+    for (let i = stack.length - 1; i >= 0; i--) {
+      suffix += stack[i] === '{' ? '}' : ']';
+    }
+    balanced += suffix;
   }
   
   return balanced
