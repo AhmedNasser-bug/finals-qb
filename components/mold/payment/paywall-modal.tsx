@@ -46,16 +46,42 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
   const [purchaseSuccess, setPurchaseSuccess] = useState(false)
 
   // Close on Escape key
+  const modalRef = React.useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!isOpen) return
+    const el = modalRef.current
+    if (!el) return
+    const prevFocus = document.activeElement as HTMLElement | null
+    el.focus()
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose()
+        if (onClose) onClose()
+      } else if (e.key === "Tab") {
+        const focusable = el.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
+          e.preventDefault()
+          first.focus()
+        }
       }
     }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [isOpen, onClose])
+    window.addEventListener("keydown", handleKeyDown, true)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown, true)
+      if (prevFocus) prevFocus.focus()
+    }
+  }, [isOpen])
 
   // Prevent background scroll when modal is open
   useEffect(() => {
@@ -129,10 +155,12 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   return (
     <div
+      ref={modalRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
