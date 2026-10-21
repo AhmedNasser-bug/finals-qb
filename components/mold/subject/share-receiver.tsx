@@ -30,7 +30,7 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
       if (e.key !== "Tab" || !el) return
 
       const focusable = el.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
       )
       if (focusable.length === 0) return
 
@@ -46,8 +46,8 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
       }
     }
 
-    document.addEventListener("keydown", handleTab)
-    return () => document.removeEventListener("keydown", handleTab)
+    document.addEventListener("keydown", handleTab, true)
+    return () => document.removeEventListener("keydown", handleTab, true)
   }, [])
 
   useEffect(() => {
@@ -72,8 +72,8 @@ export function ShareReceiver({ payload, onAccept, onDecline }: ShareReceiverPro
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") handleDecline()
     }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
+    window.addEventListener("keydown", onKey, true)
+    return () => window.removeEventListener("keydown", onKey, true)
   })
 
   function handleAccept() {

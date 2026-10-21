@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## $(date +%Y-%m-%d) - Focus Traps & Global Event Listener A11y Polish
+**Learning:** When implementing keyboard focus traps inside modals, failing to exclude disabled elements (e.g., `button[disabled]`) from `querySelectorAll` results in focus loops or traps breaking when a user tries to Tab onto an inactive element. Furthermore, React synthetic events calling `e.stopPropagation()` can swallow keystrokes, breaking global keydown listeners in `useEffect` unless the listener is attached in the capture phase using `true` as the third argument. Finally, decorative SVGs must have `aria-hidden="true"` to hide them from screen readers.
+**Action:** Always filter out disabled elements (`button:not([disabled]), input:not([disabled])`) in modal focus query selectors. Attach global keydown listeners in the capture phase (`document.addEventListener("keydown", fn, true)`). Add `aria-hidden="true"` to non-interactive decorative `<svg>` tags.

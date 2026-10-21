@@ -53,8 +53,8 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
         onClose()
       }
     }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown, true)
+    return () => window.removeEventListener("keydown", handleKeyDown, true)
   }, [isOpen, onClose])
 
   // Prevent background scroll when modal is open

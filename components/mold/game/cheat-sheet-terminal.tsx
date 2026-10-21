@@ -19,8 +19,8 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         toggleCheatSheet()
       }
     }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown, true)
+    return () => window.removeEventListener("keydown", handleKeyDown, true)
   }, [toggleCheatSheet])
 
   // Reverse entries so the most recently flagged questions appear at the top
