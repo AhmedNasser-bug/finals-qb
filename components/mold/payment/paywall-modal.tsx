@@ -320,7 +320,9 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
             <button
               onClick={handlePresentNative}
               disabled={isPurchasing}
-              className="text-muted-foreground hover:text-primary underline underline-offset-4 font-mono text-[10px] tracking-wide uppercase transition-colors cursor-pointer"
+              aria-disabled={isPurchasing}
+              title={isPurchasing ? "Purchasing in progress..." : undefined}
+              className="text-muted-foreground hover:text-primary underline underline-offset-4 font-mono text-[10px] tracking-wide uppercase transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               LAUNCH REVENUECAT PAYWALL OVERLAY
             </button>
