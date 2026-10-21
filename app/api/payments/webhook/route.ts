@@ -6,15 +6,12 @@ export async function POST(request: NextRequest) {
   try {
     // Optional webhook authorization verification
     const expectedAuth = process.env.REVENUECAT_WEBHOOK_AUTH_TOKEN
-    if (expectedAuth) {
-      const authHeader = request.headers.get("authorization")
-      if (
-        !authHeader ||
-        (authHeader !== expectedAuth && authHeader !== `Bearer ${expectedAuth}`)
-      ) {
-        logger.warn("RevenueCat webhook: Unauthorized attempt")
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
+    const authHeader = request.headers.get("authorization")
+    const isUnauthorized = expectedAuth && (!authHeader || (authHeader !== expectedAuth && authHeader !== `Bearer ${expectedAuth}`))
+
+    if (isUnauthorized) {
+      logger.warn("RevenueCat webhook: Unauthorized attempt")
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const payload = (await request.json()) as RevenueCatWebhookPayload

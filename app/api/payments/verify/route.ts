@@ -33,32 +33,21 @@ export async function GET(request: NextRequest) {
     })
 
     if (!response.ok) {
-      // If 404, subscriber does not exist yet
-      if (response.status === 404) {
-        const notFoundResult: PaymentVerifyResponse = {
+      if (response.status !== 404) {
+        logger.warn("RevenueCat verify API returned non-OK status", {
+          status: response.status,
           appUserId,
-          hasAiEntitlement: false,
-          expirationDate: null,
-          activeSubscriptions: [],
-          managementUrl: null,
-        }
-        return NextResponse.json(notFoundResult)
+        })
       }
 
-      logger.warn("RevenueCat verify API returned non-OK status", {
-        status: response.status,
-        appUserId,
-      })
-
-      // Return default guest state rather than crash
-      const fallbackResult: PaymentVerifyResponse = {
+      const defaultResult: PaymentVerifyResponse = {
         appUserId,
         hasAiEntitlement: false,
         expirationDate: null,
         activeSubscriptions: [],
         managementUrl: null,
       }
-      return NextResponse.json(fallbackResult)
+      return NextResponse.json(defaultResult)
     }
 
     const data = await response.json()
