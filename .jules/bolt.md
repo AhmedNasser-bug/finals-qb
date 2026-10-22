@@ -9,3 +9,7 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+
+## 2023-10-22 - O(1) Array Truncation and File Read Streams
+**Learning:** Using `array.splice(idx)` introduces O(N) index-shifting overhead, whereas `array.length = idx` achieves the same truncation in O(1) time. For file reads, `fsPromises.readFile` buffers the entire file into memory which can block the event loop, whereas `fs.createReadStream` with a `for await` chunk consumption loop processes data efficiently without memory bloat.
+**Action:** Always prefer `array.length = idx` for array truncations and `fs.createReadStream` with a `for await` loop for large disk reading operations to ensure streamlined block streaming and flat linear execution logic.

@@ -690,12 +690,20 @@ export function validateSubjectData(raw: unknown): ValidationResult {
 
 function processStackClosure(stack: ("{" | "[")[], char: string) {
   const expectedOpen = char === '}' ? '{' : '[';
+  if (stack.length === 0) return;
   if (stack[stack.length - 1] === expectedOpen) {
     stack.pop();
     return;
   }
-  const idx = stack.lastIndexOf(expectedOpen);
-  if (idx !== -1) stack.splice(idx);
+
+  let i = stack.length - 1;
+  while (i >= 0) {
+    if (stack[i] === expectedOpen) {
+      stack.length = i;
+      return;
+    }
+    i--;
+  }
 }
 
 function balanceJsonStack(str: string): string {
