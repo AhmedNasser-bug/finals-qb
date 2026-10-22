@@ -314,7 +314,7 @@ export function MermaidDiagram({ chart, id, className }: MermaidDiagramProps) {
     return (
       <div
         className={`mermaid-container flex items-center justify-center min-h-[200px] ${className ?? ""}`}
-        role="status"
+        role="status" aria-live="polite"
         aria-label="Loading diagram"
       >
         <div className="text-center space-y-3">
