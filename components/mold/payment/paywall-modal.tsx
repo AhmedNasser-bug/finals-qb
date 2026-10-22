@@ -129,6 +129,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   return (
     <div
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-title"
@@ -139,7 +140,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
     >
       <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-panel border border-border/80 shadow-2xl rounded-md p-6 sm:p-8 flex flex-col text-foreground focus:outline-none">
         {/* Close Button */}
-        <button
+        <button type="button"
           onClick={onClose}
           aria-label="Close paywall modal"
           className="absolute top-4 right-4 p-2 border border-border text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors rounded focus-ring"
@@ -183,7 +184,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
               </div>
             </div>
             {customerInfo?.managementURL && (
-              <button
+              <button type="button"
                 onClick={() => openCustomerCenter()}
                 className="flex items-center gap-1.5 px-3 py-1.5 border border-emerald-500/40 hover:border-emerald-400 bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold tracking-wider uppercase rounded transition-colors focus-ring"
               >
@@ -317,7 +318,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
           </div>
 
           <div className="flex items-center gap-3">
-            <button
+            <button type="button"
               onClick={handlePresentNative}
               disabled={isPurchasing}
               className="text-muted-foreground hover:text-primary underline underline-offset-4 font-mono text-[10px] tracking-wide uppercase transition-colors cursor-pointer"
@@ -326,7 +327,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
             </button>
 
             {customerInfo?.managementURL && (
-              <button
+              <button type="button"
                 onClick={() => openCustomerCenter()}
                 className="text-primary hover:underline underline-offset-4 font-mono text-[10px] tracking-wide uppercase transition-colors cursor-pointer flex items-center gap-1"
               >

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "lastUpdated": "2026-10-22T16:15:13.347Z",
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,18 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "fix-accessibility-buttons-and-dialogs",
+      "category": "accessibility",
+      "tier": 5,
+      "title": "Add type=\"button\" to generic buttons and tabIndex={-1} to dialogs for accessibility compliance",
+      "implementedAt": "2026-10-22T16:15:13.347Z",
+      "componentsTouched": [
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/payment/paywall-modal.tsx"
       ],
       "nonBreaking": true
     }

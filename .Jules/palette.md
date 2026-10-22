@@ -133,3 +133,8 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+
+## 2026-10-22 - Fix generic buttons and dialogs accessibility
+**Learning:** Adding `type="button"` to generic buttons prevents unintended form submissions. Adding `tabIndex={-1}` to `role="dialog"` modals ensures programmatic focus can be correctly set for assistive technologies.
+**Action:** Automatically verify and enforce these accessibility attributes across all relevant components to maintain robust accessibility compliance without breaking functionality.

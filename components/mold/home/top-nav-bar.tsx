@@ -218,7 +218,7 @@ export function TopNavBar({
         </button>
 
         {/* Quick Mode Toggle (Light/Dark) (desktop/tablet) */}
-        <button type="button"
+        <button
           onClick={toggleMode}
           title={`Switch to ${themeMode === 'dark' ? 'Light' : 'Dark'} Mode`}
           aria-label={`Switch to ${themeMode === 'dark' ? 'Light' : 'Dark'} Mode`}
@@ -245,7 +245,7 @@ export function TopNavBar({
 
         {/* Workspace Layout Grid Trigger (desktop) */}
         {onShowLayoutModal && (
-          <button type="button"
+          <button
             onClick={onShowLayoutModal}
             title="Switch workspace page layout"
             aria-label="Open page layout switcher"
@@ -293,7 +293,7 @@ export function TopNavBar({
         {/* Mobile Menu Drawer Toggle (mobile only) */}
         <button
           ref={menuButtonRef}
-          type="button"
+
           onClick={() => setMobileMenuOpen((prev) => !prev)}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-top-nav-drawer"
@@ -362,7 +362,7 @@ export function TopNavBar({
           <div className="grid grid-cols-2 gap-2">
             {/* Audio Toggle */}
             <button
-              type="button"
+
               onClick={() => setMuted(toggleAudioMute())}
               aria-label={muted ? "Unmute audio synthesizer" : "Mute audio synthesizer"}
               className="flex items-center justify-between p-2.5 bg-secondary/40 border border-border/60 hover:border-primary/40 hover:bg-secondary text-foreground text-left transition-all rounded focus-ring cursor-pointer"
