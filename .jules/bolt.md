@@ -9,3 +9,9 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+## 2025-02-18 - [Performance] O(N) Array Clipping using slice instead of splice
+**Learning:** Reassigning a sliced array using `array = array.slice(...)` prevents shifting overhead and memory bloat associated with `array.splice(0, count)`.
+**Action:** Replace calls to `.splice(0, count)` with slice reassignments whenever array element removal from index 0 is required for array capping/clipping.
+## 2025-02-18 - [Performance] O(1) Array Truncation using length modification
+**Learning:** Truncating an array from a specific index using `array.length = idx` operates in O(1) time by avoiding index-shifting and new array allocation overheads present in `array.splice(idx)`.
+**Action:** Replace `array.splice(idx)` with `array.length = idx` for optimal array truncation performance in V8.
