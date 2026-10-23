@@ -81,336 +81,26 @@ This document provides an automated component registry documentation file that s
 *   **Dynamic Loading**: No
 *   **Properties**: None or generic React props
 *   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
+*   **State Dependencies**: useAchievements, useEffect, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
 #### `achievement-toast.tsx`
 *   **Path**: `components/mold/achievement/achievement-toast.tsx`
 *   **Hydration**: Client (`use client`)
 *   **Dynamic Loading**: No
-*   **Properties**: `toasts`: ToastItem[], `onDismiss`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `encyclopedia-overlay.tsx`
-*   **Path**: `components/mold/common/encyclopedia-overlay.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `subject`: FullSubjectData, `onClose`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `footer.tsx`
-*   **Path**: `components/mold/common/footer.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `rightText?`: string, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `guide-link.tsx`
-*   **Path**: `components/mold/common/guide-link.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `children?`: React.ReactNode, `source?`: string, `href?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `guide-overlay.tsx`
-*   **Path**: `components/mold/common/guide-overlay.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `open`: boolean, `onClose`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `layout-switcher-modal.tsx`
-*   **Path**: `components/mold/common/layout-switcher-modal.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `onClose`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `mermaid-diagram.tsx`
-*   **Path**: `components/mold/common/mermaid-diagram.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `chart`: string, `id`: string, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `onboarding-screen.tsx`
-*   **Path**: `components/mold/common/onboarding-screen.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: Yes (`next/dynamic`)
-*   **Properties**: `mode`: GameMode, `onSubjectAdded`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `rich-text.tsx`
-*   **Path**: `components/mold/common/rich-text.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `content`: string, `className?`: string, `id?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `share-modal-blocks.tsx`
-*   **Path**: `components/mold/common/share-modal-blocks.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `encoding`: boolean, `encodeError`: string | unknown, `shareUrl`: string, `shortUrl`: string, `copyState`: CopyState, `shortenState`: ShortenState, `shortenError`: string | unknown, `sizeKb`: string, `isSizeLarge`: boolean, `onCopy`: Function, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `share-modal.tsx`
-*   **Path**: `components/mold/common/share-modal.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `subject`: FullSubjectData, `onClose`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `theme-switcher-modal.tsx`
-*   **Path**: `components/mold/common/theme-switcher-modal.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `onClose`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `flashcard-components.tsx`
-*   **Path**: `components/mold/flashcard/flashcard-components.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `onQuit`: Function, `progress`: number, `position`: string, `round`: number, `confident`: number, `learning`: number, `label`: string, `value`: string, `color`: string, `borderColor`: string, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `flashcard-screen-blocks.tsx`
-*   **Path**: `components/mold/flashcard/flashcard-screen-blocks.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `card`: Flashcard, `index`: number, `flipped`: boolean, `animClass`: string, `accent`: unknown, `onFlip`: Function, `onRespond`: Function, `round`: number, `flashcardsLength`: number, `confident`: number, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `flashcard-screen.tsx`
-*   **Path**: `components/mold/flashcard/flashcard-screen.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `flashcards`: Flashcard[], `subjectId?`: string, `onComplete`: Function, `onReturnHome`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `memory-heatmap.tsx`
-*   **Path**: `components/mold/flashcard/memory-heatmap.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `cards`: Flashcard[], `retentionMap`: RetentionMap, `subjectId`: string, `onStartDrill`: Function, `onClose?`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `retention-badge.tsx`
-*   **Path**: `components/mold/flashcard/retention-badge.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `urgency`: unknown, `retrievability?`: number, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `cheat-sheet-terminal.tsx`
-*   **Path**: `components/mold/game/cheat-sheet-terminal.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `game-error-boundary.tsx`
-*   **Path**: `components/mold/game/game-error-boundary.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `onReturnHome`: Function, `children`: ReactNode
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `game-footer.tsx`
-*   **Path**: `components/mold/game/game-footer.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `onHintRequest`: Function, `initialLockRemaining`: number, `hintTimeRemaining`: number, `hintUsedThisQuestion`: boolean, `showHint`: boolean
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `game-header.tsx`
-*   **Path**: `components/mold/game/game-header.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `game-icons.tsx`
-*   **Path**: `components/mold/game/game-icons.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `game-runner.tsx`
-*   **Path**: `components/mold/game/game-runner.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `config`: GameConfig, `subject`: FullSubjectData, `runs`: RunRecord[], `onReturnHome`: Function, `onRunComplete?`: Function, `onRunSaved?`: Function, `onReturnHome`: Function, `onRunComplete?`: Function, `onRunSaved?`: Function, `onInstantRestart?`: Function, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `game-stat-cell.tsx`
-*   **Path**: `components/mold/game/game-stat-cell.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `question-card-blocks.tsx`
-*   **Path**: `components/mold/game/question-card-blocks.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `question-card-builder.tsx`
-*   **Path**: `components/mold/game/question-card-builder.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `idx`: number, `label`: string, `text?`: string, `isSelected`: boolean, `isRevealed`: boolean, `isCorrect`: boolean, `isWrong`: boolean, `isDimmed`: boolean, `onSelect`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `question-card-components.tsx`
-*   **Path**: `components/mold/game/question-card-components.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `question-card.tsx`
-*   **Path**: `components/mold/game/question-card.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `results-screen-components.tsx`
-*   **Path**: `components/mold/game/results-screen-components.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `elapsedSeconds`: number, `avgTimeSec`: string | unknown, `bestStreak`: number, `xpYield`: number, `pixels`: unknown[], `total`: number, `pixelCount`: number, `score`: number, `wrongCountVal`: number, `skipCount`: number, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `results-screen.tsx`
-*   **Path**: `components/mold/game/results-screen.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `onReturnHome`: Function, `onPlayAgain`: Function, `onReDrillMistakes?`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `guide-page-content.tsx`
-*   **Path**: `components/mold/guide/guide-page-content.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `guide-sections.tsx`
-*   **Path**: `components/mold/guide/guide-sections.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `register`: Function, `highlightText?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
+*   **Properties**: `toasts`: ToastItem[], `onDismiss`: (id: string) => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useAchievementToast, useEffect, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useCallback).
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
 #### `achievements-panel.tsx`
 *   **Path**: `components/mold/home/achievements-panel.tsx`
 *   **Hydration**: Client (`use client`)
 *   **Dynamic Loading**: No
-*   **Properties**: `unlockedCount`: number, `totalAchievementsCount`: number, `topAchievements`: AchievementDef[], `hasMoreAchievements`: boolean, `totalCount`: number, `onShowGallery`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
+*   **Properties**: `unlockedCount`: number, `totalAchievementsCount`: number, `topAchievements`: AchievementDef[], `hasMoreAchievements`: boolean, `totalCount`: number, `onShowGallery`: () => void
+*   **Slots**: No specialized internal structural slots.
 *   **State Dependencies**: Stateless
 *   **Performance Characteristics**: Requires client JS hydration.
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
@@ -419,8 +109,8 @@ This document provides an automated component registry documentation file that s
 *   **Path**: `components/mold/home/action-hub.tsx`
 *   **Hydration**: Client (`use client`)
 *   **Dynamic Loading**: No
-*   **Properties**: `onInitialize`: Function, `selectedMode`: GameModeId, `disabled?`: boolean, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
+*   **Properties**: `onInitialize`: () => void, `selectedMode`: GameModeId, `disabled`: boolean | undefined, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
 *   **State Dependencies**: Stateless
 *   **Performance Characteristics**: Requires client JS hydration.
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
@@ -429,181 +119,51 @@ This document provides an automated component registry documentation file that s
 *   **Path**: `components/mold/home/add-questions-wizard.tsx`
 *   **Hydration**: Client (`use client`)
 *   **Dynamic Loading**: No
-*   **Properties**: `activeSubject`: FullSubjectData, `onMerge`: Function, `onCancel`: Function
+*   **Properties**: `activeSubject`: FullSubjectData, `onMerge`: (mergedSubject: FullSubjectData) => void, `onCancel`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo/useCallback).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `analytics-dashboard.tsx`
+*   **Path**: `components/mold/analytics/analytics-dashboard.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useAuditReport, useEffect, usePointer, usePointerClick, useReport, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo/useCallback).
+*   **Edge Case Handling**: Requires careful handling of Web Storage API quotas.
+
+#### `base-page-wrapper.tsx`
+*   **Path**: `components/mold/layouts/base-page-wrapper.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `children`: React.ReactNode, `topNav`: React.ReactNode, `mobileNav`: React.ReactNode, `footer`: React.ReactNode, `scanlinesClassName`: string | undefined
 *   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
 #### `bottom-mobile-nav.tsx`
 *   **Path**: `components/mold/home/bottom-mobile-nav.tsx`
 *   **Hydration**: Client (`use client`)
 *   **Dynamic Loading**: No
-*   **Properties**: `view`: AppView, `setView`: Function, `handleModeSelect`: Function, `setShowEncyclopedia`: Function, `setShowGallery`: Function, `onChangeSubject`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
+*   **Properties**: `view`: AppView, `setView`: (view: AppView) => void, `handleModeSelect`: (id: GameModeId) => void, `setShowEncyclopedia`: (show: boolean) => void, `setShowGallery`: (show: boolean) => void, `onChangeSubject`: () => void
+*   **Slots**: No specialized internal structural slots.
 *   **State Dependencies**: Stateless
 *   **Performance Characteristics**: Requires client JS hydration.
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
-#### `header-well.tsx`
-*   **Path**: `components/mold/home/header-well.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `subjectName`: string, `description`: string, `runCount`: number, `visualAccuracyPct`: number
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `hero-header.tsx`
-*   **Path**: `components/mold/home/hero-header.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `subject`: SubjectData, `achievements`: Achievement[], `onTrophyClick?`: Function, `onChangeSubject?`: Function, `onImportNew?`: Function, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `home-screen-blocks.tsx`
-*   **Path**: `components/mold/home/home-screen-blocks.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `selectedMode`: GameModeId, `handleModeSelect`: Function, `handleInitialize`: Function, `config`: SetupConfig, `handleConfigChange`: Function, `categories`: CategoryData[], `questions?`: Question[], `subjectId?`: string, `unlockedCount`: number, `totalAchievementsCount`: number, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `home-screen-components.tsx`
-*   **Path**: `components/mold/home/home-screen-components.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `view`: AppView, `setView`: Function, `handleModeSelect`: Function, `setShowEncyclopedia`: Function, `setShowGallery`: Function, `onChangeSubject`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `home-screen.tsx`
-*   **Path**: `components/mold/home/home-screen.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: Yes (`next/dynamic`)
-*   **Properties**: `activeSubject`: FullSubjectData, `allSubjectIds`: string[], `onAddSubject`: Function, `onChangeSubject`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `mode-selector.tsx`
-*   **Path**: `components/mold/home/mode-selector.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `selected`: GameModeId, `onSelect`: Function, `onLaunch?`: Function, `className?`: string, `label`: string, `modes`: GameMode[], `selected`: GameModeId, `onSelect`: Function, `onLaunch?`: Function, `accent`: unknown | unknown, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `performance-table.tsx`
-*   **Path**: `components/mold/home/performance-table.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `runs`: RunRecord[], `stats`: AggregateStats, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `session-stats-panel.tsx`
-*   **Path**: `components/mold/home/session-stats-panel.tsx`
+#### `cheat-sheet-terminal.tsx`
+*   **Path**: `components/mold/game/cheat-sheet-terminal.tsx`
 *   **Hydration**: Client (`use client`)
 *   **Dynamic Loading**: No
 *   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useCheatSheet, useEffect
 *   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `setup-panel-blocks.tsx`
-*   **Path**: `components/mold/home/setup-panel-blocks.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `config`: SetupConfig, `onChange`: Function, `categories`: CategoryData[], `questions?`: Question[], `subjectId?`: string, `id`: string | unknown, `name`: string, `questionCount`: number, `selected`: boolean, `recallabilityPct?`: number, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState, useContext
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `setup-panel.tsx`
-*   **Path**: `components/mold/home/setup-panel.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `config`: SetupConfig, `onChange`: Function, `selectedMode`: GameModeId, `categories`: CategoryData[], `questions?`: Question[], `subjectId?`: string, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `side-nav-bar.tsx`
-*   **Path**: `components/mold/home/side-nav-bar.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `subjectId`: string, `activeView`: unknown | unknown, `onShowDashboard`: Function, `onShowStats`: Function, `onShowEncyclopedia`: Function, `onShowGallery`: Function, `onChangeSubject`: Function, `onImportNew`: Function, `onAddQuestions`: Function, `onInitialize`: Function, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `stats-screen.tsx`
-*   **Path**: `components/mold/home/stats-screen.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `onReturnHome`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `streak-ascent.tsx`
-*   **Path**: `components/mold/home/streak-ascent.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `currentStreak`: number, `bestStreak`: number, `isAtRisk?`: boolean, `className?`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-visual-card.tsx`
-*   **Path**: `components/mold/home/subject-visual-card.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `subjectId`: string, `subjectName`: string
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `telemetry-panel.tsx`
-*   **Path**: `components/mold/home/telemetry-panel.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `top-nav-bar.tsx`
-*   **Path**: `components/mold/home/top-nav-bar.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `activeSubjectName?`: string, `loadedSubjectsCount?`: number, `onShowEncyclopedia?`: Function, `onShowGallery?`: Function, `onImportNew?`: Function, `onShowThemeModal?`: Function, `onShowLayoutModal?`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+*   **Edge Case Handling**: Sanitizes HTML input via DOMPurify to prevent XSS.
 
 #### `default-sidebar-layout.tsx`
 *   **Path**: `components/mold/layouts/default-sidebar-layout.tsx`
@@ -615,13 +175,493 @@ This document provides an automated component registry documentation file that s
 *   **Performance Characteristics**: Requires client JS hydration.
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
+#### `encyclopedia-overlay.tsx`
+*   **Path**: `components/mold/common/encyclopedia-overlay.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `subject`: FullSubjectData, `onClose`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `example-module-card.tsx`
+*   **Path**: `components/mold/subject/example-module-card.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `entry`: ExampleManifestEntry, `isLoading`: boolean, `onLoad`: (entry: ExampleManifestEntry) => void, `onShare`: (e: React.MouseEvent<Element, MouseEvent>, entry: ExampleManifestEntry) => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEvent
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `flashcard-components.tsx`
+*   **Path**: `components/mold/flashcard/flashcard-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `onQuit`: () => void, `progress`: number, `position`: string, `round`: number, `confident`: number, `learning`: number
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `flashcard-screen-blocks.tsx`
+*   **Path**: `components/mold/flashcard/flashcard-screen-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `card`: Flashcard, `index`: number, `flipped`: boolean, `animClass`: string, `accent`: { color: string; border: string; label: string; }, `onFlip`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `flashcard-screen.tsx`
+*   **Path**: `components/mold/flashcard/flashcard-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `flashcards`: Flashcard[], `subjectId`: string | undefined, `onComplete`: () => void, `onReturnHome`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo/useCallback).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `footer.tsx`
+*   **Path**: `components/mold/common/footer.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `rightText`: string | undefined, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-error-boundary.tsx`
+*   **Path**: `components/mold/game/game-error-boundary.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `onReturnHome`: () => void, `children`: React.ReactNode
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-footer.tsx`
+*   **Path**: `components/mold/game/game-footer.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `onHintRequest`: () => void, `initialLockRemaining`: number, `hintTimeRemaining`: number, `hintUsedThisQuestion`: boolean, `showHint`: boolean
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useGameEngine
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-header.tsx`
+*   **Path**: `components/mold/game/game-header.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useCheatSheet, useGameEngine
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-icons.tsx`
+*   **Path**: `components/mold/game/game-icons.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-runner.tsx`
+*   **Path**: `components/mold/game/game-runner.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `config`: GameConfig, `subject`: FullSubjectData, `runs`: RunRecord[], `onReturnHome`: () => void, `onRunComplete`: (() => void) | undefined, `onRunSaved`: ((run: RunRecord) => void) | undefined
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useAchievementToast, useAchievements, useCheatSheet, useEffect, useGameEngine, useHint, useRef, useState, useStreak
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-stat-cell.tsx`
+*   **Path**: `components/mold/game/game-stat-cell.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `guide-link.tsx`
+*   **Path**: `components/mold/common/guide-link.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `children`: React.ReactNode, `source`: string | undefined, `href`: string | undefined
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: usePathname, useSearchParams
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `guide-overlay.tsx`
+*   **Path**: `components/mold/common/guide-overlay.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `open`: boolean, `onClose`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useRouter
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `guide-page-content.tsx`
+*   **Path**: `components/mold/guide/guide-page-content.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useRef, useSearchParams, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `guide-sections.tsx`
+*   **Path**: `components/mold/guide/guide-sections.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `register`: (id: SectionId) => (el: HTMLElement | null) => void, `highlightText`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Requires careful handling of Web Storage API quotas.
+
+#### `header-well.tsx`
+*   **Path**: `components/mold/home/header-well.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `subjectName`: string, `description`: string, `runCount`: number, `visualAccuracyPct`: number
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `hero-header.tsx`
+*   **Path**: `components/mold/home/hero-header.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `subject`: SubjectData, `achievements`: Achievement[], `onTrophyClick`: (() => void) | undefined, `onChangeSubject`: (() => void) | undefined, `onImportNew`: (() => void) | undefined, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `home-screen-blocks.tsx`
+*   **Path**: `components/mold/home/home-screen-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `selectedMode`: GameModeId, `handleModeSelect`: (id: GameModeId) => void, `handleInitialize`: () => void, `config`: SetupConfig, `handleConfigChange`: (patch: SetupConfig) => void, `categories`: CategoryData[], `questions`: Question[] | undefined, `subjectId`: string | undefined, `unlockedCount`: number, `totalAchievementsCount`: number, `topAchievements`: Achievement[], `achievements`: Achievement[], `setShowGallery`: (show: boolean) => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `home-screen-components.tsx`
+*   **Path**: `components/mold/home/home-screen-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `view`: import("/app/components/mold/home/home-screen-types").AppView, `setView`: (view: import("/app/components/mold/home/home-screen-types").AppView) => void, `handleModeSelect`: (id: GameModeId) => void, `setShowEncyclopedia`: (show: boolean) => void, `setShowGallery`: (show: boolean) => void, `onChangeSubject`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `home-screen-types.ts`
+*   **Path**: `components/mold/home/home-screen-types.ts`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `home-screen.tsx`
+*   **Path**: `components/mold/home/home-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: Yes (`next/dynamic`)
+*   **Properties**: `activeSubject`: FullSubjectData, `allSubjectIds`: string[], `onAddSubject`: (subject: FullSubjectData) => void, `onChangeSubject`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useAchievements, useEffect, usePageLayout, useSafeAuth, useState, useStats
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
 #### `layout-map.tsx`
 *   **Path**: `components/mold/layouts/layout-map.tsx`
 *   **Hydration**: Client (`use client`)
 *   **Dynamic Loading**: No
 *   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `layout-switcher-modal.tsx`
+*   **Path**: `components/mold/common/layout-switcher-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `onClose`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, usePageLayout, useRef
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `memory-heatmap.tsx`
+*   **Path**: `components/mold/flashcard/memory-heatmap.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `cards`: Flashcard[], `retentionMap`: RetentionMap, `subjectId`: string, `onStartDrill`: (strategy: "SMART_ADAPTIVE" | "DUE_ONLY" | "CRITICAL_ONLY", category?: string | undefined) => void, `onClose`: (() => void) | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEnter, useLeave, useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `mermaid-diagram.tsx`
+*   **Path**: `components/mold/common/mermaid-diagram.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `chart`: string, `id`: string, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useMaxWidth, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `mode-selector.tsx`
+*   **Path**: `components/mold/home/mode-selector.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `selected`: GameModeId, `onSelect`: (id: GameModeId) => void, `onLaunch`: (() => void) | undefined, `className`: string | undefined
 *   **Slots**: Supports `children` prop for content transclusion.
 *   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `neural-core-panel.tsx`
+*   **Path**: `components/mold/subject/neural-core-panel.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `onboarding-screen.tsx`
+*   **Path**: `components/mold/common/onboarding-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: Yes (`next/dynamic`)
+*   **Properties**: `mode`: GameMode
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `paywall-modal.tsx`
+*   **Path**: `components/mold/payment/paywall-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `isOpen`: boolean | undefined, `onClose`: (() => void) | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, usePurchases, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useCallback).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `performance-table.tsx`
+*   **Path**: `components/mold/home/performance-table.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `runs`: RunRecord[], `stats`: AggregateStats, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `print-layout.tsx`
+*   **Path**: `components/mold/subject/print-layout.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `subject`: FullSubjectData
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `question-card-blocks.tsx`
+*   **Path**: `components/mold/game/question-card-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Sanitizes HTML input via DOMPurify to prevent XSS.
+
+#### `question-card-builder.tsx`
+*   **Path**: `components/mold/game/question-card-builder.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `idx`: number, `label`: string, `text`: string | undefined, `isSelected`: boolean, `isRevealed`: boolean, `isCorrect`: boolean, `isWrong`: boolean, `isDimmed`: boolean, `onSelect`: () => void
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useGameEngine, useQuestionCard
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Sanitizes HTML input via DOMPurify to prevent XSS.
+
+#### `question-card-components.tsx`
+*   **Path**: `components/mold/game/question-card-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Sanitizes HTML input via DOMPurify to prevent XSS.
+
+#### `question-card-types.ts`
+*   **Path**: `components/mold/game/question-card-types.ts`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `idx`: number, `label`: string, `text`: string | undefined, `isSelected`: boolean, `isRevealed`: boolean, `isCorrect`: boolean, `isWrong`: boolean, `isDimmed`: boolean, `onSelect`: () => void
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `question-card.tsx`
+*   **Path**: `components/mold/game/question-card.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `results-screen-components.tsx`
+*   **Path**: `components/mold/game/results-screen-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `elapsedSeconds`: number, `avgTimeSec`: string | null, `bestStreak`: number, `xpYield`: number
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `results-screen.tsx`
+*   **Path**: `components/mold/game/results-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `onReturnHome`: () => void, `onPlayAgain`: () => void, `onReDrillMistakes`: ((mistakeQuestions: Question[]) => void) | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useGameEngine, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo/useCallback).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `retention-badge.tsx`
+*   **Path**: `components/mold/flashcard/retention-badge.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `urgency`: CardRetentionState, `retrievability`: number | undefined, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `revenuecat-logo.tsx`
+*   **Path**: `components/mold/payment/revenuecat-logo.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `className`: string | undefined, `color`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `rich-text.tsx`
+*   **Path**: `components/mold/common/rich-text.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `content`: string, `className`: string | undefined, `id`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Sanitizes HTML input via DOMPurify to prevent XSS.
+
+#### `session-stats-panel.tsx`
+*   **Path**: `components/mold/home/session-stats-panel.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useStats
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `setup-panel-blocks.tsx`
+*   **Path**: `components/mold/home/setup-panel-blocks.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `config`: SetupConfig, `onChange`: (patch: SetupConfig) => void, `categories`: CategoryData[], `questions`: Question[] | undefined, `subjectId`: string | undefined
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useConfigControls, useContext, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `setup-panel.tsx`
+*   **Path**: `components/mold/home/setup-panel.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `config`: SetupConfig, `onChange`: (patch: SetupConfig) => void, `selectedMode`: GameModeId, `categories`: CategoryData[], `questions`: Question[] | undefined, `subjectId`: string | undefined, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `share-modal-blocks.tsx`
+*   **Path**: `components/mold/common/share-modal-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `encoding`: boolean, `encodeError`: string | null, `shareUrl`: string, `shortUrl`: string, `copyState`: import("/app/components/mold/common/share-modal-blocks").CopyState, `shortenState`: import("/app/components/mold/common/share-modal-blocks").ShortenState, `shortenError`: string | null, `sizeKb`: string, `isSizeLarge`: boolean, `onCopy`: () => void, `onShorten`: () => void, `onCopyShortUrl`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `share-modal.tsx`
+*   **Path**: `components/mold/common/share-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `subject`: FullSubjectData, `onClose`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useCallback).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `share-receiver.tsx`
+*   **Path**: `components/mold/subject/share-receiver.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `payload`: string, `onAccept`: (subject: FullSubjectData) => void, `onDecline`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `side-nav-bar.tsx`
+*   **Path**: `components/mold/home/side-nav-bar.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `subjectId`: string, `activeView`: "home" | "stats", `onShowDashboard`: () => void, `onShowStats`: () => void, `onShowEncyclopedia`: () => void, `onShowGallery`: () => void, `onChangeSubject`: () => void, `onImportNew`: () => void, `onAddQuestions`: () => void, `onInitialize`: () => void, `onDownloadHtml`: () => void, `onDownloadPdf`: () => void, `onDownloadSolvedPdf`: () => void, `onShowThemeModal`: (() => void) | undefined, `onShowLayoutModal`: (() => void) | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useState
 *   **Performance Characteristics**: Requires client JS hydration.
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
@@ -633,6 +673,146 @@ This document provides an automated component registry documentation file that s
 *   **Slots**: Supports `children` prop for content transclusion.
 *   **State Dependencies**: Stateless
 *   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `stats-screen.tsx`
+*   **Path**: `components/mold/home/stats-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `onReturnHome`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useState, useStats
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `streak-ascent.tsx`
+*   **Path**: `components/mold/home/streak-ascent.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `currentStreak`: number, `bestStreak`: number, `isAtRisk`: boolean | undefined, `className`: string | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer-blocks.tsx`
+*   **Path**: `components/mold/subject/subject-importer-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `promptCopied`: boolean, `onCopyPrompt`: (promptText: string) => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useRef, useReferenceBank, useState
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC). Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer-components.tsx`
+*   **Path**: `components/mold/subject/subject-importer-components.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEnter, useLeave, useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer-steps.tsx`
+*   **Path**: `components/mold/subject/subject-importer-steps.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `topic`: string, `setTopic`: (val: string) => void, `useReferenceBank`: boolean, `setUseReferenceBank`: (val: boolean) => void, `selectedPreset`: string, `onPresetSelect`: (presetId: string) => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useReferenceBank, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useCallback).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer.tsx`
+*   **Path**: `components/mold/subject/subject-importer.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `onImport`: (subject: FullSubjectData) => void, `onCancel`: () => void, `existingIds`: string[] | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useRef, useReferenceBank, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo/useCallback).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-selector-blocks.tsx`
+*   **Path**: `components/mold/subject/subject-selector-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `subjects`: FullSubjectData[], `confirmDeleteId`: string | null, `onSelect`: (subject: FullSubjectData) => void, `onShare`: (subject: FullSubjectData) => void, `onDeleteConfirm`: (id: string) => void, `onDeleteCancel`: () => void, `onRemoveClick`: (id: string) => void, `onShowImporter`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEvent
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-selector-components.tsx`
+*   **Path**: `components/mold/subject/subject-selector-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-selector.tsx`
+*   **Path**: `components/mold/subject/subject-selector.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: Yes (`next/dynamic`)
+*   **Properties**: `subjects`: FullSubjectData[], `onSelect`: (subject: FullSubjectData) => void, `onAddSubject`: (subject: FullSubjectData) => void, `onRemoveSubject`: (id: string) => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useEffect, useEvent, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-visual-card.tsx`
+*   **Path**: `components/mold/home/subject-visual-card.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `subjectId`: string, `subjectName`: string
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `telemetry-panel.tsx`
+*   **Path**: `components/mold/home/telemetry-panel.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useStats
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `theme-switcher-modal.tsx`
+*   **Path**: `components/mold/common/theme-switcher-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `onClose`: () => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useColorTheme, useEffect, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration. Uses memoization (useMemo).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `top-nav-bar.tsx`
+*   **Path**: `components/mold/home/top-nav-bar.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: `activeSubjectName`: string | undefined, `loadedSubjectsCount`: number | undefined, `onShowEncyclopedia`: (() => void) | undefined, `onShowGallery`: (() => void) | undefined, `onImportNew`: (() => void) | undefined, `onShowThemeModal`: (() => void) | undefined, `onShowLayoutModal`: (() => void) | undefined
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: useColorTheme, useEffect, useEvent, usePurchases, useRef, useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `user-subject-card.tsx`
+*   **Path**: `components/mold/subject/user-subject-card.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: `full`: FullSubjectData, `isConfirming`: boolean, `categoryCount`: number, `onSelect`: (full: FullSubjectData) => void, `onShare`: (full: FullSubjectData) => void, `onDeleteConfirm`: (id: string) => void, `onDeleteCancel`: () => void, `onRemoveClick`: (id: string) => void
+*   **Slots**: No specialized internal structural slots.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
 #### `zen-focus-layout.tsx`
@@ -654,140 +834,6 @@ This document provides an automated component registry documentation file that s
 *   **State Dependencies**: Stateless
 *   **Performance Characteristics**: Requires client JS hydration.
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `example-module-card.tsx`
-*   **Path**: `components/mold/subject/example-module-card.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `entry`: ExampleManifestEntry, `isLoading`: boolean, `onLoad`: Function, `onShare`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `neural-core-panel.tsx`
-*   **Path**: `components/mold/subject/neural-core-panel.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `print-layout.tsx`
-*   **Path**: `components/mold/subject/print-layout.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `subject`: FullSubjectData
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `share-receiver.tsx`
-*   **Path**: `components/mold/subject/share-receiver.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `payload`: string, `onAccept`: Function, `onDecline`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-importer-blocks.tsx`
-*   **Path**: `components/mold/subject/subject-importer-blocks.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `promptCopied`: boolean, `onCopyPrompt`: Function, `json`: string, `state`: ImporterState, `isDragging`: boolean, `onPaste`: Function, `onChange`: Function, `onDragOver`: Function, `onDragLeave`: Function, `onDrop`: Function, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-importer-components.tsx`
-*   **Path**: `components/mold/subject/subject-importer-components.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-importer-steps.tsx`
-*   **Path**: `components/mold/subject/subject-importer-steps.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `topic`: string, `setTopic`: Function, `useReferenceBank`: boolean, `setUseReferenceBank`: Function, `selectedPreset`: string, `onPresetSelect`: Function, `subjectType`: SubjectTypeBias, `setSubjectType`: Function, `questionCount`: number, `setQuestionCount`: Function, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-importer.tsx`
-*   **Path**: `components/mold/subject/subject-importer.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: `onImport`: Function, `onCancel`: Function, `existingIds?`: string[]
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-selector-blocks.tsx`
-*   **Path**: `components/mold/subject/subject-selector-blocks.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `subjects`: FullSubjectData[], `confirmDeleteId`: string | unknown, `onSelect`: Function, `onShare`: Function, `onDeleteConfirm`: Function, `onDeleteCancel`: Function, `onRemoveClick`: Function, `onShowImporter`: Function, `examples`: ExampleManifestEntry[], `examplesLoading`: boolean, ...
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-selector-components.tsx`
-*   **Path**: `components/mold/subject/subject-selector-components.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `subject-selector.tsx`
-*   **Path**: `components/mold/subject/subject-selector.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: Yes (`next/dynamic`)
-*   **Properties**: `subjects`: FullSubjectData[], `onSelect`: Function, `onAddSubject`: Function, `onRemoveSubject`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: useState
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-#### `user-subject-card.tsx`
-*   **Path**: `components/mold/subject/user-subject-card.tsx`
-*   **Hydration**: Server (RSC)
-*   **Dynamic Loading**: No
-*   **Properties**: `full`: FullSubjectData, `isConfirming`: boolean, `categoryCount`: number, `onSelect`: Function, `onShare`: Function, `onDeleteConfirm`: Function, `onDeleteCancel`: Function, `onRemoveClick`: Function
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-### Providers
-
-#### `theme-provider.tsx`
-*   **Path**: `components/theme-provider.tsx`
-*   **Hydration**: Client (`use client`)
-*   **Dynamic Loading**: No
-*   **Properties**: None or generic React props
-*   **Slots**: Supports `children` prop for content transclusion.
-*   **State Dependencies**: Stateless
-*   **Performance Characteristics**: Requires client JS hydration.
-*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
-
-
 
 ## Content Hydration & Lazy Loading
 
