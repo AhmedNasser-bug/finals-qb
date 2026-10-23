@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "lastUpdated": "2026-10-23T16:30:25.988Z",
+  "totalFeaturesImplemented": 17,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,19 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "global-form-submission-prevention",
+      "category": "accessibility",
+      "tier": 5,
+      "title": "Global Form Submission Prevention on Generic Buttons",
+      "implementedAt": "2026-10-23T16:30:25.987Z",
+      "componentsTouched": [
+        "app/pricing/page.tsx",
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/payment/paywall-modal.tsx"
       ],
       "nonBreaking": true
     }
