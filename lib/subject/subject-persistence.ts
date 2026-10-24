@@ -74,32 +74,29 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
   }
 
   const termObj = obj.terminology as Record<string, unknown>
-  if (Object.keys(termObj).length > 0) {
-    const firstVal = Object.values(termObj)[0]
-    if (typeof firstVal === "string") {
-      // Entire map is flat strings — lift into a single _general bucket
-      const entries = Object.entries(termObj)
-      const lifted = new Array(entries.length)
-      for (let i = 0; i < entries.length; i++) {
-        lifted[i] = {
-          term: entries[i][0],
-          definition: entries[i][1] as string,
-        }
+  const firstVal = Object.values(termObj)[0]
+  if (Object.keys(termObj).length > 0 && typeof firstVal === "string") {
+    // Entire map is flat strings — lift into a single _general bucket
+    const entries = Object.entries(termObj)
+    const lifted = new Array(entries.length)
+    for (let i = 0; i < entries.length; i++) {
+      lifted[i] = {
+        term: entries[i][0],
+        definition: entries[i][1] as string,
       }
-      obj.terminology = { _general: lifted }
-      warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
     }
+    obj.terminology = { _general: lifted }
+    warnings.push('"terminology": legacy flat {term: string} format normalised to nested category arrays.')
   }
 
   // Auto-generate empty terminology keys for any categories used by questions
   if (Array.isArray(obj.questions)) {
     const termDict = obj.terminology as Record<string, unknown>
     obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
+      if (!q || typeof q.category !== "string" || q.category.trim() === "") return;
+      const cat = q.category.trim()
+      if (!Array.isArray(termDict[cat])) {
+        termDict[cat] = []
       }
     })
   }
@@ -286,12 +283,8 @@ function autoFixSingleQuestion(
     qObj.answer = qObj.answer.toUpperCase().trim();
     const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
 
-    if (!hasLabel) {
-      if (!tryMapTextAnswer()) {
-        if (!tryMapBooleanAnswer()) {
-          applyDefaultAnswer();
-        }
-      }
+    if (!hasLabel && !tryMapTextAnswer() && !tryMapBooleanAnswer()) {
+      applyDefaultAnswer();
     }
   }
 
@@ -350,11 +343,10 @@ function autoFixTerminology(obj: Record<string, unknown>, warnings: string[]) {
   // Auto-generate empty terminology keys for any categories used by questions
   if (Array.isArray(obj.questions)) {
     obj.questions.forEach((q: any) => {
-      if (q && typeof q.category === "string" && q.category.trim() !== "") {
-        const cat = q.category.trim()
-        if (!Array.isArray(termDict[cat])) {
-          termDict[cat] = []
-        }
+      if (!q || typeof q.category !== "string" || q.category.trim() === "") return;
+      const cat = q.category.trim()
+      if (!Array.isArray(termDict[cat])) {
+        termDict[cat] = []
       }
     })
   }
