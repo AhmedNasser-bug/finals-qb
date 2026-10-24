@@ -775,7 +775,768 @@ This document provides an automated component registry documentation file that s
 *   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
 *   **Edge Case Handling**: Inherits standard error boundaries and loading states.
 
-### Providers
+### Achievement
+
+
+#### `achievement-gallery.tsx`
+*   **Path**: `components/mold/achievement/achievement-gallery.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useAchievements, useRef, useEffect, useMemo, useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `achievement-toast.tsx`
+*   **Path**: `components/mold/achievement/achievement-toast.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useCallback, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Analytics
+
+#### `analytics-dashboard.tsx`
+*   **Path**: `components/mold/analytics/analytics-dashboard.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useCallback, useEffect, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Common
+
+#### `encyclopedia-overlay.tsx`
+*   **Path**: `components/mold/common/encyclopedia-overlay.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useRef, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `footer.tsx`
+*   **Path**: `components/mold/common/footer.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `guide-link.tsx`
+*   **Path**: `components/mold/common/guide-link.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: usePathname, useSearchParams, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `guide-overlay.tsx`
+*   **Path**: `components/mold/common/guide-overlay.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useRouter, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `layout-switcher-modal.tsx`
+*   **Path**: `components/mold/common/layout-switcher-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: usePageLayout, useRef, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `mermaid-diagram.tsx`
+*   **Path**: `components/mold/common/mermaid-diagram.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useRef, useState, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `onboarding-screen.tsx`
+*   **Path**: `components/mold/common/onboarding-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: Yes (`next/dynamic`)
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `rich-text.tsx`
+*   **Path**: `components/mold/common/rich-text.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `share-modal-blocks.tsx`
+*   **Path**: `components/mold/common/share-modal-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `share-modal.tsx`
+*   **Path**: `components/mold/common/share-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useRef, useEffect, useCallback
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `theme-switcher-modal.tsx`
+*   **Path**: `components/mold/common/theme-switcher-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useColorTheme, useRef, useState, useEffect, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Flashcard
+
+#### `flashcard-components.tsx`
+*   **Path**: `components/mold/flashcard/flashcard-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `flashcard-screen-blocks.tsx`
+*   **Path**: `components/mold/flashcard/flashcard-screen-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `flashcard-screen.tsx`
+*   **Path**: `components/mold/flashcard/flashcard-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useRef, useEffect, useCallback, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `memory-heatmap.tsx`
+*   **Path**: `components/mold/flashcard/memory-heatmap.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `retention-badge.tsx`
+*   **Path**: `components/mold/flashcard/retention-badge.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Game
+
+#### `cheat-sheet-terminal.tsx`
+*   **Path**: `components/mold/game/cheat-sheet-terminal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useCheatSheet, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-error-boundary.tsx`
+*   **Path**: `components/mold/game/game-error-boundary.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-footer.tsx`
+*   **Path**: `components/mold/game/game-footer.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useGameEngine
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-header.tsx`
+*   **Path**: `components/mold/game/game-header.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useGameEngine, useCheatSheet
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-icons.tsx`
+*   **Path**: `components/mold/game/game-icons.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-runner.tsx`
+*   **Path**: `components/mold/game/game-runner.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useAchievementToast, useState, useGameEngine, useAchievements, useStreak, useCheatSheet, useRef, useEffect, useHint
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `game-stat-cell.tsx`
+*   **Path**: `components/mold/game/game-stat-cell.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `question-card-blocks.tsx`
+*   **Path**: `components/mold/game/question-card-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `question-card-builder.tsx`
+*   **Path**: `components/mold/game/question-card-builder.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useQuestionCard, useGameEngine
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `question-card-components.tsx`
+*   **Path**: `components/mold/game/question-card-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `question-card.tsx`
+*   **Path**: `components/mold/game/question-card.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `results-screen-components.tsx`
+*   **Path**: `components/mold/game/results-screen-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `results-screen.tsx`
+*   **Path**: `components/mold/game/results-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useGameEngine
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Guide
+
+#### `guide-page-content.tsx`
+*   **Path**: `components/mold/guide/guide-page-content.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useSearchParams, useState, useRef, useEffect, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `guide-sections.tsx`
+*   **Path**: `components/mold/guide/guide-sections.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Home
+
+#### `achievements-panel.tsx`
+*   **Path**: `components/mold/home/achievements-panel.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `action-hub.tsx`
+*   **Path**: `components/mold/home/action-hub.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `add-questions-wizard.tsx`
+*   **Path**: `components/mold/home/add-questions-wizard.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useMemo, useCallback
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `bottom-mobile-nav.tsx`
+*   **Path**: `components/mold/home/bottom-mobile-nav.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `header-well.tsx`
+*   **Path**: `components/mold/home/header-well.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `hero-header.tsx`
+*   **Path**: `components/mold/home/hero-header.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `home-screen-blocks.tsx`
+*   **Path**: `components/mold/home/home-screen-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `home-screen-components.tsx`
+*   **Path**: `components/mold/home/home-screen-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `home-screen.tsx`
+*   **Path**: `components/mold/home/home-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: Yes (`next/dynamic`)
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useSafeAuth, useState, usePageLayout, useStats, useAchievements, useEffect, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `mode-selector.tsx`
+*   **Path**: `components/mold/home/mode-selector.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `performance-table.tsx`
+*   **Path**: `components/mold/home/performance-table.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `session-stats-panel.tsx`
+*   **Path**: `components/mold/home/session-stats-panel.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useStats
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `setup-panel-blocks.tsx`
+*   **Path**: `components/mold/home/setup-panel-blocks.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useContext, useConfigControls, useState, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `setup-panel.tsx`
+*   **Path**: `components/mold/home/setup-panel.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `side-nav-bar.tsx`
+*   **Path**: `components/mold/home/side-nav-bar.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `stats-screen.tsx`
+*   **Path**: `components/mold/home/stats-screen.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useStats, useState, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `streak-ascent.tsx`
+*   **Path**: `components/mold/home/streak-ascent.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-visual-card.tsx`
+*   **Path**: `components/mold/home/subject-visual-card.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `telemetry-panel.tsx`
+*   **Path**: `components/mold/home/telemetry-panel.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useStats, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `top-nav-bar.tsx`
+*   **Path**: `components/mold/home/top-nav-bar.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useColorTheme, usePurchases, useState, useRef, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Layouts
+
+#### `base-page-wrapper.tsx`
+*   **Path**: `components/mold/layouts/base-page-wrapper.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `default-sidebar-layout.tsx`
+*   **Path**: `components/mold/layouts/default-sidebar-layout.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `layout-map.tsx`
+*   **Path**: `components/mold/layouts/layout-map.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `split-terminal-layout.tsx`
+*   **Path**: `components/mold/layouts/split-terminal-layout.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `zen-focus-layout.tsx`
+*   **Path**: `components/mold/layouts/zen-focus-layout.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `zen-minimal-dock-layout.tsx`
+*   **Path**: `components/mold/layouts/zen-minimal-dock-layout.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Payment
+
+#### `paywall-modal.tsx`
+*   **Path**: `components/mold/payment/paywall-modal.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: usePurchases, useState, useEffect, useCallback
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `revenuecat-logo.tsx`
+*   **Path**: `components/mold/payment/revenuecat-logo.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Subject
+
+#### `example-module-card.tsx`
+*   **Path**: `components/mold/subject/example-module-card.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `neural-core-panel.tsx`
+*   **Path**: `components/mold/subject/neural-core-panel.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `print-layout.tsx`
+*   **Path**: `components/mold/subject/print-layout.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `share-receiver.tsx`
+*   **Path**: `components/mold/subject/share-receiver.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useRef, useEffect
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer-blocks.tsx`
+*   **Path**: `components/mold/subject/subject-importer-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useMemo, useRef
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer-components.tsx`
+*   **Path**: `components/mold/subject/subject-importer-components.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer-steps.tsx`
+*   **Path**: `components/mold/subject/subject-importer-steps.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-importer.tsx`
+*   **Path**: `components/mold/subject/subject-importer.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useMemo, useState, useRef, useEffect, useCallback
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-selector-blocks.tsx`
+*   **Path**: `components/mold/subject/subject-selector-blocks.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-selector-components.tsx`
+*   **Path**: `components/mold/subject/subject-selector-components.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `subject-selector.tsx`
+*   **Path**: `components/mold/subject/subject-selector.tsx`
+*   **Hydration**: Client (`use client`)
+*   **Dynamic Loading**: Yes (`next/dynamic`)
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: useState, useRef, useEffect, useMemo
+*   **Performance Characteristics**: Requires client JS hydration.
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+#### `user-subject-card.tsx`
+*   **Path**: `components/mold/subject/user-subject-card.tsx`
+*   **Hydration**: Server (RSC)
+*   **Dynamic Loading**: No
+*   **Properties**: None or generic React props
+*   **Slots**: Supports `children` prop for content transclusion.
+*   **State Dependencies**: Stateless
+*   **Performance Characteristics**: Zero-JS static HTML overhead (RSC).
+*   **Edge Case Handling**: Inherits standard error boundaries and loading states.
+
+### Components
 
 #### `theme-provider.tsx`
 *   **Path**: `components/theme-provider.tsx`
