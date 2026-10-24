@@ -20,4 +20,4 @@ fi
 
 echo "=> Installing dependencies..."
 # Use strict peer dependencies and ensure idempotent installs
-pnpm install
+pnpm install --frozen-lockfile --prefer-offline
