@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 17,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,19 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "explicit-type-button-a11y",
+      "category": "accessibility",
+      "tier": 5,
+      "title": "Explicit type=\"button\" on all generic buttons to prevent form submissions",
+      "implementedAt": "2026-10-24T16:26:04.135Z",
+      "componentsTouched": [
+        "app/pricing/page.tsx",
+        "components/mold/payment/paywall-modal.tsx",
+        "components/mold/home/top-nav-bar.tsx"
       ],
       "nonBreaking": true
     }
