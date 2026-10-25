@@ -32,3 +32,11 @@ The multi-tenant sandbox environment leverages Docker.
 - **Frontend App ↔ Local Storage**: Client components read/write to `localStorage` using hooks like `useSubjectStore` and persistent state managers to ensure offline availability.
 - **Backend Services**: Next.js Server Components handle secure, pre-rendered HTML delivery. Server Actions (if any) provide structured API points.
 - **Docker Multi-Tenant Sandbox**: Containerized tenants mount isolated `.next` output directories (`.next-tenant-a`, `.next-tenant-b`) avoiding state bleeding across the local orchestrator environments.
+
+### Backend API Routes & External Services
+- `app/api/payments/verify/route.ts`: Interacts with the RevenueCat API to verify user subscriptions and entitlements securely on the server.
+- `app/api/ai/generate/route.ts`: Manages AI content generation quotas, also interacting with RevenueCat for entitlement checks.
+
+### Analytics and Telemetry
+- `lib/analytics/lighthouse-service.ts`: Client-side auditor that probes Navigation Timing API and Paint Timing API, sending performance telemetry.
+- `components/mold/analytics/analytics-dashboard.tsx`: Visualizes telemetry data and performance readouts.

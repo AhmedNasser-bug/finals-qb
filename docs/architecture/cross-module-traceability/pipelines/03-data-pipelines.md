@@ -5,3 +5,7 @@
 
 ### Game State Reducer Pipeline
 Within `lib/game-engine.tsx`, state mutations operate within a unidirectional data flow. Actions such as answer selections trigger state shifts that are then broadcasted back up to listeners mapped via `useGameEngine`.
+
+### Achievement and Telemetry Pipeline
+- **Achievement Engine Pipeline**: `lib/achievement-engine.tsx` monitors completed game sessions, evaluating `GameState` against `AchievementCondition` sets, and seamlessly sinking unlocked achievements to local storage.
+- **Telemetry Pipeline**: `lighthouse-service` collects client-side performance metrics which are aggregated and displayed within the `Analytics Dashboard`.

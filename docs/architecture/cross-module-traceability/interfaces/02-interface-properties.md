@@ -15,3 +15,10 @@ Defined heavily in `lib/types/mold-types.ts`, the principal models dictating the
 ### Interface Properties
 - **Subject Validation Interface (`SubjectSchema`)**: Validates inbound JSON to ensure the structure strictly conforms to the `FullSubjectData` type, guaranteeing stability across the persistence layer.
 - **Game Engine Dispatch Interface**: Component interactions dispatch structured objects (e.g. `{ type: 'ANSWER', payload: ... }`) ensuring predictability within the reducer pipeline.
+
+### External API Interfaces
+- **RevenueCat Integration**: Uses `NEXT_PUBLIC_REVENUECAT_API_KEY` for authenticating server-side requests to `api.revenuecat.com/v1/subscribers/`.
+- **URL Shortener API**: `lib/utils/url-shortener.ts` interfaces with the shrtco.de free API to generate short links for subject sharing.
+
+### Storage and Persistence Interfaces
+- **StorageAdapter Interface**: Abstracted interface (`lib/utils/user-storage.ts`) priming for backend databases like Firebase Firestore, currently implemented via `localStorage` for runs and achievements.
