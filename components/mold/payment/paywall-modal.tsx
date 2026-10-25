@@ -129,7 +129,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   return (
     <div
-      role="dialog"
+      role="dialog" tabIndex={-1}
       aria-modal="true"
       aria-labelledby="paywall-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"

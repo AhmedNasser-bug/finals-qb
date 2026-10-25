@@ -130,8 +130,7 @@ export function ShareModal({ subject, onClose }: ShareModalProps) {
   return (
     <div
       ref={overlayRef}
-      tabIndex={-1}
-      role="dialog"
+      role="dialog" tabIndex={-1}
       aria-modal="true"
       aria-labelledby="share-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in outline-none"

@@ -69,11 +69,10 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
     return (
       <div
         ref={overlayRef}
-        tabIndex={-1}
         className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm outline-none"
         onClick={onClose}
         aria-modal="true"
-        role="dialog"
+        role="dialog" tabIndex={-1}
         aria-label="Encyclopedia"
       >
         <div
@@ -115,11 +114,10 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
   return (
     <div
       ref={overlayRef}
-      tabIndex={-1}
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-fade-in outline-none"
       onClick={onClose}
       aria-modal="true"
-      role="dialog"
+      role="dialog" tabIndex={-1}
       aria-label="Encyclopedia"
     >
       <div
