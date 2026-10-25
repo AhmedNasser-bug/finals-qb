@@ -1,167 +1,114 @@
 const fs = require('fs');
 const path = require('path');
-
-const UI_DIR = path.join(__dirname, '../components');
-const APP_DIR = path.join(__dirname, '../app');
-const OUTPUT_FILE = path.join(__dirname, '../docs/architecture/component-registry.md');
-
-function scanDirectory(dir, fileList = []) {
-  if (!fs.existsSync(dir)) return fileList;
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    if (fs.statSync(filePath).isDirectory()) {
-      scanDirectory(filePath, fileList);
-    } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
-      fileList.push(filePath);
+const COMPONENTS_DIR = path.join(__dirname, '../components');
+const DOCS_FILE = path.join(__dirname, '../docs/onboarding/component-registry.md');
+const getAllFiles = function(dirPath, arrayOfFiles) {
+  const files = fs.readdirSync(dirPath);
+  arrayOfFiles = arrayOfFiles || [];
+  files.forEach(function(file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+    } else {
+      if (file.endsWith('.tsx') || file.endsWith('.jsx')) {
+          arrayOfFiles.push(path.join(dirPath, file));
+      }
     }
-  }
-  return fileList;
+  });
+  return arrayOfFiles;
+};
+const getComponentName = (filePath) => path.basename(filePath);
+const analyzeFile = (filePath) => {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const relativePath = path.relative(path.join(__dirname, '..'), filePath);
+    const isClient = content.includes("'use client'") || content.includes('"use client"');
+    const hydration = isClient ? "Client (`use client`)" : "Server (RSC)";
+    const isDynamic = content.includes('dynamic(') && content.includes('ssr: false');
+    const dynamicLoading = isDynamic ? "Yes (`next/dynamic`)" : "No";
+    let props = "None explicitly defined.";
+    const propsMatch = content.match(/interface\s+(\w+Props)\s*{([^}]*)}/s) || content.match(/type\s+(\w+Props)\s*=\s*{([^}]*)}/s);
+    if (propsMatch) {
+       const propLines = propsMatch[2].split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('//'));
+       if (propLines.length > 0) {
+           props = propLines.map(p => {
+               const parts = p.split(':');
+               if (parts.length > 1) {
+                   return `\`${parts[0].trim()}\`: ${parts.slice(1).join(':').replace(/[,;]$/, '').trim()}`;
+               }
+               return `\`${p}\``;
+           }).join(', ');
+       }
+    }
+    const hasChildren = content.includes('children') || content.includes('ReactNode');
+    const slots = hasChildren ? "Supports `children` prop for content transclusion." : "None explicitly defined.";
+    const hasUseState = content.includes('useState(');
+    const hasUseReducer = content.includes('useReducer(');
+    const stateDeps = [];
+    if (hasUseState) stateDeps.push('useState');
+    if (hasUseReducer) stateDeps.push('useReducer');
+    const stateStr = stateDeps.length > 0 ? stateDeps.join(', ') : "Stateless";
+    let perf = isClient ? "Requires client JS hydration." : "Zero-JS static HTML overhead (RSC).";
+    if (content.includes('memo(')) perf += " Wrapped in React.memo for render optimization.";
+    let edgeCases = [];
+    if (content.includes('role="status"') || content.includes('aria-live')) edgeCases.push("Implements ARIA live regions for accessibility.");
+    if (content.includes('tabIndex={-1}')) edgeCases.push("Implements programmatic focus management.");
+    if (content.includes('ErrorBoundary')) edgeCases.push("Implements explicit React ErrorBoundary.");
+    if (content.includes('Suspense')) edgeCases.push("Uses React Suspense for loading state.");
+    let edgeCasesStr = edgeCases.length > 0 ? edgeCases.join(" ") : "None explicitly detected.";
+    return `\n#### \`${getComponentName(filePath)}\`\n*   **Path**: \`${relativePath}\`\n*   **Hydration**: ${hydration}\n*   **Dynamic Loading**: ${dynamicLoading}\n*   **Properties**: ${props}\n*   **Slots**: ${slots}\n*   **State Dependencies**: ${stateStr}\n*   **Performance Characteristics**: ${perf}\n*   **Edge Case Handling**: ${edgeCasesStr}\n`;
+};
+const generateRegistryContent = (files) => {
+    let content = `# Frontend Component Registry\n\nThis document provides an automated component registry documentation file that specifies the exact properties, slots, state dependencies, and performance characteristics of each UI module. It also documents the client-side lazy-loading logic, asset delivery configurations, and routing states.\n\n## Table of Contents\n\n1. [UI Modules](#ui-modules)\n2. [Content Hydration & Lazy Loading](#content-hydration--lazy-loading)\n3. [Routing States](#routing-states)\n4. [Edge-Case Input Handling & Validation Rules](#edge-case-input-handling--validation-rules)\n\n## UI Modules\n`;
+    const groups = {};
+    files.forEach(f => {
+        let dir = path.dirname(f);
+        let groupName = path.relative(COMPONENTS_DIR, dir);
+        if (groupName === '') groupName = 'Root Components';
+        if (!groups[groupName]) groups[groupName] = [];
+        groups[groupName].push(f);
+    });
+    Object.keys(groups).sort().forEach(group => {
+        const title = group.replace(/\\/g, '/').split('/').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' / ');
+        content += `\n### ${title}\n`;
+        groups[group].sort().forEach(f => {
+            content += analyzeFile(f);
+        });
+    });
+    return content;
+};
+try {
+    let existingDocs = '';
+    if (fs.existsSync(DOCS_FILE)) {
+        existingDocs = fs.readFileSync(DOCS_FILE, 'utf-8');
+    }
+    const uiPrimitivesStart = existingDocs.indexOf('### UI Primitives (components/ui)');
+    let uiPrimitivesContent = '';
+    if (uiPrimitivesStart !== -1) {
+       const nextHeading = existingDocs.indexOf('\n### ', uiPrimitivesStart + 1);
+       if (nextHeading !== -1) {
+           uiPrimitivesContent = existingDocs.substring(uiPrimitivesStart, nextHeading);
+       } else {
+           const endSection = existingDocs.indexOf('\n## Content Hydration & Lazy Loading', uiPrimitivesStart);
+           if (endSection !== -1) {
+               uiPrimitivesContent = existingDocs.substring(uiPrimitivesStart, endSection);
+           }
+       }
+    }
+    const tailSectionStart = existingDocs.indexOf('\n## Content Hydration & Lazy Loading');
+    let tailSectionContent = '';
+    if (tailSectionStart !== -1) {
+       tailSectionContent = existingDocs.substring(tailSectionStart);
+    }
+    const allComponentFiles = getAllFiles(COMPONENTS_DIR);
+    const filteredComponentFiles = allComponentFiles.filter(f => !f.includes('components/ui/'));
+    let newDocs = generateRegistryContent(filteredComponentFiles);
+    if (uiPrimitivesContent) {
+       newDocs = newDocs.replace('## UI Modules', '## UI Modules\n\n' + uiPrimitivesContent);
+    }
+    if (tailSectionContent) {
+        newDocs += tailSectionContent;
+    }
+    fs.writeFileSync(DOCS_FILE, newDocs);
+    console.log("Successfully generated component registry.");
+} catch (error) {
+    console.error("Error generating component registry:", error);
 }
-
-function extractInterface(content, componentName) {
-  // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
-  if (interfaceMatch) {
-    return interfaceMatch[1].trim();
-  }
-  return 'None specified or inline props';
-}
-
-async function processComponent(filePath) {
-  const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
-
-  const fileName = path.basename(filePath);
-  const parts = fileName.replace('.tsx', '').split('-');
-  const length = parts.length;
-  const words = new Array(length);
-  for (let i = 0; i < length; i++) {
-    const w = parts[i];
-    words[i] = w.charAt(0).toUpperCase() + w.slice(1);
-  }
-  const moduleName = words.join('-');
-
-  const isClient = content.includes('"use client"') || content.includes("'use client'");
-  const hasChildren = content.includes('children') || content.includes('ReactNode');
-  const usesRouting = content.includes('useRouter') || content.includes('next/navigation') || content.includes('next/link');
-  const isLazyLoaded = content.includes('next/dynamic') || content.includes('lazy(');
-
-  const hooksMatch = content.match(/use[A-Z]\w+/g);
-  const hooks = hooksMatch ? Array.from(new Set(hooksMatch)).sort() : [];
-  const stateHooks = hooks.filter(h => h !== 'useMemo' && h !== 'useCallback');
-
-  const hasUseMemo = content.includes('useMemo');
-  const hasUseCallback = content.includes('useCallback');
-
-  let perf = "No explicit memoization hooks (useMemo/useCallback) used.";
-  if (hasUseMemo && hasUseCallback) {
-    perf = "Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.";
-  } else if (hasUseMemo) {
-    perf = "Utilizes memoization: useMemo to prevent unnecessary re-renders.";
-  } else if (hasUseCallback) {
-    perf = "Utilizes memoization: useCallback to prevent unnecessary re-renders.";
-  }
-
-  const propsStr = extractInterface(content, moduleName);
-
-  let edgeCases = [];
-  if (content.includes('className')) {
-    edgeCases.push("Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.");
-  }
-  if (content.includes('existingIds')) {
-    edgeCases.push("Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.");
-  }
-  if (content.includes('DOMPurify') || content.includes('isomorphic-dompurify')) {
-    edgeCases.push("Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.");
-  }
-  if (content.includes('JSON.parse')) {
-    edgeCases.push("Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.");
-  }
-  if (content.includes('localStorage') || content.includes('sessionStorage')) {
-    edgeCases.push("Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.");
-  }
-  if (content.includes('ErrorBoundary')) {
-    edgeCases.push("Implements explicit fallback UIs for critical asynchronous or failing boundaries.");
-  }
-  if (content.includes('onClick') || content.includes('onChange')) {
-    edgeCases.push("Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.");
-  }
-  if (content.includes('mermaid')) {
-    edgeCases.push("Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.");
-  }
-  if (edgeCases.length === 0) {
-    edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
-  }
-
-  const relativePath = path.relative(path.join(__dirname, '..'), filePath).replace(/\\/g, '/');
-  const formattedEdgeCases = new Array(edgeCases.length);
-  for (let i = 0; i < edgeCases.length; i++) {
-    formattedEdgeCases[i] = '- ' + edgeCases[i];
-  }
-
-  return `
-### \`${relativePath}\`
-
-**Module Name:** ${moduleName}
-
-**Characteristics:**
-- Client Component: \`${isClient ? 'Yes' : 'No'}\`
-- Supports Slots (children): \`${hasChildren ? 'Yes' : 'No'}\`
-- Uses Routing: \`${usesRouting ? 'Yes' : 'No'}\`
-- Dynamic Lazy-Loading: \`${isLazyLoaded ? 'Yes' : 'No'}\`
-
-**State Dependencies (Hooks):**
-${stateHooks.length > 0 ? stateHooks.join(', ') : 'None'}
-
-**Performance Characteristics:**
-${perf}
-
-**Properties & Slots (Interface):**
-\`\`\`typescript
-${propsStr}
-\`\`\`
-
-**Edge-Case Input Handling & Validation:**
-${formattedEdgeCases.join('\n')}
-`;
-}
-
-async function generateDocs() {
-  const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
-  const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
-
-  const componentDocs = [];
-  for (const file of tsxFiles) {
-    const doc = await processComponent(file);
-    componentDocs.push(doc);
-  }
-
-  const markdown = `# Component Registry
-
-*This document is automatically generated by \`scripts/generate-component-registry.js\`. Do not edit directly.*
-
-## Overview
-This registry outlines the exact properties, slots, state dependencies, and performance characteristics of each UI module. It also documents the client-side lazy-loading logic, asset delivery configurations, and routing states.
-
-## Architecture Guidelines
-
-### Routing States
-- **App Router:** Utilizes Next.js App Router for strict server-components by default.
-- **Client Hydration:** Interactive islands and global state providers are explicitly marked with \`"use client"\` to cleanly split static and hydrated content.
-- **Hash Routing:** The \`/subjects\` route handles subject selection, importation, and processes share links via URL hash detection (\`#share=...\`).
-
-### Client-Side Lazy-Loading & Asset Delivery
-- Next.js dynamic imports (\`next/dynamic\`) are employed for complex or heavy UI segments (e.g., Mermaid diagram visualizers) to optimize initial paint payload sizes.
-- Static assets (images, icons) are delivered via the Next.js optimized asset pipeline where possible, or directly inlined if SVG.
-- UI chunks are split automatically via Turbopack per route and dynamically loaded on route transition.
-
-## Component Definitions
-${componentDocs.join('\n')}
-`;
-
-  fs.writeFileSync(OUTPUT_FILE, markdown);
-  console.log(`Generated component registry at ${OUTPUT_FILE}`);
-}
-
-generateDocs();
