@@ -199,6 +199,7 @@ export function SubjectSelector({
                   <button type="button"
                     onClick={() => setSearchQuery("")}
                     className="pointer-events-auto text-[10px] font-mono text-muted-foreground hover:text-foreground mr-1"
+                    aria-label="Clear search"
                     title="Clear search"
                   >
                     ESC

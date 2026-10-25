@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2024-10-25 - ARIA Labels on Icon-Only generic buttons
+**Learning:** In complex UI panels like search input bars, icon-only buttons (or those with purely symbolic text like "ESC" or "✕") that rely on `title` tooltips for clarity are often inaccessible to screen reader users or miss critical semantic context when announced. Adding an explicit `aria-label` provides a direct, localized description of the button's action (e.g., "Clear search").
+**Action:** Always ensure that any generic button lacking meaningful text content includes an explicit `aria-label` that clearly describes its action, even if a `title` attribute is present.
