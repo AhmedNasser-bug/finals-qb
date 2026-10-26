@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-10-26 - Explicit type="button" on UI elements in Top Nav and Paywall Modal
+**Learning:** In complex UI elements like top navigation bars and paywall modals, failing to explicitly specify `type="button"` on generic `<button>` elements can result in implicit form submissions if these components are ever rendered near or inside forms, leading to unintended page reloads or broken state.
+**Action:** Always verify and append the explicit `type="button"` attribute to all interactive buttons that trigger UI events rather than form submissions, ensuring zero chance of default submit actions.
