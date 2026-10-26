@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { AlertTriangle, RefreshCw, Home } from "lucide-react"
 import Link from "next/link"
+import { logger } from "@/lib/logger"
 
 export default function ErrorBoundary({
   error,
@@ -12,7 +13,7 @@ export default function ErrorBoundary({
   reset: () => void
 }) {
   useEffect(() => {
-    console.error("[MOLD] Runtime Exception:", error)
+    logger.error("[MOLD] Runtime Exception:", error)
   }, [error])
 
   return (
