@@ -442,8 +442,7 @@ export function AnalyticsDashboard() {
 
               {actualRuns.length === 0 ? (
                 <div className="p-8 text-center space-y-2">
-                  <p className="text-xs text-muted-foreground font-mono">
-                    No completed quiz runs recorded for this subject filter yet.
+                  <p className="text-xs text-muted-foreground font-mono" role="status" aria-live="polite"> No completed quiz runs recorded for this subject filter yet.
                   </p>
                   <Link
                     href="/"
@@ -680,8 +679,7 @@ export function AnalyticsDashboard() {
             </div>
 
             {recentEvents.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground text-xs">
-                No events currently in memory. Answer quiz questions or click elements on the page to watch real telemetry stream.
+              <div className="text-center py-12 text-muted-foreground text-xs" role="status" aria-live="polite"> No events currently in memory. Answer quiz questions or click elements on the page to watch real telemetry stream.
               </div>
             ) : (
               <div className="space-y-1.5 max-h-[500px] overflow-y-auto pr-2">

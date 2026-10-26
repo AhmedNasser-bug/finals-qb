@@ -39,10 +39,10 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label="Review Deck Drawer"
-        tabIndex={-1}
         onKeyDown={(e) => e.stopPropagation()} // Stop keyboard propagation to game card
         className={cn(
           "fixed top-0 right-0 z-50 h-screen w-full max-w-md md:max-w-2xl bg-card border-l border-border shadow-2xl flex flex-col transition-all duration-300 transform select-text",
@@ -92,8 +92,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
           {entries.length === 0 ? (
             <div className="h-64 flex flex-col items-center justify-center border border-dashed border-border/80 rounded p-6 text-center space-y-2">
               <span className="font-mono text-xl text-muted-foreground">0_ENTRIES</span>
-              <div className="font-sans text-xs text-muted-foreground max-w-xs leading-relaxed">
-                No mistakes or hint requests recorded yet. Questions you struggle with or use hints on will automatically accumulate in this deck for instant review.
+              <div className="font-sans text-xs text-muted-foreground max-w-xs leading-relaxed" role="status" aria-live="polite"> No mistakes or hint requests recorded yet. Questions you struggle with or use hints on will automatically accumulate in this deck for instant review.
               </div>
             </div>
           ) : (

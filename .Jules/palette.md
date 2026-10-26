@@ -133,3 +133,6 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+## 2026-10-26 - [Accessibility Form and Interaction Standardizations]
+**Learning:** Purely decorative `<svg>` tags lacking `aria-hidden="true"`, missing `type="button"` on interactive controls, and event swallowing during keyboard trap logic negatively impacts screen reader compliance and UX.
+**Action:** Enforce strict ARIA labeling on all interactive elements, explicitly add `type="button"` on non-submit buttons, assign `aria-hidden` to structural iconography, and implement proper DOM event propagation in focus traps using `{ capture: true }`.

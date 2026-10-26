@@ -18,7 +18,7 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
       if (e.key !== "Tab" || !el) return
 
       const focusable = el.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
       )
       if (focusable.length === 0) return
 
@@ -34,8 +34,8 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
       }
     }
 
-    document.addEventListener("keydown", handleTab)
-    return () => document.removeEventListener("keydown", handleTab)
+    document.addEventListener("keydown", handleTab, true)
+    return () => document.removeEventListener("keydown", handleTab, true)
   }, [])
 
   const { unlocked, locked } = useMemo(() => {
