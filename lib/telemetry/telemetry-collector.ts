@@ -104,10 +104,11 @@ class TelemetryCollector {
       const raw = localStorage.getItem(key)
       const existing: CognitiveTelemetryEvent[] = raw ? JSON.parse(raw) : []
       existing.push(event)
+      let eventsToSave = existing;
       if (existing.length > MAX_STORED_EVENTS) {
-        existing.splice(0, existing.length - MAX_STORED_EVENTS)
+        eventsToSave = existing.slice(-MAX_STORED_EVENTS)
       }
-      localStorage.setItem(key, JSON.stringify(existing))
+      localStorage.setItem(key, JSON.stringify(eventsToSave))
     } catch {}
   }
 }
