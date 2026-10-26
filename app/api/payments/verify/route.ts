@@ -72,12 +72,13 @@ export async function GET(request: NextRequest) {
     )
 
     const activeSubscriptions: string[] = []
-    if (subscriber?.subscriptions) {
-      for (const [prodId, sub] of Object.entries<any>(subscriber.subscriptions)) {
-        if (!sub.expires_date || new Date(sub.expires_date).getTime() > Date.now()) {
-          activeSubscriptions.push(prodId)
-        }
+    const subscriptions = subscriber?.subscriptions || {}
+
+    for (const [prodId, sub] of Object.entries<any>(subscriptions)) {
+      if (sub.expires_date && new Date(sub.expires_date).getTime() <= Date.now()) {
+        continue
       }
+      activeSubscriptions.push(prodId)
     }
 
     const result: PaymentVerifyResponse = {

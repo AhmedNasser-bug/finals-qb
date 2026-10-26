@@ -169,17 +169,12 @@ export function computeLiveLighthouseReport(): LighthouseAuditReport {
   let seoScore = 100
 
   // ── 1. REAL PERFORMANCE AUDIT ──────────────────────────────────────────
-  if (live.fcpMs > 1800) perfScore -= 15
-  else if (live.fcpMs > 1000) perfScore -= 5
+  const fcpPenalty = live.fcpMs > 1800 ? 15 : live.fcpMs > 1000 ? 5 : 0
+  const lcpPenalty = live.lcpMs > 2500 ? 20 : live.lcpMs > 1500 ? 5 : 0
+  const tbtPenalty = live.tbtMs > 200 ? 20 : live.tbtMs > 50 ? 5 : 0
+  const clsPenalty = live.clsScore > 0.1 ? 15 : live.clsScore > 0.05 ? 5 : 0
 
-  if (live.lcpMs > 2500) perfScore -= 20
-  else if (live.lcpMs > 1500) perfScore -= 5
-
-  if (live.tbtMs > 200) perfScore -= 20
-  else if (live.tbtMs > 50) perfScore -= 5
-
-  if (live.clsScore > 0.1) perfScore -= 15
-  else if (live.clsScore > 0.05) perfScore -= 5
+  perfScore -= (fcpPenalty + lcpPenalty + tbtPenalty + clsPenalty)
 
   audits.push({
     id: "aud-fcp",
