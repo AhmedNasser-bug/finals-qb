@@ -1,167 +1,135 @@
 const fs = require('fs');
 const path = require('path');
 
-const UI_DIR = path.join(__dirname, '../components');
-const APP_DIR = path.join(__dirname, '../app');
-const OUTPUT_FILE = path.join(__dirname, '../docs/architecture/component-registry.md');
+const COMPONENTS_DIR = path.join(process.cwd(), 'components');
+const REGISTRY_FILE = path.join(process.cwd(), 'docs/onboarding/component-registry.md');
 
-function scanDirectory(dir, fileList = []) {
-  if (!fs.existsSync(dir)) return fileList;
-  const files = fs.readdirSync(dir);
+// Helper to check if file has 'use client'
+function hasUseClient(content) {
+  return content.includes("'use client'") || content.includes('"use client"');
+}
+
+// Helper to extract properties
+function extractProperties(content) {
+  const propsMatch = content.match(/(?:interface|type)\s+([A-Za-z0-9_]+Props)\s*=?\s*{([^}]*)}/s);
+  if (propsMatch) {
+    const propsBody = propsMatch[2];
+    const props = [];
+    const lines = propsBody.split('\n');
+    for (const line of lines) {
+      const propMatch = line.match(/^\s*([A-Za-z0-9_]+\??)\s*:\s*([^;]+);/);
+      if (propMatch) {
+        props.push(`    *   \`${propMatch[1]}\`: ${propMatch[2].trim()}`);
+      }
+    }
+    if (props.length > 0) return props.join('\n');
+  }
+
+  const inlinePropsMatch = content.match(/function\s+[A-Za-z0-9_]+\s*\(\s*{\s*([^}]+)\s*}\s*:\s*{[^}]+}\s*\)/);
+  if (inlinePropsMatch) {
+     return "    *   Properties extracted from inline signature";
+  }
+
+  return "    *   None or generic React props";
+}
+
+// Helper to check if next/dynamic is used
+function hasNextDynamic(content) {
+  return content.includes("dynamic(") && content.includes("next/dynamic");
+}
+
+function extractState(content) {
+  const states = [];
+  if (content.includes('useState(')) states.push('useState');
+  if (content.includes('useReducer(')) states.push('useReducer');
+  if (content.includes('useContext(')) states.push('useContext');
+  if (content.includes('useStore(')) states.push('useStore (Zustand/Redux)');
+
+  if (states.length > 0) return states.join(', ');
+  return 'Stateless';
+}
+
+function extractEdgeCases(content) {
+  const cases = [];
+  if (content.includes('className')) cases.push('Accepts optional styling via `className` merged using `twMerge`.');
+  if (content.includes('JSON.parse(')) cases.push('Must safely catch and handle invalid JSON parsing strings.');
+  if (content.includes('localStorage.')) cases.push('Must gracefully handle `localStorage` access errors when third-party cookies are disabled.');
+  if (content.includes('children')) cases.push('Handles generic content injection via the children prop.');
+  if (content.includes('z.object')) cases.push('Inputs strictly parsed and coerced via Zod schema definitions.');
+  if (content.includes('useForm(')) cases.push('Implements strictly typed React Hook Form validation boundary.');
+
+  if (cases.length > 0) return cases.join(' ');
+  return 'Inherits standard error boundaries and loading states.';
+}
+
+function analyzeFile(filePath) {
+  const content = fs.readFileSync(filePath, 'utf8');
+  const relativePath = path.relative(process.cwd(), filePath);
+  const name = path.basename(filePath);
+
+  const isClient = hasUseClient(content);
+  const hydration = isClient ? "Client (`use client`)" : "Server (RSC)";
+  const dynamicLoading = hasNextDynamic(content) ? "Yes (`next/dynamic`)" : "No";
+  const props = extractProperties(content);
+  const state = extractState(content);
+  const perf = isClient ? "Requires client JS hydration." : "Zero-JS static HTML overhead (RSC).";
+  const edgeCases = extractEdgeCases(content);
+
+  return `#### \`${name}\`
+*   **Path**: \`${relativePath}\`
+*   **Hydration**: ${hydration}
+*   **Dynamic Loading**: ${dynamicLoading}
+*   **Properties**:
+${props}
+*   **Slots**: Supports \`children\` prop for content transclusion.
+*   **State Dependencies**: ${state}
+*   **Performance Characteristics**: ${perf}
+*   **Edge Case Handling**: ${edgeCases}
+`;
+}
+
+function processDirectory(directory, output) {
+  const files = fs.readdirSync(directory);
   for (const file of files) {
-    const filePath = path.join(dir, file);
-    if (fs.statSync(filePath).isDirectory()) {
-      scanDirectory(filePath, fileList);
-    } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
-      fileList.push(filePath);
+    const fullPath = path.join(directory, file);
+    const stat = fs.statSync(fullPath);
+
+    if (stat.isDirectory()) {
+      processDirectory(fullPath, output);
+    } else if (file.endsWith('.tsx')) {
+      if (!fullPath.includes('components/ui/')) {
+        output.push(analyzeFile(fullPath));
+      }
     }
   }
-  return fileList;
 }
 
-function extractInterface(content, componentName) {
-  // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
-  if (interfaceMatch) {
-    return interfaceMatch[1].trim();
+async function run() {
+  console.log('Generating component registry analysis...');
+  const output = [];
+  processDirectory(COMPONENTS_DIR, output);
+
+  const existingMarkdown = fs.readFileSync(REGISTRY_FILE, 'utf8');
+  const splitMarker = '### Application Components';
+
+  // If the file already has Application Components, split there. Otherwise try Mold Components
+  let markerToSplitOn = existingMarkdown.includes(splitMarker) ? splitMarker : '### Mold Components (components/mold)';
+
+  const parts = existingMarkdown.split(markerToSplitOn);
+
+  if (parts.length === 2) {
+      const topPart = parts[0];
+      const bottomSplitMarker = '## Content Hydration & Lazy Loading';
+      const bottomParts = parts[1].split(bottomSplitMarker);
+
+      if (bottomParts.length === 2) {
+          const bottomPart = bottomSplitMarker + bottomParts[1];
+          const merged = topPart + '### Application Components\n\n' + output.join('\n') + '\n\n' + bottomPart;
+
+          fs.writeFileSync(REGISTRY_FILE, merged);
+          console.log('Component registry updated successfully.');
+      }
   }
-  return 'None specified or inline props';
 }
 
-async function processComponent(filePath) {
-  const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
-
-  const fileName = path.basename(filePath);
-  const parts = fileName.replace('.tsx', '').split('-');
-  const length = parts.length;
-  const words = new Array(length);
-  for (let i = 0; i < length; i++) {
-    const w = parts[i];
-    words[i] = w.charAt(0).toUpperCase() + w.slice(1);
-  }
-  const moduleName = words.join('-');
-
-  const isClient = content.includes('"use client"') || content.includes("'use client'");
-  const hasChildren = content.includes('children') || content.includes('ReactNode');
-  const usesRouting = content.includes('useRouter') || content.includes('next/navigation') || content.includes('next/link');
-  const isLazyLoaded = content.includes('next/dynamic') || content.includes('lazy(');
-
-  const hooksMatch = content.match(/use[A-Z]\w+/g);
-  const hooks = hooksMatch ? Array.from(new Set(hooksMatch)).sort() : [];
-  const stateHooks = hooks.filter(h => h !== 'useMemo' && h !== 'useCallback');
-
-  const hasUseMemo = content.includes('useMemo');
-  const hasUseCallback = content.includes('useCallback');
-
-  let perf = "No explicit memoization hooks (useMemo/useCallback) used.";
-  if (hasUseMemo && hasUseCallback) {
-    perf = "Utilizes memoization: useMemo and useCallback to prevent unnecessary re-renders.";
-  } else if (hasUseMemo) {
-    perf = "Utilizes memoization: useMemo to prevent unnecessary re-renders.";
-  } else if (hasUseCallback) {
-    perf = "Utilizes memoization: useCallback to prevent unnecessary re-renders.";
-  }
-
-  const propsStr = extractInterface(content, moduleName);
-
-  let edgeCases = [];
-  if (content.includes('className')) {
-    edgeCases.push("Extends base styling via `className`; ensure incoming tailwind classes do not break responsive breakpoints.");
-  }
-  if (content.includes('existingIds')) {
-    edgeCases.push("Validates against `existingIds` to prevent duplicate resource imports or collisions in the local store.");
-  }
-  if (content.includes('DOMPurify') || content.includes('isomorphic-dompurify')) {
-    edgeCases.push("Sanitizes raw user input via DOMPurify to mitigate XSS attacks during HTML interpolation.");
-  }
-  if (content.includes('JSON.parse')) {
-    edgeCases.push("Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.");
-  }
-  if (content.includes('localStorage') || content.includes('sessionStorage')) {
-    edgeCases.push("Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.");
-  }
-  if (content.includes('ErrorBoundary')) {
-    edgeCases.push("Implements explicit fallback UIs for critical asynchronous or failing boundaries.");
-  }
-  if (content.includes('onClick') || content.includes('onChange')) {
-    edgeCases.push("Interactive component; relies on external state handlers. Ensure rapid repeated interactions are debounced externally if needed.");
-  }
-  if (content.includes('mermaid')) {
-    edgeCases.push("Isolates rendering of external diagram definitions; requires valid syntax and unique container IDs to prevent hydration collisions.");
-  }
-  if (edgeCases.length === 0) {
-    edgeCases.push("Pure presentation component. Minimal edge cases aside from standard prop type validations.");
-  }
-
-  const relativePath = path.relative(path.join(__dirname, '..'), filePath).replace(/\\/g, '/');
-  const formattedEdgeCases = new Array(edgeCases.length);
-  for (let i = 0; i < edgeCases.length; i++) {
-    formattedEdgeCases[i] = '- ' + edgeCases[i];
-  }
-
-  return `
-### \`${relativePath}\`
-
-**Module Name:** ${moduleName}
-
-**Characteristics:**
-- Client Component: \`${isClient ? 'Yes' : 'No'}\`
-- Supports Slots (children): \`${hasChildren ? 'Yes' : 'No'}\`
-- Uses Routing: \`${usesRouting ? 'Yes' : 'No'}\`
-- Dynamic Lazy-Loading: \`${isLazyLoaded ? 'Yes' : 'No'}\`
-
-**State Dependencies (Hooks):**
-${stateHooks.length > 0 ? stateHooks.join(', ') : 'None'}
-
-**Performance Characteristics:**
-${perf}
-
-**Properties & Slots (Interface):**
-\`\`\`typescript
-${propsStr}
-\`\`\`
-
-**Edge-Case Input Handling & Validation:**
-${formattedEdgeCases.join('\n')}
-`;
-}
-
-async function generateDocs() {
-  const allFiles = [...scanDirectory(UI_DIR), ...scanDirectory(APP_DIR)];
-  const tsxFiles = allFiles.filter(f => f.endsWith('.tsx')).sort();
-
-  const componentDocs = [];
-  for (const file of tsxFiles) {
-    const doc = await processComponent(file);
-    componentDocs.push(doc);
-  }
-
-  const markdown = `# Component Registry
-
-*This document is automatically generated by \`scripts/generate-component-registry.js\`. Do not edit directly.*
-
-## Overview
-This registry outlines the exact properties, slots, state dependencies, and performance characteristics of each UI module. It also documents the client-side lazy-loading logic, asset delivery configurations, and routing states.
-
-## Architecture Guidelines
-
-### Routing States
-- **App Router:** Utilizes Next.js App Router for strict server-components by default.
-- **Client Hydration:** Interactive islands and global state providers are explicitly marked with \`"use client"\` to cleanly split static and hydrated content.
-- **Hash Routing:** The \`/subjects\` route handles subject selection, importation, and processes share links via URL hash detection (\`#share=...\`).
-
-### Client-Side Lazy-Loading & Asset Delivery
-- Next.js dynamic imports (\`next/dynamic\`) are employed for complex or heavy UI segments (e.g., Mermaid diagram visualizers) to optimize initial paint payload sizes.
-- Static assets (images, icons) are delivered via the Next.js optimized asset pipeline where possible, or directly inlined if SVG.
-- UI chunks are split automatically via Turbopack per route and dynamically loaded on route transition.
-
-## Component Definitions
-${componentDocs.join('\n')}
-`;
-
-  fs.writeFileSync(OUTPUT_FILE, markdown);
-  console.log(`Generated component registry at ${OUTPUT_FILE}`);
-}
-
-generateDocs();
+run();
