@@ -8,7 +8,7 @@
 
 import type { CognitiveTelemetryEvent } from "./telemetry-types"
 import { getNamespacedKey } from "../utils/user-storage"
-import { logger } from "@/lib/logger"
+import { logger, maskData } from "@/lib/logger"
 
 const TELEMETRY_BASE_KEY = "mold_v2_telemetry_events"
 const MAX_STORED_EVENTS = 500
@@ -28,18 +28,20 @@ class TelemetryCollector {
       event.timestamp = new Date().toISOString()
     }
 
-    this.inMemoryEvents.push(event)
+    const maskedEvent = maskData(event)
+
+    this.inMemoryEvents.push(maskedEvent)
     if (this.inMemoryEvents.length > MAX_STORED_EVENTS) {
       this.inMemoryEvents.shift()
     }
 
     // Persist to localStorage safely
-    this.persistEvent(event, userId)
+    this.persistEvent(maskedEvent, userId)
 
     // Notify listeners synchronously
     this.listeners.forEach((listener) => {
       try {
-        listener(event)
+        listener(maskedEvent)
       } catch (err) {
         logger.error("Telemetry listener error:", err)
       }
