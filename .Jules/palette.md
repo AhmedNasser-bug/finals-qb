@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-10-27 - Explicit aria-hidden attributes on SVGs
+**Learning:** Purely decorative icons/SVG elements without the `aria-hidden="true"` attribute can cause proper screen-reader compliance issues. Even when rendered functionally or embedded in accessible buttons, ensuring that non-informative vectors are explicitly hidden from the accessibility tree prevents redundant or unhelpful announcements and cleans up the accessible name calculation.
+**Action:** As a strict accessibility standard, purely decorative icons/SVG elements must explicitly include the `aria-hidden="true"` attribute.
