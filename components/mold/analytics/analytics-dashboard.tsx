@@ -441,7 +441,7 @@ export function AnalyticsDashboard() {
               </div>
 
               {actualRuns.length === 0 ? (
-                <div className="p-8 text-center space-y-2">
+                <div className="p-8 text-center space-y-2" role="status" aria-live="polite">
                   <p className="text-xs text-muted-foreground font-mono">
                     No completed quiz runs recorded for this subject filter yet.
                   </p>

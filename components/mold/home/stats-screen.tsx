@@ -261,7 +261,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
             </div>
 
             {categoryStats.length === 0 ? (
-              <div className="p-4 border border-dashed border-border/60 rounded text-center text-xs font-mono text-muted-foreground">
+              <div className="p-4 border border-dashed border-border/60 rounded text-center text-xs font-mono text-muted-foreground" role="status" aria-live="polite">
                 No active subject telemetry recorded yet.
               </div>
             ) : (
