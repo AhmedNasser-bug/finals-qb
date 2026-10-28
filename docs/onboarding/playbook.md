@@ -1,6 +1,6 @@
 # Developer Onboarding Playbook
 
-## 1. Workspace Setup & Initialization
+## **1. Workspace Setup & Initialization**
 
 **Follow these steps to initialize your local workspace and start the multi-tenant development sandbox:**
 
@@ -25,7 +25,7 @@
    ```
    **Rule:** Never use `npm` or `yarn`. `pnpm` is the sole canonical package manager for this repository.
 
-## 2. Testing Workflows
+## **2. Testing Workflows**
 
 **The repository uses the native `node:test` runner.**
 
@@ -42,7 +42,7 @@
    pnpm dev
    ```
 
-## 3. Pull Request Validation Rules
+## **3. Pull Request Validation Rules**
 
 **Before creating a Pull Request, ensure that the following requirements are met:**
 
