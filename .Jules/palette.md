@@ -133,3 +133,6 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+## 2023-11-20 - [Refactor AddQuestionsWizard]
+**Learning:** Monolithic components containing step-by-step wizards often hide shared state props deep in their hierarchies, creating unmaintainable code boundaries. By explicitly defining Prop interfaces per-step, we isolate those boundaries and dramatically increase structural cohesion.
+**Action:** When a template rendering file exceeds 500 lines due to internal step or sub-component logic, proactively partition the logic out into adjacent directories and type standard Props.
