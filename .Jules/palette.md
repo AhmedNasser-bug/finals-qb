@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2024-11-21 - Decorative SVGs and Implicit Form Submissions
+**Learning:** Purely decorative `<svg>` elements used as icons (without functional fallback text) often confuse screen readers unless explicitly marked with `aria-hidden="true"`. Similarly, generic `<button>` elements rendered without an explicit `type` attribute default to `type="submit"`. In a React app, clicking such a button inside a component that happens to be nested within a form can trigger an implicit form submission, causing unexpected layout jumps or full-page reloads.
+**Action:** As a standard UX and accessibility practice, always explicitly add `aria-hidden="true"` to decorative `<svg>` elements and explicitly add `type="button"` to generic UI `<button>` elements to prevent implicit form submissions. When making global script-based replacements, ensure guards against injecting duplicate attributes to prevent TypeScript compilation errors (`TS17001`).
