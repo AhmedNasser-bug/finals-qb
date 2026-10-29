@@ -26,7 +26,8 @@ describe("Top Navigation Bar Mobile Responsiveness & Utility Drawer", () => {
   })
 
   test("top-nav-bar.tsx renders all key utilities in the mobile drawer", () => {
-    const content = fs.readFileSync(topNavPath, "utf-8")
+    const drawerPath = path.join(process.cwd(), "components/mold/home/mobile-top-nav-drawer.tsx")
+    const content = fs.existsSync(drawerPath) ? fs.readFileSync(drawerPath, "utf-8") : fs.readFileSync(topNavPath, "utf-8")
     assert.ok(content.includes('id="mobile-top-nav-drawer"'), "Drawer element must have id matching aria-controls")
     assert.ok(content.includes("AUDIO"), "Drawer must provide audio mute control")
     assert.ok(content.includes("THEME"), "Drawer must provide light/dark theme control")
