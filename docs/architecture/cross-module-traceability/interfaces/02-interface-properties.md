@@ -15,3 +15,4 @@ Defined heavily in `lib/types/mold-types.ts`, the principal models dictating the
 ### Interface Properties
 - **Subject Validation Interface (`SubjectSchema`)**: Validates inbound JSON to ensure the structure strictly conforms to the `FullSubjectData` type, guaranteeing stability across the persistence layer.
 - **Game Engine Dispatch Interface**: Component interactions dispatch structured objects (e.g. `{ type: 'ANSWER', payload: ... }`) ensuring predictability within the reducer pipeline.
+- **Achievement Evaluation Interface**: `evaluateCondition(condition: AchievementCondition, state: GameState, allRuns: RunRecord[])` strictly dictates how runtime state maps to progression unlocks.

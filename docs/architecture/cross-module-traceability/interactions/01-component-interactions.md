@@ -6,8 +6,8 @@ This document maps the architectural component interactions across frontend clie
 
 ### Frontend Client Apps & Next.js App Router
 The frontend application uses Next.js 16 with the App Router.
-- `app/layout.tsx`: The root layout of the application, managing global styles and context providers.
-- `app/page.tsx`: The home page module where initial routing and interaction happens.
+- `app/layout.tsx`: The root layout of the application, managing global styles, fonts (Geist), metadata, and context providers (e.g. `ClerkProvider`).
+- `app/page.tsx`: The home page module where initial routing and interaction happens. Renders `<HomeScreen />`.
 - `app/subjects/page.tsx`: Subject management page.
 - Domain-specific components are localized in `components/mold/` (e.g. `HomeScreen`, `GameRunner`, `SubjectImporter`).
 

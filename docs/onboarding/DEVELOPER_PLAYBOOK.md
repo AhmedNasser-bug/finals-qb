@@ -20,7 +20,7 @@
 3. **Install Dependencies & Launch:**
    Install project dependencies and start the development server using `pnpm` exclusively:
    ```bash
-   pnpm install
+   pnpm install --frozen-lockfile --prefer-offline
    pnpm dev
    ```
    **Rule:** Never use `npm` or `yarn`. `pnpm` is the sole canonical package manager for this repository.
