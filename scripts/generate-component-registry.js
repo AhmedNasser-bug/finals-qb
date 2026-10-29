@@ -19,14 +19,64 @@ function scanDirectory(dir, fileList = []) {
   return fileList;
 }
 
-function extractInterface(content, componentName) {
-  // Fix interface regex extraction to handle brackets
-  const interfaceMatch = content.match(/interface\s+\w*(?:Props)?\s*\{([\s\S]*?)\n\}/) ||
-                         content.match(/type\s+\w*(?:Props)?\s*=\s*\{([\s\S]*?)\n\}/);
-  if (interfaceMatch) {
-    return interfaceMatch[1].trim();
+function extractInterface(content) {
+  const interfaces = [];
+
+  // Extract interfaces
+  const interfaceRegex = /export\s+interface\s+\w+(?:Props)?\s*\{([\s\S]*?)\n\}/g;
+  let match;
+  while ((match = interfaceRegex.exec(content)) !== null) {
+    interfaces.push(match[1].trim());
   }
-  return 'None specified or inline props';
+
+  // Extract type aliases
+  const typeRegex = /export\s+type\s+\w+(?:Props)?\s*=\s*(?:[\w\s&]+)?\{([\s\S]*?)\n\}/g;
+  while ((match = typeRegex.exec(content)) !== null) {
+    interfaces.push(match[1].trim());
+  }
+
+  // Extract interfaces extending others
+  const extendRegex = /export\s+interface\s+\w+(?:Props)?\s+extends[^{]*\{([\s\S]*?)\n\}/g;
+  while ((match = extendRegex.exec(content)) !== null) {
+    interfaces.push(match[1].trim());
+  }
+
+  // Look for inline props type definitions or local interfaces if none found
+  if (interfaces.length === 0) {
+      const localInterfaceRegex = /interface\s+\w+(?:Props)?\s*\{([\s\S]*?)\n\}/g;
+      while ((match = localInterfaceRegex.exec(content)) !== null) {
+          interfaces.push(match[1].trim());
+      }
+  }
+
+  if (interfaces.length === 0) {
+      const localTypeRegex = /type\s+\w+(?:Props)?\s*=\s*(?:[\w\s&]+)?\{([\s\S]*?)\n\}/g;
+      while ((match = localTypeRegex.exec(content)) !== null) {
+          interfaces.push(match[1].trim());
+      }
+  }
+
+  // Also support inline props where functional component defines props directly
+  if (interfaces.length === 0) {
+    const inlinePropsRegex = /export\s+(?:default\s+)?function\s+\w+\s*\(\s*\{\s*([\s\S]*?)\s*\}\s*:\s*\{([\s\S]*?)\}/g;
+    while ((match = inlinePropsRegex.exec(content)) !== null) {
+        interfaces.push(match[2].trim());
+    }
+  }
+
+  // Handle generic react elements without explicit types (like forwardRef with inline types)
+  if (interfaces.length === 0) {
+      const typeStr = content.match(/export\s+interface\s+\w+Props[\s\S]*?\n\}/);
+      if (typeStr) {
+          const m = typeStr[0].match(/\{([\s\S]*)\}/);
+          if (m) interfaces.push(m[1].trim());
+      }
+  }
+
+  if (interfaces.length === 0) {
+    return 'None specified or inline props';
+  }
+  return interfaces.join('\n\n');
 }
 
 async function processComponent(filePath) {
@@ -63,7 +113,7 @@ async function processComponent(filePath) {
     perf = "Utilizes memoization: useCallback to prevent unnecessary re-renders.";
   }
 
-  const propsStr = extractInterface(content, moduleName);
+  const propsStr = extractInterface(content);
 
   let edgeCases = [];
   if (content.includes('className')) {
@@ -77,6 +127,9 @@ async function processComponent(filePath) {
   }
   if (content.includes('JSON.parse')) {
     edgeCases.push("Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.");
+  }
+  if (content.includes('z.object(') || content.includes('zod')) {
+      edgeCases.push("Implements Zod schema validation; carefully handle edge cases around malformed input and unexpected properties via safeParse.");
   }
   if (content.includes('localStorage') || content.includes('sessionStorage')) {
     edgeCases.push("Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.");
