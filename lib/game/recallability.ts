@@ -86,14 +86,18 @@ export function sortFullRevisionQuestions(allQuestions: Question[]): Question[] 
     categoryMap.get(cat)!.push(q)
   }
 
+  // ⚡ Bolt Optimization: Pre-calculate weights to avoid O(N log N) string manipulations
+  const weightCache = new Map<Question, number>()
+  for (const q of allQuestions) {
+    weightCache.set(q, getBloomsWeight(q))
+  }
+
   // 2. Stable sort questions within each category by Bloom's taxonomy difficulty
   const sorted: Question[] = []
   for (const cat of categoryOrder) {
     const questionsInCat = categoryMap.get(cat)!
     const sortedInCat = [...questionsInCat].sort((a, b) => {
-      const weightA = getBloomsWeight(a)
-      const weightB = getBloomsWeight(b)
-      return weightA - weightB
+      return (weightCache.get(a) || 3) - (weightCache.get(b) || 3)
     })
     sorted.push(...sortedInCat)
   }

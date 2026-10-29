@@ -9,3 +9,6 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+## 2024-10-29 - [Optimize Bloom's Taxonomy Sorting Overhead]
+**Learning:** Calling functions that perform string operations (like `.trim()` or `.toLowerCase()`) directly inside `Array.sort()` comparator functions creates a significant O(N log N) latency bottleneck.
+**Action:** Pre-calculated Bloom's Taxonomy weights into a `Map` cache in `sortFullRevisionQuestions` to achieve O(1) weight lookups during the sorting loop, reducing execution time.
