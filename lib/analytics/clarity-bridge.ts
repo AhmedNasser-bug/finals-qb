@@ -189,26 +189,36 @@ export function attachFrictionDetector(activeSubjectId: string = "human-computer
   const handleScroll = () => {
     const now = Date.now()
     const currentY = window.scrollY
-    if (lastScrollTime > 0) {
-      const dt = (now - lastScrollTime) / 1000
-      if (dt > 0.05) {
-        const dy = Math.abs(currentY - lastScrollY)
-        const velocity = dy / dt
-        if (velocity > EXCESSIVE_SCROLL_VELOCITY) {
-          const scrollEvent: ExcessiveScrollEvent = {
-            id: `scroll_${now}_${Math.random().toString(36).substring(2, 6)}`,
-            type: "excessive_scroll",
-            timestamp: new Date().toISOString(),
-            subjectId: activeSubjectId,
-            category: "behavioral-friction",
-            scrollVelocity: Math.round(velocity),
-            direction: currentY > lastScrollY ? "down" : "up",
-          }
-          telemetryCollector.record(scrollEvent)
-          trackClarityEvent("excessive_scroll", { velocity: Math.round(velocity) })
-        }
-      }
+
+    if (lastScrollTime <= 0) {
+      lastScrollY = currentY
+      lastScrollTime = now
+      return
     }
+
+    const dt = (now - lastScrollTime) / 1000
+    if (dt <= 0.05) {
+      lastScrollY = currentY
+      lastScrollTime = now
+      return
+    }
+
+    const dy = Math.abs(currentY - lastScrollY)
+    const velocity = dy / dt
+    if (velocity > EXCESSIVE_SCROLL_VELOCITY) {
+      const scrollEvent: ExcessiveScrollEvent = {
+        id: `scroll_${now}_${Math.random().toString(36).substring(2, 6)}`,
+        type: "excessive_scroll",
+        timestamp: new Date().toISOString(),
+        subjectId: activeSubjectId,
+        category: "behavioral-friction",
+        scrollVelocity: Math.round(velocity),
+        direction: currentY > lastScrollY ? "down" : "up",
+      }
+      telemetryCollector.record(scrollEvent)
+      trackClarityEvent("excessive_scroll", { velocity: Math.round(velocity) })
+    }
+
     lastScrollY = currentY
     lastScrollTime = now
   }

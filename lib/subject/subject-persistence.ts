@@ -286,12 +286,8 @@ function autoFixSingleQuestion(
     qObj.answer = qObj.answer.toUpperCase().trim();
     const hasLabel = normalizedOptions.some((opt: any) => opt.label === qObj.answer);
 
-    if (!hasLabel) {
-      if (!tryMapTextAnswer()) {
-        if (!tryMapBooleanAnswer()) {
-          applyDefaultAnswer();
-        }
-      }
+    if (!hasLabel && !tryMapTextAnswer() && !tryMapBooleanAnswer()) {
+      applyDefaultAnswer();
     }
   }
 
