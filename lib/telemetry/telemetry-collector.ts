@@ -8,7 +8,7 @@
 
 import type { CognitiveTelemetryEvent } from "./telemetry-types"
 import { getNamespacedKey } from "../utils/user-storage"
-import { logger } from "@/lib/logger"
+import { logger, maskData } from "@/lib/logger"
 
 const TELEMETRY_BASE_KEY = "mold_v2_telemetry_events"
 const MAX_STORED_EVENTS = 500
@@ -19,7 +19,8 @@ class TelemetryCollector {
   private inMemoryEvents: CognitiveTelemetryEvent[] = []
   private listeners: Set<TelemetryListener> = new Set()
 
-  public record(event: CognitiveTelemetryEvent, userId?: string | null): void {
+  public record(rawEvent: CognitiveTelemetryEvent, userId?: string | null): void {
+    const event = maskData(rawEvent) as CognitiveTelemetryEvent;
     // Add unique ID if missing
     if (!event.id) {
       event.id = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
@@ -30,7 +31,7 @@ class TelemetryCollector {
 
     this.inMemoryEvents.push(event)
     if (this.inMemoryEvents.length > MAX_STORED_EVENTS) {
-      this.inMemoryEvents.shift()
+      this.inMemoryEvents = this.inMemoryEvents.slice(-MAX_STORED_EVENTS)
     }
 
     // Persist to localStorage safely
@@ -102,10 +103,10 @@ class TelemetryCollector {
         userId
       )
       const raw = localStorage.getItem(key)
-      const existing: CognitiveTelemetryEvent[] = raw ? JSON.parse(raw) : []
+      let existing: CognitiveTelemetryEvent[] = raw ? JSON.parse(raw) : []
       existing.push(event)
       if (existing.length > MAX_STORED_EVENTS) {
-        existing.splice(0, existing.length - MAX_STORED_EVENTS)
+        existing = existing.slice(-MAX_STORED_EVENTS)
       }
       localStorage.setItem(key, JSON.stringify(existing))
     } catch {}
