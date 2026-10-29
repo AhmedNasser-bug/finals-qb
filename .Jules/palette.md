@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-10-25 - Comprehensive Accessibility Refactor (SVGs, Modals, Buttons)
+**Learning:** Purely decorative `<svg>` icons missing `aria-hidden="true"` clutter screen reader output. Custom modals (`role="dialog"`) missing `tabIndex={-1}` fail to properly trap focus upon initialization. Generic buttons without `type="button"` can trigger accidental form submissions. Fixing these at scale ensures robust accessibility and predictable component behavior.
+**Action:** Always include `aria-hidden="true"` on decorative SVGs, `tabIndex={-1}` on `role="dialog"` elements, and `type="button"` on interactive triggers not meant for form submission.

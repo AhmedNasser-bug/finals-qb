@@ -193,6 +193,28 @@
         "components/mold/home/mode-selector.tsx"
       ],
       "nonBreaking": true
+    },
+    {
+      "id": "accessibility-and-semantic-html-refactor",
+      "category": "accessibility",
+      "tier": 2,
+      "title": "Accessibility and Semantic HTML Refactor",
+      "implementedAt": "2026-10-25T12:00:00Z",
+      "componentsTouched": [
+        "app/pricing/page.tsx",
+        "components/mold/common/mermaid-diagram.tsx",
+        "components/mold/common/onboarding-screen.tsx",
+        "components/mold/game/game-icons.tsx",
+        "components/mold/home/action-hub.tsx",
+        "components/mold/home/mode-selector.tsx",
+        "components/mold/home/streak-ascent.tsx",
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/payment/paywall-modal.tsx",
+        "components/mold/subject/subject-importer-blocks.tsx",
+        "components/mold/subject/subject-importer-components.tsx",
+        "components/mold/subject/subject-selector-components.tsx"
+      ],
+      "nonBreaking": true
     }
   ]
 }
