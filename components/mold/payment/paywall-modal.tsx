@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useRef } from "react"
 import {
   X,
   Sparkles,
@@ -44,13 +44,30 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [purchaseError, setPurchaseError] = useState<string | null>(null)
   const [purchaseSuccess, setPurchaseSuccess] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
 
-  // Close on Escape key
+  // Close on Escape key and Trap Focus
   useEffect(() => {
     if (!isOpen) return
+    if (modalRef.current) modalRef.current.focus()
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose()
+      } else if (e.key === "Tab" && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey && (document.activeElement === first || !modalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && (document.activeElement === last || !modalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          first.focus()
+        }
       }
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -129,10 +146,12 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   return (
     <div
+      ref={modalRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
@@ -141,6 +160,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
         {/* Close Button */}
         <button
           onClick={onClose}
+          title="Close paywall modal"
           aria-label="Close paywall modal"
           className="absolute top-4 right-4 p-2 border border-border text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors rounded focus-ring"
         >
