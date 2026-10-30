@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-10-30 - Review Deck Drawer Accessibility and Escape Hotkey
+**Learning:** For custom side panel drawer overlays acting as dialogs, failing to implement Esc-to-close behavior causes user frustration. Also contextless close or clear buttons need detailed titles to boost screen reader contexts and user experience.
+**Action:** Always implement a global 'Escape' keydown listener to dismiss modal overlays like Review Deck drawers, and explicitly declare 'title' attributes on close and clear actions.

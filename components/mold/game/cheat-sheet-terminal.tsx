@@ -18,10 +18,14 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         e.preventDefault()
         toggleCheatSheet()
       }
+      if (e.key === "Escape" && isOpen) {
+        e.preventDefault()
+        setIsOpen(false)
+      }
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [toggleCheatSheet])
+  }, [toggleCheatSheet, isOpen, setIsOpen])
 
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
@@ -72,6 +76,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
               <button type="button"
                 onClick={clearEntries}
                 aria-label="Clear Deck"
+                title="Clear all cards from Review Deck"
                 className="text-muted-foreground hover:text-destructive font-mono text-[10px] uppercase border border-border hover:border-destructive/30 bg-secondary px-2.5 py-1 rounded transition-all cursor-pointer focus-ring"
               >
                 Clear Deck
@@ -80,6 +85,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
             <button type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close study deck review drawer"
+              title="Close study deck review drawer (Esc)"
               className="text-muted-foreground hover:text-foreground p-1 border border-border hover:border-primary/50 transition-colors cursor-pointer rounded"
             >
               <X className="w-4 h-4" aria-hidden="true" />
