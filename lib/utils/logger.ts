@@ -83,13 +83,12 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
 
     // Explicitly preserve custom properties
     for (const key of Object.getOwnPropertyNames(data)) {
-      if (key !== 'name' && key !== 'message' && key !== 'stack') {
-        const val = (data as any)[key];
-        if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
-          (maskedError as any)[key] = '[REDACTED]';
-        } else {
-          (maskedError as any)[key] = maskData(val, seen);
-        }
+      if (key === 'name' || key === 'message' || key === 'stack') continue;
+      const val = (data as any)[key];
+      if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
+        (maskedError as any)[key] = '[REDACTED]';
+      } else {
+        (maskedError as any)[key] = maskData(val, seen);
       }
     }
     return maskedError;
@@ -111,13 +110,12 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
 
   const maskedObj: Record<string, any> = {};
   for (const key in data) {
-    if (Object.prototype.hasOwnProperty.call(data, key)) {
-      const val = data[key];
-      if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
-        maskedObj[key] = '[REDACTED]';
-      } else {
-        maskedObj[key] = maskData(val, seen);
-      }
+    if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
+    const val = data[key];
+    if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
+      maskedObj[key] = '[REDACTED]';
+    } else {
+      maskedObj[key] = maskData(val, seen);
     }
   }
 
