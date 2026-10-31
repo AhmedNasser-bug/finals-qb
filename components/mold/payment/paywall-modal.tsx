@@ -44,6 +44,36 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [purchaseError, setPurchaseError] = useState<string | null>(null)
   const [purchaseSuccess, setPurchaseSuccess] = useState(false)
+  const overlayRef = React.useRef<HTMLDivElement>(null)
+
+  // Trap focus inside overlay
+  useEffect(() => {
+    const el = overlayRef.current
+    if (el && isOpen) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (!isOpen || e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    return () => document.removeEventListener("keydown", handleTab)
+  }, [isOpen])
 
   // Close on Escape key
   useEffect(() => {
@@ -129,17 +159,18 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   return (
     <div
+      ref={overlayRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"
+      tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in outline-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
     >
       <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-panel border border-border/80 shadow-2xl rounded-md p-6 sm:p-8 flex flex-col text-foreground focus:outline-none">
         {/* Close Button */}
-        <button
+        <button type="button"
           onClick={onClose}
           aria-label="Close paywall modal"
           className="absolute top-4 right-4 p-2 border border-border text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors rounded focus-ring"
@@ -183,7 +214,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
               </div>
             </div>
             {customerInfo?.managementURL && (
-              <button
+              <button type="button"
                 onClick={() => openCustomerCenter()}
                 className="flex items-center gap-1.5 px-3 py-1.5 border border-emerald-500/40 hover:border-emerald-400 bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold tracking-wider uppercase rounded transition-colors focus-ring"
               >
@@ -317,7 +348,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
           </div>
 
           <div className="flex items-center gap-3">
-            <button
+            <button type="button"
               onClick={handlePresentNative}
               disabled={isPurchasing}
               className="text-muted-foreground hover:text-primary underline underline-offset-4 font-mono text-[10px] tracking-wide uppercase transition-colors cursor-pointer"
@@ -326,7 +357,7 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
             </button>
 
             {customerInfo?.managementURL && (
-              <button
+              <button type="button"
                 onClick={() => openCustomerCenter()}
                 className="text-primary hover:underline underline-offset-4 font-mono text-[10px] tracking-wide uppercase transition-colors cursor-pointer flex items-center gap-1"
               >

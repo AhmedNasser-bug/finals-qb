@@ -171,11 +171,10 @@ export function TopNavBar({
       {/* Right controls */}
       <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
         {/* AI Pass Button */}
-        <button
+        <button type="button"
           onClick={() => openPaywall()}
           title={hasAiEntitlement ? "Finalists AI Active — Tap to view details" : "Upgrade to Finalists AI — Tap to unlock"}
           aria-label={hasAiEntitlement ? "Finalists AI Active" : "Upgrade to Finalists AI"}
-          type="button"
           className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 font-mono text-[9px] font-bold tracking-widest uppercase rounded transition-all focus-ring cursor-pointer min-h-[30px] select-none shrink-0 ${
             hasAiEntitlement
               ? "border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 shadow-[0_0_10px_hsla(160,84%,39%,0.15)]"
@@ -507,7 +506,7 @@ function ProtocolIcon({ className, 'aria-hidden': ariaHidden }: { className?: st
 
 function BookIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden="true" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" /><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
     </svg>
   )
