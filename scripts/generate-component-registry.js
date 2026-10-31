@@ -7,13 +7,17 @@ const OUTPUT_FILE = path.join(__dirname, '../docs/architecture/component-registr
 
 function scanDirectory(dir, fileList = []) {
   if (!fs.existsSync(dir)) return fileList;
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    if (fs.statSync(filePath).isDirectory()) {
-      scanDirectory(filePath, fileList);
-    } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
-      fileList.push(filePath);
+  const stack = [dir];
+  while (stack.length > 0) {
+    const currentDir = stack.pop();
+    const files = fs.readdirSync(currentDir);
+    for (const file of files) {
+      const filePath = path.join(currentDir, file);
+      if (fs.statSync(filePath).isDirectory()) {
+        stack.push(filePath);
+      } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
+        fileList.push(filePath);
+      }
     }
   }
   return fileList;
@@ -30,7 +34,11 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
+  let content = '';
+  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
+  for await (const chunk of stream) {
+    content += chunk;
+  }
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');

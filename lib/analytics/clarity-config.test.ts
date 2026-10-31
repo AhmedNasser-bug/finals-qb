@@ -26,9 +26,9 @@ describe("Microsoft Clarity NPM Package & Configuration Verification", () => {
     }
   })
 
-  test("clarity-analytics component imports @microsoft/clarity and initializes with default project ID", () => {
+  test("clarity-analytics component imports @microsoft/clarity and initializes with default project ID", async () => {
     assert.ok(fs.existsSync(componentPath), "clarity-analytics.tsx must exist")
-    const content = fs.readFileSync(componentPath, "utf-8")
+    const content = await fs.promises.readFile(componentPath, "utf-8")
 
     assert.ok(
       content.includes('import Clarity from "@microsoft/clarity"'),
@@ -82,9 +82,9 @@ describe("Microsoft Clarity NPM Package & Configuration Verification", () => {
     )
   })
 
-  test("root layout mounts MicrosoftClarity component with project ID yvia03evn3", () => {
+  test("root layout mounts MicrosoftClarity component with project ID yvia03evn3", async () => {
     assert.ok(fs.existsSync(layoutPath), "layout.tsx must exist")
-    const content = fs.readFileSync(layoutPath, "utf-8")
+    const content = await fs.promises.readFile(layoutPath, "utf-8")
 
     assert.ok(
       content.includes('import { MicrosoftClarity } from "@/components/analytics/clarity-analytics"'),
@@ -96,9 +96,9 @@ describe("Microsoft Clarity NPM Package & Configuration Verification", () => {
     )
   })
 
-  test("environment files document NEXT_PUBLIC_CLARITY_PROJECT_ID", () => {
+  test("environment files document NEXT_PUBLIC_CLARITY_PROJECT_ID", async () => {
     if (fs.existsSync(envLocalPath)) {
-      const localContent = fs.readFileSync(envLocalPath, "utf-8")
+      const localContent = await fs.promises.readFile(envLocalPath, "utf-8")
       assert.ok(
         localContent.includes("NEXT_PUBLIC_CLARITY_PROJECT_ID=yvia03evn3"),
         ".env.local should define NEXT_PUBLIC_CLARITY_PROJECT_ID"
@@ -106,7 +106,7 @@ describe("Microsoft Clarity NPM Package & Configuration Verification", () => {
     }
 
     if (fs.existsSync(envProdPath)) {
-      const prodContent = fs.readFileSync(envProdPath, "utf-8")
+      const prodContent = await fs.promises.readFile(envProdPath, "utf-8")
       assert.ok(
         prodContent.includes("NEXT_PUBLIC_CLARITY_PROJECT_ID="),
         ".env.production should declare NEXT_PUBLIC_CLARITY_PROJECT_ID"
