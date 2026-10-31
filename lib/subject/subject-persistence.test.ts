@@ -276,10 +276,10 @@ describe("parseSubjectJson", () => {
     });
   });
 
-  test("successfully parses and validates the newly merged subject file", () => {
+  test("successfully parses and validates the newly merged subject file", async () => {
     const filePath = path.join(process.cwd(), "public/examples/Merge-these-into-one-subject/MergedSubject.json");
     if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, "utf8");
+      const raw = await fs.promises.readFile(filePath, "utf8");
       const result = parseSubjectJson(raw);
       assert.strictEqual(result.parseError, undefined);
       const validation = validateSubjectData(result.data);
@@ -590,13 +590,13 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.strictEqual(data.flashcards, undefined);
   });
 
-  test("validates Human Computer Interaction server-side subject in public/examples", () => {
+  test("validates Human Computer Interaction server-side subject in public/examples", async () => {
     const hciPath = path.join(process.cwd(), "public/examples/human-computer-interaction.json");
     const duplicatePath = path.join(process.cwd(), "public/examples/hci_question_set.json");
     assert.ok(fs.existsSync(hciPath), "human-computer-interaction.json should exist");
     assert.ok(!fs.existsSync(duplicatePath), "hci_question_set.json should be consolidated and deleted");
 
-    const rawText = fs.readFileSync(hciPath, "utf-8");
+    const rawText = await fs.promises.readFile(hciPath, "utf-8");
     assert.ok(!/#[0-9a-fA-F]{3,6}/.test(rawText), "Should not contain hardcoded hex colors");
 
     const parsed = JSON.parse(rawText);
