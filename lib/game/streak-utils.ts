@@ -29,11 +29,10 @@ export function calculateDayStreak(runs: Array<{ date: string }>): number {
 
   const uniqueDates = Array.from(uniqueDatesSet).sort();
 
-  // 2. Resolve Today and Yesterday date strings
+  // 2. Resolve Today and Yesterday date strings (using pure UTC to prevent DST transition anomalies)
   const now = new Date();
   const todayStr = now.toISOString().substring(0, 10);
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
+  const yesterday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1));
   const yesterdayStr = yesterday.toISOString().substring(0, 10);
 
   // 3. Find the most recent active run date
@@ -44,12 +43,12 @@ export function calculateDayStreak(runs: Array<{ date: string }>): number {
     return 0;
   }
 
-  // 4. Trace backwards day-by-day and count consecutive occurrences
+  // 4. Trace backwards day-by-day and count consecutive occurrences (pure UTC noon anchor)
   let streak = 1;
-  let currentDate = new Date(lastActiveDate);
+  let currentDate = new Date(lastActiveDate + "T12:00:00.000Z");
 
   for (let i = uniqueDates.length - 2; i >= 0; i--) {
-    currentDate.setDate(currentDate.getDate() - 1);
+    currentDate.setUTCDate(currentDate.getUTCDate() - 1);
     const expectedStr = currentDate.toISOString().substring(0, 10);
 
     if (uniqueDates[i] === expectedStr) {
