@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-10-31 - Adding explicit type="button" to generic UI buttons and missing ARIA status roles
+**Learning:** Some UI generic buttons inside or near forms can cause unexpected form submissions if they lack `type="button"`. Also, in dynamic empty states like "No existing categories found" or dynamic step indicators, adding `role="status" aria-live="polite"` is essential for screen reader users to be notified of updates.
+**Action:** Always ensure `type="button"` is present on interactive non-form buttons, and verify that all dynamically rendered status messages or empty states include `role="status" aria-live="polite"`.

@@ -82,7 +82,7 @@ export function EncyclopediaOverlay({ subject, onClose }: EncyclopediaOverlayPro
           role="status"
           aria-live="polite"
         >
-          <p className="font-mono text-sm text-muted-foreground">
+          <p className="font-mono text-sm text-muted-foreground" role="status" aria-live="polite">
             No terminology data found in this subject.
           </p>
           <button type="button"
