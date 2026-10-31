@@ -589,4 +589,22 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.strictEqual(data.questions, undefined);
     assert.strictEqual(data.flashcards, undefined);
   });
+
+  test("validates Human Computer Interaction server-side subject in public/examples", () => {
+    const hciPath = path.join(process.cwd(), "public/examples/human-computer-interaction.json");
+    const duplicatePath = path.join(process.cwd(), "public/examples/hci_question_set.json");
+    assert.ok(fs.existsSync(hciPath), "human-computer-interaction.json should exist");
+    assert.ok(!fs.existsSync(duplicatePath), "hci_question_set.json should be consolidated and deleted");
+
+    const rawText = fs.readFileSync(hciPath, "utf-8");
+    assert.ok(!/#[0-9a-fA-F]{3,6}/.test(rawText), "Should not contain hardcoded hex colors");
+
+    const parsed = JSON.parse(rawText);
+    const validation = validateSubjectData(parsed);
+    assert.strictEqual(validation.valid, true, `Validation failed: ${validation.errors.join(", ")}`);
+    assert.strictEqual(validation.subject?.id, "human-computer-interaction");
+    assert.strictEqual(validation.subject?.name, "Human Computer Interaction");
+    assert.strictEqual(validation.subject?.questions.length, 60);
+    assert.strictEqual(validation.subject?.flashcards.length, 30);
+  });
 });

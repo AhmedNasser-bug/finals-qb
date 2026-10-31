@@ -274,7 +274,7 @@ export function AnalyticsDashboard() {
               className="bg-panel border border-border text-foreground text-xs font-mono px-2 py-1.5 rounded focus:border-primary focus:outline-none"
             >
               <option value="all">All Subjects (Combined)</option>
-              <option value="human-computer-interaction">Human-Computer Interaction (HCI)</option>
+              <option value="human-computer-interaction">Human Computer Interaction</option>
               <option value="theory-of-computation">Theory of Computation</option>
               <option value="system-programming">System Programming</option>
             </select>
