@@ -333,7 +333,7 @@ CRITICAL RULES:
               <Sparkles className="w-4 h-4 text-primary animate-pulse" aria-hidden="true" />
               <span>Add Questions to Subject Wizard</span>
             </h2>
-            <p className="text-[10px] font-mono text-zinc-500 mt-0.5 tracking-wider uppercase">
+            <p className="text-[10px] font-mono text-zinc-500 mt-0.5 tracking-wider uppercase" role="status" aria-live="polite">
               Step {step} of 5 — {steps[step - 1].label}
             </p>
           </div>
@@ -666,7 +666,7 @@ CRITICAL RULES:
                         ))}
                       </select>
                     ) : (
-                      <p className="text-xs font-mono text-zinc-600 uppercase">
+                      <p className="text-xs font-mono text-zinc-600 uppercase" role="status" aria-live="polite">
                         No existing categories found in this subject.
                       </p>
                     )}
