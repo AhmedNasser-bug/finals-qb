@@ -66,28 +66,26 @@ export async function POST(request: NextRequest) {
     // Check test bypass header for developer testing / CI runs
     const testBypass = request.headers.get("x-test-bypass-entitlement") === "true"
 
-    if (!testBypass) {
-      if (!appUserId) {
-        return NextResponse.json(
-          {
-            error: "Authentication & 'finalists_ai' entitlement required.",
-            code: "ENTITLEMENT_REQUIRED",
-          },
-          { status: 403 }
-        )
-      }
+    if (!testBypass && !appUserId) {
+      return NextResponse.json(
+        {
+          error: "Authentication & 'finalists_ai' entitlement required.",
+          code: "ENTITLEMENT_REQUIRED",
+        },
+        { status: 403 }
+      )
+    }
 
-      const hasEntitlement = await verifyEntitlement(appUserId)
-      if (!hasEntitlement) {
-        return NextResponse.json(
-          {
-            error: "Access denied. Active 'finalists_ai' entitlement required.",
-            code: "ENTITLEMENT_REQUIRED",
-            upgradeUrl: "#paywall",
-          },
-          { status: 403 }
-        )
-      }
+    const hasEntitlement = testBypass || await verifyEntitlement(appUserId as string)
+    if (!hasEntitlement) {
+      return NextResponse.json(
+        {
+          error: "Access denied. Active 'finalists_ai' entitlement required.",
+          code: "ENTITLEMENT_REQUIRED",
+          upgradeUrl: "#paywall",
+        },
+        { status: 403 }
+      )
     }
 
     logger.info("AI Subject Generation Initiated", { topic, level, appUserId })
