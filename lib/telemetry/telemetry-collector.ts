@@ -30,7 +30,8 @@ class TelemetryCollector {
 
     this.inMemoryEvents.push(event)
     if (this.inMemoryEvents.length > MAX_STORED_EVENTS) {
-      this.inMemoryEvents.shift()
+      // ⚡ Bolt Optimization: Use slice instead of shift/splice for faster array clipping
+      this.inMemoryEvents = this.inMemoryEvents.slice(-MAX_STORED_EVENTS)
     }
 
     // Persist to localStorage safely
@@ -61,7 +62,8 @@ class TelemetryCollector {
     return this.inMemoryEvents.filter((evt) => {
       if (filter?.subjectId && evt.subjectId !== filter.subjectId) return false
       if (filter?.type && evt.type !== filter.type) return false
-      if (filter?.sinceIso && new Date(evt.timestamp) < new Date(filter.sinceIso)) return false
+      // ⚡ Bolt Optimization: Avoid date parsing overhead in tight filtering loop
+      if (filter?.sinceIso && evt.timestamp < filter.sinceIso) return false
       return true
     })
   }
@@ -105,9 +107,12 @@ class TelemetryCollector {
       const existing: CognitiveTelemetryEvent[] = raw ? JSON.parse(raw) : []
       existing.push(event)
       if (existing.length > MAX_STORED_EVENTS) {
-        existing.splice(0, existing.length - MAX_STORED_EVENTS)
+        // ⚡ Bolt Optimization: Use slice for fast O(N) array trimming over O(N) shift
+        const next = existing.slice(-MAX_STORED_EVENTS)
+        localStorage.setItem(key, JSON.stringify(next))
+      } else {
+        localStorage.setItem(key, JSON.stringify(existing))
       }
-      localStorage.setItem(key, JSON.stringify(existing))
     } catch {}
   }
 }
