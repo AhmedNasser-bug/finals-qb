@@ -25,6 +25,47 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
+  const drawerRef = React.useRef<HTMLDivElement>(null)
+
+  // Trap focus inside drawer
+  useEffect(() => {
+    const el = drawerRef.current
+    if (el && isOpen) el.focus()
+
+    function handleTab(e: KeyboardEvent) {
+      if (!isOpen || e.key !== "Tab" || !el) return
+
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    // Add Escape key handler here as well
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("keydown", handleTab)
+    document.addEventListener("keydown", handleEscape)
+    return () => {
+      document.removeEventListener("keydown", handleTab)
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [isOpen, setIsOpen])
 
   return (
     <>
@@ -39,6 +80,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Review Deck Drawer"

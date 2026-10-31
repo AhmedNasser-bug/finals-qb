@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,28 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "accessibility-refactor",
+      "category": "accessibility",
+      "tier": 3,
+      "title": "Refactor UI markup to enforce accessibility standards",
+      "implementedAt": "2026-10-31T19:46:58+00:00",
+      "componentsTouched": [
+        "components/mold/common/mermaid-diagram.tsx",
+        "components/mold/common/onboarding-screen.tsx",
+        "components/mold/game/cheat-sheet-terminal.tsx",
+        "components/mold/game/game-icons.tsx",
+        "components/mold/home/action-hub.tsx",
+        "components/mold/home/mode-selector.tsx",
+        "components/mold/home/streak-ascent.tsx",
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/payment/paywall-modal.tsx",
+        "components/mold/subject/subject-importer-blocks.tsx",
+        "components/mold/subject/subject-importer-components.tsx",
+        "components/mold/subject/subject-selector-components.tsx"
       ],
       "nonBreaking": true
     }
