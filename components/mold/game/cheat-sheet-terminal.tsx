@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect  } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
