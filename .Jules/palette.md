@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-11-01 - Fix A11y and Focus states across UI
+**Learning:** Found several buttons missing explicit focus styles (`focus-ring`) and decorative icons lacking `aria-hidden=true`, causing accessibility and UX issues. Also missing explicit `type=button`.
+**Action:** Ensure all interactive elements consistently use `focus-ring`, `type=button`, and purely visual icons have `aria-hidden=true`.
