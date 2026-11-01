@@ -118,7 +118,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         <div>
           <button type="button"
             onClick={onReturnHome}
-            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group"
+            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-all font-mono text-[10px] uppercase tracking-widest cursor-pointer mb-2 group focus-ring"
           >
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true" />
             <span>Return to core</span>
@@ -440,7 +440,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                 <button type="button"
                   onClick={() => setShowConfirmReset(true)}
                   aria-label="Wipe all local telemetry and run data"
-                  className="bg-transparent hover:bg-destructive/10 text-destructive border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold"
+                  className="bg-transparent hover:bg-destructive/10 text-destructive border border-destructive/30 px-4 py-2 rounded text-xs font-mono tracking-wider cursor-pointer transition-all shrink-0 uppercase font-bold focus-ring focus-visible:ring-destructive/50"
                 >
                    RESET_DATA
                 </button>
@@ -449,7 +449,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
                   <button type="button"
                     onClick={handleReset}
                     aria-label="Confirm wipe all data"
-                    className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase"
+                    className="bg-destructive text-white hover:bg-red-600 px-3.5 py-2 rounded text-xs font-mono font-bold cursor-pointer transition-all uppercase focus-ring focus-visible:ring-destructive/50"
                   >
                     CONFIRM
                   </button>

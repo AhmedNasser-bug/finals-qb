@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,20 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "fix-accessibility-issues-various",
+      "category": "accessibility",
+      "tier": 1,
+      "title": "Fix A11y and Focus states across UI",
+      "implementedAt": "2026-11-01T13:46:32.934Z",
+      "componentsTouched": [
+        "components/mold/home/stats-screen.tsx",
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/analytics/analytics-dashboard.tsx",
+        "components/mold/payment/paywall-modal.tsx"
       ],
       "nonBreaking": true
     }
