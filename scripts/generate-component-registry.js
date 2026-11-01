@@ -5,15 +5,22 @@ const UI_DIR = path.join(__dirname, '../components');
 const APP_DIR = path.join(__dirname, '../app');
 const OUTPUT_FILE = path.join(__dirname, '../docs/architecture/component-registry.md');
 
-function scanDirectory(dir, fileList = []) {
-  if (!fs.existsSync(dir)) return fileList;
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    if (fs.statSync(filePath).isDirectory()) {
-      scanDirectory(filePath, fileList);
-    } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
-      fileList.push(filePath);
+function scanDirectory(startDir) {
+  const fileList = [];
+  const stack = [startDir];
+
+  while (stack.length > 0) {
+    const dir = stack.pop();
+    if (!fs.existsSync(dir)) continue;
+
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      if (fs.statSync(filePath).isDirectory()) {
+        stack.push(filePath);
+      } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
+        fileList.push(filePath);
+      }
     }
   }
   return fileList;
@@ -30,7 +37,11 @@ function extractInterface(content, componentName) {
 }
 
 async function processComponent(filePath) {
-  const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
+  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
+  let content = '';
+  for await (const chunk of stream) {
+    content += chunk;
+  }
 
   const fileName = path.basename(filePath);
   const parts = fileName.replace('.tsx', '').split('-');
