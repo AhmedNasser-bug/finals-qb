@@ -5,15 +5,20 @@ const UI_DIR = path.join(__dirname, '../components');
 const APP_DIR = path.join(__dirname, '../app');
 const OUTPUT_FILE = path.join(__dirname, '../docs/architecture/component-registry.md');
 
-function scanDirectory(dir, fileList = []) {
-  if (!fs.existsSync(dir)) return fileList;
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    if (fs.statSync(filePath).isDirectory()) {
-      scanDirectory(filePath, fileList);
-    } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
-      fileList.push(filePath);
+function scanDirectory(dir) {
+  const fileList = [];
+  const stack = [dir];
+  while (stack.length > 0) {
+    const currentDir = stack.pop();
+    if (!fs.existsSync(currentDir)) continue;
+    const files = fs.readdirSync(currentDir);
+    for (const file of files) {
+      const filePath = path.join(currentDir, file);
+      if (fs.statSync(filePath).isDirectory()) {
+        stack.push(filePath);
+      } else if (filePath.endsWith('.tsx') || filePath.endsWith('.ts')) {
+        fileList.push(filePath);
+      }
     }
   }
   return fileList;
@@ -77,6 +82,9 @@ async function processComponent(filePath) {
   }
   if (content.includes('JSON.parse')) {
     edgeCases.push("Parses arbitrary JSON payloads; requires strict try/catch blocks and subsequent structural validation (e.g., Zod schemas) to prevent prototype pollution or invalid state.");
+  }
+  if (content.includes('zod') || content.includes('z.')) {
+    edgeCases.push("Uses Zod for strict structural validation of inputs and payloads. Verify schemas defensively handle unexpected nested properties.");
   }
   if (content.includes('localStorage') || content.includes('sessionStorage')) {
     edgeCases.push("Relies on Web Storage API; must handle quota exceeded errors or disabled storage contexts gracefully.");
