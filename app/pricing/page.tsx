@@ -167,7 +167,7 @@ export default function PricingPage() {
             </div>
 
             {customerInfo?.managementURL ? (
-              <button
+              <button type="button"
                 onClick={() => openCustomerCenter()}
                 className="flex items-center gap-2 px-4 py-2 border border-emerald-500/40 hover:border-emerald-400 bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold tracking-wider uppercase rounded transition-colors cursor-pointer focus-ring"
               >
@@ -300,7 +300,7 @@ export default function PricingPage() {
           <span className="font-mono text-xs text-muted-foreground">
             Prefer standard RevenueCat modal checkout?
           </span>
-          <button
+          <button type="button"
             onClick={handleLaunchNativePaywall}
             disabled={isPurchasing}
             className="font-mono text-xs font-bold text-primary hover:underline underline-offset-4 uppercase tracking-wider transition-colors cursor-pointer"

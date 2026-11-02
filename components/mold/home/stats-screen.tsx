@@ -151,7 +151,7 @@ export function StatsScreen({ onReturnHome }: StatsScreenProps) {
         {/* Average Score (Accuracy) Card */}
         <div className="p-5 border border-border bg-panel rounded relative overflow-hidden group hover:border-primary/50 transition-all duration-300 shadow-sm">
           <div className="absolute top-4 right-4 text-muted-foreground/30 group-hover:text-primary/50 transition-colors">
-            <Target className="w-5 h-5" />
+            <Target className="w-5 h-5"  aria-hidden="true" />
           </div>
           <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground font-bold">AVERAGE ACCURACY</p>
           <div className="flex items-baseline gap-3 mt-2">

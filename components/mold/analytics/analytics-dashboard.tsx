@@ -99,7 +99,7 @@ export function AnalyticsDashboard() {
               title="Return to Mastery Protocol home"
               aria-label="Return to home"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4"  aria-hidden="true" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
@@ -121,7 +121,7 @@ export function AnalyticsDashboard() {
               disabled={isAuditing}
               className="inline-flex items-center gap-1.5 text-xs font-mono font-bold px-3 py-1.5 border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 transition-all cursor-pointer rounded disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isAuditing ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isAuditing ? "animate-spin" : ""}`}  aria-hidden="true" />
               {isAuditing ? "PROBING DOM..." : "RE-RUN LIVE AUDIT"}
             </button>
             <Link
@@ -142,7 +142,7 @@ export function AnalyticsDashboard() {
           <div className="border border-border bg-panel p-4 rounded relative overflow-hidden group hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between text-muted-foreground mb-2">
               <span className="text-[11px] font-mono uppercase tracking-wider">Live Lighthouse Score</span>
-              <Gauge className="w-4 h-4 text-emerald-400" />
+              <Gauge className="w-4 h-4 text-emerald-400"  aria-hidden="true" />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-extrabold font-mono text-emerald-400">
@@ -162,7 +162,7 @@ export function AnalyticsDashboard() {
           <div className="border border-border bg-panel p-4 rounded relative overflow-hidden group hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between text-muted-foreground mb-2">
               <span className="text-[11px] font-mono uppercase tracking-wider">Behavioral Friction Index</span>
-              <Flame className="w-4 h-4 text-primary" />
+              <Flame className="w-4 h-4 text-primary"  aria-hidden="true" />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-extrabold font-mono text-primary">
@@ -184,7 +184,7 @@ export function AnalyticsDashboard() {
           <div className="border border-border bg-panel p-4 rounded relative overflow-hidden group hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between text-muted-foreground mb-2">
               <span className="text-[11px] font-mono uppercase tracking-wider">Measured Web Vitals</span>
-              <Zap className="w-4 h-4 text-emerald-400" />
+              <Zap className="w-4 h-4 text-emerald-400"  aria-hidden="true" />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-extrabold font-mono text-foreground">
@@ -207,7 +207,7 @@ export function AnalyticsDashboard() {
           <div className="border border-border bg-panel p-4 rounded relative overflow-hidden group hover:border-primary/40 transition-all">
             <div className="flex items-center justify-between text-muted-foreground mb-2">
               <span className="text-[11px] font-mono uppercase tracking-wider">Completed Sessions</span>
-              <Activity className="w-4 h-4 text-primary" />
+              <Activity className="w-4 h-4 text-primary"  aria-hidden="true" />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-extrabold font-mono text-foreground">
@@ -261,7 +261,7 @@ export function AnalyticsDashboard() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Terminal className="w-3.5 h-3.5" />
+              <Terminal className="w-3.5 h-3.5"  aria-hidden="true" />
               3. LIVE EVENT STREAM ({recentEvents.length})
             </button>
           </div>
@@ -287,7 +287,7 @@ export function AnalyticsDashboard() {
             {/* Real Educational Context Banner */}
             <div className="border border-primary/30 bg-primary/5 p-4 rounded space-y-1">
               <div className="flex items-center gap-2 font-mono text-xs text-primary font-bold">
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-4 h-4"  aria-hidden="true" />
                 HCI CS 310 · REAL-USER MONITORING & AUTOMATED FRICTION PATTERN DETECTION
               </div>
               <p className="text-xs text-muted-foreground max-w-4xl">
@@ -303,7 +303,7 @@ export function AnalyticsDashboard() {
               <div className="border border-border bg-panel p-4 rounded space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-destructive font-bold flex items-center gap-1.5">
-                    <Flame className="w-4 h-4" />
+                    <Flame className="w-4 h-4"  aria-hidden="true" />
                     RAGE CLICKS
                   </span>
                   <span className="font-mono text-xs text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded">
@@ -322,7 +322,7 @@ export function AnalyticsDashboard() {
               <div className="border border-border bg-panel p-4 rounded space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-amber-400 font-bold flex items-center gap-1.5">
-                    <MousePointerClick className="w-4 h-4" />
+                    <MousePointerClick className="w-4 h-4"  aria-hidden="true" />
                     DEAD CLICKS
                   </span>
                   <span className="font-mono text-xs text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded">
@@ -341,7 +341,7 @@ export function AnalyticsDashboard() {
               <div className="border border-border bg-panel p-4 rounded space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-sky-400 font-bold flex items-center gap-1.5">
-                    <SlidersHorizontal className="w-4 h-4" />
+                    <SlidersHorizontal className="w-4 h-4"  aria-hidden="true" />
                     EXCESSIVE SCROLL
                   </span>
                   <span className="font-mono text-xs text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded">
@@ -360,7 +360,7 @@ export function AnalyticsDashboard() {
               <div className="border border-border bg-panel p-4 rounded space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-purple-400 font-bold flex items-center gap-1.5">
-                    <RotateCcw className="w-4 h-4" />
+                    <RotateCcw className="w-4 h-4"  aria-hidden="true" />
                     QUICK BACKS
                   </span>
                   <span className="font-mono text-xs text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded">
@@ -380,7 +380,7 @@ export function AnalyticsDashboard() {
             <div className="border border-border bg-panel p-5 rounded space-y-4">
               <div className="border-b border-border pb-3">
                 <h3 className="font-mono text-sm font-bold text-foreground flex items-center gap-2">
-                  <MousePointer className="w-4 h-4 text-primary" />
+                  <MousePointer className="w-4 h-4 text-primary"  aria-hidden="true" />
                   Live Friction Verification Sandbox
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -426,7 +426,7 @@ export function AnalyticsDashboard() {
             <div className="border border-border bg-panel rounded overflow-hidden">
               <div className="p-4 border-b border-border bg-secondary/30 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-primary" />
+                  <History className="w-4 h-4 text-primary"  aria-hidden="true" />
                   <h3 className="font-mono text-sm font-bold text-foreground">
                     Real User Run History ({actualRuns.length} Sessions In Storage)
                   </h3>
@@ -435,7 +435,7 @@ export function AnalyticsDashboard() {
                   href="/"
                   className="text-xs font-mono text-primary hover:underline flex items-center gap-1"
                 >
-                  <Play className="w-3 h-3" />
+                  <Play className="w-3 h-3"  aria-hidden="true" />
                   START NEW QUIZ
                 </Link>
               </div>
@@ -537,7 +537,7 @@ export function AnalyticsDashboard() {
               <div className="p-4 border-b border-border bg-secondary/30 flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="font-mono text-sm font-bold text-foreground flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-primary" />
+                    <Zap className="w-4 h-4 text-primary"  aria-hidden="true" />
                     Measured Core Web Vitals (Real Browser Navigation Timing)
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
@@ -595,7 +595,7 @@ export function AnalyticsDashboard() {
             <div className="border border-border bg-panel rounded p-4 space-y-3">
               <div className="flex items-center justify-between border-b border-border/80 pb-2">
                 <h4 className="font-mono text-xs font-bold text-foreground flex items-center gap-2">
-                  <Activity className="w-3.5 h-3.5 text-primary" />
+                  <Activity className="w-3.5 h-3.5 text-primary"  aria-hidden="true" />
                   Navigation Timing API Performance Readouts
                 </h4>
                 <span className="font-mono text-[10px] text-muted-foreground">
@@ -626,7 +626,7 @@ export function AnalyticsDashboard() {
             <div className="border border-border bg-panel rounded overflow-hidden">
               <div className="p-4 border-b border-border bg-secondary/30">
                 <h3 className="font-mono text-sm font-bold text-foreground flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-primary" />
+                  <ShieldCheck className="w-4 h-4 text-primary"  aria-hidden="true" />
                   Live DOM & Codebase Verification Checklist
                 </h3>
               </div>
@@ -662,7 +662,7 @@ export function AnalyticsDashboard() {
           <div className="border border-border bg-panel rounded p-4 space-y-3 font-mono text-xs animate-fade-in">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
               <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-primary" />
+                <Terminal className="w-4 h-4 text-primary"  aria-hidden="true" />
                 <span className="font-bold text-foreground">Live Telemetry Ingestion Sink</span>
                 <span className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/30 rounded">
                   {recentEvents.length} Captured Events
