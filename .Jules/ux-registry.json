@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,17 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "global-a11y-buttons-and-modal-focus-polish",
+      "category": "accessibility",
+      "tier": 5,
+      "title": "Global UI Button & Modal A11y Polish",
+      "implementedAt": "2026-11-02T18:00:00Z",
+      "componentsTouched": [
+        "components/mold/payment/paywall-modal.tsx"
       ],
       "nonBreaking": true
     }
