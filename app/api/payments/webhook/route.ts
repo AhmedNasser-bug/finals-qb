@@ -35,45 +35,20 @@ export async function POST(request: NextRequest) {
       environment: event.environment,
     })
 
-    switch (event.type) {
-      case "INITIAL_PURCHASE":
-        logger.info("RevenueCat: New subscriber purchase recorded", {
-          appUserId: event.app_user_id,
-          productId: event.product_id,
-        })
-        break
+    const eventHandlers: Record<string, () => void> = {
+      INITIAL_PURCHASE: () => logger.info("RevenueCat: New subscriber purchase recorded", { appUserId: event.app_user_id, productId: event.product_id }),
+      RENEWAL: () => logger.info("RevenueCat: Subscription renewed successfully", { appUserId: event.app_user_id, productId: event.product_id }),
+      CANCELLATION: () => logger.info("RevenueCat: Subscription cancelled or expired", { appUserId: event.app_user_id, productId: event.product_id }),
+      EXPIRATION: () => logger.info("RevenueCat: Subscription cancelled or expired", { appUserId: event.app_user_id, productId: event.product_id }),
+      PRODUCT_CHANGE: () => logger.info("RevenueCat: Product tier change", { appUserId: event.app_user_id, newProductId: event.product_id }),
+      TEST: () => logger.info("RevenueCat: Webhook connectivity test received")
+    };
 
-      case "RENEWAL":
-        logger.info("RevenueCat: Subscription renewed successfully", {
-          appUserId: event.app_user_id,
-          productId: event.product_id,
-        })
-        break
-
-      case "CANCELLATION":
-      case "EXPIRATION":
-        logger.info("RevenueCat: Subscription cancelled or expired", {
-          appUserId: event.app_user_id,
-          productId: event.product_id,
-        })
-        break
-
-      case "PRODUCT_CHANGE":
-        logger.info("RevenueCat: Product tier change", {
-          appUserId: event.app_user_id,
-          newProductId: event.product_id,
-        })
-        break
-
-      case "TEST":
-        logger.info("RevenueCat: Webhook connectivity test received")
-        break
-
-      default:
-        logger.info("RevenueCat: Unhandled webhook event type", {
-          type: (event as any).type,
-        })
-        break
+    const handler = eventHandlers[event.type];
+    if (handler) {
+      handler();
+    } else {
+      logger.info("RevenueCat: Unhandled webhook event type", { type: (event as any).type });
     }
 
     return NextResponse.json({
