@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-11-02 - Global Form Submission Prevention on Paywall and Header UI
+**Learning:** Generic `<button>` elements in Next.js applications silently default to `type="submit"`. On critical paths like payment flow modals or navigation bars, failing to explicitly type generic action triggers (like 'Close', 'Launch RevenueCat', or 'Manage Subscription') causes dangerous implicit form submissions, potentially breaking active component state. Additionally, `role="dialog"` modal containers require `tabIndex={-1}` to ensure programmatical focus is not lost on initial mount for screen readers.
+**Action:** Explicitly define `type="button"` on all generic, non-submitting React `<button>` elements in UI blocks and inject `tabIndex={-1}` on `role="dialog"` containers.
