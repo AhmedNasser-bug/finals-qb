@@ -115,8 +115,8 @@ export function AnalyticsDashboard() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
+            <button type="button"
+
               onClick={handleRunLiveAudit}
               disabled={isAuditing}
               className="inline-flex items-center gap-1.5 text-xs font-mono font-bold px-3 py-1.5 border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 transition-all cursor-pointer rounded disabled:opacity-50"
@@ -230,8 +230,8 @@ export function AnalyticsDashboard() {
         {/* Navigation Tabs and Scope Filter */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-3">
           <div className="flex items-center gap-1 bg-secondary/40 p-1 border border-border rounded">
-            <button
-              type="button"
+            <button type="button"
+
               onClick={() => setActiveTab("clarity")}
               className={`px-3 py-1.5 font-mono text-xs font-bold transition-all rounded ${
                 activeTab === "clarity"
@@ -241,8 +241,8 @@ export function AnalyticsDashboard() {
             >
               1. BEHAVIORAL RUM (CLARITY)
             </button>
-            <button
-              type="button"
+            <button type="button"
+
               onClick={() => setActiveTab("lighthouse")}
               className={`px-3 py-1.5 font-mono text-xs font-bold transition-all rounded ${
                 activeTab === "lighthouse"
@@ -252,8 +252,8 @@ export function AnalyticsDashboard() {
             >
               2. GOOGLE LIGHTHOUSE AUDIT
             </button>
-            <button
-              type="button"
+            <button type="button"
+
               onClick={() => setActiveTab("stream")}
               className={`px-3 py-1.5 font-mono text-xs font-bold transition-all rounded flex items-center gap-1.5 ${
                 activeTab === "stream"
@@ -412,8 +412,8 @@ export function AnalyticsDashboard() {
                   <p className="text-[11px] text-muted-foreground">
                     Tap the button below 3 or more times rapidly within 600ms to trigger a real rage click event.
                   </p>
-                  <button
-                    type="button"
+                  <button type="button"
+
                     className="w-full py-2.5 px-4 border border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20 font-bold rounded cursor-pointer transition-all active:scale-95"
                   >
                     Tap Rapidly (Rage Click Trigger)
@@ -669,8 +669,8 @@ export function AnalyticsDashboard() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
+                <button type="button"
+
                   onClick={() => setRecentEvents([])}
                   className="text-[10px] px-2 py-1 border border-border text-muted-foreground hover:text-foreground rounded"
                 >

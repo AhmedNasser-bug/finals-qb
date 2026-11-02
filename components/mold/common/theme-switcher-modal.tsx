@@ -150,9 +150,9 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
           {filteredThemes.map((theme) => {
             const isSelected = theme.id === activeThemeId
             return (
-              <button
+              <button type="button"
                 key={theme.id}
-                type="button"
+
                 onClick={() => setThemeId(theme.id)}
                 aria-pressed={isSelected}
                 title={`Apply theme: ${theme.name}`}

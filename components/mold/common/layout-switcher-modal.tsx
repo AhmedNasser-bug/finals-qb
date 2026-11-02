@@ -100,9 +100,9 @@ export function LayoutSwitcherModal({ onClose }: LayoutSwitcherModalProps) {
           {availableLayouts.map((layout) => {
             const isSelected = layout.id === activeLayoutId
             return (
-              <button
+              <button type="button"
                 key={layout.id}
-                type="button"
+
                 onClick={() => setLayoutId(layout.id)}
                 aria-pressed={isSelected}
                 title={`Apply layout: ${layout.name}`}
