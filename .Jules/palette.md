@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-11-02 - Universal aria-hidden and button type additions
+**Learning:** Generic `<button>` elements in React without `type="button"` can trigger unintended implicit form submissions, while decorative icons like those from `lucide-react` without `aria-hidden="true"` clutter screen readers.
+**Action:** Automatically add `type="button"` to buttons missing a type and `aria-hidden="true"` to SVG icons used purely decoratively inside interactive elements.

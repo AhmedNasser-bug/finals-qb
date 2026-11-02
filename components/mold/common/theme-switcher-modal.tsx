@@ -198,7 +198,7 @@ export function ThemeSwitcherModal({ onClose }: ThemeSwitcherModalProps) {
                           ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400'
                           : 'bg-zinc-800/80 border-zinc-700 text-zinc-300'
                       }`}>
-                        {theme.mode === 'light' ? <Sun className="w-2.5 h-2.5" /> : <Moon className="w-2.5 h-2.5" />}
+                        {theme.mode === 'light' ? <Sun className="w-2.5 h-2.5"  aria-hidden="true" /> : <Moon className="w-2.5 h-2.5"  aria-hidden="true" />}
                         {theme.mode.toUpperCase()}
                       </span>
                       <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-muted border border-border text-muted-foreground">
