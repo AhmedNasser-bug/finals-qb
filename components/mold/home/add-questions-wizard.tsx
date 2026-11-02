@@ -415,9 +415,9 @@ CRITICAL RULES:
                 ].map((type) => {
                   const isSelected = contentType === type.id
                   return (
-                    <button
+                    <button type="button"
                       key={type.id}
-                      type="button"
+
                       onClick={() => setContentType(type.id as any)}
                       className={cn(
                         "flex flex-col text-left p-4 border transition-all duration-150 cursor-pointer min-h-[90px] justify-between rounded-none",
@@ -623,9 +623,9 @@ CRITICAL RULES:
                 ].map((focus) => {
                   const isSelected = categoryFocus === focus.id
                   return (
-                    <button
+                    <button type="button"
                       key={focus.id}
-                      type="button"
+
                       onClick={() => setCategoryFocus(focus.id as any)}
                       className={cn(
                         "p-5 border text-left flex flex-col justify-between gap-3 transition-all duration-150 cursor-pointer rounded-none min-h-[120px]",

@@ -97,9 +97,9 @@ export function Step1PresetTopic({
           ].map((p) => {
             const isSelected = selectedPreset === p.id
             return (
-              <button
+              <button type="button"
                 key={p.id}
-                type="button"
+
                 onClick={() => onPresetSelect(p.id)}
                 className={cn(
                   "flex flex-col text-left p-4 border transition-all duration-300 ease-out focus-ring cursor-pointer min-h-[110px] justify-between rounded hover:-translate-y-0.5 shadow-sm",
@@ -276,9 +276,9 @@ export function Step3QuestionCount({
             {[20, 40, 80, 120].map((num) => {
               const isSelected = questionCount === num
               return (
-                <button
+                <button type="button"
                   key={num}
-                  type="button"
+
                   onClick={() => onCustomPresetClick(num)}
                   className={cn(
                     "text-xs font-mono px-3.5 py-1.5 border transition-all duration-300 ease-out cursor-pointer rounded min-h-[32px] hover:scale-[1.02] shadow-sm",
