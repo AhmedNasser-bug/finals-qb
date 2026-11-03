@@ -9,3 +9,7 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+
+## 2024-11-03 - [Optimize String Parsing Inside Array.sort]
+**Learning:** String allocations and functions like `.trim().toLowerCase()` are extremely expensive when placed inside an `Array.sort()` comparator due to its `O(N log N)` evaluation frequency.
+**Action:** Pre-calculate the derived sorting weights for objects into a `Map` cache *before* entering the `.sort()` loop to maintain O(1) property lookup speed and bypass re-evaluation overhead.
