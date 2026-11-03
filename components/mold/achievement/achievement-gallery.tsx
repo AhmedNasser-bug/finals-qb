@@ -14,7 +14,11 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
     const el = overlayRef.current
     if (el) el.focus()
 
-    function handleTab(e: KeyboardEvent) {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
       if (e.key !== "Tab" || !el) return
 
       const focusable = el.querySelectorAll<HTMLElement>(
@@ -34,8 +38,8 @@ export function AchievementGallery({ onClose }: { onClose: () => void }) {
       }
     }
 
-    document.addEventListener("keydown", handleTab)
-    return () => document.removeEventListener("keydown", handleTab)
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
   }, [])
 
   const { unlocked, locked } = useMemo(() => {

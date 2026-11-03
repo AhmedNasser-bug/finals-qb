@@ -18,6 +18,10 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         e.preventDefault()
         toggleCheatSheet()
       }
+      if (e.key === "Escape" && isOpen) {
+        e.preventDefault()
+        setIsOpen(false)
+      }
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)

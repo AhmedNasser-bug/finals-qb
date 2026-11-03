@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-11-03 - Global Modals Esc to Close & Explicit Button Types
+**Learning:** During UX audits, discovered that generic `<button>` elements in complex React/Next.js components lack the explicit `type="button"` attribute, which can implicitly cause form submissions or page reloads if placed near form contexts. Additionally, many modals lack a global `Escape` key listener to easily dismiss the overlay.
+**Action:** Implemented a cleanup pass to manually append `type="button"` to all generic UI buttons in target files, and added `useEffect`-based global `Escape` listeners inside modal components like `achievement-gallery` and `cheat-sheet-terminal` to match accessibility patterns. Verified no duplicate attributes exist.
