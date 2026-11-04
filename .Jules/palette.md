@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-11-04 - Review Deck Escape Close & Empty State A11y
+**Learning:** For custom side panel drawers, failing to handle the Escape key directly inside the panel when it's open breaks expected user flow, especially if parent focus logic prevents event bubbling. Additionally, empty states for dynamically populated decks need `role="status"` and `aria-live="polite"` so screen readers can announce "0 ENTRIES" and the explanation text when a user opens an empty drawer.
+**Action:** Always implement local Escape key listeners within overlay components themselves (`if (e.key === "Escape" && isOpen) setIsOpen(false)`), and attach `role="status" aria-live="polite"` to empty state container divs.
