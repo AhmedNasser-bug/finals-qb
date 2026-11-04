@@ -14,6 +14,10 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        e.preventDefault()
+        setIsOpen(false)
+      }
       if (e.ctrlKey && (e.key === "`" || e.key === "~")) {
         e.preventDefault()
         toggleCheatSheet()
@@ -21,7 +25,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [toggleCheatSheet])
+  }, [toggleCheatSheet, isOpen, setIsOpen])
 
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
@@ -90,7 +94,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
         {/* Panel Body / Scrollable Cards */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           {entries.length === 0 ? (
-            <div className="h-64 flex flex-col items-center justify-center border border-dashed border-border/80 rounded p-6 text-center space-y-2">
+            <div role="status" aria-live="polite" className="h-64 flex flex-col items-center justify-center border border-dashed border-border/80 rounded p-6 text-center space-y-2">
               <span className="font-mono text-xl text-muted-foreground">0_ENTRIES</span>
               <div className="font-sans text-xs text-muted-foreground max-w-xs leading-relaxed">
                 No mistakes or hint requests recorded yet. Questions you struggle with or use hints on will automatically accumulate in this deck for instant review.
