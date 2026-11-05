@@ -46,3 +46,15 @@ test('handles spaced unquoted values without leaking tokens', () => {
   const result = maskData("token: 'Bearer 12345'");
   assert.strictEqual(result, "token: '[REDACTED]'");
 });
+
+test('bounded quantifiers to prevent ReDoS', () => {
+  // Bounded quantifiers for Private Keys payload regex check.
+  const rawKey = "-----BEGIN PRIVATE KEY-----\\n" + "A".repeat(8192) + "\\n-----END PRIVATE KEY-----";
+  const jsonStr = JSON.stringify({ key: rawKey });
+  const result = maskData(jsonStr);
+  assert.doesNotThrow(() => JSON.parse(result));
+
+  // Should handle a large text correctly and match properly based on finite lengths
+  const payload = "email=" + "a".repeat(4096);
+  assert.strictEqual(maskData(payload), "email=\"[REDACTED]\"");
+});
