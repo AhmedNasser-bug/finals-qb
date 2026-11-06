@@ -79,33 +79,35 @@ export function synthesizeSubject(
   const questions: Question[] = []
   let qIndex = 1
 
-  for (const cat of categories) {
-    const catLabel = cat.replace(/-/g, " ").toUpperCase()
-    for (let i = 0; i < questionsPerCategory; i++) {
-      questions.push({
-        id: `${cat}-q${i + 1}`,
-        type: i % 2 === 0 ? "MCQ" : "TrueFalse",
-        difficulty: i === 0 ? "Easy" : "Medium",
-        category: cat,
-        question: `In ${topic} (${catLabel}), which of the following statements is mathematically sound?`,
-        options:
-          i % 2 === 0
-            ? [
-                { label: "A", text: `The primary invariant holds true under standard boundary conditions.` },
-                { label: "B", text: `The state transitions diverge logarithmically without convergence.` },
-                { label: "C", text: `The asymptotic complexity becomes unbounded in finite spaces.` },
-                { label: "D", text: `The transformation is strictly non-deterministic across all states.` },
-              ]
-            : [
-                { label: "A", text: "True" },
-                { label: "B", text: "False" },
-              ],
-        answer: "A",
-        explanation: `Under standard analytical formulations in ${topic}, statement A accurately reflects the underlying theorem.`,
-        hint: `Consider how the invariant behaves at the limit of the state domain.`,
-      })
-      qIndex++
-    }
+  const totalQuestions = categories.length * questionsPerCategory;
+  for (let idx = 0; idx < totalQuestions; idx++) {
+    const catIndex = Math.floor(idx / questionsPerCategory);
+    const i = idx % questionsPerCategory;
+    const cat = categories[catIndex];
+    const catLabel = cat.replace(/-/g, " ").toUpperCase();
+    questions.push({
+      id: `${cat}-q${i + 1}`,
+      type: i % 2 === 0 ? "MCQ" : "TrueFalse",
+      difficulty: i === 0 ? "Easy" : "Medium",
+      category: cat,
+      question: `In ${topic} (${catLabel}), which of the following statements is mathematically sound?`,
+      options:
+        i % 2 === 0
+          ? [
+              { label: "A", text: `The primary invariant holds true under standard boundary conditions.` },
+              { label: "B", text: `The state transitions diverge logarithmically without convergence.` },
+              { label: "C", text: `The asymptotic complexity becomes unbounded in finite spaces.` },
+              { label: "D", text: `The transformation is strictly non-deterministic across all states.` },
+            ]
+          : [
+              { label: "A", text: "True" },
+              { label: "B", text: "False" },
+            ],
+      answer: "A",
+      explanation: `Under standard analytical formulations in ${topic}, statement A accurately reflects the underlying theorem.`,
+      hint: `Consider how the invariant behaves at the limit of the state domain.`,
+    });
+    qIndex++;
   }
 
   const flashcards: Flashcard[] = categories.map((cat, idx) => ({
