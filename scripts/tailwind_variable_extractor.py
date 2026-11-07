@@ -67,39 +67,46 @@ def scan_files():
         if not os.path.exists(target_dir):
             continue
             
-        for root, _, files in os.walk(target_dir):
-            for file in files:
-                if not file.endswith(('.ts', '.tsx', '.js', '.jsx')):
-                    continue
-                    
-                file_path = os.path.join(root, file)
-                try:
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                except Exception as e:
-                    print(f"Warning: Could not read {file_path}: {e}")
-                    continue
+        stack = [target_dir]
+        while stack:
+            current_dir = stack.pop()
+            try:
+                entries = os.listdir(current_dir)
+            except OSError:
+                continue
                 
-                for match in TAILWIND_CLASS_PATTERN.finditer(content):
-                    prefix = match.group(1)
-                    value = match.group(2)
-                    opacity = match.group(3)
-                    
-                    var_name = determine_var_name(value)
-                    if not var_name:
+            for entry in entries:
+                full_path = os.path.join(current_dir, entry)
+                if os.path.isdir(full_path):
+                    stack.append(full_path)
+                elif full_path.endswith(('.ts', '.tsx', '.js', '.jsx')):
+                    try:
+                        with open(full_path, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                    except Exception as e:
+                        print(f"Warning: Could not read {full_path}: {e}")
                         continue
+
+                    for match in TAILWIND_CLASS_PATTERN.finditer(content):
+                        prefix = match.group(1)
+                        value = match.group(2)
+                        opacity = match.group(3)
                         
-                    if value not in occurrences:
-                        occurrences[value] = []
+                        var_name = determine_var_name(value)
+                        if not var_name:
+                            continue
+
+                        if value not in occurrences:
+                            occurrences[value] = []
+
+                        occurrences[value].append({
+                            "file_path": full_path,
+                            "prefix": prefix,
+                            "opacity": opacity,
+                            "var_name": var_name,
+                            "full_match": match.group(0)
+                        })
                         
-                    occurrences[value].append({
-                        "file_path": file_path,
-                        "prefix": prefix,
-                        "opacity": opacity,
-                        "var_name": var_name,
-                        "full_match": match.group(0)
-                    })
-                    
     return occurrences
 
 def inject_css_variables(tokens, dry_run=True):
