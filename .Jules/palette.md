@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-11-07 - Migrate CheatSheetTerminal to Tailwind semantic tokens
+**Learning:** CheatSheetTerminal component used raw color classes like zinc-900 and hex values like #e5e2e1, which violated the design system rules.
+**Action:** Replaced raw colors with Tailwind semantic tokens (e.g. bg-secondary, text-muted-foreground, bg-destructive) to align with standard MOLD V2 neo-brutalist palette.
