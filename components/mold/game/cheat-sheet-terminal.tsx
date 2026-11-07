@@ -119,27 +119,27 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                       <span className={cn(
                         "text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 rounded border uppercase leading-none",
                         entry.gotWrong 
-                          ? "bg-red-950/30 text-red-400 border-red-500/30" 
-                          : "bg-amber-950/30 text-amber-400 border-amber-500/30"
+                          ? "bg-destructive/10 text-destructive border-destructive/30"
+                          : "bg-orange-500/10 text-orange-400 border-orange-500/30"
                       )}>
                         {statusStr}
                       </span>
-                      <span className="text-[9px] font-mono px-1.5 py-0.5 bg-zinc-900 rounded text-zinc-400 uppercase leading-none">
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 bg-secondary rounded text-muted-foreground uppercase leading-none">
                         {entry.difficulty}
                       </span>
                     </div>
-                    <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest leading-none">
+                    <span className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest leading-none">
                       {formatLabel(entry.category)}
                     </span>
                   </div>
 
                   {/* Question Prompt */}
                   <div className="space-y-1">
-                    <span className="block font-mono text-[9px] text-zinc-500 uppercase tracking-wider">
+                    <span className="block font-mono text-[9px] text-muted-foreground uppercase tracking-wider">
                       Question:
                     </span>
                     <p
-                      className="font-sans text-sm font-semibold leading-relaxed text-[#e5e2e1] text-pretty"
+                      className="font-sans text-sm font-semibold leading-relaxed text-foreground text-pretty"
                       dangerouslySetInnerHTML={{
                         __html: DOMPurify.sanitize(renderMath(entry.question))
                       }}
@@ -149,7 +149,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                   {/* Options List */}
                   {entry.options && entry.options.length > 0 && (
                     <div className="space-y-1.5">
-                      <span className="block font-mono text-[9px] text-zinc-500 uppercase tracking-wider">
+                      <span className="block font-mono text-[9px] text-muted-foreground uppercase tracking-wider">
                         Options:
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -161,8 +161,8 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                               className={cn(
                                 "p-2 border rounded font-mono flex items-start gap-2",
                                 isCorrect
-                                  ? "bg-emerald-950/20 border-emerald-500/30 text-emerald-400"
-                                  : "bg-zinc-900/40 border-zinc-800/80 text-zinc-500"
+                                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                                  : "bg-secondary/40 border-border/80 text-muted-foreground"
                               )}
                             >
                               <span className="font-black shrink-0">{opt.label}:</span>
@@ -180,13 +180,13 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
                   )}
 
                   {/* Explanation Block */}
-                  <div className="space-y-2 border-t border-zinc-800/80 pt-3">
-                    <span className="block font-mono text-[9px] text-[#4ae176] uppercase tracking-wider">
+                  <div className="space-y-2 border-t border-border/80 pt-3">
+                    <span className="block font-mono text-[9px] text-emerald-400 uppercase tracking-wider">
                       Explanation:
                     </span>
-                    <div className="border-l-2 border-[#4ae176]/40 bg-emerald-950/[0.04] p-3 rounded-r">
+                    <div className="border-l-2 border-emerald-400/40 bg-emerald-500/5 p-3 rounded-r">
                       <p
-                        className="font-sans text-xs leading-relaxed text-zinc-300 italic text-pretty"
+                        className="font-sans text-xs leading-relaxed text-foreground/90 italic text-pretty"
                         dangerouslySetInnerHTML={{
                           __html: DOMPurify.sanitize(renderMath(entry.explanation || ""))
                         }}
