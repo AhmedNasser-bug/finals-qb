@@ -49,25 +49,29 @@ export function buildIntelligentFlashcardQueue(
   }
 
   // 2. Classify cards into priority buckets
-  const critical: Flashcard[] = []
-  const due: Flashcard[] = []
-  const approaching: Flashcard[] = []
+  // ⚡ Bolt Optimization: Precompute retrievability wrapper for fast sorting
+  // Prevents O(N log N) map lookups during the sorting phase
+  interface WrappedCard { card: Flashcard; r: number }
+  const criticalWrapper: WrappedCard[] = []
+  const dueWrapper: WrappedCard[] = []
+  const approachingWrapper: WrappedCard[] = []
   const unreviewed: Flashcard[] = []
   const mastered: Flashcard[] = []
 
-  pool.forEach((card) => {
-    const state: CardRetentionState =
-      retentionMap[card.id] || createInitialCardState(card, subjectId)
+  for (let i = 0; i < pool.length; i++) {
+    const card = pool[i];
+    const state: CardRetentionState = retentionMap[card.id] || createInitialCardState(card, subjectId)
+    const r = state.currentRetrievability ?? 1
 
     switch (state.urgencyLevel) {
       case "CRITICAL_LAPSED":
-        critical.push(card)
+        criticalWrapper.push({ card, r })
         break
       case "DUE":
-        due.push(card)
+        dueWrapper.push({ card, r })
         break
       case "APPROACHING_DECAY":
-        approaching.push(card)
+        approachingWrapper.push({ card, r })
         break
       case "NEW":
         unreviewed.push(card)
@@ -76,18 +80,18 @@ export function buildIntelligentFlashcardQueue(
         mastered.push(card)
         break
     }
-  })
-
-  // Sort critical & due by lowest retrievability first
-  const sortByLowestR = (a: Flashcard, b: Flashcard) => {
-    const rA = retentionMap[a.id]?.currentRetrievability ?? 1
-    const rB = retentionMap[b.id]?.currentRetrievability ?? 1
-    return rA - rB
   }
 
-  critical.sort(sortByLowestR)
-  due.sort(sortByLowestR)
-  approaching.sort(sortByLowestR)
+  // Sort critical & due by lowest retrievability first
+  const sortByLowestR = (a: WrappedCard, b: WrappedCard) => a.r - b.r
+
+  criticalWrapper.sort(sortByLowestR)
+  dueWrapper.sort(sortByLowestR)
+  approachingWrapper.sort(sortByLowestR)
+
+  const critical = criticalWrapper.map(w => w.card)
+  const due = dueWrapper.map(w => w.card)
+  const approaching = approachingWrapper.map(w => w.card)
 
   let queue: Flashcard[] = []
 
