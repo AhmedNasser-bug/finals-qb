@@ -75,27 +75,30 @@ export function sortFullRevisionQuestions(allQuestions: Question[]): Question[] 
 
   // 1. Group questions by category preserving first occurrence order
   const categoryOrder: string[] = []
-  const categoryMap = new Map<string, Question[]>()
+  // ⚡ Bolt Optimization: Precompute getBloomsWeight to avoid O(N log N) regex/string allocations in comparator
+  const categoryMap = new Map<string, { q: Question; w: number }[]>()
 
-  for (const q of allQuestions) {
+  for (let i = 0; i < allQuestions.length; i++) {
+    const q = allQuestions[i];
     const cat = q.category || "_general"
-    if (!categoryMap.has(cat)) {
+    let mapArr = categoryMap.get(cat);
+    if (!mapArr) {
+      mapArr = []
       categoryOrder.push(cat)
-      categoryMap.set(cat, [])
+      categoryMap.set(cat, mapArr)
     }
-    categoryMap.get(cat)!.push(q)
+    mapArr.push({ q, w: getBloomsWeight(q) })
   }
 
   // 2. Stable sort questions within each category by Bloom's taxonomy difficulty
   const sorted: Question[] = []
-  for (const cat of categoryOrder) {
+  for (let i = 0; i < categoryOrder.length; i++) {
+    const cat = categoryOrder[i];
     const questionsInCat = categoryMap.get(cat)!
-    const sortedInCat = [...questionsInCat].sort((a, b) => {
-      const weightA = getBloomsWeight(a)
-      const weightB = getBloomsWeight(b)
-      return weightA - weightB
-    })
-    sorted.push(...sortedInCat)
+    questionsInCat.sort((a, b) => a.w - b.w)
+    for (let j = 0; j < questionsInCat.length; j++) {
+      sorted.push(questionsInCat[j].q)
+    }
   }
 
   return sorted

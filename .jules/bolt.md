@@ -9,3 +9,8 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+
+
+## 2024-11-12 - [Optimize Array.sort inside hot loops]
+**Learning:** Performing Math calculations, Object lookups, or `Map.get` inside an `Array.sort` comparator is inefficient because it gets called $O(N \log N)$ times. Pre-computing those values before sorting saves execution time, reducing the comparator down to a simple numeric difference.
+**Action:** Used wrapper objects holding the precomputed sort keys before running `.sort()` in `lib/telemetry/intelligent-routing.ts` and `lib/game/recallability.ts`.
