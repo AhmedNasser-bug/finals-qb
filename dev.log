@@ -1,0 +1,55 @@
+
+> my-v0-project@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.3.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 587ms
+✓ Running next.config.mjs took 24ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+- Experiments (use with caution):
+  · optimizePackageImports
+
+○ Compiling / ...
+ GET / 200 in 15.9s (next.js: 12.0s, proxy.ts: 351ms, application-code: 3.6s)
+ GET / 200 in 86ms (next.js: 10ms, proxy.ts: 8ms, application-code: 68ms)
+ GET /subjects 200 in 1271ms (next.js: 1211ms, proxy.ts: 10ms, application-code: 50ms)
+ GET /subjects 200 in 76ms (next.js: 20ms, proxy.ts: 15ms, application-code: 41ms)
+ POST /subjects 200 in 76ms (next.js: 5ms, proxy.ts: 10ms, application-code: 61ms)
+  └─ ƒ getExamplesManifest() in 24ms actions.ts
+ POST /subjects 200 in 23ms (next.js: 6ms, proxy.ts: 7ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET / 200 in 89ms (next.js: 29ms, proxy.ts: 6ms, application-code: 54ms)
+ GET /subjects 200 in 67ms (next.js: 10ms, proxy.ts: 8ms, application-code: 49ms)
+ GET /subjects 200 in 75ms (next.js: 11ms, proxy.ts: 12ms, application-code: 52ms)
+ POST /subjects 200 in 30ms (next.js: 11ms, proxy.ts: 8ms, application-code: 12ms)
+  └─ ƒ getExamplesManifest() in 1ms actions.ts
+ POST /subjects 200 in 24ms (next.js: 5ms, proxy.ts: 8ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET / 200 in 127ms (next.js: 8ms, proxy.ts: 8ms, application-code: 111ms)
+ GET /subjects 200 in 185ms (next.js: 38ms, proxy.ts: 21ms, application-code: 125ms)
+ GET /subjects 200 in 115ms (next.js: 21ms, proxy.ts: 8ms, application-code: 86ms)
+ POST /subjects 200 in 37ms (next.js: 12ms, proxy.ts: 9ms, application-code: 16ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 34ms (next.js: 9ms, proxy.ts: 8ms, application-code: 16ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ GET /?subject=advanced-programming 200 in 131ms (next.js: 8ms, proxy.ts: 9ms, application-code: 115ms)
+ GET / 200 in 62ms (next.js: 5ms, proxy.ts: 4ms, application-code: 52ms)
+ GET /subjects 200 in 49ms (next.js: 10ms, proxy.ts: 6ms, application-code: 34ms)
+ GET /subjects 200 in 39ms (next.js: 11ms, proxy.ts: 4ms, application-code: 25ms)
+ POST /subjects 200 in 29ms (next.js: 12ms, proxy.ts: 6ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 23ms (next.js: 7ms, proxy.ts: 5ms, application-code: 11ms)
+  └─ ƒ getExamplesManifest() in 1ms actions.ts
+ GET / 200 in 63ms (next.js: 7ms, proxy.ts: 5ms, application-code: 52ms)
+ GET /subjects 200 in 82ms (next.js: 9ms, proxy.ts: 9ms, application-code: 65ms)
+ GET /subjects 200 in 43ms (next.js: 6ms, proxy.ts: 4ms, application-code: 33ms)
+ POST /subjects 200 in 31ms (next.js: 11ms, proxy.ts: 6ms, application-code: 14ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts
+ POST /subjects 200 in 27ms (next.js: 9ms, proxy.ts: 9ms, application-code: 10ms)
+  └─ ƒ getExamplesManifest() in 0ms actions.ts

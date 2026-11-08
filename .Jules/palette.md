@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2024-11-08 - [Accessibility] True Focus Trapping in Modals
+**Learning:** Adding `tabIndex={-1}` to a `role="dialog"` modal container is necessary for programmatic focus but does not natively trap keyboard focus. Focus trapping must be actively managed by intercepting the `Tab` key to constrain focus navigation within the modal's valid focusable descendants.
+**Action:** When creating or auditing dialog components, implement a `useEffect` that listens for `keydown` on `Tab`/`Shift+Tab` and explicitly re-routes focus from the first/last focusable element to the opposite end.
