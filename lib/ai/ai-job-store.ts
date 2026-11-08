@@ -79,17 +79,19 @@ export function synthesizeSubject(
   const questions: Question[] = []
   let qIndex = 1
 
-  for (const cat of categories) {
-    const catLabel = cat.replace(/-/g, " ").toUpperCase()
-    for (let i = 0; i < questionsPerCategory; i++) {
-      questions.push({
-        id: `${cat}-q${i + 1}`,
-        type: i % 2 === 0 ? "MCQ" : "TrueFalse",
-        difficulty: i === 0 ? "Easy" : "Medium",
+  for (let i = 0; i < categories.length * questionsPerCategory; i++) {
+    const catIndex = Math.floor(i / questionsPerCategory);
+    const qOffset = i % questionsPerCategory;
+    const cat = categories[catIndex];
+    const catLabel = cat.replace(/-/g, " ").toUpperCase();
+    questions.push({
+        id: `${cat}-q${qOffset + 1}`,
+        type: qOffset % 2 === 0 ? "MCQ" : "TrueFalse",
+        difficulty: qOffset === 0 ? "Easy" : "Medium",
         category: cat,
         question: `In ${topic} (${catLabel}), which of the following statements is mathematically sound?`,
         options:
-          i % 2 === 0
+          qOffset % 2 === 0
             ? [
                 { label: "A", text: `The primary invariant holds true under standard boundary conditions.` },
                 { label: "B", text: `The state transitions diverge logarithmically without convergence.` },
@@ -105,7 +107,6 @@ export function synthesizeSubject(
         hint: `Consider how the invariant behaves at the limit of the state domain.`,
       })
       qIndex++
-    }
   }
 
   const flashcards: Flashcard[] = categories.map((cat, idx) => ({

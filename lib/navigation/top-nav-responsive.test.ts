@@ -6,27 +6,36 @@ import path from "node:path"
 describe("Top Navigation Bar Mobile Responsiveness & Utility Drawer", () => {
   const topNavPath = path.join(process.cwd(), "components/mold/home/top-nav-bar.tsx")
 
-  test("top-nav-bar.tsx exists and is readable", () => {
+  test("top-nav-bar.tsx exists and is readable", async () => {
     assert.ok(fs.existsSync(topNavPath), "top-nav-bar.tsx must exist")
   })
 
-  test("top-nav-bar.tsx employs responsive horizontal padding", () => {
-    const content = fs.readFileSync(topNavPath, "utf-8")
+  test("top-nav-bar.tsx employs responsive horizontal padding", async () => {
+    let content = '';
+  for await (const chunk of fs.createReadStream(topNavPath, { encoding: 'utf-8' })) {
+    content += chunk;
+  }
     assert.ok(
       content.includes("px-3 sm:px-6"),
       "Navbar container must use compact px-3 on mobile and sm:px-6 on tablet/desktop"
     )
   })
 
-  test("top-nav-bar.tsx provides an accessible mobile drawer toggle", () => {
-    const content = fs.readFileSync(topNavPath, "utf-8")
+  test("top-nav-bar.tsx provides an accessible mobile drawer toggle", async () => {
+    let content = '';
+  for await (const chunk of fs.createReadStream(topNavPath, { encoding: 'utf-8' })) {
+    content += chunk;
+  }
     assert.ok(content.includes('aria-controls="mobile-top-nav-drawer"'), "Toggle must have aria-controls pointing to drawer")
     assert.ok(content.includes("aria-expanded={mobileMenuOpen}"), "Toggle must declare aria-expanded state")
     assert.ok(content.includes("sm:hidden"), "Drawer toggle must only display on mobile (< sm)")
   })
 
-  test("top-nav-bar.tsx renders all key utilities in the mobile drawer", () => {
-    const content = fs.readFileSync(topNavPath, "utf-8")
+  test("top-nav-bar.tsx renders all key utilities in the mobile drawer", async () => {
+    let content = '';
+  for await (const chunk of fs.createReadStream(topNavPath, { encoding: 'utf-8' })) {
+    content += chunk;
+  }
     assert.ok(content.includes('id="mobile-top-nav-drawer"'), "Drawer element must have id matching aria-controls")
     assert.ok(content.includes("AUDIO"), "Drawer must provide audio mute control")
     assert.ok(content.includes("THEME"), "Drawer must provide light/dark theme control")
@@ -38,8 +47,11 @@ describe("Top Navigation Bar Mobile Responsiveness & Utility Drawer", () => {
     assert.ok(content.includes("SUBMIT FEEDBACK"), "Drawer must provide feedback submission link")
   })
 
-  test("top-nav-bar.tsx implements accessibility escape and click-outside listeners", () => {
-    const content = fs.readFileSync(topNavPath, "utf-8")
+  test("top-nav-bar.tsx implements accessibility escape and click-outside listeners", async () => {
+    let content = '';
+  for await (const chunk of fs.createReadStream(topNavPath, { encoding: 'utf-8' })) {
+    content += chunk;
+  }
     assert.ok(content.includes('e.key === "Escape"'), "Drawer must dismiss on Escape key press")
     assert.ok(content.includes("handleClickOutside"), "Drawer must dismiss when clicking outside")
   })

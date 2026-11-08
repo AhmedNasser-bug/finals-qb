@@ -5,7 +5,7 @@ import path from "node:path";
 import { validateSubjectData, parseSubjectJson } from "./subject-persistence.ts";
 
 describe("validateSubjectData", () => {
-  test("rejects invalid root types", () => {
+  test("rejects invalid root types", async () => {
     assert.strictEqual(validateSubjectData(null).valid, false);
     assert.strictEqual(validateSubjectData(123).valid, false);
     assert.strictEqual(validateSubjectData("string").valid, false);
@@ -38,7 +38,7 @@ describe("validateSubjectData", () => {
     ]
   };
 
-  test("accepts valid minimal subject data", () => {
+  test("accepts valid minimal subject data", async () => {
     const res = validateSubjectData(validBase);
     assert.strictEqual(res.valid, true);
     assert.strictEqual(res.errors.length, 0);
@@ -48,7 +48,7 @@ describe("validateSubjectData", () => {
     assert.ok(res.warnings.some(w => w.includes("achievements")));
   });
 
-  test("validates top-level string fields", () => {
+  test("validates top-level string fields", async () => {
     const missingId = { ...validBase, id: "" };
     assert.strictEqual(validateSubjectData(missingId).valid, false);
     assert.ok(validateSubjectData(missingId).errors.some(e => e.includes('Missing required string field: "id"')));
@@ -58,7 +58,7 @@ describe("validateSubjectData", () => {
     assert.ok(validateSubjectData(missingName).errors.some(e => e.includes('Missing required string field: "name"')));
   });
 
-  test("validates config block", () => {
+  test("validates config block", async () => {
     const missingConfig = { ...validBase, config: null };
     assert.strictEqual(validateSubjectData(missingConfig).valid, false);
 
@@ -72,7 +72,7 @@ describe("validateSubjectData", () => {
     assert.strictEqual(validateSubjectData(invalidDesc).valid, false);
   });
 
-  test("validates questions array existence", () => {
+  test("validates questions array existence", async () => {
     const notArray = { ...validBase, questions: "invalid" };
     assert.strictEqual(validateSubjectData(notArray).valid, false);
 
@@ -80,7 +80,7 @@ describe("validateSubjectData", () => {
     assert.strictEqual(validateSubjectData(emptyArray).valid, false);
   });
 
-  test("validates individual questions", () => {
+  test("validates individual questions", async () => {
     const notObject = {
       ...validBase,
       questions: ["invalid"]
@@ -148,7 +148,7 @@ describe("validateSubjectData", () => {
     assert.strictEqual(validateSubjectData(missingAnswer).valid, false);
   });
 
-  test("validates early bailout on 8+ errors", () => {
+  test("validates early bailout on 8+ errors", async () => {
     const badQuestions = new Array(10);
     for (let i = 0; i < 10; i++) {
       badQuestions[i] = { id: `q-${i}` };
@@ -169,7 +169,7 @@ describe("validateSubjectData", () => {
     assert.ok(res.errors.length <= 80);
   });
 
-  test("accepts valid full subject data — legacy normalised with warnings", () => {
+  test("accepts valid full subject data — legacy normalised with warnings", async () => {
     const validFull = {
       ...validBase,
       flashcards: [
@@ -192,7 +192,7 @@ describe("validateSubjectData", () => {
     assert.strictEqual(res.subject!.flashcards[0].definition, "Back");
   });
 
-  test("validates flashcards empty and non-array arrays", () => {
+  test("validates flashcards empty and non-array arrays", async () => {
     const emptyFlashcards = { ...validBase, flashcards: [] };
     const resEmpty = validateSubjectData(emptyFlashcards);
     assert.ok(resEmpty.warnings.some(w => w.includes('"flashcards" array is empty')));
@@ -204,14 +204,14 @@ describe("validateSubjectData", () => {
 });
 
 describe("parseSubjectJson", () => {
-  test("successfully parses valid JSON", () => {
+  test("successfully parses valid JSON", async () => {
     const jsonStr = '{"id":"test","value":123}';
     const result = parseSubjectJson(jsonStr);
     assert.deepEqual(result.data, { id: "test", value: 123 });
     assert.strictEqual(result.parseError, undefined);
   });
 
-  test("returns parseError for invalid JSON", () => {
+  test("returns parseError for invalid JSON", async () => {
     const invalidJsonStr = '{"id":"test", value:123}'; // missing quotes around value
     const result = parseSubjectJson(invalidJsonStr);
     assert.strictEqual(result.data, undefined);
@@ -219,28 +219,28 @@ describe("parseSubjectJson", () => {
     assert.ok(result.parseError.startsWith("JSON parse error:"));
   });
 
-  test("handles empty string", () => {
+  test("handles empty string", async () => {
     const result = parseSubjectJson("");
     assert.strictEqual(result.data, undefined);
     assert.ok(typeof result.parseError === "string");
     assert.ok(result.parseError.startsWith("JSON parse error:"));
   });
 
-  test("successfully parses valid JSON with valid escapes preserved", () => {
+  test("successfully parses valid JSON with valid escapes preserved", async () => {
     const jsonStr = '{"id":"test","text":"Line 1\\nLine 2 with \\\\ backslash, \\"quote\\", and \\u0020space"}';
     const result = parseSubjectJson(jsonStr);
     assert.deepEqual(result.data, { id: "test", text: 'Line 1\nLine 2 with \\ backslash, "quote", and  space' });
     assert.strictEqual(result.parseError, undefined);
   });
 
-  test("auto-fixes bad escape characters in strings", () => {
+  test("auto-fixes bad escape characters in strings", async () => {
     const jsonStr = '{"id":"test","text":"Some bad escape\\ here, stray\\a, and end\\\\"}';
     const result = parseSubjectJson(jsonStr);
     assert.deepEqual(result.data, { id: "test", text: 'Some bad escape\\ here, stray\\a, and end\\' });
     assert.ok(result.fixedWarnings?.some(w => w.includes("Repaired invalid escape characters")));
   });
 
-  test("auto-fixes and preserves LaTeX math expressions inside math mode blocks", () => {
+  test("auto-fixes and preserves LaTeX math expressions inside math mode blocks", async () => {
     const jsonStr = '{"id":"math-test","question":"Calculate $\\\\theta + \\\\alpha$ and $\\\\beta$ and $\\\\frac{1}{2}$"}';
     const result = parseSubjectJson(jsonStr);
     assert.deepEqual(result.data, {
@@ -249,7 +249,7 @@ describe("parseSubjectJson", () => {
     });
   });
 
-  test("auto-fixes single-escaped LaTeX math commands (which normally trigger tab/backspace JSON control code issues)", () => {
+  test("auto-fixes single-escaped LaTeX math commands (which normally trigger tab/backspace JSON control code issues)", async () => {
     const jsonStr = '{"id":"math-test-single","question":"Solve for $\\theta + \\beta$ and $\\frac{a}{b}$"}';
     const result = parseSubjectJson(jsonStr);
     assert.deepEqual(result.data, {
@@ -258,7 +258,7 @@ describe("parseSubjectJson", () => {
     });
   });
 
-  test("auto-fixes and preserves complex equations with mixed escapes (user reported case)", () => {
+  test("auto-fixes and preserves complex equations with mixed escapes (user reported case)", async () => {
     const jsonStr = '{"id":"math-user-case","question":"$y = L_1\\\\sin(\\\\theta_1) + L_2\\\\sin(\\\\theta_1 + \\\\theta_2)$"}';
     const result = parseSubjectJson(jsonStr);
     assert.deepEqual(result.data, {
@@ -267,7 +267,7 @@ describe("parseSubjectJson", () => {
     });
   });
 
-  test("auto-fixes and preserves complex equations with single escapes in raw JSON", () => {
+  test("auto-fixes and preserves complex equations with single escapes in raw JSON", async () => {
     const jsonStr = '{"id":"math-user-case-single","question":"$y = L_1\\sin(\\theta_1) + L_2\\sin(\\theta_1 + \\theta_2)$"}';
     const result = parseSubjectJson(jsonStr);
     assert.deepEqual(result.data, {
@@ -276,10 +276,13 @@ describe("parseSubjectJson", () => {
     });
   });
 
-  test("successfully parses and validates the newly merged subject file", () => {
+  test("successfully parses and validates the newly merged subject file", async () => {
     const filePath = path.join(process.cwd(), "public/examples/Merge-these-into-one-subject/MergedSubject.json");
     if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, "utf8");
+      let raw = '';
+  for await (const chunk of fs.createReadStream(filePath, { encoding: 'utf-8' })) {
+    raw += chunk;
+  }
       const result = parseSubjectJson(raw);
       assert.strictEqual(result.parseError, undefined);
       const validation = validateSubjectData(result.data);
@@ -289,7 +292,7 @@ describe("parseSubjectJson", () => {
 });
 
 describe("Auto-Fix & Graceful Degradation Suite", () => {
-  test("recovers missing name and auto-generates id slug", () => {
+  test("recovers missing name and auto-generates id slug", async () => {
     const raw = {
       questions: [
         {
@@ -315,7 +318,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(result.fixedWarnings?.some(w => w.includes('"id" was missing')));
   });
 
-  test("auto-generates id slug from custom subject name", () => {
+  test("auto-generates id slug from custom subject name", async () => {
     const raw = {
       name: "Theory of Computation Spec",
       questions: [
@@ -339,7 +342,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.strictEqual(data.id, "theory-of-computation-spec");
   });
 
-  test("recovers missing config block and populates title/description", () => {
+  test("recovers missing config block and populates title/description", async () => {
     const raw = {
       name: "Config Test",
       questions: [
@@ -366,7 +369,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(result.fixedWarnings?.some(w => w.includes('"config" block was missing')));
   });
 
-  test("recovers partial config block missing title or description", () => {
+  test("recovers partial config block missing title or description", async () => {
     const raw = {
       name: "Partial Config Test",
       config: {
@@ -394,7 +397,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(data.config.description.includes("Partial Config Test"));
   });
 
-  test("recovers missing or empty questions array with placeholder question", () => {
+  test("recovers missing or empty questions array with placeholder question", async () => {
     const raw = {
       name: "Questions Test",
       questions: []
@@ -408,7 +411,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(result.fixedWarnings?.some(w => w.includes('"questions" array was empty')));
   });
 
-  test("automatically renames duplicate question IDs", () => {
+  test("automatically renames duplicate question IDs", async () => {
     const raw = {
       name: "Duplicate ID Test",
       questions: [
@@ -446,7 +449,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(result.fixedWarnings?.some(w => w.includes('Duplicate ID "q-same"')));
   });
 
-  test("calibrates invalid types and converts TrueFalse with bad option count to MCQ", () => {
+  test("calibrates invalid types and converts TrueFalse with bad option count to MCQ", async () => {
     const raw = {
       name: "Type Calibration Test",
       questions: [
@@ -485,7 +488,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(result.fixedWarnings?.some(w => w.includes('converted to MCQ')));
   });
 
-  test("remaps answer text and boolean values to matching option labels", () => {
+  test("remaps answer text and boolean values to matching option labels", async () => {
     const raw = {
       name: "Answer Remap Test",
       questions: [
@@ -524,7 +527,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(result.fixedWarnings?.some(w => w.includes('Boolean answer "1" automatically mapped')));
   });
 
-  test("recovers missing question fields (difficulty, category, options, explanation, hint)", () => {
+  test("recovers missing question fields (difficulty, category, options, explanation, hint)", async () => {
     const raw = {
       name: "Field Recovery Test",
       questions: [
@@ -547,7 +550,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(data.questions[0].hint.includes("terminology"));
   });
 
-  test("recovers missing flashcards, achievements, and terminology containers", () => {
+  test("recovers missing flashcards, achievements, and terminology containers", async () => {
     const raw = {
       name: "Container Test",
       questions: [
@@ -574,7 +577,7 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.ok(Array.isArray(data.terminology.Cat));
   });
 
-  test("ignores generic JSON inputs from auto-fixes", () => {
+  test("ignores generic JSON inputs from auto-fixes", async () => {
     const raw = {
       id: "generic-doc",
       version: 1,
@@ -590,13 +593,16 @@ describe("Auto-Fix & Graceful Degradation Suite", () => {
     assert.strictEqual(data.flashcards, undefined);
   });
 
-  test("validates Human Computer Interaction server-side subject in public/examples", () => {
+  test("validates Human Computer Interaction server-side subject in public/examples", async () => {
     const hciPath = path.join(process.cwd(), "public/examples/human-computer-interaction.json");
     const duplicatePath = path.join(process.cwd(), "public/examples/hci_question_set.json");
     assert.ok(fs.existsSync(hciPath), "human-computer-interaction.json should exist");
     assert.ok(!fs.existsSync(duplicatePath), "hci_question_set.json should be consolidated and deleted");
 
-    const rawText = fs.readFileSync(hciPath, "utf-8");
+    let rawText = '';
+  for await (const chunk of fs.createReadStream(hciPath, { encoding: 'utf-8' })) {
+    rawText += chunk;
+  }
     assert.ok(!/#[0-9a-fA-F]{3,6}/.test(rawText), "Should not contain hardcoded hex colors");
 
     const parsed = JSON.parse(rawText);
