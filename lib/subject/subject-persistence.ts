@@ -94,14 +94,14 @@ function normalizeTerminology(obj: Record<string, unknown>, warnings: string[]) 
   // Auto-generate empty terminology keys for any categories used by questions
   if (Array.isArray(obj.questions)) {
     const termDict = obj.terminology as Record<string, unknown>
-    obj.questions.forEach((q: any) => {
+    for (const q of obj.questions) {
       if (q && typeof q.category === "string" && q.category.trim() !== "") {
         const cat = q.category.trim()
         if (!Array.isArray(termDict[cat])) {
           termDict[cat] = []
         }
       }
-    })
+    }
   }
 }
 
@@ -349,14 +349,14 @@ function autoFixTerminology(obj: Record<string, unknown>, warnings: string[]) {
 
   // Auto-generate empty terminology keys for any categories used by questions
   if (Array.isArray(obj.questions)) {
-    obj.questions.forEach((q: any) => {
+    for (const q of obj.questions) {
       if (q && typeof q.category === "string" && q.category.trim() !== "") {
         const cat = q.category.trim()
         if (!Array.isArray(termDict[cat])) {
           termDict[cat] = []
         }
       }
-    })
+    }
   }
 }
 
@@ -513,21 +513,18 @@ function validateSingleQuestion(
     return;
   }
 
+  const options = qObj.options as Record<string, unknown>[];
   let labelExists = false;
-  for (let j = 0; j < qObj.options.length; j++) {
-    const opt = qObj.options[j] as Record<string, unknown>;
-    if (opt.label === qObj.answer) {
+  const labels = new Array(options.length);
+
+  for (let j = 0; j < options.length; j++) {
+    labels[j] = options[j].label;
+    if (options[j].label === qObj.answer) {
       labelExists = true;
-      break;
     }
   }
 
   if (!labelExists) {
-    const options = qObj.options as Record<string, unknown>[];
-    const labels = new Array(options.length);
-    for (let j = 0; j < options.length; j++) {
-      labels[j] = options[j].label;
-    }
     errors.push(`${prefix}: answer "${qObj.answer}" does not match any option label (${labels.join(", ")}).`);
   }
   if (qObj.type === "TrueFalse" && qObj.answer !== "A" && qObj.answer !== "B") {
