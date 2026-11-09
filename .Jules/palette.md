@@ -133,3 +133,8 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+
+## 2026-11-09 - Adding explicit type="button" to UI buttons and Empty State a11y status
+**Learning:** Generic <button> elements in React without an explicit type attribute default to type="submit", which can cause implicit form submissions. Furthermore, dynamically rendered "No results found" UI segments frequently bypass screen readers unless they possess role="status" and aria-live="polite".
+**Action:** Always explicitly add type="button" to generic UI <button> elements, and wrap dynamic empty-state text within accessible status containers.
