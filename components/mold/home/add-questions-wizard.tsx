@@ -667,7 +667,7 @@ CRITICAL RULES:
                       </select>
                     ) : (
                       <p className="text-xs font-mono text-zinc-600 uppercase">
-                        No existing categories found in this subject.
+                        <span role="status" aria-live="polite">No existing categories found in this subject.</span>
                       </p>
                     )}
                   </div>

@@ -117,6 +117,7 @@ export function AnalyticsDashboard() {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              aria-label="Re-run Live Audit"
               onClick={handleRunLiveAudit}
               disabled={isAuditing}
               className="inline-flex items-center gap-1.5 text-xs font-mono font-bold px-3 py-1.5 border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 transition-all cursor-pointer rounded disabled:opacity-50"
@@ -671,6 +672,7 @@ export function AnalyticsDashboard() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
+                  aria-label="Clear recent events sink"
                   onClick={() => setRecentEvents([])}
                   className="text-[10px] px-2 py-1 border border-border text-muted-foreground hover:text-foreground rounded"
                 >
@@ -681,7 +683,7 @@ export function AnalyticsDashboard() {
 
             {recentEvents.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground text-xs">
-                No events currently in memory. Answer quiz questions or click elements on the page to watch real telemetry stream.
+                <span role="status" aria-live="polite">No events currently in memory</span>. Answer quiz questions or click elements on the page to watch real telemetry stream.
               </div>
             ) : (
               <div className="space-y-1.5 max-h-[500px] overflow-y-auto pr-2">

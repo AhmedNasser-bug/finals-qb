@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lastUpdated": "2026-08-27T14:48:00Z",
-  "totalFeaturesImplemented": 15,
+  "totalFeaturesImplemented": 16,
   "features": [
     {
       "id": "quick-import-action-hub",
@@ -191,6 +191,22 @@
         "components/mold/game/game-stat-cell.tsx",
         "components/mold/home/setup-panel-blocks.tsx",
         "components/mold/home/mode-selector.tsx"
+      ],
+      "nonBreaking": true
+    },
+    {
+      "id": "jules-ux-a11y-1794231789294",
+      "category": "accessibility",
+      "tier": 1,
+      "title": "Added explicit type=button and missing aria/role attributes for screen readers",
+      "implementedAt": "2026-11-09T13:43:09.294Z",
+      "componentsTouched": [
+        "components/mold/home/top-nav-bar.tsx",
+        "components/mold/payment/paywall-modal.tsx",
+        "components/mold/analytics/analytics-dashboard.tsx",
+        "components/mold/common/encyclopedia-overlay.tsx",
+        "components/mold/home/setup-panel-blocks.tsx",
+        "components/mold/home/add-questions-wizard.tsx"
       ],
       "nonBreaking": true
     }
