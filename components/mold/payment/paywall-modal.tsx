@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useRef } from "react"
 import {
   X,
   Sparkles,
@@ -26,6 +26,8 @@ interface PaywallModalProps {
 }
 
 export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnClose }: PaywallModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
+
   const {
     isPaywallOpen,
     closePaywall,
@@ -47,10 +49,26 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   // Close on Escape key
   useEffect(() => {
+    if (isOpen && modalRef.current) modalRef.current.focus()
     if (!isOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose()
+      } else if (e.key === 'Tab' && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey && (document.activeElement === first || !modalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && (document.activeElement === last || !modalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          first.focus()
+        }
       }
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -129,6 +147,8 @@ export function PaywallModal({ isOpen: controlledIsOpen, onClose: controlledOnCl
 
   return (
     <div
+      ref={modalRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-title"

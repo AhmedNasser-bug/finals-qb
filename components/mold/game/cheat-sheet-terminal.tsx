@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useCheatSheet } from "@/lib/game/cheat-sheet-context"
 import { formatLabel, gradeColor, hasVisual } from "@/lib/mold-types"
 import DOMPurify from "isomorphic-dompurify"
@@ -10,6 +10,7 @@ import { X } from "lucide-react"
 
 export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
   const { isOpen, setIsOpen, toggleCheatSheet, entries, clearEntries } = useCheatSheet()
+  const terminalRef = useRef<HTMLDivElement>(null)
 
   // Ctrl + ` (Backtick) global keyboard toggle (only when active in GameRunner)
   useEffect(() => {
@@ -22,6 +23,35 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [toggleCheatSheet])
+
+  useEffect(() => {
+    if (isOpen && terminalRef.current) {
+        terminalRef.current.focus()
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      } else if (e.key === 'Tab' && terminalRef.current) {
+        const focusable = terminalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey && (document.activeElement === first || !terminalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && (document.activeElement === last || !terminalRef.current.contains(document.activeElement))) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isOpen, setIsOpen])
 
   // Reverse entries so the most recently flagged questions appear at the top
   const reversedEntries = [...entries].reverse()
@@ -39,6 +69,7 @@ export function CheatSheetTerminal({ subjectId }: { subjectId: string }) {
 
       {/* Side Panel Drawer */}
       <div
+        ref={terminalRef}
         role="dialog"
         aria-modal="true"
         aria-label="Review Deck Drawer"
