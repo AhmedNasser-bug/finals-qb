@@ -199,36 +199,54 @@ export function deriveCategoryRetentionSummaries(
   cards: Flashcard[],
   retentionMap: RetentionMap
 ): CategoryRetentionSummary[] {
-  const groups: Record<string, CardRetentionState[]> = {}
+  // ⚡ Bolt Optimization: Flattened multi-pass array operations (filter, reduce)
+  // into a single-pass accumulator hashmap, cutting O(N) iteration overhead.
+  const groups: Record<string, {
+    total: number,
+    mastered: number,
+    due: number,
+    lapsed: number,
+    sumR: number,
+    sumS: number
+  }> = {}
 
   cards.forEach((c) => {
     const cat = c.category || "_general"
-    if (!groups[cat]) groups[cat] = []
+    if (!groups[cat]) {
+      groups[cat] = { total: 0, mastered: 0, due: 0, lapsed: 0, sumR: 0, sumS: 0 }
+    }
+
     const state = retentionMap[c.id]
-    if (state) groups[cat].push(state)
+    if (state) {
+      const group = groups[cat]
+      group.total++
+
+      if (state.urgencyLevel === "MASTERED") group.mastered++
+      else if (state.urgencyLevel === "DUE" || state.urgencyLevel === "APPROACHING_DECAY") group.due++
+      else if (state.urgencyLevel === "CRITICAL_LAPSED") group.lapsed++
+
+      group.sumR += state.currentRetrievability
+      group.sumS += state.stability
+    }
   })
 
-  return Object.entries(groups).map(([cat, cardStates]) => {
-    const total = cardStates.length
-    const mastered = cardStates.filter((s) => s.urgencyLevel === "MASTERED").length
-    const due = cardStates.filter((s) => s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY").length
-    const lapsed = cardStates.filter((s) => s.urgencyLevel === "CRITICAL_LAPSED").length
-
+  return Object.entries(groups).map(([cat, stats]) => {
+    const total = stats.total
     const avgR =
       total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.currentRetrievability, 0) / total) * 100) / 100
+        ? Math.round((stats.sumR / total) * 100) / 100
         : 0
     const avgS =
       total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.stability, 0) / total) * 10) / 10
+        ? Math.round((stats.sumS / total) * 10) / 10
         : 0
 
     return {
       category: cat,
       totalCards: total,
-      masteredCount: mastered,
-      dueCount: due,
-      lapsedCount: lapsed,
+      masteredCount: stats.mastered,
+      dueCount: stats.due,
+      lapsedCount: stats.lapsed,
       averageRetrievability: avgR,
       averageStabilityDays: avgS,
     }
