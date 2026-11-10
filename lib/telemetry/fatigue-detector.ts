@@ -23,19 +23,7 @@ export function analyzeCognitiveLoad(
   events: CognitiveTelemetryEvent[],
   baselineLatencyMs: number = 2500
 ): CognitiveLoadAnalysis {
-  const latencySamples: number[] = []
-
-  events.forEach((evt) => {
-    if (evt.type === "rating_submitted") {
-      latencySamples.push(evt.decisionLatencyMs)
-    } else if (evt.type === "card_flipped") {
-      latencySamples.push(evt.durationBeforeFlipMs)
-    } else if (evt.type === "question_answered") {
-      latencySamples.push(evt.totalDecisionLatencyMs)
-    }
-  })
-
-  if (latencySamples.length === 0) {
+  if (events.length === 0) {
     return {
       averageLatencyMs: baselineLatencyMs,
       recentLatencySlope: 0,
@@ -46,42 +34,76 @@ export function analyzeCognitiveLoad(
     }
   }
 
-  const avg =
-    latencySamples.reduce((a, b) => a + b, 0) / latencySamples.length
+  let totalEventsAnalyzed = 0;
+  let totalLatency = 0;
+  const latencySamples: number[] = []; // Still need this to calculate median/slope easily
 
-  // Calculate slope between first half and second half if >= 4 samples
-  let slope = 0
-  if (latencySamples.length >= 4) {
-    const mid = Math.floor(latencySamples.length / 2)
-    const firstHalf = latencySamples.slice(0, mid)
-    const secondHalf = latencySamples.slice(mid)
-    const avg1 = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length
-    const avg2 = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length
-    slope = Math.round((avg2 - avg1) * 10) / 10
+  // Single pass without chained methods
+  for (let i = 0; i < events.length; i++) {
+    const evt = events[i];
+    let latency = 0;
+    if (evt.type === "rating_submitted") {
+      latency = evt.decisionLatencyMs;
+    } else if (evt.type === "card_flipped") {
+      latency = evt.durationBeforeFlipMs;
+    } else if (evt.type === "question_answered") {
+      latency = evt.totalDecisionLatencyMs;
+    }
+
+    if (latency > 0) {
+      latencySamples.push(latency);
+      totalLatency += latency;
+      totalEventsAnalyzed++;
+    }
   }
 
-  // CHI is ratio of average latency to baseline
-  const chi = Math.max(0.5, Math.round((avg / baselineLatencyMs) * 100) / 100)
+  if (totalEventsAnalyzed === 0) {
+    return {
+      averageLatencyMs: baselineLatencyMs,
+      recentLatencySlope: 0,
+      cognitiveHesitationIndex: 1.0,
+      totalEventsAnalyzed: 0,
+      advice: "OPTIMAL",
+      message: "Cognitive readiness optimal.",
+    }
+  }
 
-  let advice: CognitiveLoadAnalysis["advice"] = "OPTIMAL"
-  let message = "Cognitive readiness optimal."
+  const avg = totalLatency / totalEventsAnalyzed;
+
+  let slope = 0;
+  if (totalEventsAnalyzed >= 4) {
+    const mid = Math.floor(totalEventsAnalyzed / 2);
+    let sum1 = 0;
+    let sum2 = 0;
+    for (let i = 0; i < mid; i++) sum1 += latencySamples[i];
+    for (let i = mid; i < totalEventsAnalyzed; i++) sum2 += latencySamples[i];
+
+    const avg1 = sum1 / mid;
+    const avg2 = sum2 / (totalEventsAnalyzed - mid);
+    slope = Math.round((avg2 - avg1) * 10) / 10;
+  }
+
+  const chi = Math.max(0.5, Math.round((avg / baselineLatencyMs) * 100) / 100);
+
+  let advice: CognitiveLoadAnalysis["advice"] = "OPTIMAL";
+  let message = "Cognitive readiness optimal.";
 
   if (chi > 2.2 || slope > 3000) {
-    advice = "SUGGEST_BREAK"
-    message = "High cognitive hesitation detected. A 5-minute break is recommended."
+    advice = "SUGGEST_BREAK";
+    message = "High cognitive hesitation detected. A 5-minute break is recommended.";
   } else if (chi > 1.6 || slope > 1500) {
-    advice = "FATIGUE_WARNING"
-    message = "Latency increasing. Memory consolidation slowing down."
+    advice = "FATIGUE_WARNING";
+    message = "Latency increasing. Memory consolidation slowing down.";
   } else if (chi > 1.2) {
-    advice = "SLIGHT_FATIGUE"
-    message = "Slight response delay. Maintaining steady pace."
+    advice = "SLIGHT_FATIGUE";
+    message = "Slight response delay. Maintaining steady pace.";
   }
 
   return {
     averageLatencyMs: Math.round(avg),
     recentLatencySlope: slope,
     cognitiveHesitationIndex: chi,
-    totalEventsAnalyzed: latencySamples.length,
+    totalEventsAnalyzed,
     advice,
     message,
   }
