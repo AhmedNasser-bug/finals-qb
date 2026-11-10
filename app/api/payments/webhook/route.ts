@@ -6,15 +6,14 @@ export async function POST(request: NextRequest) {
   try {
     // Optional webhook authorization verification
     const expectedAuth = process.env.REVENUECAT_WEBHOOK_AUTH_TOKEN
-    if (expectedAuth) {
-      const authHeader = request.headers.get("authorization")
-      if (
-        !authHeader ||
-        (authHeader !== expectedAuth && authHeader !== `Bearer ${expectedAuth}`)
-      ) {
-        logger.warn("RevenueCat webhook: Unauthorized attempt")
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-      }
+    const authHeader = request.headers.get("authorization")
+
+    if (
+      expectedAuth &&
+      (!authHeader || (authHeader !== expectedAuth && authHeader !== `Bearer ${expectedAuth}`))
+    ) {
+      logger.warn("RevenueCat webhook: Unauthorized attempt")
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const payload = (await request.json()) as RevenueCatWebhookPayload
@@ -35,46 +34,17 @@ export async function POST(request: NextRequest) {
       environment: event.environment,
     })
 
-    switch (event.type) {
-      case "INITIAL_PURCHASE":
-        logger.info("RevenueCat: New subscriber purchase recorded", {
-          appUserId: event.app_user_id,
-          productId: event.product_id,
-        })
-        break
+    const eventHandlers: Record<string, () => void> = {
+      INITIAL_PURCHASE: () => logger.info("RevenueCat: New subscriber purchase recorded", { appUserId: event.app_user_id, productId: event.product_id }),
+      RENEWAL: () => logger.info("RevenueCat: Subscription renewed successfully", { appUserId: event.app_user_id, productId: event.product_id }),
+      CANCELLATION: () => logger.info("RevenueCat: Subscription cancelled or expired", { appUserId: event.app_user_id, productId: event.product_id }),
+      EXPIRATION: () => logger.info("RevenueCat: Subscription cancelled or expired", { appUserId: event.app_user_id, productId: event.product_id }),
+      PRODUCT_CHANGE: () => logger.info("RevenueCat: Product tier change", { appUserId: event.app_user_id, newProductId: event.product_id }),
+      TEST: () => logger.info("RevenueCat: Webhook connectivity test received"),
+    };
 
-      case "RENEWAL":
-        logger.info("RevenueCat: Subscription renewed successfully", {
-          appUserId: event.app_user_id,
-          productId: event.product_id,
-        })
-        break
-
-      case "CANCELLATION":
-      case "EXPIRATION":
-        logger.info("RevenueCat: Subscription cancelled or expired", {
-          appUserId: event.app_user_id,
-          productId: event.product_id,
-        })
-        break
-
-      case "PRODUCT_CHANGE":
-        logger.info("RevenueCat: Product tier change", {
-          appUserId: event.app_user_id,
-          newProductId: event.product_id,
-        })
-        break
-
-      case "TEST":
-        logger.info("RevenueCat: Webhook connectivity test received")
-        break
-
-      default:
-        logger.info("RevenueCat: Unhandled webhook event type", {
-          type: (event as any).type,
-        })
-        break
-    }
+    const handler = eventHandlers[event.type] || (() => logger.info("RevenueCat: Unhandled webhook event type", { type: (event as any).type }));
+    handler();
 
     return NextResponse.json({
       received: true,
