@@ -133,3 +133,7 @@
 ## 2026-10-24 - Role Dialog and Accessibility attributes
 **Learning:** Implementing `role="dialog"`, `aria-modal="true"`, and `tabIndex={-1}` inside overlay panels like the Review Deck drawer is crucial for assistive technology to focus on it correctly and announce its content.
 **Action:** Add these attributes to modals or side drawers when building custom overlay panels.
+
+## 2026-11-10 - Mobile Bottom Nav A11y and Role semantics
+**Learning:** For a fixed mobile bottom navigation, failing to explicitly declare it as `role="contentinfo"` diminishes the screen reader's ability to interpret it structurally as a footer. Furthermore, buttons in navigation bars that don't declare explicit `aria-label`s fail to read appropriately for screen reader users and could have unclear context.
+**Action:** When working on navigation components, especially on mobile, ensure structural `footer` elements carry `role="contentinfo"`, and all buttons use descriptive `aria-label`s and `title` tags for screen readers and tooltips.
