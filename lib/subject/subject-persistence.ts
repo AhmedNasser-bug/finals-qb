@@ -905,9 +905,11 @@ function handleParseError(jsonToParse: string, fixedWarnings: string[], original
   }
   try {
     const parsed = JSON.parse(repaired)
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-      autoFixSubjectData(parsed, fixedWarnings)
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { data: parsed, fixedWarnings }
     }
+
+    autoFixSubjectData(parsed, fixedWarnings)
     return { data: parsed, fixedWarnings }
   } catch (err) {
     const msg = originalError instanceof SyntaxError ? originalError.message : "Invalid JSON."
