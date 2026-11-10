@@ -9,3 +9,11 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+
+## 2024-11-10 - [Optimize Date Parsing in Telemetry Loops]
+**Learning:** ISO 8601 strings sort lexicographically. Parsing them into `Date` objects inside tight, large loops (such as filtering telemetry events based on timestamps) adds massive overhead and garbage collection pressure.
+**Action:** Always use direct string comparison (`stringA < stringB`) instead of `new Date(stringA) < new Date(stringB)` when evaluating ISO 8601 timestamps inside filters or sorts.
+
+## 2024-11-10 - [Flatten O(N*M) Mapping into O(N) Hash Accumulation]
+**Learning:** Creating intermediate array groups and then chaining multiple `.filter()` and `.reduce()` operations per group scales poorly (`O(N * M)`).
+**Action:** Use a single-pass `for` loop to directly accumulate counts, sums, and averages into a hash map, dropping multi-pass iteration overhead entirely.

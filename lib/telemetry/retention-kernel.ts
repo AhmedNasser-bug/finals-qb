@@ -199,40 +199,48 @@ export function deriveCategoryRetentionSummaries(
   cards: Flashcard[],
   retentionMap: RetentionMap
 ): CategoryRetentionSummary[] {
-  const groups: Record<string, CardRetentionState[]> = {}
+  const groups: Record<string, { total: number; mastered: number; due: number; lapsed: number; sumR: number; sumS: number }> = {}
 
-  cards.forEach((c) => {
-    const cat = c.category || "_general"
-    if (!groups[cat]) groups[cat] = []
-    const state = retentionMap[c.id]
-    if (state) groups[cat].push(state)
-  })
+  for (let i = 0; i < cards.length; i++) {
+    const c = cards[i];
+    const cat = c.category || "_general";
+    const state = retentionMap[c.id];
 
-  return Object.entries(groups).map(([cat, cardStates]) => {
-    const total = cardStates.length
-    const mastered = cardStates.filter((s) => s.urgencyLevel === "MASTERED").length
-    const due = cardStates.filter((s) => s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY").length
-    const lapsed = cardStates.filter((s) => s.urgencyLevel === "CRITICAL_LAPSED").length
+    if (state) {
+        let group = groups[cat];
+        if (!group) {
+           group = { total: 0, mastered: 0, due: 0, lapsed: 0, sumR: 0, sumS: 0 };
+           groups[cat] = group;
+        }
 
-    const avgR =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.currentRetrievability, 0) / total) * 100) / 100
-        : 0
-    const avgS =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.stability, 0) / total) * 10) / 10
-        : 0
+        group.total++;
+        if (state.urgencyLevel === "MASTERED") group.mastered++;
+        else if (state.urgencyLevel === "DUE" || state.urgencyLevel === "APPROACHING_DECAY") group.due++;
+        else if (state.urgencyLevel === "CRITICAL_LAPSED") group.lapsed++;
 
-    return {
-      category: cat,
-      totalCards: total,
-      masteredCount: mastered,
-      dueCount: due,
-      lapsedCount: lapsed,
-      averageRetrievability: avgR,
-      averageStabilityDays: avgS,
+        group.sumR += state.currentRetrievability;
+        group.sumS += state.stability;
     }
-  })
+  }
+
+  const keys = Object.keys(groups);
+  const result: CategoryRetentionSummary[] = [];
+  for (let i = 0; i < keys.length; i++) {
+      const cat = keys[i];
+      const g = groups[cat];
+      const total = g.total;
+      result.push({
+          category: cat,
+          totalCards: total,
+          masteredCount: g.mastered,
+          dueCount: g.due,
+          lapsedCount: g.lapsed,
+          averageRetrievability: total > 0 ? Math.round((g.sumR / total) * 100) / 100 : 0,
+          averageStabilityDays: total > 0 ? Math.round((g.sumS / total) * 10) / 10 : 0,
+      });
+  }
+
+  return result;
 }
 
 /**
