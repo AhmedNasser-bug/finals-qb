@@ -171,7 +171,7 @@ export function TopNavBar({
       {/* Right controls */}
       <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
         {/* AI Pass Button */}
-        <button
+        <button type="button"
           onClick={() => openPaywall()}
           title={hasAiEntitlement ? "Finalists AI Active — Tap to view details" : "Upgrade to Finalists AI — Tap to unlock"}
           aria-label={hasAiEntitlement ? "Finalists AI Active" : "Upgrade to Finalists AI"}
