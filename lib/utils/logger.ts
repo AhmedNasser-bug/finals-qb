@@ -110,14 +110,14 @@ export function maskData(data: any, seen: WeakSet<any> = new WeakSet()): any {
   }
 
   const maskedObj: Record<string, any> = {};
-  for (const key in data) {
-    if (Object.prototype.hasOwnProperty.call(data, key)) {
-      const val = data[key];
-      if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
-        maskedObj[key] = '[REDACTED]';
-      } else {
-        maskedObj[key] = maskData(val, seen);
-      }
+  const keys = Object.keys(data);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const val = data[key];
+    if (SENSITIVE_KEYS_REGEX.test(key) && (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean')) {
+      maskedObj[key] = '[REDACTED]';
+    } else {
+      maskedObj[key] = maskData(val, seen);
     }
   }
 

@@ -79,15 +79,20 @@ export function buildIntelligentFlashcardQueue(
   })
 
   // Sort critical & due by lowest retrievability first
-  const sortByLowestR = (a: Flashcard, b: Flashcard) => {
-    const rA = retentionMap[a.id]?.currentRetrievability ?? 1
-    const rB = retentionMap[b.id]?.currentRetrievability ?? 1
-    return rA - rB
+  const sortByLowestR = (a: { card: Flashcard, r: number }, b: { card: Flashcard, r: number }) => {
+    return a.r - b.r
   }
 
-  critical.sort(sortByLowestR)
-  due.sort(sortByLowestR)
-  approaching.sort(sortByLowestR)
+  const criticalSorted = critical.map(card => ({ card, r: retentionMap[card.id]?.currentRetrievability ?? 1 })).sort(sortByLowestR).map(i => i.card)
+  const dueSorted = due.map(card => ({ card, r: retentionMap[card.id]?.currentRetrievability ?? 1 })).sort(sortByLowestR).map(i => i.card)
+  const approachingSorted = approaching.map(card => ({ card, r: retentionMap[card.id]?.currentRetrievability ?? 1 })).sort(sortByLowestR).map(i => i.card)
+
+  critical.length = 0;
+  critical.push(...criticalSorted);
+  due.length = 0;
+  due.push(...dueSorted);
+  approaching.length = 0;
+  approaching.push(...approachingSorted);
 
   let queue: Flashcard[] = []
 
