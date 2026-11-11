@@ -53,16 +53,18 @@ export async function loadSubjectAchievements(
     // Transparent legacy migration fallback: check unscoped achievements
     const legacyKey = getSubjectStorageKey(ACHIEVEMENTS_STORAGE_KEY, null, userId)
     const legacyRaw = localStorage.getItem(legacyKey)
-    if (legacyRaw && subjectId === "theory-of-computation") {
-      try {
-        const legacy = JSON.parse(legacyRaw) as Achievement[]
-        if (Array.isArray(legacy) && legacy.length > 0) {
-          await saveSubjectAchievements(legacy, subjectId, userId)
-          return legacy
-        }
-      } catch {
-        // ignore legacy parsing error
+    if (!legacyRaw || subjectId !== "theory-of-computation") {
+      return []
+    }
+
+    try {
+      const legacy = JSON.parse(legacyRaw) as Achievement[]
+      if (Array.isArray(legacy) && legacy.length > 0) {
+        await saveSubjectAchievements(legacy, subjectId, userId)
+        return legacy
       }
+    } catch {
+      // ignore legacy parsing error
     }
 
     return []
