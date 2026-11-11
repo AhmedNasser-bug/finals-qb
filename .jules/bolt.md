@@ -9,3 +9,7 @@
 ## 2024-07-02 - [Optimize Array.indexOf inside Array.sort]
 **Learning:** Using `Array.indexOf()` inside an `Array.sort()` comparator function results in an unexpected O(N^2 log N) performance bottleneck since the linear scan repeats on every comparison.
 **Action:** Always pre-calculate order arrays into a `Map` cache (hash map) to achieve O(1) index lookups during iterative or sorting loops.
+
+## 2024-11-11 - [Optimize retention-kernel multiple O(N) chained array methods to O(N) loops]
+**Learning:** Chaining array methods (`.filter()`, `.reduce()`) multiple times in a function on large data structures can create memory overhead and perform poorly. Additionally `Date.parse()` and caching math constant inversions are much faster than parsing dates using `new Date()` and division respectively.
+**Action:** Replaced `.forEach()` `.filter()` `.reduce()` in `deriveCategoryRetentionSummaries` with a flat O(N) pass, and `new Date(str).getTime()` in `updateCardRetention` and `evaluateDeckRetention` with fast-path ISO parsing using `Date.parse(str)` to eliminate unnecessary object allocations. Also implemented `1 / (1000 * 60 * 60 * 24)` multiplication instead of division.

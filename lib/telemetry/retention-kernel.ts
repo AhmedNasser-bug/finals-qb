@@ -141,7 +141,10 @@ export function updateCardRetention(
     newLapses += 1
   }
 
-  const nowMs = new Date(nowIso).getTime()
+  // Fast-path parsing
+  let nowMs = typeof nowIso === 'number' ? nowIso : Date.parse(nowIso);
+  if (isNaN(nowMs)) nowMs = new Date(nowIso).getTime();
+
   const nextDueMs = nowMs + newInterval * 24 * 60 * 60 * 1000
   const nextDueDate = new Date(nextDueMs).toISOString()
 
@@ -170,15 +173,33 @@ export function evaluateDeckRetention(
 ): RetentionMap {
   const updatedMap: RetentionMap = {}
 
-  for (const card of cards) {
-    const existing = retentionMap[card.id] || createInitialCardState(card, subjectId)
+  // Pre-calculate inverse for faster multiplication instead of division
+  const msToDays = 1 / (1000 * 60 * 60 * 24)
+
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i]
+    let existing = retentionMap[card.id]
+
+    if (!existing) {
+      existing = createInitialCardState(card, subjectId)
+    }
+
     if (!existing.lastReviewedAt) {
       updatedMap[card.id] = { ...existing, urgencyLevel: "NEW", currentRetrievability: 1.0 }
       continue
     }
 
-    const lastMs = new Date(existing.lastReviewedAt).getTime()
-    const elapsedDays = Math.max(0, (nowMs - lastMs) / (1000 * 60 * 60 * 24))
+    // Fast-path for Date.parse over new Date() object allocation
+    const lastReviewedStr = existing.lastReviewedAt
+    let lastMs = typeof lastReviewedStr === 'number'
+        ? lastReviewedStr
+        : Date.parse(lastReviewedStr as unknown as string);
+
+    if (isNaN(lastMs)) {
+        lastMs = new Date(lastReviewedStr).getTime()
+    }
+
+    const elapsedDays = Math.max(0, (nowMs - lastMs) * msToDays)
     const r = calculateRetrievability(existing.stability, elapsedDays)
     const urgency = classifyUrgency(r, existing.repetitions)
 
@@ -199,36 +220,43 @@ export function deriveCategoryRetentionSummaries(
   cards: Flashcard[],
   retentionMap: RetentionMap
 ): CategoryRetentionSummary[] {
-  const groups: Record<string, CardRetentionState[]> = {}
+  const groups: Record<string, { total: number, mastered: number, due: number, lapsed: number, sumR: number, sumS: number }> = {}
 
-  cards.forEach((c) => {
+  // O(N) single pass grouping and aggregation to avoid multiple array allocations and chained .filter()/.reduce() calls
+  for (let i = 0; i < cards.length; i++) {
+    const c = cards[i]
     const cat = c.category || "_general"
-    if (!groups[cat]) groups[cat] = []
+    if (!groups[cat]) {
+      groups[cat] = { total: 0, mastered: 0, due: 0, lapsed: 0, sumR: 0, sumS: 0 }
+    }
     const state = retentionMap[c.id]
-    if (state) groups[cat].push(state)
-  })
+    if (state) {
+      const g = groups[cat]
+      g.total++
+      if (state.urgencyLevel === "MASTERED") {
+        g.mastered++
+      } else if (state.urgencyLevel === "DUE" || state.urgencyLevel === "APPROACHING_DECAY") {
+        g.due++
+      } else if (state.urgencyLevel === "CRITICAL_LAPSED") {
+        g.lapsed++
+      }
+      g.sumR += state.currentRetrievability
+      g.sumS += state.stability
+    }
+  }
 
-  return Object.entries(groups).map(([cat, cardStates]) => {
-    const total = cardStates.length
-    const mastered = cardStates.filter((s) => s.urgencyLevel === "MASTERED").length
-    const due = cardStates.filter((s) => s.urgencyLevel === "DUE" || s.urgencyLevel === "APPROACHING_DECAY").length
-    const lapsed = cardStates.filter((s) => s.urgencyLevel === "CRITICAL_LAPSED").length
-
-    const avgR =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.currentRetrievability, 0) / total) * 100) / 100
-        : 0
-    const avgS =
-      total > 0
-        ? Math.round((cardStates.reduce((acc, s) => acc + s.stability, 0) / total) * 10) / 10
-        : 0
+  return Object.keys(groups).map((cat) => {
+    const stats = groups[cat]
+    const total = stats.total
+    const avgR = total > 0 ? Math.round((stats.sumR / total) * 100) / 100 : 0
+    const avgS = total > 0 ? Math.round((stats.sumS / total) * 10) / 10 : 0
 
     return {
       category: cat,
       totalCards: total,
-      masteredCount: mastered,
-      dueCount: due,
-      lapsedCount: lapsed,
+      masteredCount: stats.mastered,
+      dueCount: stats.due,
+      lapsedCount: stats.lapsed,
       averageRetrievability: avgR,
       averageStabilityDays: avgS,
     }
